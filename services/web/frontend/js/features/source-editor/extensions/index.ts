@@ -59,6 +59,8 @@ import { selectionListener } from '@/features/source-editor/extensions/selection
 import { contextMenu } from './context-menu'
 import { tabsListener } from './tabs-listener'
 import { isSplitTestEnabled } from '@/utils/splitTestUtils'
+import { writingAssist } from './writing-assist'
+import { DEFAULT_CONFIG } from '../../../../../types/writing-assist'
 
 const moduleExtensions: Array<(options: Record<string, any>) => Extension> =
   importOverleafModules('sourceEditorExtensions').map(
@@ -181,4 +183,6 @@ export const createExtensions = (options: Record<string, any>): Extension[] => [
   tooltipsReposition(),
   selectionListener(options.setEditorSelection),
   isSplitTestEnabled('editor-tabs') ? tabsListener() : [],
+  // Writing Assist — conditionally enabled
+  writingAssist({ projectId: options.projectId, config: DEFAULT_CONFIG }),
 ]

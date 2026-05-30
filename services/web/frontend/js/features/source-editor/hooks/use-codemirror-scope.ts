@@ -339,6 +339,7 @@ function useCodeMirrorScope(view: EditorView) {
           phrases: phrasesRef.current,
           spelling: spellingRef.current,
           visual: visualRef.current,
+          projectId: project._id,
           projectFeatures: projectFeaturesRef.current,
           editorContextMenuEnabled: editorContextMenuEnabledRef.current,
           initialSearchQuery: searchQueryRef.current,
