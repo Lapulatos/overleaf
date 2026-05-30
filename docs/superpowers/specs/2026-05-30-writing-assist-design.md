@@ -57,13 +57,13 @@ settings collection) and never hard-coded.
 │  │  writing-assist/  (NEW CodeMirror extension)              │  │
 │  │                                                            │  │
 │  │  index.ts            extension entry point                 │  │
+│  │  viewport-tracker.ts extract visible paragraphs only       │  │
 │  │  checker.ts          debounce(1-2 s) → diff → fetch       │  │
 │  │  decorations.ts      StateField<DecorationSet> — coloured  │  │
 │  │                      wavy underlines per category          │  │
 │  │  tooltip.ts          React tooltip: problem + suggestion   │  │
 │  │  context-menu.tsx     right-click: Apply / Ignore / ...    │  │
-│  │  latex-guard.ts      mask LaTeX commands/envs/math         │  │
-│  │  cache.ts            LRU sentence cache (skip unchanged)   │  │
+│  │  sentence-fingerprint.ts  hash each sentence → skip checked│  │
 │  │  types.ts            CheckRequest, CheckResponse, Issue    │  │
 │  └───────────────────────────────────────────────────────────┘  │
 │  Toolbar toggle-button (NEW)                                     │
@@ -308,9 +308,161 @@ The backend:
 
 ---
 
-## 6. File-Level Implementation Plan
+## 6. Viewport Scope & Sentence Fingerprint Cache
 
-### 6.1 Backend (`services/web/app/src/`)
+### 6.1 Viewport-only checking
+
+Only text **currently visible** in the CodeMirror viewport is checked.
+This avoids sending the entire document to the LLM on every keystroke.
+
+```
+┌─ CodeMirror scroll container ────────────┐
+│                                           │
+│  \section{Introduction}   ← NOT checked   │
+│                                           │
+│  ┌── viewport (visible) ──────────────┐  │
+│  │  We propose a novel method for     │  │
+│  │  detecting adversarial examples.   │  │  ← checked
+│  │  Our approach leverages contrastive│  │
+│  └────────────────────────────────────┘  │
+│                                           │
+│  \begin{equation}...\end{equation} ← NOT  │
+│                                           │
+└───────────────────────────────────────────┘
+```
+
+**How it works:**
+
+1. On each `doc.changed` event + debounce timeout, get the visible range
+   from `EditorView.viewport` → `{from: number, to: number}` (document positions).
+2. Split the visible text into **sentences** (using `Intl.Segmenter` with
+   `granularity: 'sentence'`).
+3. For each sentence, compute a **fingerprint** (SHA-256 hash truncated to 12 hex
+   chars).
+4. Look up the fingerprint in the **sentence cache** (an in-memory `Map`).
+   - **Cache hit** → sentence unchanged; apply existing decorations, skip LLM.
+   - **Cache miss** → sentence is new or modified; queue for LLM check.
+5. Only sentences with cache misses are sent to the backend.
+6. When the LLM returns, store the sentence fingerprint → issues mapping in the cache.
+7. When the user scrolls to a new region, the viewport change triggers a re-check —
+   but **only for uncached sentences** in the new viewport.
+
+### 6.2 Sentence fingerprint cache (persistent, per-project)
+
+The cache is **not just an in-memory LRU** — it persists to `localStorage`
+keyed by `projectId`, so checked sentences survive:
+
+- Page refresh
+- Editor close/reopen
+- Tab switch
+- Scroll away and scroll back
+
+**Data structure:**
+
+```typescript
+// localStorage key: `wa-cache-${projectId}`
+interface SentenceCache {
+  version: 1;                               // schema version — wipe on mismatch
+  entries: Record<
+    string,                                 // sentence fingerprint (12-char hex)
+    {
+      text: string;                         // original sentence text (for collision check)
+      checkedAt: number;                    // Date.now() timestamp
+      issues: Issue[];                      // cached issues for this sentence
+    }
+  >;
+}
+```
+
+**Cache operations:**
+
+| Event | Action |
+|-------|--------|
+| Sentence unchanged (fingerprint match) | Load issues from cache, render decorations instantly |
+| User edits a sentence (fingerprint changed) | Old entry orphaned; new fingerprint queued for LLM check |
+| User clicks "Apply" on a suggestion | Sentence text changes → new fingerprint → old entry orphaned |
+| `checkedAt` older than 24 hours | Entry considered stale on next viewport entry, re-check |
+| User switches to a different project | Different `localStorage` key; no cross-project pollution |
+| Cache exceeds 5 MB (≈ ~8000 sentences) | Evict oldest 20% of entries by `checkedAt` |
+
+### 6.3 Viewport change detection
+
+```typescript
+// viewport-tracker.ts — simplified logic
+class ViewportTracker {
+  private lastViewport: { from: number; to: number } | null = null;
+  private lastSentenceHashes: Set<string> = new Set();
+
+  onViewportChange(view: EditorView, cache: SentenceFingerprintCache) {
+    const vp = view.viewport;  // { from, to } in doc offsets
+    if (this.lastViewport && vp.from === this.lastViewport.from && vp.to === this.lastViewport.to) {
+      return;  // viewport didn't move — no-op
+    }
+    this.lastViewport = { from: vp.from, to: vp.to };
+
+    const visibleText = view.state.sliceDoc(vp.from, vp.to);
+    const sentences = segmentSentences(visibleText);
+    const newHashes = new Set<string>();
+
+    for (const s of sentences) {
+      const hash = fingerprint(s);
+      newHashes.add(hash);
+      if (!cache.has(hash)) {
+        this.queueForCheck(s, hash);
+      }
+    }
+
+    // Sentences that left the viewport — keep them cached but hide their
+    // decorations (CM6 decorations only paint inside viewport anyway)
+    this.lastSentenceHashes = newHashes;
+  }
+
+  onDocChanged(view: EditorView, change: ChangeDesc, cache: SentenceFingerprintCache) {
+    // Invalidate cache entries whose text touched the changed range
+    const changedFrom = change.from;
+    const changedTo = change.to;
+    cache.invalidateRange(changedFrom, changedTo);
+
+    // Re-check viewport after the change settles
+    this.onViewportChange(view, cache);
+  }
+}
+```
+
+### 6.4 Combined flow
+
+```
+User scrolls or types
+        │
+        ▼
+┌─ viewport-tracker ───────────────────────────────────┐
+│  1. Get visible text range → EditorView.viewport      │
+│  2. Split into sentences → Intl.Segmenter             │
+│  3. For each sentence:                                │
+│     fingerprint = SHA256(sentence).slice(0, 12)       │
+│     if cache.has(fingerprint) → render from cache     │
+│     else → collect for batch check                    │
+└──────────────────────────────────────────────────────┘
+        │
+        ▼ (only new/changed sentences)
+┌─ checker ────────────────────────────────────────────┐
+│  4. POST /writing-assist/check { text: batch }        │
+│  5. Receive issues[] per sentence                     │
+│  6. Store each sentence → issues in cache              │
+│  7. Update decorationState                            │
+└──────────────────────────────────────────────────────┘
+```
+
+**LLM cost reduction:** A typical viewport shows ~5-8 sentences. On first
+scroll-through of a 30-page paper, each viewport's sentences are checked once.
+Subsequent scroll-backs hit cache — zero additional LLM calls. The entire paper
+gets checked viewport-by-viewport as the user scrolls, not in one massive call.
+
+---
+
+## 7. File-Level Implementation Plan
+
+### 7.1 Backend (`services/web/app/src/`)
 
 | File | Purpose |
 |------|---------|
@@ -330,17 +482,18 @@ import WritingAssistRouter from './Features/WritingAssist/WritingAssistRouter.mj
 WritingAssistRouter.apply(webRouter, privateApiRouter)
 ```
 
-### 6.2 Frontend (`services/web/frontend/js/features/source-editor/`)
+### 7.2 Frontend (`services/web/frontend/js/features/source-editor/`)
 
 | File | Purpose |
 |------|---------|
 | `extensions/writing-assist/index.ts` | Extension entry (Facet + array of extensions) |
 | `extensions/writing-assist/types.ts` | TypeScript types shared across the extension |
-| `extensions/writing-assist/checker.ts` | StateField: debounce, diff, fetch `/check`, parse response |
+| `extensions/writing-assist/viewport-tracker.ts` | Viewport range detection, scroll watching, sentence segmentation |
+| `extensions/writing-assist/sentence-fingerprint.ts` | SHA-256 sentence hashing + `localStorage`-backed per-project cache |
+| `extensions/writing-assist/checker.ts` | Debounce, diff viewport sentences, batch-fetch uncached ones via `/check` |
 | `extensions/writing-assist/decorations.ts` | StateField → DecorationSet with per-category MarkDecoration |
 | `extensions/writing-assist/tooltip.ts` | React tooltip portal: show issue + "Apply" button |
 | `extensions/writing-assist/context-menu.tsx` | Right-click actions: Apply / Apply All / Ignore |
-| `extensions/writing-assist/cache.ts` | Simple Map-based sentence cache (keys = normalized text) |
 | `extensions/writing-assist/config-panel.tsx` | Settings UI (provider, API key, model, category toggles) |
 | `extensions/writing-assist/toolbar-button.tsx` | Master on/off toggle in editor toolbar |
 | `utils/api/writing-assist.ts` | `checkWriting(text, config)` and `get/saveConfig()` API helpers |
@@ -349,13 +502,13 @@ Note: LaTeX masking and offset remapping happens on the **backend**.
 The frontend sends raw editor text and receives issues with offsets already
 in original-text coordinates.
 
-### 6.3 Shared types
+### 7.3 Shared types
 
 | File | Purpose |
 |------|---------|
 | `services/web/types/writing-assist.ts` | `CheckRequest`, `CheckResponse`, `Issue`, `Category`, `ProviderConfig` |
 
-### 6.4 CSS
+### 7.4 CSS
 
 | File | Purpose |
 |------|---------|
@@ -363,9 +516,9 @@ in original-text coordinates.
 
 ---
 
-## 7. CodeMirror Extension Design
+## 8. CodeMirror Extension Design
 
-### 7.1 Extension structure (index.ts)
+### 8.1 Extension structure (index.ts)
 
 ```typescript
 export function writingAssist(config: WritingAssistConfig): Extension {
@@ -384,7 +537,7 @@ export function writingAssist(config: WritingAssistConfig): Extension {
 }
 ```
 
-### 7.2 Decoration rendering
+### 8.2 Decoration rendering
 
 ```typescript
 const CATEGORY_MARK = {
@@ -396,17 +549,20 @@ const CATEGORY_MARK = {
 };
 ```
 
-### 7.3 Debounce strategy
+### 8.3 Debounce & viewport strategy
 
 - After every `doc.changed` transaction, reset a 1.5 s timer.
-- On timer fire, extract the changed text range (±2 sentences of context)
-- Build a cache key from `normalizedText + enabledCategories`.
-- Skip if cache hit; otherwise POST to `/writing-assist/check`.
-- On response, update `decorationState` → CM6 re-renders affected lines only.
+- On timer fire, the **viewport tracker** extracts visible sentences (Section 6.1).
+- Each sentence is fingerprinted; already-checked sentences load from cache instantly.
+- Only **new or modified** sentences are batched into a single `POST /check`.
+- On response, each sentence's issues are stored in the fingerprint cache and
+  `decorationState` is updated → CM6 re-renders affected viewport lines only.
+- On scroll, the viewport tracker fires again. Newly visible sentences that are
+  uncached get checked; cached sentences render instantly.
 
 ---
 
-## 8. Edge Cases & Error Handling
+## 9. Edge Cases & Error Handling
 
 | Scenario | Behaviour |
 |----------|-----------|
@@ -421,10 +577,15 @@ const CATEGORY_MARK = {
 | Multiple issues overlap | Tooltip shows all at that position, sorted by severity |
 | CM6 visual (rich-text) mode | Writing assist works in source mode only; disabled in visual mode |
 | No internet / offline | Silently skip, no error shown (non-blocking) |
+| User scrolls to unchecked region | Viewport tracker fires; uncached sentences queued for check |
+| User scrolls back to checked region | All cached — decorations render instantly, no API call |
+| Cache full (>5 MB per project) | Evict oldest 20% by `checkedAt` timestamp |
+| Stale cache (>24 hours old) | Re-check on next viewport entry |
+| User edits a cached sentence | Old fingerprint orphaned; new fingerprint queued |
 
 ---
 
-## 9. Testing Strategy
+## 10. Testing Strategy
 
 ### Backend
 
@@ -435,8 +596,9 @@ const CATEGORY_MARK = {
 
 ### Frontend
 
-- `extensions/writing-assist/cache.test.ts` — cache hits/misses/eviction
-- `extensions/writing-assist/checker.test.ts` — debounce behaviour, fetch mock
+- `extensions/writing-assist/viewport-tracker.test.ts` — correct visible text extraction, scroll detection
+- `extensions/writing-assist/sentence-fingerprint.test.ts` — hash stability, cache hit/miss, eviction, cross-project isolation
+- `extensions/writing-assist/checker.test.ts` — debounce behaviour, batch fetch with mock
 
 ### Integration
 
@@ -444,7 +606,7 @@ const CATEGORY_MARK = {
 
 ---
 
-## 10. Configuration Defaults
+## 11. Configuration Defaults
 
 ```javascript
 // services/web/config/settings.defaults.js
@@ -470,7 +632,7 @@ module.exports = {
 
 ---
 
-## 11. Security Considerations
+## 12. Security Considerations
 
 - **API keys** stored encrypted at rest (`crypto.createCipheriv('aes-256-gcm')`)
 - API keys **never** returned in full to the client after initial save
@@ -483,7 +645,7 @@ module.exports = {
 
 ---
 
-## 12. Out of Scope (Future Iterations)
+## 13. Out of Scope (Future Iterations)
 
 | Feature | Deferred To |
 |---------|-------------|
@@ -498,7 +660,7 @@ module.exports = {
 
 ---
 
-## 13. Success Criteria
+## 14. Success Criteria
 
 1. User types a sentence with a grammar error → red underline appears within 2 s
 2. User types a wordy sentence → yellow underline appears for "due to the fact that"
@@ -508,3 +670,8 @@ module.exports = {
 6. User can switch between OpenAI, Anthropic, and custom endpoint
 7. LaTeX commands and math are NOT flagged as errors
 8. Existing Hunspell spell check continues to work independently
+9. Only visible viewport text is checked — scrolling does NOT trigger full-document re-check
+10. Scrolling back to a previously checked paragraph shows decorations instantly (cache hit)
+11. Editing a sentence and undoing the edit re-checks (old fingerprint gone, new one queued)
+12. Switching to a different project uses its own isolated cache
+13. Cache older than 24 hours re-checks on viewport entry
