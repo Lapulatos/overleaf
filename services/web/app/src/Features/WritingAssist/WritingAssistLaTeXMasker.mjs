@@ -14,7 +14,7 @@ const REF_CMDS = new Set(['ref','Ref','eqref','label','pageref','autoref','cref'
  * that converts masked-text character offsets -> original-text offsets.
  */
 function mask(text) {
-  /** @type {{ type: 'text', start: number, end: number } | { type: 'token', token: string, start: number }}[] */
+  /** @type {Array<{ type: 'text', start: number, end: number } | { type: 'token', token: string, start: number }>} */
   const segments = []
   let i = 0
   const len = text.length

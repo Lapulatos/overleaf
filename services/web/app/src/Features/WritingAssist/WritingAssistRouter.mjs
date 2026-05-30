@@ -2,7 +2,13 @@
 
 import AuthenticationController from '../Authentication/AuthenticationController.mjs'
 import WritingAssistController from './WritingAssistController.mjs'
-import RateLimiter from '../../infrastructure/RateLimiter.mjs'
+import { RateLimiter } from '../../infrastructure/RateLimiter.mjs'
+import RateLimiterMiddleware from '../Security/RateLimiterMiddleware.mjs'
+
+const writingAssistCheckLimiter = new RateLimiter('writing-assist-check', {
+  points: 30,
+  duration: 60,
+})
 
 function apply(webRouter, privateApiRouter) {
   const requireLogin = AuthenticationController.requireLogin()
@@ -10,7 +16,7 @@ function apply(webRouter, privateApiRouter) {
   privateApiRouter.post(
     '/writing-assist/check',
     requireLogin,
-    RateLimiter.rateLimit('writing-assist-check', { maxRequests: 30, timeInterval: 60 }),
+    RateLimiterMiddleware.rateLimit(writingAssistCheckLimiter),
     WritingAssistController.check
   )
 
