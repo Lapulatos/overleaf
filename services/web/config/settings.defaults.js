@@ -1109,6 +1109,21 @@ module.exports = {
   },
 
   enablePandocConversions: process.env.ENABLE_PANDOC_CONVERSIONS === 'true',
+
+  writingAssist: {
+    enabled: false,
+    defaultProvider: 'openai',
+    defaultModel: {
+      openai: 'gpt-4o',
+      anthropic: 'claude-sonnet-4-6',
+    },
+    maxTextLength: 4000,
+    timeout: 10000,
+    retryAttempts: 1,
+    debounceMs: 1500,
+    cacheSize: 200,
+    encryptionKey: process.env.WRITING_ASSIST_ENCRYPTION_KEY || 'dev-key-change-me',
+  },
 }
 
 module.exports.mergeWith = function (overrides) {

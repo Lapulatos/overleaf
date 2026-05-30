@@ -5,6 +5,7 @@ import ProjectController from './Features/Project/ProjectController.mjs'
 import ProjectApiController from './Features/Project/ProjectApiController.mjs'
 import ProjectListController from './Features/Project/ProjectListController.mjs'
 import SpellingController from './Features/Spelling/SpellingController.mjs'
+import WritingAssistRouter from './Features/WritingAssist/WritingAssistRouter.mjs'
 import EditorRouter from './Features/Editor/EditorRouter.mjs'
 import Settings from '@overleaf/settings'
 import TpdsController from './Features/ThirdPartyDataStore/TpdsController.mjs'
@@ -1274,6 +1275,8 @@ async function initialize(webRouter, privateApiRouter, publicApiRouter) {
   webRouter.get('/unsupported-browser', renderUnsupportedBrowserPage)
 
   webRouter.get('*', ErrorController.notFound)
+
+  WritingAssistRouter.apply(webRouter, privateApiRouter)
 }
 
 export default { initialize, rateLimiters }
