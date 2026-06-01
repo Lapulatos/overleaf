@@ -65,11 +65,14 @@ function compileMatcher(pattern) {
 }
 
 /**
+ * List a user's dismiss notes for a specific project.
+ *
  * @param {string} userId
+ * @param {string} projectId
  * @returns {Promise<Array<{ id: string, text: string, createdAt: Date }>>}
  */
-async function list(userId) {
-  const docs = await WritingAssistDismissal.find({ user_id: userId })
+async function list(userId, projectId) {
+  const docs = await WritingAssistDismissal.find({ user_id: userId, project_id: projectId })
     .sort({ createdAt: -1 })
     .limit(MAX_ENTRIES_PER_USER)
     .exec()
@@ -81,27 +84,29 @@ async function list(userId) {
 }
 
 /**
- * Add a dismissed sentence. No-op (returns the existing entry) when an
- * identical normalized sentence is already stored, so the notebook never holds
- * duplicates.
+ * Add a dismissed sentence for a project. No-op (returns the existing entry)
+ * when an identical normalized sentence is already stored for that project, so
+ * the notebook never holds duplicates.
  *
  * @param {string} userId
+ * @param {string} projectId
  * @param {string} rawText
  * @returns {Promise<{ id: string, text: string, createdAt: Date } | null>}
  */
-async function add(userId, rawText) {
+async function add(userId, projectId, rawText) {
   const text = normalize(rawText).slice(0, MAX_TEXT_LENGTH)
   if (!text) return null
 
   const existing = await WritingAssistDismissal.findOne({
     user_id: userId,
+    project_id: projectId,
     text,
   }).exec()
   if (existing) {
     return { id: existing._id.toString(), text: existing.text, createdAt: existing.createdAt }
   }
 
-  const doc = await WritingAssistDismissal.create({ user_id: userId, text })
+  const doc = await WritingAssistDismissal.create({ user_id: userId, project_id: projectId, text })
   return { id: doc._id.toString(), text: doc.text, createdAt: doc.createdAt }
 }
 
@@ -141,20 +146,21 @@ async function remove(userId, id) {
 }
 
 /**
- * True if `text` matches any of the user's dismiss notes. Notes may be
- * diff-patterns ("(a|b)" alternations / ".*" gaps) or plain sentences; both are
- * compiled with the same word-bounded, case-insensitive matcher as the
+ * True if `text` matches any of the user's dismiss notes FOR THIS PROJECT. Notes
+ * may be diff-patterns ("(a|b)" alternations / ".*" gaps) or plain sentences;
+ * both are compiled with the same word-bounded, case-insensitive matcher as the
  * frontend. Used as the server-side backstop in the check path.
  *
  * @param {string} userId
+ * @param {string} projectId
  * @param {string} text
  * @returns {Promise<boolean>}
  */
-async function isDismissed(userId, text) {
+async function isDismissed(userId, projectId, text) {
   const candidate = normalize(text)
   if (!candidate) return false
   const docs = await WritingAssistDismissal.find(
-    { user_id: userId },
+    { user_id: userId, project_id: projectId },
     { text: 1 }
   ).exec()
   for (const d of docs) {

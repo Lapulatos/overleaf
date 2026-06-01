@@ -33,6 +33,24 @@ class DismissStore {
   private matchers: Array<(text: string) => boolean> = []
   private listeners = new Set<() => void>()
   private loaded = false
+  private projectId = ''
+
+  /**
+   * Bind the store to the current project. Dismissals are project-scoped, so the
+   * store reloads when the project changes (e.g. opening a different project in
+   * the same session). Safe to call repeatedly with the same id.
+   */
+  init(projectId: string): void {
+    if (projectId === this.projectId) return
+    this.projectId = projectId
+    this.loaded = false
+    this.setItems([])
+    void this.load()
+  }
+
+  getProjectId(): string {
+    return this.projectId
+  }
 
   /**
    * True if `text` matches any note. Notes are diff-patterns (may contain
@@ -70,8 +88,9 @@ class DismissStore {
   /** Fetch the notebook from the backend (once unless `force`). */
   async load(force = false): Promise<void> {
     if (this.loaded && !force) return
+    if (!this.projectId) return
     try {
-      const items = await listDismissals()
+      const items = await listDismissals(this.projectId)
       this.loaded = true
       this.setItems(items)
     } catch {
@@ -87,11 +106,11 @@ class DismissStore {
    */
   async add(text: string): Promise<void> {
     const norm = normalizeDismissal(text)
-    if (!norm) return
+    if (!norm || !this.projectId) return
     if (this.items.some(i => normalizeDismissal(i.text) === norm)) return
     this.matchers = [...this.matchers, compileDismissMatcher(norm)]
     this.emit()
-    const item = await addDismissal(norm)
+    const item = await addDismissal(norm, this.projectId)
     if (!this.items.some(i => i.id === item.id)) {
       this.setItems([item, ...this.items])
     }

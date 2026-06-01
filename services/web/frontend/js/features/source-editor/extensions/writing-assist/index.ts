@@ -124,7 +124,8 @@ export function writingAssist(options: WritingAssistOptions): Extension {
     },
     progress => {
       if (activeView) reportProgress(activeView, progress)
-    }
+    },
+    projectId
   )
 
   // When a fix is applied, record the fixed severity against the resulting
@@ -197,7 +198,9 @@ export function writingAssist(options: WritingAssistOptions): Extension {
   // removes an entry in the panel — that sentence should be checked again).
   // `triggerRecheck` is wired to the live view plugin's check() below.
   let triggerRecheck: (() => void) | null = null
-  void dismissStore.load()
+  // Bind the dismiss store to this project (dismissals are project-scoped) and
+  // load its notebook. init() reloads if the project changed since last time.
+  dismissStore.init(projectId)
   const unsubscribeDismiss = dismissStore.subscribe(() => {
     triggerRecheck?.()
   })

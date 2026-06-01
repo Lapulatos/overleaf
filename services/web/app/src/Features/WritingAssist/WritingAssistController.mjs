@@ -19,6 +19,7 @@ const checkSchema = z.object({
     enabledCategories: z.array(
       z.enum(['correctness', 'clarity', 'conciseness', 'delivery', 'engagement'])
     ),
+    projectId: z.string(),
     context: z.object({ before: z.string(), after: z.string() }).optional(),
   }),
 })
@@ -49,7 +50,11 @@ const configSchema = z.object({
 })
 
 const dismissalCreateSchema = z.object({
-  body: z.object({ text: z.string().min(1).max(2000) }),
+  body: z.object({ text: z.string().min(1).max(2000), projectId: z.string() }),
+})
+
+const dismissalListSchema = z.object({
+  query: z.object({ projectId: z.string() }),
 })
 
 const dismissalUpdateSchema = z.object({
@@ -135,6 +140,7 @@ async function check(req, res) {
   // match test covers it (and saves the API call/token cost).
   const dismissed = await WritingAssistDismissalManager.promises.isDismissed(
     userId,
+    body.projectId,
     body.text
   )
   if (dismissed) {
@@ -201,8 +207,9 @@ async function putConfig(req, res) {
 
 /** @param {any} req @param {any} res */
 async function listDismissals(req, res) {
+  const { query } = parseReq(req, dismissalListSchema)
   const userId = SessionManager.getLoggedInUserId(req.session)
-  const items = await WritingAssistDismissalManager.promises.list(userId)
+  const items = await WritingAssistDismissalManager.promises.list(userId, query.projectId)
   res.json({ items })
 }
 
@@ -210,7 +217,7 @@ async function listDismissals(req, res) {
 async function addDismissal(req, res) {
   const { body } = parseReq(req, dismissalCreateSchema)
   const userId = SessionManager.getLoggedInUserId(req.session)
-  const item = await WritingAssistDismissalManager.promises.add(userId, body.text)
+  const item = await WritingAssistDismissalManager.promises.add(userId, body.projectId, body.text)
   if (!item) {
     return res.status(400).json({ error: 'empty text' })
   }

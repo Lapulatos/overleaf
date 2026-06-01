@@ -11,10 +11,11 @@ import type {
 
 export async function checkWriting(
   text: string,
-  enabledCategories: Category[]
+  enabledCategories: Category[],
+  projectId: string
 ): Promise<Issue[]> {
   const response = await postJSON<CheckResponse>('/writing-assist/check', {
-    body: { text, language: 'en', enabledCategories } satisfies CheckRequest,
+    body: { text, language: 'en', enabledCategories, projectId } satisfies CheckRequest,
   })
   return response.issues ?? []
 }
@@ -36,17 +37,22 @@ export interface DismissalItem {
   createdAt?: string
 }
 
-export async function listDismissals(): Promise<DismissalItem[]> {
+export async function listDismissals(
+  projectId: string
+): Promise<DismissalItem[]> {
   const res = await getJSON<{ items: DismissalItem[] }>(
-    '/writing-assist/dismissals'
+    `/writing-assist/dismissals?projectId=${encodeURIComponent(projectId)}`
   )
   return res.items ?? []
 }
 
-export async function addDismissal(text: string): Promise<DismissalItem> {
+export async function addDismissal(
+  text: string,
+  projectId: string
+): Promise<DismissalItem> {
   const res = await postJSON<{ item: DismissalItem }>(
     '/writing-assist/dismissals',
-    { body: { text } }
+    { body: { text, projectId } }
   )
   return res.item
 }

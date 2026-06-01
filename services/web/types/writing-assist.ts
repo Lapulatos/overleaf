@@ -24,6 +24,7 @@ export interface CheckRequest {
   text: string;
   language: 'en';
   enabledCategories: Category[];
+  projectId: string;
   context?: {
     before: string;
     after: string;

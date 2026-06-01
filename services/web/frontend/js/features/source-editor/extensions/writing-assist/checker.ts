@@ -49,6 +49,7 @@ export class Checker {
   private onProgress: ProgressCallback
   private cache: SentenceCache
   private runToken = 0
+  private projectId: string
 
   constructor(
     debounceMs: number,
@@ -56,7 +57,8 @@ export class Checker {
     concurrency: number,
     cache: SentenceCache,
     onIssues: IssueCallback,
-    onProgress: ProgressCallback
+    onProgress: ProgressCallback,
+    projectId: string
   ) {
     this.debounceMs = debounceMs
     this.enabledCategories = enabledCategories
@@ -64,6 +66,7 @@ export class Checker {
     this.cache = cache
     this.onIssues = onIssues
     this.onProgress = onProgress
+    this.projectId = projectId
   }
 
   updateConfig(
@@ -172,7 +175,7 @@ export class Checker {
         const idx = toFetch[qi]
         const s = sentences[idx]
         try {
-          const rel = await checkWriting(s.text, this.enabledCategories)
+          const rel = await checkWriting(s.text, this.enabledCategories, this.projectId)
           if (token !== this.runToken) return
           this.cache.set(s.text, rel)
           docIssues.set(idx, rebase(s, this.gate(s.text, rel)))
