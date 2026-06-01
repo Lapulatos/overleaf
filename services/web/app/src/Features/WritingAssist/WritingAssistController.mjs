@@ -4,6 +4,7 @@ import { expressify } from '@overleaf/promise-utils'
 import SessionManager from '../Authentication/SessionManager.mjs'
 import WritingAssistManager from './WritingAssistManager.mjs'
 import WritingAssistDismissalManager from './WritingAssistDismissalManager.mjs'
+import WritingAssistConfigManager from './WritingAssistConfigManager.mjs'
 import WritingAssistEncryption from './WritingAssistEncryption.mjs'
 import { z, parseReq } from '../../infrastructure/Validation.mjs'
 import settings from '@overleaf/settings'
@@ -60,12 +61,14 @@ const dismissalDeleteSchema = z.object({
   params: z.object({ id: z.string() }),
 })
 
-/** @type {Map<string, any>} */
-const userConfigs = new Map()
-
-/** @param {string} userId */
-function resolveProviderConfig(userId) {
-  const cfg = userConfigs.get(userId) || getDefaultConfig()
+/**
+ * Resolve the active provider config for a user, reading the persisted config
+ * (falling back to the env-seeded default when the user has none saved yet).
+ *
+ * @param {string} userId
+ */
+async function resolveProviderConfig(userId) {
+  const cfg = (await WritingAssistConfigManager.promises.get(userId)) || getDefaultConfig()
   const provider = cfg.provider || 'openai'
   const providerCfgRaw = cfg[provider]
   if (!providerCfgRaw) {
@@ -138,7 +141,7 @@ async function check(req, res) {
     return res.json({ issues: [] })
   }
 
-  const { provider, providerConfig } = resolveProviderConfig(userId)
+  const { provider, providerConfig } = await resolveProviderConfig(userId)
   const issues = await WritingAssistManager.promises.check({ text: body.text, enabledCategories: body.enabledCategories, provider, providerConfig })
   res.json({ issues })
 }
@@ -146,7 +149,7 @@ async function check(req, res) {
 /** @param {any} req @param {any} res */
 async function getConfig(req, res) {
   const userId = SessionManager.getLoggedInUserId(req.session)
-  const cfg = userConfigs.get(userId) || getDefaultConfig()
+  const cfg = (await WritingAssistConfigManager.promises.get(userId)) || getDefaultConfig()
   /** @type {any} */
   const result = { enabled: cfg.enabled, provider: cfg.provider, categories: cfg.categories, debounceMs: cfg.debounceMs, concurrency: cfg.concurrency ?? 4, timeoutMs: cfg.timeoutMs ?? 20000, analysisMode: cfg.analysisMode ?? 'lazy' }
   for (const p of ['openai', 'anthropic', 'custom']) {
@@ -162,7 +165,7 @@ async function getConfig(req, res) {
 async function putConfig(req, res) {
   const { body } = parseReq(req, configSchema)
   const userId = SessionManager.getLoggedInUserId(req.session)
-  const existing = userConfigs.get(userId) || getDefaultConfig()
+  const existing = (await WritingAssistConfigManager.promises.get(userId)) || getDefaultConfig()
   /** @type {any} */
   const merged = { ...existing }
   if (body.enabled !== undefined) merged.enabled = body.enabled
@@ -191,7 +194,7 @@ async function putConfig(req, res) {
       }
     }
   }
-  userConfigs.set(userId, merged)
+  await WritingAssistConfigManager.promises.set(userId, merged)
   logger.info({ userId }, 'WritingAssist: config updated')
   res.sendStatus(204)
 }
