@@ -2,34 +2,52 @@
 
 import AuthenticationController from '../Authentication/AuthenticationController.mjs'
 import WritingAssistController from './WritingAssistController.mjs'
-import { RateLimiter } from '../../infrastructure/RateLimiter.mjs'
-import RateLimiterMiddleware from '../Security/RateLimiterMiddleware.mjs'
 
-const writingAssistCheckLimiter = new RateLimiter('writing-assist-check', {
-  points: 30,
-  duration: 60,
-})
-
-function apply(webRouter, privateApiRouter) {
+/** @param {any} webRouter */
+function apply(webRouter) {
   const requireLogin = AuthenticationController.requireLogin()
 
-  privateApiRouter.post(
+  webRouter.post(
     '/writing-assist/check',
     requireLogin,
-    RateLimiterMiddleware.rateLimit(writingAssistCheckLimiter),
     WritingAssistController.check
   )
 
-  privateApiRouter.get(
+  webRouter.get(
     '/writing-assist/config',
     requireLogin,
     WritingAssistController.getConfig
   )
 
-  privateApiRouter.put(
+  webRouter.put(
     '/writing-assist/config',
     requireLogin,
     WritingAssistController.putConfig
+  )
+
+  // Dismiss notebook CRUD.
+  webRouter.get(
+    '/writing-assist/dismissals',
+    requireLogin,
+    WritingAssistController.listDismissals
+  )
+
+  webRouter.post(
+    '/writing-assist/dismissals',
+    requireLogin,
+    WritingAssistController.addDismissal
+  )
+
+  webRouter.put(
+    '/writing-assist/dismissals/:id',
+    requireLogin,
+    WritingAssistController.updateDismissal
+  )
+
+  webRouter.delete(
+    '/writing-assist/dismissals/:id',
+    requireLogin,
+    WritingAssistController.deleteDismissal
   )
 }
 

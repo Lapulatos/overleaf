@@ -1,4 +1,4 @@
-import { postJSON, getJSON } from '../../infrastructure/fetch-json'
+import { postJSON, getJSON, putJSON, deleteJSON } from '../../infrastructure/fetch-json'
 
 import type {
   Category,
@@ -13,15 +13,9 @@ export async function checkWriting(
   text: string,
   enabledCategories: Category[]
 ): Promise<Issue[]> {
-  const body: CheckRequest = {
-    text,
-    language: 'en',
-    enabledCategories,
-  }
-  const response = await postJSON<CheckResponse>(
-    '/writing-assist/check',
-    { body }
-  )
+  const response = await postJSON<CheckResponse>('/writing-assist/check', {
+    body: { text, language: 'en', enabledCategories } satisfies CheckRequest,
+  })
   return response.issues ?? []
 }
 
@@ -32,5 +26,42 @@ export async function getConfig(): Promise<WritingAssistPublicConfig> {
 export async function saveConfig(
   config: Partial<WritingAssistUserConfig>
 ): Promise<void> {
-  await postJSON('/writing-assist/config', { body: config })
+  await putJSON('/writing-assist/config', { body: config })
+}
+
+/** One entry in the per-user dismiss notebook. */
+export interface DismissalItem {
+  id: string
+  text: string
+  createdAt?: string
+}
+
+export async function listDismissals(): Promise<DismissalItem[]> {
+  const res = await getJSON<{ items: DismissalItem[] }>(
+    '/writing-assist/dismissals'
+  )
+  return res.items ?? []
+}
+
+export async function addDismissal(text: string): Promise<DismissalItem> {
+  const res = await postJSON<{ item: DismissalItem }>(
+    '/writing-assist/dismissals',
+    { body: { text } }
+  )
+  return res.item
+}
+
+export async function updateDismissal(
+  id: string,
+  text: string
+): Promise<DismissalItem> {
+  const res = await putJSON<{ item: DismissalItem }>(
+    `/writing-assist/dismissals/${encodeURIComponent(id)}`,
+    { body: { text } }
+  )
+  return res.item
+}
+
+export async function deleteDismissal(id: string): Promise<void> {
+  await deleteJSON(`/writing-assist/dismissals/${encodeURIComponent(id)}`)
 }

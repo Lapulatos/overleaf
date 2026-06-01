@@ -3,7 +3,7 @@
 import OpenAIProvider from './providers/OpenAIProvider.mjs'
 import AnthropicProvider from './providers/AnthropicProvider.mjs'
 import CustomProvider from './providers/CustomProvider.mjs'
-import { InvalidParamsError } from '../../infrastructure/Validation.mjs'
+// ParamsError not available in all envs; throw plain Error below
 
 async function check(options, text, systemPrompt, enabledCategories) {
   const { provider, apiKey, model, endpoint, timeout } = options
@@ -18,12 +18,12 @@ async function check(options, text, systemPrompt, enabledCategories) {
       break
     case 'custom':
       if (!endpoint) {
-        throw new InvalidParamsError('Custom provider requires an endpoint URL')
+        throw Object.assign(new Error('Custom provider requires an endpoint URL'), { statusCode: 400 })
       }
       impl = CustomProvider.check
       break
     default:
-      throw new InvalidParamsError(`Unknown provider: ${provider}`)
+      throw Object.assign(new Error(`Unknown provider: ${provider}`), { statusCode: 400 })
   }
 
   return await impl({ text, systemPrompt, enabledCategories, model, apiKey, endpoint, timeout })

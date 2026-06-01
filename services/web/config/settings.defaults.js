@@ -1007,7 +1007,12 @@ module.exports = {
     tprFileViewRefreshButton: [],
     tprFileViewNotOriginalImporter: [],
     contactUsModal: [],
-    sourceEditorExtensions: [],
+    sourceEditorExtensions: [
+      Path.resolve(
+        __dirname,
+        '../frontend/js/features/source-editor/extensions/writing-assist/module-entry'
+      ),
+    ],
     sourceEditorComponents: [],
     pdfLogEntryHeaderActionComponents: [],
     pdfLogEntryComponents: [],
@@ -1069,10 +1074,20 @@ module.exports = {
     ],
     integrationPanelComponents: [],
     referenceSearchSetting: [],
-    settingsModalEditorTabSections: [],
+    settingsModalEditorTabSections: [
+      Path.resolve(
+        __dirname,
+        '../frontend/js/features/source-editor/extensions/writing-assist/settings-section.tsx'
+      ),
+    ],
     errorLogsComponents: [],
     referenceIndices: [],
-    railEntries: [],
+    railEntries: [
+      Path.resolve(
+        __dirname,
+        '../frontend/js/features/source-editor/extensions/writing-assist/rail-entry.tsx'
+      ),
+    ],
     railPopovers: [],
   },
 
@@ -1118,9 +1133,10 @@ module.exports = {
       anthropic: 'claude-sonnet-4-6',
     },
     maxTextLength: 4000,
-    timeout: 10000,
-    retryAttempts: 1,
+    timeout: 20000,
+    retryAttempts: 0,
     debounceMs: 1500,
+    concurrency: 4,
     cacheSize: 200,
     encryptionKey: process.env.WRITING_ASSIST_ENCRYPTION_KEY || 'dev-key-change-me',
   },

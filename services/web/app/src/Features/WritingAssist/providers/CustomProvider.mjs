@@ -1,7 +1,7 @@
 // @ts-check
 
 import { fetchJson } from '@overleaf/fetch-utils'
-import { InvalidParamsError } from '../../infrastructure/Validation.mjs'
+// ParamsError not available in all envs; throw plain Error below
 
 async function check(params) {
   const { text, systemPrompt, enabledCategories, model, apiKey, endpoint, timeout } = params
@@ -30,7 +30,7 @@ async function check(params) {
 
   const content = response?.choices?.[0]?.message?.content
   if (!content) {
-    throw new InvalidParamsError('Custom provider response missing content')
+    throw Object.assign(new Error('Custom provider response missing content'), { statusCode: 400 })
   }
   return content
 }

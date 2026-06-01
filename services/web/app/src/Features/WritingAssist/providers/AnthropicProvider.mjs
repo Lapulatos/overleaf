@@ -1,7 +1,7 @@
 // @ts-check
 
 import { fetchJson } from '@overleaf/fetch-utils'
-import { InvalidParamsError } from '../../infrastructure/Validation.mjs'
+// ParamsError not available in all envs; throw plain Error below
 
 const DEFAULT_ANTHROPIC_ENDPOINT = 'https://api.anthropic.com/v1'
 
@@ -36,7 +36,7 @@ async function check(params) {
 
   const content = response?.content?.[0]?.text
   if (!content) {
-    throw new InvalidParamsError('Anthropic response missing content')
+    throw Object.assign(new Error('Anthropic response missing content'), { statusCode: 400 })
   }
   return content
 }

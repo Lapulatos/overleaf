@@ -50,6 +50,8 @@ export interface CategoryToggles {
   engagement: boolean;
 }
 
+export type AnalysisMode = 'lazy' | 'eager';
+
 export interface WritingAssistUserConfig {
   enabled: boolean;
   provider: ProviderType;
@@ -58,6 +60,13 @@ export interface WritingAssistUserConfig {
   custom?: ProviderConfig;
   categories: CategoryToggles;
   debounceMs: number;
+  // Max sentences checked concurrently.
+  concurrency: number;
+  // Per-sentence LLM request timeout, milliseconds.
+  timeoutMs: number;
+  // 'lazy' = check only the visible window (re-check on scroll); 'eager' =
+  // check the visible window plus a wide look-ahead/behind margin.
+  analysisMode: AnalysisMode;
 }
 
 export interface WritingAssistPublicConfig {
@@ -69,6 +78,9 @@ export interface WritingAssistPublicConfig {
   custom?: { endpoint: string; model: string; hasKey: boolean };
   categories: CategoryToggles;
   debounceMs: number;
+  concurrency: number;
+  timeoutMs: number;
+  analysisMode: AnalysisMode;
 }
 
 export const DEFAULT_CONFIG: WritingAssistPublicConfig = {
@@ -85,6 +97,9 @@ export const DEFAULT_CONFIG: WritingAssistPublicConfig = {
     engagement: false,
   },
   debounceMs: 1500,
+  concurrency: 4,
+  timeoutMs: 20000,
+  analysisMode: 'lazy',
 };
 
 // Sentence fingerprint cache (localStorage — frontend only, but type lives here)
