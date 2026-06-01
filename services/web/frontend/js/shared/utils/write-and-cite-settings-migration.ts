@@ -45,7 +45,9 @@ export const getLegacyWriteAndCiteMigration = (
   for (const provider of providers) {
     const currentProviderSettings = userSettings[provider]
 
-    if (currentProviderSettings.migrated) {
+    // Older server builds may not inject per-provider settings into
+    // ol-userSettings. Treat a missing provider as nothing to migrate.
+    if (!currentProviderSettings || currentProviderSettings.migrated) {
       continue
     }
 
