@@ -33,6 +33,13 @@ export const removeRangeEffect = StateEffect.define<{ from: number; to: number }
 export const requestCheckEffect = StateEffect.define<null>()
 
 /**
+ * Effect requesting cancellation of an in-progress writing check, fired by the
+ * "stop" button in the progress overlay when checking is active. The main view
+ * plugin (index.ts) listens for it and calls checker.cancel().
+ */
+export const cancelCheckEffect = StateEffect.define<null>()
+
+/**
  * Effect recording a LOCAL dismiss: suppress writing-assist issues within the
  * given document range (a sentence span) at this position only — without adding
  * anything to the Dismiss Notes. The localDismissField (local-dismiss.ts) holds

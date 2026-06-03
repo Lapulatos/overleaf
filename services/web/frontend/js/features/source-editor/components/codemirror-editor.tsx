@@ -19,6 +19,8 @@ import {
 import MathPreviewTooltip from './math-preview-tooltip'
 import { getVisualEditorComponent } from '../utils/visual-editor'
 import EditorContextMenu from './editor-context-menu'
+import { TransformToolbarPortalWrapper } from '../extensions/writing-assist-transform/toolbar-portal'
+import { TransformPreviewPortalWrapper } from '../extensions/writing-assist-transform/preview-portal'
 import { useToolbarMenuBarEditorCommands } from '@/features/source-editor/hooks/use-toolbar-menu-editor-commands'
 import { useProjectContext } from '@/shared/context/project-context'
 import { useFeatureFlag } from '@/shared/context/split-test-context'
@@ -103,6 +105,8 @@ function CodeMirrorEditorComponents({
 
       <MathPreviewTooltip />
       <EditorContextMenu />
+      <TransformToolbarPortalWrapper />
+      <TransformPreviewPortalWrapper />
       {features.trackChangesVisible && <ReviewTooltipMenu />}
       {features.trackChangesVisible && <ReviewPanelRoot />}
       {features.trackChangesVisible && <UpgradeTrackChangesModal />}

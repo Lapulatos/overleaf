@@ -6,9 +6,11 @@ import { fetchJson } from '@overleaf/fetch-utils'
 const DEFAULT_ANTHROPIC_ENDPOINT = 'https://api.anthropic.com/v1'
 
 async function check(params) {
-  const { text, systemPrompt, enabledCategories, model, apiKey, endpoint, timeout } = params
+  const { text, systemPrompt, enabledCategories, userMessage, model, apiKey, endpoint, timeout } = params
   const baseUrl = endpoint || DEFAULT_ANTHROPIC_ENDPOINT
   const url = `${baseUrl}/messages`
+
+  const userContent = userMessage ?? buildUserContent(enabledCategories, text)
 
   const body = {
     model,
@@ -16,7 +18,7 @@ async function check(params) {
     messages: [
       {
         role: 'user',
-        content: buildUserContent(enabledCategories, text),
+        content: userContent,
       },
     ],
     max_tokens: 2000,

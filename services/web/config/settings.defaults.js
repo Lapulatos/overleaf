@@ -1012,6 +1012,10 @@ module.exports = {
         __dirname,
         '../frontend/js/features/source-editor/extensions/writing-assist/module-entry'
       ),
+      Path.resolve(
+        __dirname,
+        '../frontend/js/features/source-editor/extensions/writing-assist-transform/module-entry'
+      ),
     ],
     sourceEditorComponents: [],
     pdfLogEntryHeaderActionComponents: [],
@@ -1134,6 +1138,8 @@ module.exports = {
     },
     maxTextLength: 4000,
     timeout: 20000,
+    transformMaxTextLength: 8000,
+    transformTimeout: 30000,
     retryAttempts: 0,
     debounceMs: 1500,
     concurrency: 4,

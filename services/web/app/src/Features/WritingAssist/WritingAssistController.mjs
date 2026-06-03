@@ -5,6 +5,7 @@ import SessionManager from '../Authentication/SessionManager.mjs'
 import WritingAssistManager from './WritingAssistManager.mjs'
 import WritingAssistDismissalManager from './WritingAssistDismissalManager.mjs'
 import WritingAssistConfigManager from './WritingAssistConfigManager.mjs'
+import WritingAssistTransformManager from './WritingAssistTransformManager.mjs'
 import WritingAssistEncryption from './WritingAssistEncryption.mjs'
 import { z, parseReq } from '../../infrastructure/Validation.mjs'
 import settings from '@overleaf/settings'
@@ -64,6 +65,22 @@ const dismissalUpdateSchema = z.object({
 
 const dismissalDeleteSchema = z.object({
   params: z.object({ id: z.string() }),
+})
+
+const transformSchema = z.object({
+  body: z.object({
+    text: z.string().min(1).max(8000),
+    action: z.enum(['polish', 'translate', 'rewrite', 'custom', 'expand', 'condense']),
+    targetLanguage: z.string().optional(),
+    customInstruction: z.string().optional(),
+    /** Length ratio for expand (positive) / condense (negative).
+     *  Expand: 0.0 < ratio <= 5.0;  Condense: -0.8 <= ratio < 0 */
+    lengthRatio: z.number().min(-0.8).max(5.0).optional(),
+    /** Rewrite fidelity (0 <= fidelity <= 0.9). Higher = closer to original. */
+    rewriteFidelity: z.number().min(0).max(0.9).optional(),
+    projectId: z.string(),
+    context: z.object({ before: z.string(), after: z.string() }).optional(),
+  }),
 })
 
 /**
@@ -253,6 +270,24 @@ async function deleteDismissal(req, res) {
   res.sendStatus(204)
 }
 
+/** @param {any} req @param {any} res */
+async function transform(req, res) {
+  const { body } = parseReq(req, transformSchema)
+  const userId = SessionManager.getLoggedInUserId(req.session)
+  const { provider, providerConfig } = await resolveProviderConfig(userId)
+  const result = await WritingAssistTransformManager.promises.transform({
+    text: body.text,
+    action: body.action,
+    targetLanguage: body.targetLanguage,
+    customInstruction: body.customInstruction,
+    lengthRatio: body.lengthRatio,
+    rewriteFidelity: body.rewriteFidelity,
+    provider,
+    providerConfig,
+  })
+  res.json(result)
+}
+
 export default {
   check: expressify(check),
   getConfig: expressify(getConfig),
@@ -261,4 +296,5 @@ export default {
   addDismissal: expressify(addDismissal),
   updateDismissal: expressify(updateDismissal),
   deleteDismissal: expressify(deleteDismissal),
+  transform: expressify(transform),
 }

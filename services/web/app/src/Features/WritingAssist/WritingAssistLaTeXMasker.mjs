@@ -6,15 +6,18 @@ const ENV = '⟨ENV⟩'
 const CITE = '⟨CITE⟩'
 const REF = '⟨REF⟩'
 
+const TOKEN_LIST = [CITE, REF, MATH, ENV, CMD]
+
 const CITE_CMDS = new Set(['cite','Cite','citep','citet','nocite','citeauthor','citeyear','bibliography','bibliographystyle'])
 const REF_CMDS = new Set(['ref','Ref','eqref','label','pageref','autoref','cref','Cref','nameref'])
 
 /**
- * Mask LaTeX constructs. Returns masked text and a remap function
- * that converts masked-text character offsets -> original-text offsets.
+ * Mask LaTeX constructs. Returns masked text, a remap function
+ * that converts masked-text character offsets -> original-text offsets,
+ * and a tokens array for unmasking later.
  */
 function mask(text) {
-  /** @type {Array<{ type: 'text', start: number, end: number } | { type: 'token', token: string, start: number }>} */
+  /** @type {Array<{ type: 'text', start: number, end: number } | { type: 'token', token: string, original: string, start: number }>} */
   const segments = []
   let i = 0
   const len = text.length
@@ -31,22 +34,27 @@ function mask(text) {
 
     // \[ ... \] display math
     if (text.startsWith('\\[', i)) {
+      const original = text.slice(start, i < len ? text.indexOf('\\]', i) + 2 : len)
       i += 2
       while (i < len && !(text[i] === '\\' && text[i + 1] === ']')) i++
       if (i < len) i += 2
-      segments.push({ type: 'token', token: MATH, start })
+      // Recompute original from start to current i
+      const actualOriginal = text.slice(start, i)
+      segments.push({ type: 'token', token: MATH, original: actualOriginal, start })
       continue
     }
 
     // $...$ inline math (not $$)
     if (ch === '$' && text[i + 1] !== '$') {
+      const dollarStart = i
       i++
       while (i < len && text[i] !== '$') {
         if (text[i] === '\\') i++
         if (i < len) i++
       }
       if (i < len) i++
-      segments.push({ type: 'token', token: MATH, start })
+      const actualOriginal = text.slice(dollarStart, i)
+      segments.push({ type: 'token', token: MATH, original: actualOriginal, start: dollarStart })
       continue
     }
 
@@ -65,18 +73,20 @@ function mask(text) {
           while (i < len && !text.startsWith(endTag, i)) i++
           if (i < len) i += endTag.length
         }
-        segments.push({ type: 'token', token: ENV, start })
+        const actualOriginal = text.slice(start, i)
+        segments.push({ type: 'token', token: ENV, original: actualOriginal, start })
         continue
       }
 
       i = skipArgs(text, i)
+      const actualOriginal = text.slice(start, i)
 
       if (CITE_CMDS.has(cmd)) {
-        segments.push({ type: 'token', token: CITE, start })
+        segments.push({ type: 'token', token: CITE, original: actualOriginal, start })
       } else if (REF_CMDS.has(cmd)) {
-        segments.push({ type: 'token', token: REF, start })
+        segments.push({ type: 'token', token: REF, original: actualOriginal, start })
       } else {
-        segments.push({ type: 'token', token: CMD, start })
+        segments.push({ type: 'token', token: CMD, original: actualOriginal, start })
       }
       continue
     }
@@ -95,6 +105,7 @@ function mask(text) {
   // Build output
   const out = []
   const origMap = []
+  const tokens = [] // ordered list of { token, original } for unmask
 
   for (const seg of segments) {
     if (seg.type === 'text') {
@@ -103,6 +114,7 @@ function mask(text) {
         origMap.push(p)
       }
     } else {
+      tokens.push({ token: seg.token, original: seg.original })
       for (let k = 0; k < seg.token.length; k++) {
         out.push(seg.token[k])
         origMap.push(seg.start)
@@ -116,7 +128,45 @@ function mask(text) {
     return origMap[offset]
   }
 
-  return { maskedText: out.join(''), remap }
+  return { maskedText: out.join(''), remap, tokens }
+}
+
+/**
+ * Unmask token placeholders in the LLM response, converting them back
+ * to the original LaTeX commands.
+ *
+ * @param {string} text - LLM response containing ⟨CITE⟩, ⟨REF⟩, etc.
+ * @param {Array<{ token: string, original: string }>} tokens - ordered token
+ *   list returned by mask(), preserving the original LaTeX for each occurrence.
+ * @returns {string} - text with all tokens replaced by their original LaTeX.
+ */
+function unmask(text, tokens) {
+  // Build a queue of originals per token type, preserving order.
+  const queues = {}
+  for (const t of tokens) {
+    if (!queues[t.token]) queues[t.token] = []
+    queues[t.token].push(t.original)
+  }
+
+  // Replace each token placeholder with the next original from its queue.
+  // Use a global regex that matches any of the known tokens.
+  const tokenPattern = new RegExp(
+    TOKEN_LIST.map(t => t.replace(/[⟨⟩]/g, '\\u27e8|\\u27e9')).join('|'),
+    'g'
+  )
+  // The actual tokens use Unicode angle brackets ⟨ (U+27E8) and ⟩ (U+27E9).
+  // Build a regex that matches any of them literally.
+  const pattern = new RegExp(TOKEN_LIST.join('|'), 'g')
+
+  return text.replace(pattern, (match) => {
+    const queue = queues[match]
+    if (queue && queue.length > 0) {
+      return queue.shift()
+    }
+    // Fallback: if we run out of originals (shouldn't happen with well-behaved
+    // LLMs), leave the token as-is so the user can see something went wrong.
+    return match
+  })
 }
 
 function readDelimited(text, pos, open, close) {
@@ -152,4 +202,4 @@ function skipArgs(text, pos) {
   return pos
 }
 
-export default { mask }
+export default { mask, unmask }

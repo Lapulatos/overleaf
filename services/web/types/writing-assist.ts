@@ -114,3 +114,68 @@ export interface SentenceCache {
   version: 1;
   entries: Record<string, SentenceCacheEntry>;
 }
+
+// ── Transform (B-layer selection-based actions) ──
+
+export const TRANSFORM_ACTIONS = [
+  'polish',
+  'translate',
+  'rewrite',
+  'custom',
+  'expand',
+  'condense',
+] as const;
+
+export type TransformAction = (typeof TRANSFORM_ACTIONS)[number];
+
+export const SUPPORTED_LANGUAGES = [
+  { code: 'en', name: 'English' },
+  { code: 'zh', name: '中文' },
+  { code: 'ja', name: '日本語' },
+  { code: 'de', name: 'Deutsch' },
+  { code: 'fr', name: 'Français' },
+  { code: 'es', name: 'Español' },
+  { code: 'ru', name: 'Русский' },
+  { code: 'pt', name: 'Português' },
+  { code: 'ko', name: '한국어' },
+  { code: 'it', name: 'Italiano' },
+] as const;
+
+export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number]['code'];
+
+export interface TransformRequest {
+  text: string;
+  action: TransformAction;
+  targetLanguage?: SupportedLanguage;
+  customInstruction?: string;
+  /** Length ratio for expand/condense actions.
+   *  Positive ratio = expand (0.0 < ratio <= 5.0): target ~len*(1+ratio)
+   *  Negative ratio = condense (-0.8 <= ratio < 0): target ~len*(1+ratio)
+   *  Soft constraint: actual output within 10% of target.
+   */
+  lengthRatio?: number;
+  /** Rewrite fidelity for the rewrite action (0 <= fidelity < 1).
+   *  Higher values keep the output closer to the original (light rephrase);
+   *  lower values produce fundamentally different phrasing (full rewrite).
+   *  0 = maximum divergence, ~0.9 = stay close to original.
+   */
+  rewriteFidelity?: number;
+  projectId: string;
+  context?: {
+    before: string;
+    after: string;
+  };
+}
+
+export interface TransformResponse {
+  result: string;
+}
+
+/** Describes a pending or completed transform preview in the editor. */
+export interface TransformPreview {
+  original: string;
+  suggested: string;
+  from: number;
+  to: number;
+  action: TransformAction;
+}

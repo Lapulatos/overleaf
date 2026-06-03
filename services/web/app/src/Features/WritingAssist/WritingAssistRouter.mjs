@@ -13,6 +13,12 @@ function apply(webRouter) {
     WritingAssistController.check
   )
 
+  webRouter.post(
+    '/writing-assist/transform',
+    requireLogin,
+    WritingAssistController.transform
+  )
+
   webRouter.get(
     '/writing-assist/config',
     requireLogin,

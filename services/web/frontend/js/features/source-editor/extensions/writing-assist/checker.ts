@@ -42,6 +42,7 @@ export interface Sentence {
  */
 export class Checker {
   private debounceTimer: ReturnType<typeof setTimeout> | null = null
+  private runNowTimer: ReturnType<typeof setTimeout> | null = null
   private debounceMs: number
   private enabledCategories: Category[]
   private concurrency: number
@@ -49,6 +50,7 @@ export class Checker {
   private onProgress: ProgressCallback
   private cache: SentenceCache
   private runToken = 0
+  private abortController: AbortController | null = null
   private projectId: string
 
   constructor(
@@ -96,22 +98,20 @@ export class Checker {
    * "check now" button so a user-triggered check (e.g. retrying after a
    * failure) feels instant. Failed sentences were never cached, so they are
    * re-sent automatically.
-   *
-   * Deferred to a macrotask: the caller dispatches this from inside a CodeMirror
-   * `update()` cycle, and `execute()` synchronously dispatches its own effects
-   * (issues + progress). Dispatching while a dispatch is in flight throws
-   * ("Calls to EditorView.dispatch must not be nested"), which would abort the
-   * run before any request fired. Running on the next tick lets the current
-   * dispatch finish first.
    */
   runNow(sentences: Sentence[]): void {
     if (this.debounceTimer) {
       clearTimeout(this.debounceTimer)
       this.debounceTimer = null
     }
+    if (this.runNowTimer) {
+      clearTimeout(this.runNowTimer)
+      this.runNowTimer = null
+    }
     if (sentences.length === 0) return
     if (this.enabledCategories.length === 0) return
-    setTimeout(() => {
+    this.runNowTimer = setTimeout(() => {
+      this.runNowTimer = null
       void this.execute(sentences)
     }, 0)
   }
@@ -119,7 +119,6 @@ export class Checker {
   private gate(text: string, issues: Issue[]): Issue[] {
     const fixed = this.cache.fixedPriority(text)
     if (fixed === undefined) return issues
-    // Drop issues at or above the just-fixed severity (would regress).
     return issues.filter(i => {
       const p = CATEGORY_COLORS[i.category]?.priority ?? 0
       return p < fixed
@@ -128,21 +127,20 @@ export class Checker {
 
   private async execute(sentences: Sentence[]): Promise<void> {
     const token = ++this.runToken
+    // Create a new AbortController for this run
+    this.abortController = new AbortController()
+    const { signal } = this.abortController
 
-    // Re-base sentence-relative cached/fresh issues onto the document and emit.
     const rebase = (s: Sentence, rel: Issue[]): Issue[] =>
       rel.map(i => ({ ...i, offset: i.offset + s.from }))
 
-    // Render the full current set: cached sentences immediately, fresh ones as
-    // they arrive.
-    const docIssues = new Map<number, Issue[]>() // key: sentence index → doc issues
+    const docIssues = new Map<number, Issue[]>()
     const emit = () => {
       const all: Issue[] = []
       for (const arr of docIssues.values()) all.push(...arr)
       this.onIssues(all.sort((a, b) => a.offset - b.offset))
     }
 
-    // Partition into cached (instant) and to-fetch.
     const toFetch: number[] = []
     sentences.forEach((s, idx) => {
       const cached = this.cache.get(s.text)
@@ -157,7 +155,6 @@ export class Checker {
     let completed = 0
     let failed = 0
 
-    // Show cached results right away.
     emit()
     if (total === 0) {
       this.onProgress({ state: 'done', total: 0, completed: 0, failed: 0 })
@@ -165,24 +162,27 @@ export class Checker {
     }
     this.onProgress({ state: 'checking', total, completed, failed })
 
-    // Concurrency-limited worker pool over the to-fetch queue.
     let next = 0
     const worker = async (): Promise<void> => {
       while (true) {
         if (token !== this.runToken) return
+        if (signal.aborted) return
         const qi = next++
         if (qi >= toFetch.length) return
         const idx = toFetch[qi]
         const s = sentences[idx]
         try {
-          const rel = await checkWriting(s.text, this.enabledCategories, this.projectId)
+          const rel = await checkWriting(s.text, this.enabledCategories, this.projectId, signal)
           if (token !== this.runToken) return
+          if (signal.aborted) return
           this.cache.set(s.text, rel)
           docIssues.set(idx, rebase(s, this.gate(s.text, rel)))
-        } catch {
+        } catch (err: unknown) {
+          // AbortError means the request was cancelled — not a failure
+          if (err instanceof DOMException && err.name === 'AbortError') return
           failed++
         } finally {
-          if (token === this.runToken) {
+          if (token === this.runToken && !signal.aborted) {
             completed++
             emit()
             this.onProgress({ state: 'checking', total, completed, failed })
@@ -198,6 +198,7 @@ export class Checker {
     await Promise.all(workers)
 
     if (token !== this.runToken) return
+    if (signal.aborted) return
     this.onProgress({
       state: failed > 0 ? 'error' : 'done',
       total,
@@ -211,6 +212,15 @@ export class Checker {
       clearTimeout(this.debounceTimer)
       this.debounceTimer = null
     }
+    if (this.runNowTimer) {
+      clearTimeout(this.runNowTimer)
+      this.runNowTimer = null
+    }
     this.runToken++
+    // Abort all in-flight HTTP requests
+    if (this.abortController) {
+      this.abortController.abort()
+      this.abortController = null
+    }
   }
 }

@@ -16,6 +16,9 @@ import {
   useCommandRegistry,
 } from '@/features/ide-react/context/command-registry-context'
 import { closeContextMenuEffect } from '../extensions/context-menu'
+import { requestTransformEffect } from '../extensions/writing-assist-transform/effects'
+import { ACTION_META } from '../extensions/writing-assist-transform/types'
+import type { TransformAction } from '../../../../../types/writing-assist'
 import * as commands from '../extensions/toolbar/commands'
 import {
   cutSelection,
@@ -253,6 +256,24 @@ export const useContextMenuItems = () => {
         show: permissions.comment,
         shortcut: getShortcut('insert-comment'),
       },
+      // AI Transform group — selection-based writing actions
+      ...Object.entries(ACTION_META).map(([action, meta]) => ({
+        label: `AI ${meta.label}`,
+        handler: () => {
+          const sel = view.state.selection.main
+          view.dispatch({
+            effects: requestTransformEffect.of({
+              from: sel.from,
+              to: sel.to,
+              action: action as TransformAction,
+            }),
+          })
+        },
+        disabled: !hasSelection,
+        show: hasSelection && canEdit,
+        separatorAbove: action === 'polish',
+        shortcut: undefined,
+      })),
     ].filter(item => item.show),
   }
 }

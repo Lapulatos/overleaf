@@ -279,6 +279,10 @@ export function writingAssist(options: WritingAssistOptions): Extension {
             break
           }
         }
+        // Cancel button → stop the in-progress check.
+        // No longer handled here — the onCancel callback passed to
+        // writingAssistProgress() calls checker.cancel() + reportProgress
+        // synchronously, avoiding nested-dispatch issues.
       }
 
       check(immediate = false) {
@@ -344,7 +348,10 @@ export function writingAssist(options: WritingAssistOptions): Extension {
     decorationField,
     localDismissField,
     writingAssistTheme,
-    writingAssistProgress(),
+    writingAssistProgress(() => {
+      checker.cancel()
+      if (activeView) reportProgress(activeView, { state: 'idle', total: 0, completed: 0, failed: 0 })
+    }),
     writingAssistHover({ issuesAt: pos => store.getIssuesAt(pos) }),
   ]
 }

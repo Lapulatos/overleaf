@@ -5,7 +5,7 @@ import AnthropicProvider from './providers/AnthropicProvider.mjs'
 import CustomProvider from './providers/CustomProvider.mjs'
 // ParamsError not available in all envs; throw plain Error below
 
-async function check(options, text, systemPrompt, enabledCategories) {
+async function check(options, text, systemPrompt, enabledCategories, userMessage) {
   const { provider, apiKey, model, endpoint, timeout } = options
 
   let impl
@@ -26,7 +26,7 @@ async function check(options, text, systemPrompt, enabledCategories) {
       throw Object.assign(new Error(`Unknown provider: ${provider}`), { statusCode: 400 })
   }
 
-  return await impl({ text, systemPrompt, enabledCategories, model, apiKey, endpoint, timeout })
+  return await impl({ text, systemPrompt, enabledCategories, userMessage, model, apiKey, endpoint, timeout })
 }
 
 export default { check }

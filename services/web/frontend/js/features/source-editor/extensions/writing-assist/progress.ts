@@ -37,12 +37,13 @@ export function reportProgress(view: EditorView, p: Progress): void {
   view.dispatch({ effects: setProgress.of(p) })
 }
 
-export function writingAssistProgress(): Extension {
+export function writingAssistProgress(onCancel: () => void): Extension {
   const plugin = ViewPlugin.fromClass(
     class {
       dom: HTMLElement
       statusEl: HTMLElement
       btn: HTMLButtonElement
+      stopBtn: HTMLButtonElement
       hideStatusTimer: ReturnType<typeof setTimeout> | null = null
       last = ''
 
@@ -74,6 +75,36 @@ export function writingAssistProgress(): Extension {
         this.statusEl.style.whiteSpace = 'nowrap'
         this.dom.appendChild(this.statusEl)
 
+        // Stop button — visible only during checking
+        this.stopBtn = document.createElement('button')
+        this.stopBtn.type = 'button'
+        this.stopBtn.title = '停止检查'
+        Object.assign(this.stopBtn.style, {
+          display: 'none',
+          alignItems: 'center',
+          gap: '4px',
+          background: 'rgba(220,38,38,0.85)',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '12px',
+          padding: '3px 10px',
+          fontSize: '12px',
+          fontWeight: '600',
+          cursor: 'pointer',
+        } as CSSStyleDeclaration)
+        this.stopBtn.textContent = '■ 停止'
+        this.stopBtn.addEventListener('mousedown', e => {
+          e.preventDefault()
+          e.stopPropagation()
+          // Call the cancel callback DIRECTLY (not via effect dispatch) so the
+          // checker stops and the progress resets synchronously. Dispatching
+          // cancelCheckEffect + then dispatching setProgress inside update()
+          // creates a nested dispatch that CodeMirror may drop or defer.
+          onCancel()
+        })
+        this.dom.appendChild(this.stopBtn)
+
+        // Check button — visible when NOT checking
         this.btn = document.createElement('button')
         this.btn.type = 'button'
         this.btn.title = '立即检查写作建议（若有选区则只检查选中部分）'
@@ -123,9 +154,9 @@ export function writingAssistProgress(): Extension {
         this.dom.style.background = 'rgba(26,32,44,0.88)'
 
         if (p.state === 'checking') {
-          this.btn.disabled = true
-          this.btn.style.opacity = '0.5'
-          this.btn.style.cursor = 'default'
+          // Show stop button, hide check button
+          this.stopBtn.style.display = 'inline-flex'
+          this.btn.style.display = 'none'
           this.statusEl.innerHTML = ''
           const dot = document.createElement('span')
           Object.assign(dot.style, {
@@ -147,10 +178,9 @@ export function writingAssistProgress(): Extension {
           return
         }
 
-        // Not checking → button is clickable again.
-        this.btn.disabled = false
-        this.btn.style.opacity = '1'
-        this.btn.style.cursor = 'pointer'
+        // Not checking → show check button, hide stop button.
+        this.btn.style.display = 'inline-flex'
+        this.stopBtn.style.display = 'none'
 
         if (p.state === 'done') {
           this.statusEl.textContent = '✓ 检查完成'

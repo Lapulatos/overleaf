@@ -6,15 +6,17 @@ import { fetchJson } from '@overleaf/fetch-utils'
 const DEFAULT_OPENAI_ENDPOINT = 'https://api.openai.com/v1'
 
 async function check(params) {
-  const { text, systemPrompt, enabledCategories, model, apiKey, endpoint, timeout } = params
+  const { text, systemPrompt, enabledCategories, userMessage, model, apiKey, endpoint, timeout } = params
   const baseUrl = endpoint || DEFAULT_OPENAI_ENDPOINT
   const url = `${baseUrl}/chat/completions`
+
+  const userContent = userMessage ?? buildUserMessage(enabledCategories, text)
 
   const body = {
     model,
     messages: [
       { role: 'system', content: systemPrompt },
-      { role: 'user', content: buildUserMessage(enabledCategories, text) },
+      { role: 'user', content: userContent },
     ],
     temperature: 0.1,
     max_tokens: 2000,
