@@ -1,0 +1,74 @@
+/* Underline-style visual preview grid for WA settings panel */
+
+.wa-underline-style-grid {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.wa-underline-style-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border: 2px solid var(--content-border-color, #ddd);
+  border-radius: 6px;
+  background: var(--content-bg-color, #fff);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+  min-width: 56px;
+}
+
+.wa-underline-style-option:hover {
+  border-color: var(--content-border-color-hover, #bbb);
+  background: var(--content-bg-color-hover, #f5f5f5);
+}
+
+.wa-underline-style-option.active {
+  border-color: #3182ce;
+  background: var(--content-bg-color-active, #e8f4fd);
+}
+
+.wa-underline-style-label {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--content-text-color, #333);
+  user-select: none;
+}
+
+.wa-underline-style-line {
+  display: block;
+  width: 36px;
+  height: 0;
+  border-top-width: 2px;
+  border-top-color: #3182ce;
+}
+
+.wa-underline-solid {
+  border-top-style: solid;
+}
+
+.wa-underline-wavy {
+  /* CSS doesn't have a native 'wavy' border style.
+     Use a repeating SVG pattern to simulate a wavy underline. */
+  border-top-style: solid;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='4'%3E%3Cpath d='M0 2 Q9 0 18 2 T36 2' fill='none' stroke='%233182ce' stroke-width='2'/%3E%3C/svg%3E") repeat-x center;
+  border-top: none;
+  height: 4px;
+}
+
+.wa-underline-dotted {
+  border-top-style: dotted;
+}
+
+.wa-underline-dashed {
+  border-top-style: dashed;
+}
+
+.wa-underline-style-name {
+  font-size: 11px;
+  color: var(--content-text-color-secondary, #666);
+  user-select: none;
+}

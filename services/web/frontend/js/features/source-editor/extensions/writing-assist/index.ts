@@ -1,11 +1,12 @@
 import { EditorView, ViewPlugin, ViewUpdate } from '@codemirror/view'
 import type { Extension } from '@codemirror/state'
+import { Compartment } from '@codemirror/state'
 import { Checker } from './checker'
 import { segmentWithOffsets } from './segment'
 import { decorationField, setIssuesEffect, removeRangeEffect } from './decorations'
 import { requestCheckEffect, addLocalDismissEffect } from './effects'
 import { writingAssistHover } from './tooltip'
-import { writingAssistTheme } from './theme'
+import { makeWritingAssistTheme } from './theme'
 import { writingAssistProgress, reportProgress } from './progress'
 import { SentenceCache } from './sentence-cache'
 import { setAppliedHook, setDismissedHook } from './apply'
@@ -13,11 +14,15 @@ import { dismissStore } from './dismiss-store'
 import { buildDismissPattern } from './dismiss-pattern'
 import { localDismissField, isLocallyDismissed } from './local-dismiss'
 import { getConfig } from '@/utils/api/writing-assist'
-import type { Category, Issue, WritingAssistPublicConfig } from './types'
+import type { Category, Issue, WritingAssistPublicConfig, UnderlineStyle } from './types'
 import { CATEGORY_ORDER, CATEGORY_COLORS } from './types'
 
 export { CATEGORY_COLORS, CATEGORY_ORDER } from './types'
-export type { Category, Issue, WritingAssistPublicConfig }
+export type { Category, Issue, WritingAssistPublicConfig, UnderlineStyle }
+
+// Compartment for the theme so underline style can be reconfigured
+// dynamically when the user saves a new setting.
+const themeCompartment = new Compartment()
 
 export interface WritingAssistOptions {
   projectId: string
@@ -223,6 +228,13 @@ export function writingAssist(options: WritingAssistOptions): Extension {
         enabledCategories(saved),
         saved.concurrency ?? 4
       )
+      // Reconfigure theme if underline style changed from the initial default.
+      const newStyle = saved.underlineStyle ?? 'solid'
+      if (activeView && newStyle !== (config.underlineStyle ?? 'solid')) {
+        activeView.dispatch({
+          effects: themeCompartment.reconfigure(makeWritingAssistTheme(newStyle)),
+        })
+      }
       // Re-check with the real settings (or clear, if now disabled).
       if (enabled) {
         triggerRecheck?.()
@@ -335,11 +347,24 @@ export function writingAssist(options: WritingAssistOptions): Extension {
       destroy() {
         checker.cancel()
         unsubscribeDismiss()
+        window.removeEventListener('wa-style-change', onStyleChange)
         triggerRecheck = null
         if (activeView === this.view) activeView = null
       }
     }
   )
+
+  // Listen for underline style changes from the settings panel so the editor
+  // reconfigures its theme compartment immediately (no page reload needed).
+  const onStyleChange = (e: Event) => {
+    const style = (e as CustomEvent<UnderlineStyle>).detail
+    if (activeView && style) {
+      activeView.dispatch({
+        effects: themeCompartment.reconfigure(makeWritingAssistTheme(style)),
+      })
+    }
+  }
+  window.addEventListener('wa-style-change', onStyleChange)
 
   // eslint-disable-next-line no-console
   console.log('[WA] extension ready')
@@ -347,7 +372,7 @@ export function writingAssist(options: WritingAssistOptions): Extension {
     viewPlugin,
     decorationField,
     localDismissField,
-    writingAssistTheme,
+    themeCompartment.of(makeWritingAssistTheme(config.underlineStyle ?? 'solid')),
     writingAssistProgress(() => {
       checker.cancel()
       if (activeView) reportProgress(activeView, { state: 'idle', total: 0, completed: 0, failed: 0 })

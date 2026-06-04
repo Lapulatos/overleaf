@@ -1,6 +1,6 @@
-import type { Category, Issue, WritingAssistPublicConfig } from '../../../../../../types/writing-assist'
+import type { Category, Issue, WritingAssistPublicConfig, UnderlineStyle } from '../../../../../../types/writing-assist'
 
-export type { Category, Issue, WritingAssistPublicConfig }
+export type { Category, Issue, WritingAssistPublicConfig, UnderlineStyle }
 
 /**
  * Per-category presentation. `color` drives both the strikethrough on the

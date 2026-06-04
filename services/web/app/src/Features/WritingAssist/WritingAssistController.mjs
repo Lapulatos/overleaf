@@ -47,6 +47,7 @@ const configSchema = z.object({
     concurrency: z.number().min(1).max(12).optional(),
     timeoutMs: z.number().min(2000).max(60000).optional(),
     analysisMode: z.enum(['lazy', 'eager']).optional(),
+    underlineStyle: z.enum(['wavy', 'solid', 'dotted', 'dashed']).optional(),
   }),
 })
 
@@ -135,6 +136,7 @@ function getDefaultConfig() {
     concurrency: 4,
     timeoutMs: 20000,
     analysisMode: 'lazy',
+    underlineStyle: 'solid',
   }
 }
 
@@ -174,7 +176,7 @@ async function getConfig(req, res) {
   const userId = SessionManager.getLoggedInUserId(req.session)
   const cfg = (await WritingAssistConfigManager.promises.get(userId)) || getDefaultConfig()
   /** @type {any} */
-  const result = { enabled: cfg.enabled, provider: cfg.provider, categories: cfg.categories, debounceMs: cfg.debounceMs, concurrency: cfg.concurrency ?? 4, timeoutMs: cfg.timeoutMs ?? 20000, analysisMode: cfg.analysisMode ?? 'lazy' }
+  const result = { enabled: cfg.enabled, provider: cfg.provider, categories: cfg.categories, debounceMs: cfg.debounceMs, concurrency: cfg.concurrency ?? 4, timeoutMs: cfg.timeoutMs ?? 20000, analysisMode: cfg.analysisMode ?? 'lazy', underlineStyle: cfg.underlineStyle ?? 'solid' }
   for (const p of ['openai', 'anthropic', 'custom']) {
     if (cfg[p]) {
       result[p] = { model: cfg[p].model, hasKey: !!cfg[p].apiKey }
@@ -198,6 +200,7 @@ async function putConfig(req, res) {
   if (body.concurrency !== undefined) merged.concurrency = body.concurrency
   if (body.timeoutMs !== undefined) merged.timeoutMs = body.timeoutMs
   if (body.analysisMode !== undefined) merged.analysisMode = body.analysisMode
+  if (body.underlineStyle !== undefined) merged.underlineStyle = body.underlineStyle
   for (const p of ['openai', 'anthropic', 'custom']) {
     const incoming = /** @type {any} */ (body)[p]
     if (incoming) {

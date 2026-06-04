@@ -53,6 +53,8 @@ export interface CategoryToggles {
 
 export type AnalysisMode = 'lazy' | 'eager';
 
+export type UnderlineStyle = 'wavy' | 'solid' | 'dotted' | 'dashed';
+
 export interface WritingAssistUserConfig {
   enabled: boolean;
   provider: ProviderType;
@@ -68,6 +70,8 @@ export interface WritingAssistUserConfig {
   // 'lazy' = check only the visible window (re-check on scroll); 'eager' =
   // check the visible window plus a wide look-ahead/behind margin.
   analysisMode: AnalysisMode;
+  // Underline decoration style for flagged issues.
+  underlineStyle: UnderlineStyle;
 }
 
 export interface WritingAssistPublicConfig {
@@ -82,6 +86,7 @@ export interface WritingAssistPublicConfig {
   concurrency: number;
   timeoutMs: number;
   analysisMode: AnalysisMode;
+  underlineStyle: UnderlineStyle;
 }
 
 export const DEFAULT_CONFIG: WritingAssistPublicConfig = {
@@ -101,6 +106,7 @@ export const DEFAULT_CONFIG: WritingAssistPublicConfig = {
   concurrency: 4,
   timeoutMs: 20000,
   analysisMode: 'lazy',
+  underlineStyle: 'solid',
 };
 
 // Sentence fingerprint cache (localStorage — frontend only, but type lives here)

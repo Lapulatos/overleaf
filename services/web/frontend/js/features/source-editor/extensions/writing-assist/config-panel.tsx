@@ -10,8 +10,10 @@ import type {
   Category,
   ProviderType,
   AnalysisMode,
+  UnderlineStyle,
   WritingAssistPublicConfig,
 } from '../../../../../../types/writing-assist'
+import './config-panel.css'
 
 const PROVIDERS: { value: ProviderType; label: string }[] = [
   { value: 'openai', label: 'OpenAI' },
@@ -25,6 +27,13 @@ const CATEGORIES: { key: Category; label: string; color: string }[] = [
   { key: 'conciseness', label: 'Conciseness (wordiness)', color: '#d69e2e' },
   { key: 'delivery', label: 'Delivery (tone)', color: '#38a169' },
   { key: 'engagement', label: 'Engagement (vividness)', color: '#805ad5' },
+]
+
+const UNDERLINE_STYLES: { value: UnderlineStyle; label: string }[] = [
+  { value: 'solid', label: 'Solid' },
+  { value: 'wavy', label: 'Wavy' },
+  { value: 'dotted', label: 'Dotted' },
+  { value: 'dashed', label: 'Dashed' },
 ]
 
 const DEFAULT_MODELS: Record<ProviderType, string> = {
@@ -64,6 +73,24 @@ export default function WritingAssistSettings() {
   const [concurrency, setConcurrency] = useState(4)
   const [timeoutSec, setTimeoutSec] = useState(20)
   const [analysisMode, setAnalysisMode] = useState<AnalysisMode>('lazy')
+  const [underlineStyle, setUnderlineStyle] = useState<UnderlineStyle>('solid')
+  /** Auto-save underline style change immediately so the editor picks it up
+   *  without requiring a full Save click. The underline effect depends on the
+   *  CM6 theme compartment, which reads the persisted config on init + re-read
+   *  on save. If the user just clicks a style button and closes the modal, the
+   *  change must be in the DB for the next editor session to see it. */
+  const onUnderlineStyleChange = useCallback((style: UnderlineStyle) => {
+    setUnderlineStyle(style)
+    // Persist just the underlineStyle change immediately (non-blocking; errors
+    // are silently swallowed so the button click UX stays responsive).
+    saveConfig({ underlineStyle: style })
+      .then(() => {
+        // Notify the live editor to reconfigure its theme compartment so the
+        // underline effect changes immediately without a page reload.
+        window.dispatchEvent(new CustomEvent('wa-style-change', { detail: style }))
+      })
+      .catch(() => {})
+  }, [])
 
   const applyProvider = useCallback(
     (cfg: WritingAssistPublicConfig, p: ProviderType) => {
@@ -91,6 +118,9 @@ export default function WritingAssistSettings() {
         }
         if (cfg.analysisMode === 'lazy' || cfg.analysisMode === 'eager') {
           setAnalysisMode(cfg.analysisMode)
+        }
+        if (cfg.underlineStyle) {
+          setUnderlineStyle(cfg.underlineStyle)
         }
         applyProvider(cfg, cfg.provider)
         setLoaded(true)
@@ -137,6 +167,7 @@ export default function WritingAssistSettings() {
         concurrency,
         timeoutMs: timeoutSec * 1000,
         analysisMode,
+        underlineStyle,
         [provider]: providerConfig,
       })
       setStatus('saved')
@@ -273,6 +304,27 @@ export default function WritingAssistSettings() {
           <option value="lazy">Visible area only (lazy, recommended)</option>
           <option value="eager">Visible area + wide margin (eager)</option>
         </OLFormSelect>
+      </OLFormGroup>
+
+      <OLFormGroup controlId="wa-underline-style">
+        <OLFormLabel>Underline style</OLFormLabel>
+        <div className="wa-underline-style-grid">
+          {UNDERLINE_STYLES.map(s => (
+            <button
+              key={s.value}
+              type="button"
+              className={`wa-underline-style-option${underlineStyle === s.value ? ' active' : ''}`}
+              onClick={() => onUnderlineStyleChange(s.value)}
+              title={s.label}
+            >
+              <span className="wa-underline-style-label">Aa</span>
+              <span
+                className={`wa-underline-style-line wa-underline-${s.value}`}
+              />
+              <span className="wa-underline-style-name">{s.label}</span>
+            </button>
+          ))}
+        </div>
       </OLFormGroup>
 
       <OLFormGroup className="mt-2">
