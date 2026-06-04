@@ -9,6 +9,7 @@ import PDFViewerSetting from '@/features/settings/components/editor-settings/pdf
 import importOverleafModules from '../../../../macros/import-overleaf-module.macro'
 import SpellCheckSetting from '@/features/settings/components/editor-settings/spell-check-setting'
 import DictionarySetting from '@/features/settings/components/editor-settings/dictionary-setting'
+import WritingAssistSettings from '@/features/source-editor/extensions/writing-assist/config-panel'
 import { useTranslation } from 'react-i18next'
 import BreadcrumbsSetting from '@/features/settings/components/editor-settings/breadcrumbs-setting'
 import NonBlinkingCursorSetting from '@/features/settings/components/editor-settings/non-blinking-cursor-setting'
@@ -33,23 +34,12 @@ import ProjectNotificationsSetting from '@/features/settings/components/editor-s
 import getMeta from '@/utils/meta'
 import type {
   SettingsEntry,
-  SettingsSection,
-  SettingsSectionHook,
 } from '@/features/settings/context/types'
 
 const [referenceSearchSettingModule] = importOverleafModules(
   'referenceSearchSetting'
 )
 const ReferenceSearchSetting = referenceSearchSettingModule?.import.default
-
-const editorTabExtraSectionHooks: SettingsSectionHook[] = importOverleafModules(
-  'settingsModalEditorTabSections'
-)
-  .map((m: any) => m?.import?.default)
-  .filter((h: unknown): h is SettingsSectionHook => typeof h === 'function')
-
-const useSlotSections = (hooks: SettingsSectionHook[]): SettingsSection[] =>
-  hooks.map(hook => hook()).filter((s): s is SettingsSection => s != null)
 
 type SettingsModalState = {
   show: boolean
@@ -76,8 +66,6 @@ export const SettingsModalProvider: FC<React.PropsWithChildren> = ({
 
   const hasEmailNotifications = useFeatureFlag('email-notifications')
   const hasEditorTabs = useFeatureFlag('editor-tabs')
-
-  const editorTabExtraSections = useSlotSections(editorTabExtraSectionHooks)
 
   const allSettingsTabs: SettingsEntry[] = useMemo(
     () => [
@@ -153,7 +141,22 @@ export const SettingsModalProvider: FC<React.PropsWithChildren> = ({
               },
             ],
           },
-          ...editorTabExtraSections,
+        ],
+      },
+      {
+        key: 'writing-assist',
+        title: t('writing_assist'),
+        icon: 'rate_review',
+        sections: [
+          {
+            key: 'general',
+            settings: [
+              {
+                key: 'writing-assist-config',
+                component: <WritingAssistSettings />,
+              },
+            ],
+          },
         ],
       },
       {
@@ -268,7 +271,6 @@ export const SettingsModalProvider: FC<React.PropsWithChildren> = ({
       overallTheme,
       hasEmailNotifications,
       isOverleaf,
-      editorTabExtraSections,
     ]
   )
 
