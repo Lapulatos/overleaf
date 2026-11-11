@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "scope": "Restore existing named work after confirmed native shelve; isolated project only.",
+  "restoreApplied": true,
+  "reloadVerified": true,
+  "localChangesRefreshed": true,
+  "pageErrors": []
+}

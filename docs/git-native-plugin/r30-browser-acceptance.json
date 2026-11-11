@@ -1,0 +1,16 @@
+{
+  "image": "r30",
+  "project": "6af2cf744b782c4ad5c040aa",
+  "workingPdfRendered": true,
+  "stagedPdfRendered": true,
+  "workingCanvas": {
+    "width": 473,
+    "height": 260,
+    "ink": true
+  },
+  "versionButtonFont": "12px",
+  "versionButtonRadius": "4px",
+  "paginationButtonRadius": "9999px",
+  "fixtureUnstagedAfterTest": true,
+  "screenshot": "/tmp/native-git-r30-preview.png"
+}

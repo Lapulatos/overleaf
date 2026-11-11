@@ -1,0 +1,30 @@
+✔ B commit, old branch checkout, and branch-specific unfinished files follow native worktrees (989.006833ms)
+✔ native index staging and commit include only selected changes, including deletion and unusual filenames (609.889167ms)
+✔ create from older commit and detached checkout do not move branches (724.059666ms)
+✔ stash preserves tracked, staged and untracked work through native Git (570.658084ms)
+✔ publish, fetch and pull use a real bare remote; local commit is visible before push (863.462542ms)
+✔ merge conflict is native unmerged index and abort restores original HEAD (1061.489541ms)
+✔ unsafe inputs cannot become options or escape the worktree (264.365667ms)
+✔ resolved merge creates real two-parent commit and graph topology (747.56275ms)
+✔ cherry-pick, revert and reset are native operations, preserving soft-reset staged content (892.414875ms)
+✔ rebase uses native parent rewriting and does not alter the other branch (665.2275ms)
+✔ worktree removal refuses unfinished work and branch deletion refuses an active worktree (626.384625ms)
+✔ unborn repository has empty graph and can unstage before its first commit (262.125375ms)
+✔ branch-filtered graph returns ancestry of requested branch, not a range against current HEAD (565.03075ms)
+✔ file history follows renames and blame uses the selected commit rather than another branch (840.202958ms)
+✔ rebase, cherry-pick and revert conflicts expose native worktree operation and clear after abort (1170.465625ms)
+✔ native apply stages and unstages selected hunks without including other edits and rejects stale diffs (1134.21375ms)
+✔ stash preview includes untracked content and stale list indices cannot apply or delete another stash (538.537333ms)
+✔ conflict versions come from native index; stale resolution refuses edits and incoming choice stages exact bytes (1321.988375ms)
+✔ explicit edited conflict resolution stages only the supplied result (941.434166ms)
+✔ modify-delete conflict permits selecting native deletion and preserves the other branch (830.645417ms)
+✔ managed worktree cleanup protects current, ignored files and detached commits while retaining branch refs (1592.039458ms)
+✔ clean-looking worktree with an unfinished merge cannot be removed (820.2735ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 18201.690583

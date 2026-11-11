@@ -1,0 +1,13 @@
+✔ Overleaf adapter reads native document lines and binary asset bytes without normalizing them (3.316ms)
+✔ applies through existing document-version CAS and native create/delete APIs inside exclusive write scope (3.109041ms)
+✔ whole transfer preflight prevents any mutation if a collaborator changed one source file (0.7945ms)
+✔ same bytes with a different document identity are not accepted as the original file (0.42975ms)
+✔ adapter cannot mutate a project until production exclusive-access integration is supplied (0.315167ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 104.383084

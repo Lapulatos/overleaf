@@ -1,5 +1,5 @@
 import { EditorView, ViewPlugin, ViewUpdate } from '@codemirror/view'
-import { StateField, StateEffect, Extension } from '@codemirror/state'
+import { EditorState, StateField, StateEffect, Extension } from '@codemirror/state'
 import type { Progress } from './checker'
 import { requestCheckEffect } from './effects'
 
@@ -140,7 +140,7 @@ export function writingAssistProgress(onCancel: () => void): Extension {
 
       update(u: ViewUpdate) {
         const p = u.state.field(progressField)
-        const key = `${p.state}:${p.completed}/${p.total}:${p.failed}`
+        const key = `${u.state.facet(EditorState.readOnly)}:${p.state}:${p.completed}/${p.total}:${p.failed}`
         if (key === this.last) return
         this.last = key
         this.render(p)
@@ -151,6 +151,9 @@ export function writingAssistProgress(onCancel: () => void): Extension {
           clearTimeout(this.hideStatusTimer)
           this.hideStatusTimer = null
         }
+        this.dom.style.display = this.view.state.facet(EditorState.readOnly)
+          ? 'none'
+          : 'inline-flex'
         this.dom.style.background = 'rgba(26,32,44,0.88)'
 
         if (p.state === 'checking') {

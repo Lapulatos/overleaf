@@ -1,0 +1,657 @@
+WARNING: The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested
+TAP version 13
+# Subtest: policy persists per user, denies read-only writes and drops retired grants even before expiry
+ok 1 - policy persists per user, denies read-only writes and drops retired grants even before expiry
+  ---
+  duration_ms: 48.443125
+  type: 'test'
+  ...
+# Subtest: approval is single-use and bound to exact owner and directories
+ok 2 - approval is single-use and bound to exact owner and directories
+  ---
+  duration_ms: 1.669417
+  type: 'test'
+  ...
+# Subtest: Unstage renamed file removes both sides from index and retains renamed worktree
+ok 3 - Unstage renamed file removes both sides from index and retains renamed worktree
+  ---
+  duration_ms: 1223.07125
+  type: 'test'
+  ...
+# Subtest: staged rename diff shows native rename instead of a phantom added file
+ok 4 - staged rename diff shows native rename instead of a phantom added file
+  ---
+  duration_ms: 859.555833
+  type: 'test'
+  ...
+# Subtest: Undo initial commit preserves staged and unstaged bytes and returns unborn branch
+ok 5 - Undo initial commit preserves staged and unstaged bytes and returns unborn branch
+  ---
+  duration_ms: 2362.923793
+  type: 'test'
+  ...
+# Subtest: Undo rejects stale preview and then soft-resets exactly one commit
+ok 6 - Undo rejects stale preview and then soft-resets exactly one commit
+  ---
+  duration_ms: 2949.050918
+  type: 'test'
+  ...
+# Subtest: Sync pulls then pushes current branch to its distinct push URL using matching credentials
+ok 7 - Sync pulls then pushes current branch to its distinct push URL using matching credentials
+  ---
+  duration_ms: 2299.852668
+  type: 'test'
+  ...
+# Subtest: Sync with missing remote branch stops before push and does not advance destination
+ok 8 - Sync with missing remote branch stops before push and does not advance destination
+  ---
+  duration_ms: 2035.510418
+  type: 'test'
+  ...
+# Subtest: credential status/save/remove can target push independently without returning token
+ok 9 - credential status/save/remove can target push independently without returning token
+  ---
+  duration_ms: 1346.591209
+  type: 'test'
+  ...
+# Subtest: remote service routes publish, tag push and guarded remote deletion to push destination
+ok 10 - remote service routes publish, tag push and guarded remote deletion to push destination
+  ---
+  duration_ms: 3071.280501
+  type: 'test'
+  ...
+# Subtest: new project clone resumes partial import under the same project ID
+ok 11 - new project clone resumes partial import under the same project ID
+  ---
+  duration_ms: 2269.678959
+  type: 'test'
+  ...
+# Subtest: connect clones real history and retains all current project bytes as uncommitted changes
+ok 12 - connect clones real history and retains all current project bytes as uncommitted changes
+  ---
+  duration_ms: 1761.404334
+  type: 'test'
+  ...
+# Subtest: connect resumes after clone installation acknowledgement failure without discarding the repository
+ok 13 - connect resumes after clone installation acknowledgement failure without discarding the repository
+  ---
+  duration_ms: 1592.41821
+  type: 'test'
+  ...
+# Subtest: failed clone leaves editor unbound and allows retry
+ok 14 - failed clone leaves editor unbound and allows retry
+  ---
+  duration_ms: 930.393792
+  type: 'test'
+  ...
+# Subtest: production encryption configuration round-trips with the deployed label format
+ok 15 - production encryption configuration round-trips with the deployed label format
+  ---
+  duration_ms: 44.95025
+  type: 'test'
+  ...
+# Subtest: credentials use existing encryption and remain account/repository scoped
+ok 16 - credentials use existing encryption and remain account/repository scoped
+  ---
+  duration_ms: 41.916
+  type: 'test'
+  ...
+# Subtest: per-command authentication never persists secrets and redacts errors
+ok 17 - per-command authentication never persists secrets and redacts errors
+  ---
+  duration_ms: 500.635167
+  type: 'test'
+  ...
+# Subtest: authenticated HTTPS push and fetch use native smart HTTP without persisting credentials
+ok 18 - authenticated HTTPS push and fetch use native smart HTTP without persisting credentials
+  ---
+  duration_ms: 4186.313961
+  type: 'test'
+  ...
+# Subtest: authentication errors explain credentials rather than exposing terminal prompts or server paths
+ok 19 - authentication errors explain credentials rather than exposing terminal prompts or server paths
+  ---
+  duration_ms: 59.873833
+  type: 'test'
+  ...
+# Subtest: graph settings persist per user and reject executable link schemes and incomplete identities
+ok 20 - graph settings persist per user and reject executable link schemes and incomplete identities
+  ---
+  duration_ms: 39.749208
+  type: 'test'
+  ...
+# Subtest: disabled, anonymous and unauthorized requests cannot access native repository storage
+ok 21 - disabled, anonymous and unauthorized requests cannot access native repository storage
+  ---
+  duration_ms: 9.7755
+  type: 'test'
+  ...
+# Subtest: HTTP command rejects traversal project IDs, unknown commands and supplied filesystem/config fields
+ok 22 - HTTP command rejects traversal project IDs, unknown commands and supplied filesystem/config fields
+  ---
+  duration_ms: 11.859125
+  type: 'test'
+  ...
+# Subtest: authenticated request is bound to the session user and authorized project, with no-store responses
+ok 23 - authenticated request is bound to the session user and authorized project, with no-store responses
+  ---
+  duration_ms: 1.823583
+  type: 'test'
+  ...
+# Subtest: pending editor integration reports unavailable without pretending a command succeeded
+ok 24 - pending editor integration reports unavailable without pretending a command succeeded
+  ---
+  duration_ms: 2.178084
+  type: 'test'
+  ...
+# Subtest: project lock contention returns JSON 503 with Retry-After instead of a generic 500 page
+ok 25 - project lock contention returns JSON 503 with Retry-After instead of a generic 500 page
+  ---
+  duration_ms: 0.601083
+  type: 'test'
+  ...
+# Subtest: native conflicts return actionable JSON 409 instead of an internal error page
+ok 26 - native conflicts return actionable JSON 409 instead of an internal error page
+  ---
+  duration_ms: 2.273458
+  type: 'test'
+  ...
+# Subtest: actual native duplicate branch and unknown revision errors become actionable JSON
+ok 27 - actual native duplicate branch and unknown revision errors become actionable JSON
+  ---
+  duration_ms: 619.116333
+  type: 'test'
+  ...
+# Subtest: unexpected storage failures remain server errors
+ok 28 - unexpected storage failures remain server errors
+  ---
+  duration_ms: 2.085041
+  type: 'test'
+  ...
+# Subtest: lock acquisition timeout is retryable without running the Git operation
+ok 29 - lock acquisition timeout is retryable without running the Git operation
+  ---
+  duration_ms: 8.32
+  type: 'test'
+  ...
+# Subtest: a timeout after acquisition remains the original operation error and is not retried
+ok 30 - a timeout after acquisition remains the original operation error and is not retried
+  ---
+  duration_ms: 1.023916
+  type: 'test'
+  ...
+# Subtest: successful operation and non-timeout lock errors retain original results
+ok 31 - successful operation and non-timeout lock errors retain original results
+  ---
+  duration_ms: 0.603875
+  type: 'test'
+  ...
+# Subtest: native output retains operations, isolates repositories and redacts split secrets
+ok 32 - native output retains operations, isolates repositories and redacts split secrets
+  ---
+  duration_ms: 44.920083
+  type: 'test'
+  ...
+# Subtest: real native Git commands are recorded by the repository adapter
+ok 33 - real native Git commands are recorded by the repository adapter
+  ---
+  duration_ms: 288.761667
+  type: 'test'
+  ...
+# Subtest: Overleaf adapter reads native document lines and binary asset bytes without normalizing them
+ok 34 - Overleaf adapter reads native document lines and binary asset bytes without normalizing them
+  ---
+  duration_ms: 26.925625
+  type: 'test'
+  ...
+# Subtest: applies through existing document-version CAS and native create/delete APIs inside exclusive write scope
+ok 35 - applies through existing document-version CAS and native create/delete APIs inside exclusive write scope
+  ---
+  duration_ms: 34.775791
+  type: 'test'
+  ...
+# Subtest: whole transfer preflight prevents any mutation if a collaborator changed one source file
+ok 36 - whole transfer preflight prevents any mutation if a collaborator changed one source file
+  ---
+  duration_ms: 7.287625
+  type: 'test'
+  ...
+# Subtest: same bytes with a different document identity are not accepted as the original file
+ok 37 - same bytes with a different document identity are not accepted as the original file
+  ---
+  duration_ms: 3.855458
+  type: 'test'
+  ...
+# Subtest: adapter cannot mutate a project until production exclusive-access integration is supplied
+ok 38 - adapter cannot mutate a project until production exclusive-access integration is supplied
+  ---
+  duration_ms: 2.235625
+  type: 'test'
+  ...
+# Subtest: maps native HTTPS and SSH remotes to provider commit pages without credentials
+ok 39 - maps native HTTPS and SSH remotes to provider commit pages without credentials
+  ---
+  duration_ms: 17.225292
+  type: 'test'
+  ...
+# Subtest: omits unsupported or malformed remotes without guessing provider routes
+ok 40 - omits unsupported or malformed remotes without guessing provider routes
+  ---
+  duration_ms: 4.69775
+  type: 'test'
+  ...
+# Subtest: keeps separate named remote destinations
+ok 41 - keeps separate named remote destinations
+  ---
+  duration_ms: 0.926458
+  type: 'test'
+  ...
+# Subtest: B commit, old branch checkout, and branch-specific unfinished files follow native worktrees
+ok 42 - B commit, old branch checkout, and branch-specific unfinished files follow native worktrees
+  ---
+  duration_ms: 3234.035168
+  type: 'test'
+  ...
+# Subtest: native index staging and commit include only selected changes, including deletion and unusual filenames
+ok 43 - native index staging and commit include only selected changes, including deletion and unusual filenames
+  ---
+  duration_ms: 1842.03175
+  type: 'test'
+  ...
+# Subtest: create from older commit and detached checkout do not move branches
+ok 44 - create from older commit and detached checkout do not move branches
+  ---
+  duration_ms: 2271.066042
+  type: 'test'
+  ...
+# Subtest: stash preserves tracked, staged and untracked work through native Git
+ok 45 - stash preserves tracked, staged and untracked work through native Git
+  ---
+  duration_ms: 1885.960918
+  type: 'test'
+  ...
+# Subtest: publish, fetch and pull use a real bare remote; local commit is visible before push
+ok 46 - publish, fetch and pull use a real bare remote; local commit is visible before push
+  ---
+  duration_ms: 2867.668918
+  type: 'test'
+  ...
+# Subtest: merge conflict is native unmerged index and abort restores original HEAD
+ok 47 - merge conflict is native unmerged index and abort restores original HEAD
+  ---
+  duration_ms: 2570.539793
+  type: 'test'
+  ...
+# Subtest: unsafe inputs cannot become options or escape the worktree
+ok 48 - unsafe inputs cannot become options or escape the worktree
+  ---
+  duration_ms: 500.927292
+  type: 'test'
+  ...
+# Subtest: resolved merge creates real two-parent commit and graph topology
+ok 49 - resolved merge creates real two-parent commit and graph topology
+  ---
+  duration_ms: 2071.753335
+  type: 'test'
+  ...
+# Subtest: cherry-pick, revert and reset are native operations, preserving soft-reset staged content
+ok 50 - cherry-pick, revert and reset are native operations, preserving soft-reset staged content
+  ---
+  duration_ms: 2311.250792
+  type: 'test'
+  ...
+# Subtest: rebase uses native parent rewriting and does not alter the other branch
+ok 51 - rebase uses native parent rewriting and does not alter the other branch
+  ---
+  duration_ms: 1693.967751
+  type: 'test'
+  ...
+# Subtest: worktree removal refuses unfinished work and branch deletion refuses an active worktree
+ok 52 - worktree removal refuses unfinished work and branch deletion refuses an active worktree
+  ---
+  duration_ms: 1866.001334
+  type: 'test'
+  ...
+# Subtest: unborn repository has empty graph and can unstage before its first commit
+ok 53 - unborn repository has empty graph and can unstage before its first commit
+  ---
+  duration_ms: 597.673667
+  type: 'test'
+  ...
+# Subtest: branch-filtered graph returns ancestry of requested branch, not a range against current HEAD
+ok 54 - branch-filtered graph returns ancestry of requested branch, not a range against current HEAD
+  ---
+  duration_ms: 1912.372876
+  type: 'test'
+  ...
+# Subtest: file history follows renames and blame uses the selected commit rather than another branch
+ok 55 - file history follows renames and blame uses the selected commit rather than another branch
+  ---
+  duration_ms: 2215.525042
+  type: 'test'
+  ...
+# Subtest: rebase, cherry-pick and revert conflicts expose native worktree operation and clear after abort
+ok 56 - rebase, cherry-pick and revert conflicts expose native worktree operation and clear after abort
+  ---
+  duration_ms: 4046.898627
+  type: 'test'
+  ...
+# Subtest: native apply stages and unstages selected hunks without including other edits and rejects stale diffs
+ok 57 - native apply stages and unstages selected hunks without including other edits and rejects stale diffs
+  ---
+  duration_ms: 5223.531794
+  type: 'test'
+  ...
+# Subtest: stash preview includes untracked content and stale list indices cannot apply or delete another stash
+ok 58 - stash preview includes untracked content and stale list indices cannot apply or delete another stash
+  ---
+  duration_ms: 2148.303334
+  type: 'test'
+  ...
+# Subtest: conflict versions come from native index; stale resolution refuses edits and incoming choice stages exact bytes
+ok 59 - conflict versions come from native index; stale resolution refuses edits and incoming choice stages exact bytes
+  ---
+  duration_ms: 3799.571126
+  type: 'test'
+  ...
+# Subtest: explicit edited conflict resolution stages only the supplied result
+ok 60 - explicit edited conflict resolution stages only the supplied result
+  ---
+  duration_ms: 2455.010751
+  type: 'test'
+  ...
+# Subtest: modify-delete conflict permits selecting native deletion and preserves the other branch
+ok 61 - modify-delete conflict permits selecting native deletion and preserves the other branch
+  ---
+  duration_ms: 2392.027584
+  type: 'test'
+  ...
+# Subtest: managed worktree cleanup protects current, ignored files and detached commits while retaining branch refs
+ok 62 - managed worktree cleanup protects current, ignored files and detached commits while retaining branch refs
+  ---
+  duration_ms: 7032.84692
+  type: 'test'
+  ...
+# Subtest: clean-looking worktree with an unfinished merge cannot be removed
+ok 63 - clean-looking worktree with an unfinished merge cannot be removed
+  ---
+  duration_ms: 2596.034542
+  type: 'test'
+  ...
+# Subtest: discard restores staged bytes while preserving staged changes and refuses a changed binary preview
+ok 64 - discard restores staged bytes while preserving staged changes and refuses a changed binary preview
+  ---
+  duration_ms: 2372.338543
+  type: 'test'
+  ...
+# Subtest: discard preview becomes stale when the staged version changes
+ok 65 - discard preview becomes stale when the staged version changes
+  ---
+  duration_ms: 1158.765917
+  type: 'test'
+  ...
+# Subtest: amend replaces the selected tip using staged bytes and refuses stale or switched targets
+ok 66 - amend replaces the selected tip using staged bytes and refuses stale or switched targets
+  ---
+  duration_ms: 1864.072334
+  type: 'test'
+  ...
+# Subtest: reset preview protects changed binary bytes and native modes preserve their documented state
+ok 67 - reset preview protects changed binary bytes and native modes preserve their documented state
+  ---
+  duration_ms: 3853.168085
+  type: 'test'
+  ...
+# Subtest: ignored files come from native rules and enter the index only after explicit force staging
+ok 68 - ignored files come from native rules and enter the index only after explicit force staging
+  ---
+  duration_ms: 1171.64325
+  type: 'test'
+  ...
+# Subtest: remote removal checks the confirmed URL and preserves local commits and worktree
+ok 69 - remote removal checks the confirmed URL and preserves local commits and worktree
+  ---
+  duration_ms: 1095.092167
+  type: 'test'
+  ...
+# Subtest: tag checkout exposes commit metadata for lightweight and annotated tags without branch ambiguity
+ok 70 - tag checkout exposes commit metadata for lightweight and annotated tags without branch ambiguity
+  ---
+  duration_ms: 1476.2325
+  type: 'test'
+  ...
+# Subtest: commit file lists and scoped patches cover roots, rename, delete and first-parent merges
+ok 71 - commit file lists and scoped patches cover roots, rename, delete and first-parent merges
+  ---
+  duration_ms: 4142.576502
+  type: 'test'
+  ...
+# Subtest: history search finds older commits outside the initial page and paginates matching results
+ok 72 - history search finds older commits outside the initial page and paginates matching results
+  ---
+  duration_ms: 26082.844513
+  type: 'test'
+  ...
+# Subtest: graph selected refs traverse the native union without unrelated tips
+ok 73 - graph selected refs traverse the native union without unrelated tips
+  ---
+  duration_ms: 2859.08
+  type: 'test'
+  ...
+# Subtest: batch discard previews every file, rejects stale edits and preserves staged contents
+ok 74 - batch discard previews every file, rejects stale edits and preserves staged contents
+  ---
+  duration_ms: 1291.103001
+  type: 'test'
+  ...
+# Subtest: single untracked discard requires confirmation and rejects stale contents
+ok 75 - single untracked discard requires confirmation and rejects stale contents
+  ---
+  duration_ms: 1985.346293
+  type: 'test'
+  ...
+# Subtest: full graph details preserve complete native identity, message and file statistics
+ok 76 - full graph details preserve complete native identity, message and file statistics
+  ---
+  duration_ms: 1866.134876
+  type: 'test'
+  ...
+# Subtest: graph visibility filters exclude remote and tag-only tips and can include reflogs
+ok 77 - graph visibility filters exclude remote and tag-only tips and can include reflogs
+  ---
+  duration_ms: 1914.836751
+  type: 'test'
+  ...
+# Subtest: commit all includes untracked files and signoff, staged commit preserves unstaged files
+ok 78 - commit all includes untracked files and signoff, staged commit preserves unstaged files
+  ---
+  duration_ms: 1287.611125
+  type: 'test'
+  ...
+# Subtest: stash scopes and drop-all hash guard preserve unselected work
+ok 79 - stash scopes and drop-all hash guard preserve unselected work
+  ---
+  duration_ms: 1838.582334
+  type: 'test'
+  ...
+# Subtest: remote deletion requires matching object IDs, pushes tags and fetch pruning is explicit
+ok 80 - remote deletion requires matching object IDs, pushes tags and fetch pruning is explicit
+  ---
+  duration_ms: 4407.149377
+  type: 'test'
+  ...
+# Subtest: explicit worktree creation does not switch or overwrite current dirty workspace
+ok 81 - explicit worktree creation does not switch or overwrite current dirty workspace
+  ---
+  duration_ms: 1182.894751
+  type: 'test'
+  ...
+# Subtest: real PTY preserves shell state, runs programs/pipes, interrupts and isolates sessions
+ok 82 - real PTY preserves shell state, runs programs/pipes, interrupts and isolates sessions
+  ---
+  duration_ms: 602.773084
+  type: 'test'
+  ...
+# Subtest: project bridge commits B files, shows old content on repo-test, and restores each dirty branch
+ok 83 - project bridge commits B files, shows old content on repo-test, and restores each dirty branch
+  ---
+  duration_ms: 3760.692252
+  type: 'test'
+  ...
+# Subtest: interrupted project transfer never exports mixed files into the old branch, and resumes idempotently
+ok 84 - interrupted project transfer never exports mixed files into the old branch, and resumes idempotently
+  ---
+  duration_ms: 2489.001876
+  type: 'test'
+  ...
+# Subtest: resuming an interrupted switch refuses to overwrite a newer collaborator value
+ok 85 - resuming an interrupted switch refuses to overwrite a newer collaborator value
+  ---
+  duration_ms: 1418.608501
+  type: 'test'
+  ...
+# Subtest: export preserves staged index, ignored files and binary bytes; supports file/folder transitions
+ok 86 - export preserves staged index, ignored files and binary bytes; supports file/folder transitions
+  ---
+  duration_ms: 1040.356083
+  type: 'test'
+  ...
+# Subtest: invalid paths, nested .git and symlinks are rejected before replacing any file
+ok 87 - invalid paths, nested .git and symlinks are rejected before replacing any file
+  ---
+  duration_ms: 698.124334
+  type: 'test'
+  ...
+# Subtest: canceling an interrupted transfer restores old branch and retains later collaborator edits
+ok 88 - canceling an interrupted transfer restores old branch and retains later collaborator edits
+  ---
+  duration_ms: 1824.326418
+  type: 'test'
+  ...
+# Subtest: native stash and pop update editor files and preserve the native staged index
+not ok 89 - native stash and pop update editor files and preserve the native staged index
+  ---
+  duration_ms: 1136.205625
+  type: 'test'
+  location: '/overleaf/services/web/test/agent/native-git-workspace.test.mjs:153:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///overleaf/services/web/test/agent/native-git-workspace.test.mjs:160:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: interrupted import after native reset resumes without rerunning Git or exporting stale editor files
+ok 90 - interrupted import after native reset resumes without rerunning Git or exporting stale editor files
+  ---
+  duration_ms: 1827.542376
+  type: 'test'
+  ...
+# Subtest: native merge conflicts are imported into editor and native abort restores editor content
+ok 91 - native merge conflicts are imported into editor and native abort restores editor content
+  ---
+  duration_ms: 3353.09221
+  type: 'test'
+  ...
+# Subtest: a new process can resume a persisted native-operation transfer without invoking the Git command again
+ok 92 - a new process can resume a persisted native-operation transfer without invoking the Git command again
+  ---
+  duration_ms: 1557.836042
+  type: 'test'
+  ...
+# Subtest: command adapter uses the requesting author and native index, refs, diffs and branch checkout
+ok 93 - command adapter uses the requesting author and native index, refs, diffs and branch checkout
+  ---
+  duration_ms: 3520.588793
+  type: 'test'
+  ...
+# Subtest: AI commit message receives staged content and native diff, excluding unstaged and unselected edits
+ok 94 - AI commit message receives staged content and native diff, excluding unstaged and unselected edits
+  ---
+  duration_ms: 1506.234917
+  type: 'test'
+  ...
+# Subtest: AI result is rejected if the staged native tree changes while generating
+ok 95 - AI result is rejected if the staged native tree changes while generating
+  ---
+  duration_ms: 1549.938625
+  type: 'test'
+  ...
+# Subtest: native diff displays untracked additions and the root commit without a fabricated parent
+ok 96 - native diff displays untracked additions and the root commit without a fabricated parent
+  ---
+  duration_ms: 1029.527584
+  type: 'test'
+  ...
+# Subtest: resolving native conflict imports chosen file into the editor and keeps merge continuation separate
+ok 97 - resolving native conflict imports chosen file into the editor and keeps merge continuation separate
+  ---
+  duration_ms: 5816.918627
+  type: 'test'
+  ...
+# Subtest: inspection exposes sanitized provider metadata from actual native remote configuration
+ok 98 - inspection exposes sanitized provider metadata from actual native remote configuration
+  ---
+  duration_ms: 1382.140209
+  type: 'test'
+  ...
+# Subtest: historical file reads do not export or alter unsaved editor content
+ok 99 - historical file reads do not export or alter unsaved editor content
+  ---
+  duration_ms: 2317.454917
+  type: 'test'
+  ...
+# Subtest: commit previews preserve binary bytes and the exact parent/new versions
+ok 100 - commit previews preserve binary bytes and the exact parent/new versions
+  ---
+  duration_ms: 2383.772876
+  type: 'test'
+  ...
+# Subtest: working and staged previews distinguish HEAD, index and current bytes, including untracked files
+ok 101 - working and staged previews distinguish HEAD, index and current bytes, including untracked files
+  ---
+  duration_ms: 1650.207583
+  type: 'test'
+  ...
+# Subtest: unsupported clustered Redis keeps ordinary edits working and refuses exclusive Git transfers
+ok 102 - unsupported clustered Redis keeps ordinary edits working and refuses exclusive Git transfers
+  ---
+  duration_ms: 6.319792
+  type: 'test'
+  ...
+# Subtest: exclusive transfer admits only its own internal document requests and rejects new queued edits atomically
+ok 103 - exclusive transfer admits only its own internal document requests and rejects new queued edits atomically # SKIP
+  ---
+  duration_ms: 0.309958
+  type: 'test'
+  ...
+# Subtest: lease renews while active, releases after errors, and does not erase a replacement owner
+ok 104 - lease renews while active, releases after errors, and does not erase a replacement owner # SKIP
+  ---
+  duration_ms: 0.091458
+  type: 'test'
+  ...
+# Subtest: deadline expires privileged writes, while disabled integration leaves normal editing unchanged
+ok 105 - deadline expires privileged writes, while disabled integration leaves normal editing unchanged # SKIP
+  ---
+  duration_ms: 0.450833
+  type: 'test'
+  ...
+1..105
+# tests 105
+# suites 0
+# pass 101
+# fail 1
+# cancelled 0
+# skipped 3
+# todo 0
+# duration_ms 137575.600021

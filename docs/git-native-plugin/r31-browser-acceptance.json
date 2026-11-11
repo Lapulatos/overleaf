@@ -1,0 +1,13 @@
+{
+  "image": "overleaf-agent-acceptance:20261110-native-git-candidate-r31",
+  "assetPreview": {
+    "openFileReturnedToSourceEditor": true,
+    "editorLinesUnchanged": true,
+    "nativeParentAndCommitVersionsShown": true,
+    "addedRemovedGutters": true,
+    "overviewTargetVisibleAfterClick": true
+  },
+  "deploymentHttp": 200,
+  "postDeploymentBrowser": "Interrupted automation wait during startup; no fresh browser acceptance claimed",
+  "scope": "Existing isolated headless test tab; no user project or user window mutation"
+}

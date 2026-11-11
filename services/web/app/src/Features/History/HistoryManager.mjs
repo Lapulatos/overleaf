@@ -188,15 +188,16 @@ async function requestBlobWithProjectId(
   projectId,
   hash,
   method = 'GET',
-  range = ''
+  range = '',
+  signal
 ) {
   const project = await ProjectGetter.promises.getProject(projectId, {
     'overleaf.history.id': true,
   })
-  return requestBlob(project.overleaf.history.id, hash, method, range)
+  return requestBlob(project.overleaf.history.id, hash, method, range, signal)
 }
 
-async function requestBlob(historyId, hash, method = 'GET', range = '') {
+async function requestBlob(historyId, hash, method = 'GET', range = '', signal) {
   // Talk to history-v1 directly to avoid streaming via project-history.
   const url = new URL(HISTORY_V1_URL)
   url.pathname += `/projects/${historyId}/blobs/${hash}`
@@ -206,7 +207,7 @@ async function requestBlob(historyId, hash, method = 'GET', range = '') {
   try {
     ;({ stream, response } = await fetchStreamWithResponse(url, {
       ...opts,
-      signal: AbortSignal.timeout(10 * 60 * 1000),
+      signal: signal || AbortSignal.timeout(10 * 60 * 1000),
       basicAuth: {
         user: settings.apis.v1_history.user,
         password: settings.apis.v1_history.pass,

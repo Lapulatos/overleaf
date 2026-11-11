@@ -13,6 +13,69 @@ const { StringFileData } = require('overleaf-editor-core')
 const { addTrackedDeletesToContent } = require('./Utils')
 const HistoryConversions = require('./HistoryConversions')
 
+// Internal service endpoint, gated off until the complete deletion protocol is enabled.
+async function prepareDocumentDeletion(req, res) {
+  if (Settings.documentupdater?.reviewedDeletionEnabled !== true) {
+    return res.sendStatus(404)
+  }
+  const { project_id: projectId, doc_id: docId } = req.params
+  const operationId = req.body?.operationId
+  try {
+    const manager = require('./DocumentDeletionManager')
+    const receipt = await manager.promises.prepare(projectId, docId, operationId)
+    return res.json({ projectId, docId, operationId: receipt.operationId, state: receipt.state })
+  } catch (error) {
+    if (error.status === 400 || error.status === 409) {
+      return res.status(error.status).json({ code: 'DOCUMENT_DELETION_PREPARATION_REJECTED' })
+    }
+    throw error
+  }
+}
+
+
+
+
+
+async function queueReviewedDeletionHistory(req, res) {
+  if (Settings.documentupdater?.reviewedDeletionEnabled !== true) return res.sendStatus(404)
+  const { project_id: projectId, doc_id: docId } = req.params
+  const operationId = req.body?.operationId
+  const history = require('./ProjectHistoryRedisManager')
+  await history.promises.queueReviewedDeletion(projectId, docId, operationId)
+  return res.json({ projectId, docId, operationId, queued: true })
+}
+
+
+
+async function inspectDocumentDeletion(req, res) {
+  if (Settings.documentupdater?.reviewedDeletionEnabled !== true) return res.sendStatus(404)
+  const { project_id: projectId, doc_id: docId, operation_id: operationId } = req.params
+  res.set('Cache-Control', 'no-store')
+  try {
+    const manager = require('./DocumentDeletionManager')
+    const result = await manager.promises.inspect(projectId, docId, operationId)
+    return res.json({ projectId, docId, operationId, cacheCleared: result.cacheCleared === true })
+  } catch (error) {
+    if (error.status === 400 || error.status === 409) return res.status(error.status).json({ code: 'DOCUMENT_DELETION_INSPECTION_REJECTED' })
+    throw error
+  }
+}
+
+async function cleanupDocumentDeletion(req, res) {
+  if (Settings.documentupdater?.reviewedDeletionEnabled !== true) return res.sendStatus(404)
+  const { project_id: projectId, doc_id: docId } = req.params
+  try {
+    const manager = require('./DocumentDeletionManager')
+    const receipt = await manager.promises.cleanup(projectId, docId, req.body?.operationId)
+    return res.json(receipt)
+  } catch (error) {
+    if (error.status === 400 || error.status === 409) {
+      return res.status(error.status).json({ code: 'DOCUMENT_DELETION_CLEANUP_REJECTED' })
+    }
+    throw error
+  }
+}
+
 async function getDoc(req, res) {
   let fromVersion
   const docId = req.params.doc_id
@@ -200,6 +263,13 @@ async function setDoc(req, res) {
   const docId = req.params.doc_id
   const projectId = req.params.project_id
   const { lines, source, user_id: userId, undoing } = req.body
+  const { expectedVersion } = req.body
+  if (
+    expectedVersion !== undefined &&
+    (!Number.isSafeInteger(expectedVersion) || expectedVersion < 0)
+  ) {
+    return res.sendStatus(400)
+  }
   const lineSize = getTotalSizeOfLines(lines)
 
   if (lineSize > Settings.max_doc_length) {
@@ -215,6 +285,12 @@ async function setDoc(req, res) {
   )
   const timer = new Metrics.Timer('http.setDoc')
 
+  // Reviewed, version-checked assistant edits are collaborative operations by
+  // the approving user, not an unconditional external replacement. Preserve
+  // external-update warnings for integrations without those safeguards.
+  const reviewedAssistantEdit =
+    source === 'writing-assist' && expectedVersion !== undefined && Boolean(userId)
+
   const result = await DocumentManager.promises.setDocWithLock(
     projectId,
     docId,
@@ -222,10 +298,15 @@ async function setDoc(req, res) {
     source,
     userId,
     undoing,
-    true
+    !reviewedAssistantEdit,
+    expectedVersion
   )
   timer.done()
   logger.debug({ projectId, docId }, 'set doc via http')
+
+  if (result?.conflict) {
+    return res.status(409).json(result)
+  }
 
   // If the document is unchanged and hasn't been updated, `result` will be
   // undefined, which leads to an invalid JSON response, so we send an empty
@@ -553,6 +634,13 @@ module.exports = {
   clearProjectState: expressify(clearProjectState),
   appendToDoc: expressify(appendToDoc),
   setDoc: expressify(setDoc),
+  prepareDocumentDeletion: expressify(prepareDocumentDeletion),
+  cleanupDocumentDeletion: expressify(cleanupDocumentDeletion),
+  inspectDocumentDeletion: expressify(inspectDocumentDeletion),
+
+  queueReviewedDeletionHistory: expressify(queueReviewedDeletionHistory),
+
+
   flushDocIfLoaded: expressify(flushDocIfLoaded),
   deleteDoc: expressify(deleteDoc),
   flushProject: expressify(flushProject),

@@ -1,0 +1,70 @@
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+
+  Native blame presentation
+    ✔ preserves indentation, empty source lines, final line numbers and native commit identity
+    ✔ supports SHA-256 Git object names without treating source lines as metadata
+    ✔ navigates to the exact full commit hash from a displayed line (135ms)
+(node:14384) TimeoutNaNWarning: NaN is not a number.
+Timeout duration was set to 1.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+  Native Git branch picker
+    ✔ shows one checkout choice for a tracking branch, retaining its different remote tip
+    ✔ does not collapse unrelated local and remote branches just because their commit is identical
+
+  Branch picker interaction
+    ✔ shows the three direct actions and actual commit author, date and subject without duplicate tracking ref
+    ✔ supports searching by author, direct selection and Escape returning focus (39ms)
+
+  Native conflict editor
+    ✔ submits the explicitly edited result without changing the selected side
+    ✔ makes incoming deletion explicit and does not expose a lossy binary text editor
+    ✔ explains native rebase sides and retains the result on a stale-file error
+
+  Git editor save barrier
+    ✔ waits for buffered operations before invoking Git and always restores editor access
+    ✔ does not run Git if saving timed out or buffered edits remain
+
+  Merge branch selection
+    ✔ filters by author and commit subject, excludes target, and requires an explicit selection
+    ✔ keeps the selection on an operation error and offers no phantom empty search result
+
+  Repository credentials settings
+    ✔ keeps a masked configured state after saving without returning or reusing the token
+
+  Native Source Control panel
+    ✔ connects an HTTPS repository while retaining current project files and renders the returned native state (49ms)
+    ✔ shows native conflict continuation and abort controls for the active operation only (111ms)
+    ✔ renders repository actions outside clipped sections and closes after selecting the last item (47ms)
+    ✔ applies a native stage hunk and refreshes the remaining diff (85ms)
+    ✔ applies a native unstage hunk and refreshes the remaining diff (83ms)
+    ✔ shows a stale diff error in the diff and does not retry staging automatically (101ms)
+    ✔ shows whole-file diff without hunk controls for binary or structural changes (69ms)
+    ✔ refreshes Changes after editor save events without issuing a Git mutation (781ms)
+    ✔ does not let a delayed background refresh overwrite the result of staging (879ms)
+    ✔ refreshes status after a lost commit response without submitting the commit again (67ms)
+    ✔ opens line authors from file history and navigates to the native commit diff (140ms)
+    ✔ selects a source branch from the merge list and binds the displayed target (92ms)
+    ✔ separates unmerged files and stages a chosen native conflict version before allowing continuation (136ms)
+    ✔ renames a branch through the native command without creating a replacement branch (81ms)
+    ✔ opens file history with author, date and commit subject from the current repository (100ms)
+    ✔ stages a selected file, commits it and immediately renders the returned graph and remaining files (108ms)
+    ✔ keeps the commit message after failure and refreshes native conflict state (68ms)
+    ✔ renders initialization result instead of remaining stuck on the connect screen
+    ✔ generates the message on explicit AI click without committing (45ms)
+
+  Native commit graph layout
+    ✔ keeps merge parents in separate lanes until their actual common ancestor
+
+  Native stash management
+    ✔ restores the selected entry with its exact hash using apply (63ms)
+    ✔ restores the selected entry with its exact hash using pop (66ms)
+    ✔ previews the selected native patch and requires explicit confirmation before deletion
+    ✔ keeps the list on failed restore and offers refresh without retrying
+
+
+  39 passing (4s)
+

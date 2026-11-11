@@ -1,4 +1,5 @@
 import ReactDOM from 'react-dom'
+import { useProjectContext } from '@/shared/context/project-context'
 import { useCodeMirrorViewContext } from '../../source-editor/components/codemirror-context'
 import { memo } from 'react'
 import ReviewPanel from './review-panel'
@@ -7,6 +8,7 @@ import useReviewPanelLayout from '../hooks/use-review-panel-layout'
 
 function ReviewPanelContainer() {
   const view = useCodeMirrorViewContext()
+  const { features } = useProjectContext()
   const { showPanel, mini } = useReviewPanelLayout()
 
   if (!view) {
@@ -15,7 +17,7 @@ function ReviewPanelContainer() {
 
   return ReactDOM.createPortal(
     <>
-      <ReviewModeSwitcher />
+      {!features.nativeComments && <ReviewModeSwitcher />}
       {showPanel && <ReviewPanel mini={mini} />}
     </>,
     view.scrollDOM

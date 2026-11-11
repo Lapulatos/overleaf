@@ -1,0 +1,27 @@
+✔ project bridge commits B files, shows old content on repo-test, and restores each dirty branch (1428.42275ms)
+✔ interrupted project transfer never exports mixed files into the old branch, and resumes idempotently (1000.679417ms)
+✔ resuming an interrupted switch refuses to overwrite a newer collaborator value (590.345333ms)
+✔ export preserves staged index, ignored files and binary bytes; supports file/folder transitions (556.937417ms)
+✔ invalid paths, nested .git and symlinks are rejected before replacing any file (376.908292ms)
+✔ canceling an interrupted transfer restores old branch and retains later collaborator edits (828.418959ms)
+✔ native stash and pop update editor files and preserve the native staged index (972.67875ms)
+✔ interrupted import after native reset resumes without rerunning Git or exporting stale editor files (827.047209ms)
+✔ native merge conflicts are imported into editor and native abort restores editor content (1408.4055ms)
+✔ a new process can resume a persisted native-operation transfer without invoking the Git command again (705.211916ms)
+✔ command adapter uses the requesting author and native index, refs, diffs and branch checkout (1753.426083ms)
+✔ AI commit message receives staged content and native diff, excluding unstaged and unselected edits (641.676833ms)
+✔ AI result is rejected if the staged native tree changes while generating (684.335084ms)
+✔ native diff displays untracked additions and the root commit without a fabricated parent (441.964792ms)
+✔ resolving native conflict imports chosen file into the editor and keeps merge continuation separate (1831.198958ms)
+✔ inspection exposes sanitized provider metadata from actual native remote configuration (598.915541ms)
+✔ historical file reads do not export or alter unsaved editor content (788.198541ms)
+✔ commit previews preserve binary bytes and the exact parent/new versions (1243.885166ms)
+✔ working and staged previews distinguish HEAD, index and current bytes, including untracked files (829.624958ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 17774.979583

@@ -1,0 +1,44 @@
+✔ disabled, anonymous and unauthorized requests cannot access native repository storage (12.395583ms)
+✔ HTTP command rejects traversal project IDs, unknown commands and supplied filesystem/config fields (3.312125ms)
+✔ authenticated request is bound to the session user and authorized project, with no-store responses (0.418792ms)
+✔ pending editor integration reports unavailable without pretending a command succeeded (0.334583ms)
+✔ Overleaf adapter reads native document lines and binary asset bytes without normalizing them (3.658375ms)
+✔ applies through existing document-version CAS and native create/delete APIs inside exclusive write scope (31.964208ms)
+✔ whole transfer preflight prevents any mutation if a collaborator changed one source file (2.462708ms)
+✔ same bytes with a different document identity are not accepted as the original file (3.675708ms)
+✔ adapter cannot mutate a project until production exclusive-access integration is supplied (1.138709ms)
+✔ B commit, old branch checkout, and branch-specific unfinished files follow native worktrees (1193.525959ms)
+✔ native index staging and commit include only selected changes, including deletion and unusual filenames (697.391042ms)
+✔ create from older commit and detached checkout do not move branches (1100.773209ms)
+✔ stash preserves tracked, staged and untracked work through native Git (708.107541ms)
+✔ publish, fetch and pull use a real bare remote; local commit is visible before push (1439.544334ms)
+✔ merge conflict is native unmerged index and abort restores original HEAD (1156.538791ms)
+✔ unsafe inputs cannot become options or escape the worktree (333.897708ms)
+✔ resolved merge creates real two-parent commit and graph topology (933.952083ms)
+✔ cherry-pick, revert and reset are native operations, preserving soft-reset staged content (1091.746584ms)
+✔ rebase uses native parent rewriting and does not alter the other branch (799.332166ms)
+✔ worktree removal refuses unfinished work and branch deletion refuses an active worktree (691.957875ms)
+✔ unborn repository has empty graph and can unstage before its first commit (258.522375ms)
+✔ branch-filtered graph returns ancestry of requested branch, not a range against current HEAD (770.918416ms)
+✔ project bridge commits B files, shows old content on repo-test, and restores each dirty branch (1053.347417ms)
+✔ interrupted project transfer never exports mixed files into the old branch, and resumes idempotently (711.837667ms)
+✔ resuming an interrupted switch refuses to overwrite a newer collaborator value (742.289667ms)
+✔ export preserves staged index, ignored files and binary bytes; supports file/folder transitions (674.559917ms)
+✔ invalid paths, nested .git and symlinks are rejected before replacing any file (409.701875ms)
+✔ canceling an interrupted transfer restores old branch and retains later collaborator edits (921.763083ms)
+✔ native stash and pop update editor files and preserve the native staged index (1354.786917ms)
+✔ interrupted import after native reset resumes without rerunning Git or exporting stale editor files (843.195416ms)
+✔ native merge conflicts are imported into editor and native abort restores editor content (1236.71425ms)
+✔ a new process can resume a persisted native-operation transfer without invoking the Git command again (780.701625ms)
+✔ command adapter uses the requesting author and native index, refs, diffs and branch checkout (1799.607833ms)
+✔ AI commit message receives staged content and native diff, excluding unstaged and unselected edits (816.750625ms)
+✔ AI result is rejected if the staged native tree changes while generating (790.721209ms)
+✔ native diff displays untracked additions and the root commit without a fabricated parent (626.909709ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13243.090709

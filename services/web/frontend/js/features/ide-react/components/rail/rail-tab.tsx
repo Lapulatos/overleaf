@@ -27,6 +27,7 @@ const RailTab = forwardRef<
         eventKey={eventKey}
         className={classNames('ide-rail-tab-link', className, {
           'open-rail': open,
+          'ide-rail-tab-link-addon': ['plugins', 'writing-assist-agent', 'writing-assist-dismissed'].includes(eventKey || ''),
         })}
         as="button"
       >

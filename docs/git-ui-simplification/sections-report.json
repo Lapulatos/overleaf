@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "collapseRetainsDraft": true,
+  "settingsInEditor": true,
+  "ignoreRulesInEditor": true,
+  "savedWorkInEditor": true,
+  "threeSections": true,
+  "diffInEditor": true,
+  "graphInEditor": true,
+  "commitDetailsInEditor": true,
+  "branchesInEditor": true,
+  "initialSyncSections": true,
+  "unboundFixtureOnlyBinding": true
+}

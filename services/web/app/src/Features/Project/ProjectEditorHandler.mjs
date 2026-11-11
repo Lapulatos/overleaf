@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import Path from 'node:path'
+import Features from '../../infrastructure/Features.mjs'
 let ProjectEditorHandler
 
 export default ProjectEditorHandler = {
@@ -40,7 +41,7 @@ export default ProjectEditorHandler = {
       result.invites = this.buildInvitesView(invites)
     }
 
-    result.features = _.defaults(ownerMember?.user?.features || {}, {
+    result.features = _.defaults({}, ownerMember?.user?.features || {}, {
       collaborators: -1, // Infinite
       versioning: false,
       dropbox: false,
@@ -54,6 +55,12 @@ export default ProjectEditorHandler = {
       trackChangesVisible: ProjectEditorHandler.trackChangesAvailable,
       symbolPalette: false,
     })
+
+    if (Features.hasFeature('chat') && !Features.hasFeature('track-changes')) {
+      result.features.nativeComments = true
+      result.features.trackChangesVisible = true
+      result.features.trackChanges = false
+    }
 
     if (result.features.trackChanges) {
       result.trackChangesState = project.track_changes || false
@@ -84,15 +91,15 @@ export default ProjectEditorHandler = {
   },
 
   buildFolderModelView(folder) {
-    const fileRefs = _.filter(folder.fileRefs || [], file => file != null)
+    const fileRefs = _.filter(folder.fileRefs || [], (file) => file != null)
     return {
       _id: folder._id,
       name: folder.name,
-      folders: (folder.folders || []).map(childFolder =>
+      folders: (folder.folders || []).map((childFolder) =>
         this.buildFolderModelView(childFolder)
       ),
-      fileRefs: fileRefs.map(file => this.buildFileModelView(file)),
-      docs: (folder.docs || []).map(doc => this.buildDocModelView(doc)),
+      fileRefs: fileRefs.map((file) => this.buildFileModelView(file)),
+      docs: (folder.docs || []).map((doc) => this.buildDocModelView(doc)),
     }
   },
 
@@ -117,6 +124,8 @@ export default ProjectEditorHandler = {
     if (invites == null) {
       return []
     }
-    return invites.map(invite => _.pick(invite, ['_id', 'email', 'privileges']))
+    return invites.map((invite) =>
+      _.pick(invite, ['_id', 'email', 'privileges'])
+    )
   },
 }

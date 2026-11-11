@@ -1,0 +1,23 @@
+✔ disabled, anonymous and unauthorized requests cannot access native repository storage (1.909916ms)
+✔ HTTP command rejects traversal project IDs, unknown commands and supplied filesystem/config fields (1.642666ms)
+✔ authenticated request is bound to the session user and authorized project, with no-store responses (0.370625ms)
+✔ pending editor integration reports unavailable without pretending a command succeeded (0.298084ms)
+✔ project bridge commits B files, shows old content on repo-test, and restores each dirty branch (965.164708ms)
+✔ interrupted project transfer never exports mixed files into the old branch, and resumes idempotently (632.236709ms)
+✔ resuming an interrupted switch refuses to overwrite a newer collaborator value (512.961708ms)
+✔ export preserves staged index, ignored files and binary bytes; supports file/folder transitions (536.356542ms)
+✔ invalid paths, nested .git and symlinks are rejected before replacing any file (359.965209ms)
+✔ canceling an interrupted transfer restores old branch and retains later collaborator edits (591.565417ms)
+✔ native stash and pop update editor files and preserve the native staged index (740.442458ms)
+✔ interrupted import after native reset resumes without rerunning Git or exporting stale editor files (655.432708ms)
+✔ native merge conflicts are imported into editor and native abort restores editor content (1005.431458ms)
+✔ a new process can resume a persisted native-operation transfer without invoking the Git command again (667.021166ms)
+✔ command adapter uses the requesting author and native index, refs, diffs and branch checkout (1665.768583ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8632.409583

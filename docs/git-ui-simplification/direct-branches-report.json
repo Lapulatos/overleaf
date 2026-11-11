@@ -1,0 +1,12 @@
+{
+  "noAutomaticGitPage": true,
+  "detachedCommit": "ade955648d9fdc953dc6b9d0caba7533178f4929",
+  "passed": true,
+  "createdLocalBranches": [
+    "test/direct-1794198956-0",
+    "test/direct-1794198956-1",
+    "test/direct-1794198956-2"
+  ],
+  "restoredBranch": "refs/heads/main",
+  "projectFileFingerprintUnchanged": true
+}

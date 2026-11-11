@@ -1,0 +1,4 @@
+Using default settings from /overleaf/services/web/config/settings.defaults.js
+Using settings from /etc/overleaf/prism-deletion-settings.cjs
+Set UV_THREADPOOL_SIZE=16
+{"projectId":"6aee30c179c897758e370d23","baselineUnchanged":true,"activeAdmissions":0}

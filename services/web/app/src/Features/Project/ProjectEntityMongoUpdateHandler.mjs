@@ -19,6 +19,12 @@ import { iterablePaths } from './IterablePath.mjs'
 
 const { ObjectId } = mongodb
 
+// A reviewed deletion's history must be confirmed before later structure writes.
+// Apply this condition atomically, including callers using withoutLock helpers.
+function findOneAndUpdateStructure(query, update, options) {
+  return Project.findOneAndUpdate({ ...query, deletionHistoryPending: { $exists: false } }, update, options)
+}
+
 const LOCK_NAMESPACE = 'mongoTransaction'
 const ENTITY_TYPE_TO_MONGO_PATH_SEGMENT = {
   doc: 'docs',
@@ -161,7 +167,7 @@ async function replaceFileWithNew(projectId, fileId, newFileRef, userId) {
     element_id: fileId,
     type: 'file',
   })
-  const newProject = await Project.findOneAndUpdate(
+  const newProject = await findOneAndUpdateStructure(
     { _id: project._id, [path.mongo]: { $exists: true } },
     {
       $set: {
@@ -207,7 +213,7 @@ async function replaceDocWithFile(projectId, docId, fileRef, userId) {
     type: 'doc',
   })
   const folderMongoPath = _getParentMongoPath(path.mongo)
-  const newProject = await Project.findOneAndUpdate(
+  const newProject = await findOneAndUpdateStructure(
     { _id: project._id, [folderMongoPath]: { $exists: true } },
     {
       $pull: {
@@ -241,7 +247,7 @@ async function replaceFileWithDoc(projectId, fileId, newDoc, userId) {
     type: 'file',
   })
   const folderMongoPath = _getParentMongoPath(path.mongo)
-  const newProject = await Project.findOneAndUpdate(
+  const newProject = await findOneAndUpdateStructure(
     { _id: project._id, [folderMongoPath]: { $exists: true } },
     {
       $pull: {
@@ -450,7 +456,7 @@ async function renameEntity(projectId, entityId, entityType, newName, userId) {
     ProjectEntityHandler.getAllEntitiesFromProject(project)
 
   // we need to increment the project version number for any structure change
-  const newProject = await Project.findOneAndUpdate(
+  const newProject = await findOneAndUpdateStructure(
     { _id: projectId, [entPath.mongo]: { $exists: true } },
     {
       $set: {
@@ -498,7 +504,7 @@ async function _removeElementFromMongoArray(
   if (deleteRootDoc) {
     update.$unset = { rootDoc_id: 1 }
   }
-  return Project.findOneAndUpdate(query, update, options).exec()
+  return findOneAndUpdateStructure(query, update, options).exec()
 }
 
 function _countElements(project) {
@@ -580,7 +586,7 @@ async function _putElement(project, folderId, element, type, userId) {
   _checkValidElementName(folder, element.name)
   element._id = new ObjectId(element._id.toString())
   const mongoPath = `${path.mongo}.${pathSegment}`
-  const newProject = await Project.findOneAndUpdate(
+  const newProject = await findOneAndUpdateStructure(
     { _id: project._id, [path.mongo]: { $exists: true } },
     {
       $push: { [mongoPath]: element },
@@ -709,7 +715,7 @@ async function createNewFolderStructure(projectId, docEntries, fileEntries) {
       docEntries,
       fileEntries
     )
-    const project = await Project.findOneAndUpdate(
+    const project = await findOneAndUpdateStructure(
       {
         _id: projectId,
         'rootFolder.0.folders.0': { $exists: false },

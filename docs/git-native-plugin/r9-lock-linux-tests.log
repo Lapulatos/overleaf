@@ -1,0 +1,58 @@
+TAP version 13
+# Subtest: disabled, anonymous and unauthorized requests cannot access native repository storage
+ok 1 - disabled, anonymous and unauthorized requests cannot access native repository storage
+  ---
+  duration_ms: 6.231208
+  type: 'test'
+  ...
+# Subtest: HTTP command rejects traversal project IDs, unknown commands and supplied filesystem/config fields
+ok 2 - HTTP command rejects traversal project IDs, unknown commands and supplied filesystem/config fields
+  ---
+  duration_ms: 12.816958
+  type: 'test'
+  ...
+# Subtest: authenticated request is bound to the session user and authorized project, with no-store responses
+ok 3 - authenticated request is bound to the session user and authorized project, with no-store responses
+  ---
+  duration_ms: 1.965041
+  type: 'test'
+  ...
+# Subtest: pending editor integration reports unavailable without pretending a command succeeded
+ok 4 - pending editor integration reports unavailable without pretending a command succeeded
+  ---
+  duration_ms: 2.421584
+  type: 'test'
+  ...
+# Subtest: project lock contention returns JSON 503 with Retry-After instead of a generic 500 page
+ok 5 - project lock contention returns JSON 503 with Retry-After instead of a generic 500 page
+  ---
+  duration_ms: 0.793209
+  type: 'test'
+  ...
+# Subtest: lock acquisition timeout is retryable without running the Git operation
+ok 6 - lock acquisition timeout is retryable without running the Git operation
+  ---
+  duration_ms: 6.378958
+  type: 'test'
+  ...
+# Subtest: a timeout after acquisition remains the original operation error and is not retried
+ok 7 - a timeout after acquisition remains the original operation error and is not retried
+  ---
+  duration_ms: 0.399167
+  type: 'test'
+  ...
+# Subtest: successful operation and non-timeout lock errors retain original results
+ok 8 - successful operation and non-timeout lock errors retain original results
+  ---
+  duration_ms: 0.431208
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 925.300001

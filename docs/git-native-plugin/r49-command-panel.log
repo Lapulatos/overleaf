@@ -1,0 +1,15 @@
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+
+  Paper Assistant Git command execution
+    ✔ enforces workspace-write for pull and saves editor before execution (111ms)
+    ✔ enforces auto-review for pull and saves editor before execution
+    ✔ enforces full-access for pull and saves editor before execution
+    ✔ enforces read-only for pull and saves editor before execution
+    ✔ serves help without an editor or API request
+
+
+  5 passing (128ms)
+

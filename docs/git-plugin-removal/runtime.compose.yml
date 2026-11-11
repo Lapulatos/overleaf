@@ -1,0 +1,40 @@
+# Separate app volume/database/Redis. The user demo at 18080 remains unchanged.
+services:
+  candidate-web:
+    image: overleaf-agent-acceptance:20261109-without-git
+    platform: linux/amd64
+    cpus: 2
+    mem_limit: 4g
+    ports:
+      - "127.0.0.1:18081:80"
+    volumes:
+      - candidate-app-data:/var/lib/overleaf
+      - ./runtime-settings.cjs:/etc/overleaf/prism-deletion-settings.cjs:ro
+    environment:
+      OVERLEAF_CONFIG: /etc/overleaf/prism-deletion-settings.cjs
+      OVERLEAF_MONGO_URL: mongodb://overleaf-agent-acceptance-mongo-1/prism_reviewed_deletion
+      OVERLEAF_REDIS_HOST: candidate-redis
+      REDIS_HOST: candidate-redis
+      OVERLEAF_SITE_URL: http://127.0.0.1:18081
+      OVERLEAF_APP_NAME: Paper Assistant deletion acceptance
+      OVERLEAF_AGENT_ENDPOINT: http://host.docker.internal:47291
+      OVERLEAF_AGENT_TOKEN: ${OVERLEAF_AGENT_TOKEN:?Use existing private local agent token}
+      WRITING_ASSIST_ZOTERO_ENCRYPTION_KEY: ${WRITING_ASSIST_ZOTERO_ENCRYPTION_KEY:?Use existing private key}
+      EMAIL_CONFIRMATION_DISABLED: "true"
+      DOCKER_RUNNER: "false"
+      SANDBOXED_COMPILES: "false"
+    depends_on:
+      - candidate-redis
+  candidate-redis:
+    image: redis:6.2
+    cpus: 0.5
+    mem_limit: 256m
+    volumes:
+      - candidate-redis-data:/data
+networks:
+  default:
+    external: true
+    name: overleaf-agent-acceptance_default
+volumes:
+  candidate-app-data:
+  candidate-redis-data:

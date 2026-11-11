@@ -1,3 +1,6 @@
+import PluginLibrary, { PluginRailIcon } from '@/features/plugins/plugin-library'
+import SourceControlPanel from '@/features/source-control/source-control-panel'
+import { BranchIcon } from '@/features/source-control/branch-picker'
 import { FC, RefObject, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Nav, TabContainer } from 'react-bootstrap'
@@ -34,6 +37,11 @@ import importOverleafModules from '../../../../../macros/import-overleaf-module.
 import { shouldIncludeElement } from '@/features/ide-react/util/rail-utils'
 import { useEditorContext } from '@/shared/context/editor-context'
 import useEventListener from '@/shared/hooks/use-event-listener'
+
+const SourceControlRailIcon = ({ title }: { title: string }) => <>
+  <BranchIcon />
+  <span className="visually-hidden">{title}</span>
+</>
 
 const moduleRailEntries = (
   importOverleafModules('railEntries') as {
@@ -132,6 +140,9 @@ export const RailLayout = () => {
           !getMeta('ol-capabilities')?.includes('chat') ||
           isRestrictedTokenMember,
       },
+      { key: 'native-git', icon: SourceControlRailIcon, title: 'Source Control', component: <SourceControlPanel />,
+        hide: !getMeta('ol-nativeGitEnabled') || isRestrictedTokenMember },
+      { key: 'plugins', icon: PluginRailIcon, title: 'Plugins', component: <PluginLibrary /> },
       ...moduleRailEntries,
     ],
     [

@@ -1,0 +1,48 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 706B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/overleaf-agent-acceptance:20261109-without-git
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 1.59MB 0.0s done
+#4 DONE 0.1s
+
+#5 [stage-0 1/7] FROM docker.io/library/overleaf-agent-acceptance:20261109-without-git
+#5 DONE 0.2s
+
+#6 [stage-0 2/7] COPY package.json yarn.lock /overleaf/
+#6 DONE 0.0s
+
+#7 [stage-0 3/7] COPY libraries/ /overleaf/libraries/
+#7 DONE 0.0s
+
+#8 [stage-0 4/7] COPY services/ /overleaf/services/
+#8 DONE 0.0s
+
+#9 [stage-0 5/7] WORKDIR /overleaf/services/web
+#9 DONE 0.0s
+
+#10 [stage-0 6/7] RUN --mount=type=cache,target=/root/.cache --mount=type=cache,target=/root/.yarn/berry/cache,id=server-ce-yarn-cache --mount=type=cache,target=/overleaf/services/web/node_modules/.cache,id=server-ce-webpack-cache --mount=type=tmpfs,target=/tmp CYPRESS_INSTALL_BINARY=0 YARN_CACHE_FOLDER=/tmp/.yarn-cache /bin/bash -ec 'yarn install --immutable; NODE_OPTIONS=--max-old-space-size=1536 yarn run webpack:production; yarn workspaces focus --all --production'
+#10 ERROR: failed to prepare rl0gv1tzl9rs468mvykcpvniz as ievjt1dhputegb6myzhv9cc30: max depth exceeded
+------
+ > [stage-0 6/7] RUN --mount=type=cache,target=/root/.cache --mount=type=cache,target=/root/.yarn/berry/cache,id=server-ce-yarn-cache --mount=type=cache,target=/overleaf/services/web/node_modules/.cache,id=server-ce-webpack-cache --mount=type=tmpfs,target=/tmp CYPRESS_INSTALL_BINARY=0 YARN_CACHE_FOLDER=/tmp/.yarn-cache /bin/bash -ec 'yarn install --immutable; NODE_OPTIONS=--max-old-space-size=1536 yarn run webpack:production; yarn workspaces focus --all --production':
+------
+Dockerfile:6
+--------------------
+   4 |     COPY services/ /overleaf/services/
+   5 |     WORKDIR /overleaf/services/web
+   6 | >>> RUN --mount=type=cache,target=/root/.cache --mount=type=cache,target=/root/.yarn/berry/cache,id=server-ce-yarn-cache --mount=type=cache,target=/overleaf/services/web/node_modules/.cache,id=server-ce-webpack-cache --mount=type=tmpfs,target=/tmp CYPRESS_INSTALL_BINARY=0 YARN_CACHE_FOLDER=/tmp/.yarn-cache /bin/bash -ec 'yarn install --immutable; NODE_OPTIONS=--max-old-space-size=1536 yarn run webpack:production; yarn workspaces focus --all --production'
+   7 |     WORKDIR /overleaf
+   8 |     
+--------------------
+ERROR: failed to build: failed to solve: failed to prepare rl0gv1tzl9rs468mvykcpvniz as ievjt1dhputegb6myzhv9cc30: max depth exceeded
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/sjgv7gbzkng5uczg96zgh70uz

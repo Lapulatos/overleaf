@@ -1,0 +1,4 @@
+read-only {"repo":false,"root":false,"metadata":false,"other":false,"host":false,"socket":false,"interfaces":["lo","gretap0","erspan0","bonding_masters","sit0","ip6tnl0","ip_vti0","ip6_vti0","gre0","tunl0","ip6gre0"]}
+workspace-write {"repo":true,"root":false,"metadata":false,"other":false,"host":false,"socket":false,"interfaces":["tunl0","ip6_vti0","sit0","ip6gre0","bonding_masters","gretap0","erspan0","lo","gre0","ip6tnl0","ip_vti0"]}
+auto-review {"repo":true,"root":false,"metadata":false,"other":false,"host":false,"socket":false,"interfaces":["lo","ip6tnl0","ip_vti0","sit0","tunl0","bonding_masters","gre0","ip6gre0","ip6_vti0","gretap0","erspan0"]}
+full-access {"repo":true,"root":true,"metadata":false,"other":false,"host":false,"socket":false,"interfaces":["gretap0","erspan0","sit0","ip6_vti0","bonding_masters","ip6tnl0","ip_vti0","gre0","tunl0","lo","ip6gre0"]}

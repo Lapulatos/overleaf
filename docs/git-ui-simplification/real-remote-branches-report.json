@@ -1,0 +1,14 @@
+{
+  "noAutomaticGitPage": true,
+  "commitHint": "All 103 changed files will be committed. Ignored files are excluded.",
+  "alerts": [],
+  "commitEnabledWithMessage": true,
+  "passed": true,
+  "remoteBranchesVisible": [
+    "test/ui-20261109-a",
+    "test/ui-20261109-b",
+    "test/ui-20261109-c"
+  ],
+  "threeDirectCommands": true,
+  "noFirstSyncPrerequisite": true
+}

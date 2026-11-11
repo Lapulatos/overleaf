@@ -1,0 +1,16 @@
+✔ branch merge retains both histories and web edits through incoming updates and produces two parents (2098.587334ms)
+✔ real branch switch preserves uncommitted web changes and pins target before final settlement (655.195333ms)
+✔ historical file restoration is a reviewed local edit, preserves other files and never resets the baseline (563.336ms)
+✔ real Git lease rejects collaborator updates and reconciliation never replays a lost push response (1427.172541ms)
+✔ invalid push requests never invoke Git (0.376666ms)
+✔ preparation retains actual author-attributed commit and stable add/delete/binary diff without moving branch (3573.022542ms)
+✔ real repository snapshots feed merge preview and preserve graph merge parents (2383.388ms)
+✔ history pages stay pinned after a new commit and support literal message and file filters (689.907625ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3809.917583

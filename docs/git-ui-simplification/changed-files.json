@@ -1,0 +1,18 @@
+{
+  "production": [
+    "services/web/frontend/js/features/git-sync/git-sync-panel.tsx",
+    "services/web/frontend/js/features/git-sync/git-sync.css",
+    "services/web/frontend/js/features/git-sync/ignore-settings.tsx",
+    "services/web/frontend/js/features/git-sync/local-changes.tsx",
+    "services/web/frontend/js/features/git-sync/push-controls.tsx",
+    "services/web/frontend/js/features/git-sync/repository-header.tsx",
+    "services/web/frontend/js/features/git-sync/saved-work.tsx",
+    "services/web/frontend/js/features/ide-react/components/editor/editor-panel.tsx",
+    "services/web/frontend/js/features/git-sync/editor-workspace.tsx"
+  ],
+  "tests": [
+    "services/web/test/frontend/features/git-sync/git-sync-panel.test.tsx",
+    "services/web/test/frontend/features/git-sync/editor-workspace.test.tsx"
+  ],
+  "unchanged": "Git backend, Venues, repository bindings and manuscript files"
+}

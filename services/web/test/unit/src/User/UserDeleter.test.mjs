@@ -1,3 +1,4 @@
+import assert from 'node:assert/strict'
 import { beforeEach, describe, expect, vi, it } from 'vitest'
 import sinon from 'sinon'
 import tk from 'timekeeper'
@@ -17,10 +18,23 @@ const modulePath = '../../../../app/src/Features/User/UserDeleter.mjs'
 
 describe('UserDeleter', function () {
   beforeEach(async function (ctx) {
+    // Existing subscription cases exercise SaaS behavior, which CE disables by default.
+    ctx.Features = {
+      hasFeature: sinon.stub().callsFake((name) => name === 'saas'),
+    }
+    vi.doMock('../../../../app/src/infrastructure/Features.mjs', () => ({
+      default: ctx.Features,
+    }))
     ctx.userId = new ObjectId()
     ctx.ipAddress = '1.2.3.4'
 
     ctx.UserMock = sinon.mock(User)
+    ctx.WritingAssistLibrary = {
+      deleteOne: sinon.stub().returns({ exec: sinon.stub().resolves() }),
+    }
+    vi.doMock('../../../../app/src/models/WritingAssistLibrary.mjs', () => ({
+      WritingAssistLibrary: ctx.WritingAssistLibrary,
+    }))
     ctx.DeletedUserMock = sinon.mock(DeletedUser)
 
     tk.freeze(Date.now())
@@ -191,6 +205,33 @@ describe('UserDeleter', function () {
     ctx.UserMock.restore()
     ctx.mockedUser.restore()
     tk.reset()
+  })
+
+  describe('private library credential cleanup', function () {
+    it('removes only the deleted user connection', async function (ctx) {
+      ctx.UserMock.expects('deleteOne')
+        .withArgs({ _id: ctx.userId })
+        .chain('exec')
+        .resolves()
+      await ctx.UserDeleter.promises.deleteMongoUser(ctx.userId)
+      expect(
+        ctx.WritingAssistLibrary.deleteOne.calledOnceWithExactly({
+          _id: ctx.userId.toString(),
+        })
+      ).toBe(true)
+      ctx.UserMock.verify()
+    })
+    it('does not delete the account if credential cleanup fails', async function (ctx) {
+      ctx.WritingAssistLibrary.deleteOne.returns({
+        exec: sinon.stub().rejects(new Error('cleanup failed')),
+      })
+      ctx.UserMock.expects('deleteOne').never()
+      await assert.rejects(
+        ctx.UserDeleter.promises.deleteMongoUser(ctx.userId),
+        /cleanup failed/
+      )
+      ctx.UserMock.verify()
+    })
   })
 
   describe('deleteUser', function () {
@@ -743,8 +784,8 @@ describe('UserDeleter', function () {
 
     describe('when called as a callback', function () {
       it('should expire the user', async function (ctx) {
-        await new Promise(resolve => {
-          ctx.UserDeleter.expireDeletedUser(ctx.userId, err => {
+        await new Promise((resolve) => {
+          ctx.UserDeleter.expireDeletedUser(ctx.userId, (err) => {
             expect(err).not.to.exist
             ctx.DeletedUserMock.verify()
             ctx.mockedDeletedUser.verify()

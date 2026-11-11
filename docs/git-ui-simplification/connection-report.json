@@ -1,0 +1,16 @@
+{
+  "320": {
+    "padding": 16,
+    "inputHeight": 38,
+    "selectHeight": 38,
+    "refreshHeight": 38
+  },
+  "520": {
+    "padding": 16,
+    "inputHeight": 38,
+    "selectHeight": 38,
+    "refreshHeight": 38
+  },
+  "savedTokenMaskAndReplace": true,
+  "passed": true
+}

@@ -1,0 +1,6 @@
+ Container overleaf-deletion-acceptance-candidate-redis-1 Running 
+ Container overleaf-deletion-acceptance-candidate-web-1 Recreate 
+ Container overleaf-deletion-acceptance-candidate-web-1 Recreated 
+ Container overleaf-deletion-acceptance-candidate-web-1 Starting 
+ Container overleaf-deletion-acceptance-candidate-web-1 Started 
+{"imageTag": "overleaf-agent-acceptance:20261107-git-ux-r5", "imageId": "sha256:3d73b5ee90c03cac7110be80c69d7e9dbd8ba90f5241bce3228e8972a58e9726", "verifiedFiles": 93, "target": "http://127.0.0.1:18081", "previousImage": "overleaf-agent-acceptance:20261107-git-ux-r4", "previousImageId": "sha256:43a28c6334217b341cf839119bbf21101ed618cc237f30d350e6d3f643bf3701", "rollbackCompose": "/Users/sujie/Documents/Codes/Python/overleaf/plan/git-improvements-r4-runtime.compose.yml", "demoUnchanged": true, "status": "activated-awaiting-regression"}

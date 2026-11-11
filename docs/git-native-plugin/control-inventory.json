@@ -1,0 +1,2585 @@
+[
+  {
+    "id": "access-mode.tsx:19",
+    "file": "access-mode.tsx",
+    "line": 19,
+    "tag": "button",
+    "label": "\"Permissions shared by Paper Assistant and Git\"",
+    "handlers": "onClick={() => { setMode(policy.mode); setError(''); setOpen(true) }}",
+    "disabled": "disabled={disabled}"
+  },
+  {
+    "id": "access-mode.tsx:20",
+    "file": "access-mode.tsx",
+    "line": 20,
+    "tag": "Modal",
+    "label": "\"Paper Assistant permissions\"",
+    "handlers": "onHide={() => { if (!busy) setOpen(false) }}",
+    "disabled": ""
+  },
+  {
+    "id": "access-mode.tsx:22",
+    "file": "access-mode.tsx",
+    "line": 22,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={() => setMode('read-only')}",
+    "disabled": ""
+  },
+  {
+    "id": "access-mode.tsx:23",
+    "file": "access-mode.tsx",
+    "line": 23,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={() => setMode('workspace-write')}",
+    "disabled": ""
+  },
+  {
+    "id": "access-mode.tsx:24",
+    "file": "access-mode.tsx",
+    "line": 24,
+    "tag": "input",
+    "label": "",
+    "handlers": "",
+    "disabled": "disabled"
+  },
+  {
+    "id": "access-mode.tsx:25",
+    "file": "access-mode.tsx",
+    "line": 25,
+    "tag": "input",
+    "label": "",
+    "handlers": "",
+    "disabled": "disabled"
+  },
+  {
+    "id": "access-mode.tsx:26",
+    "file": "access-mode.tsx",
+    "line": 26,
+    "tag": "button",
+    "label": "Cancel",
+    "handlers": "onClick={() => setOpen(false)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "access-mode.tsx:26",
+    "file": "access-mode.tsx",
+    "line": 26,
+    "tag": "button",
+    "label": "Apply mode",
+    "handlers": "onClick={async () => { setBusy(true); try { const result = await api.command({command:'setAccessPolicy',mode,directories:[]}); setPolicy(result.result as Policy); setOpen(false) } catch(error) { setError(errorMessage(error)) } finally { setBusy(false) } }}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "action-submenu.tsx:9",
+    "file": "action-submenu.tsx",
+    "line": 9,
+    "tag": "button",
+    "label": "{`${label} submenu`}",
+    "handlers": "onMouseEnter={onOpen}; onClick={event => { event.stopPropagation(); open ? onClose() : onOpen() }}; onKeyDown={event => { if (event.key === 'ArrowRight') { event.preventDefault(); event.stopPropagation(); onOpen(); focusFirst() } }}",
+    "disabled": ""
+  },
+  {
+    "id": "action-submenu.tsx:16",
+    "file": "action-submenu.tsx",
+    "line": 16,
+    "tag": "div",
+    "label": "{`${label} actions`}",
+    "handlers": "onKeyDownCapture={event => { if (event.key === 'Escape' || event.key === 'ArrowLeft') { event.preventDefault(); event.stopPropagation(); onClose(); trigger.current?.focus() } if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); event.stopPropagation() const items = Array.from(event.currentTarget.querySelectorAll<HTMLElement>('.dropdown-item:not(.disabled):not(:disabled)')) const index = items.indexOf(document.activeElement as HTMLElement) items[(index + (event.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length]?.focus() } }}",
+    "disabled": ""
+  },
+  {
+    "id": "blame-view.tsx:33",
+    "file": "blame-view.tsx",
+    "line": 33,
+    "tag": "Modal",
+    "label": "\"Line authors\"",
+    "handlers": "onHide={onClose}",
+    "disabled": ""
+  },
+  {
+    "id": "blame-view.tsx:43",
+    "file": "blame-view.tsx",
+    "line": 43,
+    "tag": "button",
+    "label": "{row.subject}",
+    "handlers": "onClick={() => onCommit(row.hash)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "branch-picker.tsx:47",
+    "file": "branch-picker.tsx",
+    "line": 47,
+    "tag": "Overlay",
+    "label": " <Popover className=\"native-git-picker\" aria-label=\"Switch branch\"> <div className=\"native-git-picker-search\"> <input ref={input} className=\"form-control\" value={query} type=\"searc",
+    "handlers": "onHide={onClose}; onEntered={() => input.current?.focus()}",
+    "disabled": ""
+  },
+  {
+    "id": "branch-picker.tsx:51",
+    "file": "branch-picker.tsx",
+    "line": 51,
+    "tag": "input",
+    "label": "\"Select a branch or tag to checkout\"",
+    "handlers": "onChange={event => { setQuery(event.target.value); setActive(0) }}; onKeyDown={event => { if (event.key === 'Escape') { event.preventDefault(); onClose(); target.current?.focus() } if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault() const next = (active + (event.key === 'ArrowDown' ? 1 : -1) + actions.length + choices.length) % (actions.length + choices.length) setActive(next) document.getElementById(`${listId}-${next}`)?.scrollIntoView({ block: 'nearest' }) } if (event.key === 'Enter') { event.preventDefault(); activate(active) } }}",
+    "disabled": ""
+  },
+  {
+    "id": "branch-picker.tsx:68",
+    "file": "branch-picker.tsx",
+    "line": 68,
+    "tag": "button",
+    "label": " <span className=\"native-git-action-glyph\" aria-hidden=\"true\">{action.icon}</span> {action.label} ",
+    "handlers": "onMouseEnter={() => setActive(index)}; onClick={() => activate(index)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "branch-picker.tsx:74",
+    "file": "branch-picker.tsx",
+    "line": 74,
+    "tag": "button",
+    "label": " <span className=\"native-git-branch-heading\"><BranchIcon /><strong>{branch.name}</strong>{branch.tag && <span>Tag · detached</span>} <time dateTime={branch.date} title={formatGitDa",
+    "handlers": "onMouseEnter={() => setActive(offset + actions.length)}; onClick={() => onCheckout(branch)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "clone-repository.tsx:28",
+    "file": "clone-repository.tsx",
+    "line": 28,
+    "tag": "Modal",
+    "label": "\"Clone repository\"",
+    "handlers": "onHide={() => { if (!busy) onClose(); }}",
+    "disabled": ""
+  },
+  {
+    "id": "clone-repository.tsx:38",
+    "file": "clone-repository.tsx",
+    "line": 38,
+    "tag": "form",
+    "label": " <Modal.Body> {error && <p role=\"alert\">{error}</p>} {result ? ( <> <p>Repository cloned successfully.</p> <a href={result.url}>Open cloned project</a> </> ) : ( <> <p> Create a ne",
+    "handlers": "onSubmit={async (event) => { event.preventDefault(); const value = await command({ command: \"clone\", url, name, operationId, ...(branch ? { branch } : {}), ...(username || token ? { username, token } : {}), }); if (value?.result) { setResult(value.result as any); setToken(\"\"); } }}",
+    "disabled": ""
+  },
+  {
+    "id": "clone-repository.tsx:60",
+    "file": "clone-repository.tsx",
+    "line": 60,
+    "tag": "a",
+    "label": "Open cloned project",
+    "handlers": "",
+    "disabled": ""
+  },
+  {
+    "id": "clone-repository.tsx:70",
+    "file": "clone-repository.tsx",
+    "line": 70,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={(e) => change(() => setUrl(e.target.value))}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "clone-repository.tsx:81",
+    "file": "clone-repository.tsx",
+    "line": 81,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={(e) => change(() => setName(e.target.value))}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "clone-repository.tsx:92",
+    "file": "clone-repository.tsx",
+    "line": 92,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={(e) => change(() => setBranch(e.target.value))}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "clone-repository.tsx:101",
+    "file": "clone-repository.tsx",
+    "line": 101,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={(e) => setUsername(e.target.value)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "clone-repository.tsx:111",
+    "file": "clone-repository.tsx",
+    "line": 111,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={(e) => setToken(e.target.value)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "clone-repository.tsx:124",
+    "file": "clone-repository.tsx",
+    "line": 124,
+    "tag": "button",
+    "label": " {result ? \"Close\" : \"Cancel\"} ",
+    "handlers": "onClick={onClose}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "clone-repository.tsx:133",
+    "file": "clone-repository.tsx",
+    "line": 133,
+    "tag": "button",
+    "label": " {busy ? \"Cloning…\" : \"Clone\"} ",
+    "handlers": "",
+    "disabled": "disabled={ busy || !url.trim() || !name.trim() || !!username !== !!token }"
+  },
+  {
+    "id": "commit-graph.tsx:73",
+    "file": "commit-graph.tsx",
+    "line": 73,
+    "tag": "button",
+    "label": " <svg viewBox={`0 0 ${columns * 16 + 4} 32`} preserveAspectRatio=\"none\" width={columns * 16 + 4} height=\"32\" aria-hidden=\"true\" className=\"native-git-graph-lines\"> {before.map((has",
+    "handlers": "onClick={() => { setHover(undefined); onSelect(commit) }}; onMouseEnter={event => { keep(); setCopied(false); setHover({ commit, target: event.currentTarget }); onInspect?.(commit) }}; onMouseLeave={leave}; onFocus={event => { keep(); setHover({ commit, target: event.currentTarget }); onInspect?.(commit) }}; onBlur={leave}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "commit-graph.tsx:85",
+    "file": "commit-graph.tsx",
+    "line": 85,
+    "tag": "span",
+    "label": "{branch ? `Double-click to checkout ${name}` : name}",
+    "handlers": "onClick={event => event.stopPropagation()}; onDoubleClick={event => { event.stopPropagation(); if (branch && !busy) onCheckout?.(branch) }}",
+    "disabled": ""
+  },
+  {
+    "id": "commit-graph.tsx:98",
+    "file": "commit-graph.tsx",
+    "line": 98,
+    "tag": "button",
+    "label": "{file.path}",
+    "handlers": "onClick={() => onFile?.(commit, file)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "commit-graph.tsx:100",
+    "file": "commit-graph.tsx",
+    "line": 100,
+    "tag": "button",
+    "label": "\"Open file in editor\"",
+    "handlers": "onClick={() => onOpenFile(file.path)}",
+    "disabled": ""
+  },
+  {
+    "id": "commit-graph.tsx:105",
+    "file": "commit-graph.tsx",
+    "line": 105,
+    "tag": "Popover",
+    "label": " {hover && <Popover.Body> <p><strong>{hover.commit.author}</strong> · <time dateTime={hover.commit.date}>{formatGitDate(hover.commit.date)}</time></p> <p>{hover.commit.subject}</p>",
+    "handlers": "onMouseEnter={keep}; onMouseLeave={leave}",
+    "disabled": ""
+  },
+  {
+    "id": "commit-graph.tsx:111",
+    "file": "commit-graph.tsx",
+    "line": 111,
+    "tag": "a",
+    "label": "Open on {remote.provider} {webRemotes.length > 1 ? ` (${remote.name})` : ''}",
+    "handlers": "",
+    "disabled": ""
+  },
+  {
+    "id": "commit-graph.tsx:113",
+    "file": "commit-graph.tsx",
+    "line": 113,
+    "tag": "button",
+    "label": "{copied ? 'Copied' : 'Copy commit ID'}",
+    "handlers": "onClick={async () => { try { await navigator.clipboard.writeText(hover.commit.hash); setCopied(true) } catch { setCopied(false) } }}",
+    "disabled": ""
+  },
+  {
+    "id": "commit-graph.tsx:114",
+    "file": "commit-graph.tsx",
+    "line": 114,
+    "tag": "button",
+    "label": "{expanded[hover.commit.hash] ? 'Collapse files' : 'Show changed files'}",
+    "handlers": "onClick={() => { onSelect(hover.commit); setHover(undefined) }}",
+    "disabled": ""
+  },
+  {
+    "id": "conflict-editor.tsx:18",
+    "file": "conflict-editor.tsx",
+    "line": 18,
+    "tag": "Modal",
+    "label": "\"Resolve conflict\"",
+    "handlers": "onHide={() => { if (!busy) onClose() }}",
+    "disabled": ""
+  },
+  {
+    "id": "conflict-editor.tsx:27",
+    "file": "conflict-editor.tsx",
+    "line": 27,
+    "tag": "button",
+    "label": " {details.versions[name].kind === 'deleted' ? `Accept ${name} deletion & stage` : `Use ${name} & stage`} ",
+    "handlers": "onClick={() => onResolve(name)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "conflict-editor.tsx:33",
+    "file": "conflict-editor.tsx",
+    "line": 33,
+    "tag": "textarea",
+    "label": "",
+    "handlers": "onChange={event => setText(event.target.value)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "conflict-editor.tsx:37",
+    "file": "conflict-editor.tsx",
+    "line": 37,
+    "tag": "button",
+    "label": "Close",
+    "handlers": "onClick={onClose}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "conflict-editor.tsx:38",
+    "file": "conflict-editor.tsx",
+    "line": 38,
+    "tag": "button",
+    "label": "Save result & stage",
+    "handlers": "onClick={() => onResolve('edited', text)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "connect-repository.tsx:10",
+    "file": "connect-repository.tsx",
+    "line": 10,
+    "tag": "form",
+    "label": " <h4>Connect an existing repository</h4>  <p>Clone its Git history. Your current project files stay unchanged and appear as working-tree differences.</p>  <label className=\"native-",
+    "handlers": "onSubmit={event => { event.preventDefault() if (!paired) return void connect({ command: 'connect', url: url.trim(), ...(branch.trim() ? { branch: branch.trim() } : {}), ...(token ? { username: username.trim(), token } : {}) }) }}",
+    "disabled": ""
+  },
+  {
+    "id": "connect-repository.tsx:18",
+    "file": "connect-repository.tsx",
+    "line": 18,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={event => setUrl(event.target.value)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "connect-repository.tsx:19",
+    "file": "connect-repository.tsx",
+    "line": 19,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={event => setBranch(event.target.value)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "connect-repository.tsx:20",
+    "file": "connect-repository.tsx",
+    "line": 20,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={event => setUsername(event.target.value)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "connect-repository.tsx:21",
+    "file": "connect-repository.tsx",
+    "line": 21,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={event => setToken(event.target.value)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "connect-repository.tsx:23",
+    "file": "connect-repository.tsx",
+    "line": 23,
+    "tag": "button",
+    "label": "Connect repository",
+    "handlers": "",
+    "disabled": "disabled={busy || !url.trim() || !paired}"
+  },
+  {
+    "id": "editor-diff.tsx:15",
+    "file": "editor-diff.tsx",
+    "line": 15,
+    "tag": "button",
+    "label": "\"Close diff\"",
+    "handlers": "onClick={onClose}",
+    "disabled": ""
+  },
+  {
+    "id": "editor-diff.tsx:73",
+    "file": "editor-diff.tsx",
+    "line": 73,
+    "tag": "button",
+    "label": "{`${staged ? 'Unstage' : 'Stage'} change ${index + 1}`}",
+    "handlers": "onClick={() => onHunk(index)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "editor-diff.tsx:79",
+    "file": "editor-diff.tsx",
+    "line": 79,
+    "tag": "button",
+    "label": "{`Line ${mark.line}`}",
+    "handlers": "onClick={() => mark.node.scrollIntoView({ block: 'center' })}",
+    "disabled": ""
+  },
+  {
+    "id": "editor-graph.tsx:54",
+    "file": "editor-graph.tsx",
+    "line": 54,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={async e => { const value = { ...settings, showRemotes: e.target.checked }; setSettings(value); const { effectiveUser, ...saved } = value; try { await api.command({ command: 'saveGraphSettings', settings: saved }) } catch (error) { setError(errorMessage(error)) } }}",
+    "disabled": ""
+  },
+  {
+    "id": "editor-graph.tsx:55",
+    "file": "editor-graph.tsx",
+    "line": 55,
+    "tag": "button",
+    "label": "\"Search commits or branches\"",
+    "handlers": "onClick={() => host.querySelector<HTMLInputElement>('[aria-label=\"Search history\"]')?.focus()}",
+    "disabled": ""
+  },
+  {
+    "id": "editor-graph.tsx:56",
+    "file": "editor-graph.tsx",
+    "line": 56,
+    "tag": "button",
+    "label": "\"Open repository terminal\"",
+    "handlers": "onClick={() => setTerminalOpen(value => !value)}",
+    "disabled": ""
+  },
+  {
+    "id": "editor-graph.tsx:57",
+    "file": "editor-graph.tsx",
+    "line": 57,
+    "tag": "button",
+    "label": "\"Graph repository settings\"",
+    "handlers": "onClick={() => setSettingsOpen(true)}",
+    "disabled": ""
+  },
+  {
+    "id": "editor-graph.tsx:58",
+    "file": "editor-graph.tsx",
+    "line": 58,
+    "tag": "button",
+    "label": "\"Fetch graph remotes\"",
+    "handlers": "onClick={async () => { setRemoteBusy(true); try { const remotes = (await api.command({ command: 'remotes' })).result as { name: string }[]; for (const remote of remotes) await api.command({ command: 'fetch', remote: remote.name }); await onRefresh() } catch (error) { setError(errorMessage(error)) } finally { setRemoteBusy(false) } }}",
+    "disabled": "disabled={busy || remoteBusy}"
+  },
+  {
+    "id": "editor-graph.tsx:59",
+    "file": "editor-graph.tsx",
+    "line": 59,
+    "tag": "button",
+    "label": "\"Refresh Git Graph\"",
+    "handlers": "onClick={() => { void onRefresh(); setRefresh(value => value + 1) }}",
+    "disabled": ""
+  },
+  {
+    "id": "editor-graph.tsx:63",
+    "file": "editor-graph.tsx",
+    "line": 63,
+    "tag": "button",
+    "label": "{tree ? 'View files as List' : 'View files as Tree'}",
+    "handlers": "onClick={() => setTree(value => !value)}",
+    "disabled": ""
+  },
+  {
+    "id": "editor-graph.tsx:64",
+    "file": "editor-graph.tsx",
+    "line": 64,
+    "tag": "button",
+    "label": "\"Close commit details\"",
+    "handlers": "onClick={() => { request.current++; setSelected(''); setDetails(undefined) }}",
+    "disabled": ""
+  },
+  {
+    "id": "editor-graph.tsx:71",
+    "file": "editor-graph.tsx",
+    "line": 71,
+    "tag": "button",
+    "label": "{parent}",
+    "handlers": "onClick={() => select(parent)}",
+    "disabled": ""
+  },
+  {
+    "id": "editor-graph.tsx:76",
+    "file": "editor-graph.tsx",
+    "line": 76,
+    "tag": "a",
+    "label": "{part}",
+    "handlers": "",
+    "disabled": ""
+  },
+  {
+    "id": "editor-graph.tsx:76",
+    "file": "editor-graph.tsx",
+    "line": 76,
+    "tag": "a",
+    "label": "Open pull request form · {branch.name}",
+    "handlers": "",
+    "disabled": ""
+  },
+  {
+    "id": "editor-graph.tsx:79",
+    "file": "editor-graph.tsx",
+    "line": 79,
+    "tag": "button",
+    "label": "{file.path}",
+    "handlers": "onClick={() => selectedCommit && onFile(selectedCommit, file)}",
+    "disabled": ""
+  },
+  {
+    "id": "editor-graph.tsx:80",
+    "file": "editor-graph.tsx",
+    "line": 80,
+    "tag": "button",
+    "label": "{`Open file ${file.path}`}",
+    "handlers": "onClick={() => onOpenFile(file.path)}",
+    "disabled": ""
+  },
+  {
+    "id": "editor-graph.tsx:87",
+    "file": "editor-graph.tsx",
+    "line": 87,
+    "tag": "button",
+    "label": "\"Return to editor\"",
+    "handlers": "onClick={onClose}",
+    "disabled": ""
+  },
+  {
+    "id": "editor-graph.tsx:88",
+    "file": "editor-graph.tsx",
+    "line": 88,
+    "tag": "GraphHistory",
+    "label": "",
+    "handlers": "onCheckout={onCheckout}; onSelect={commit => select(commit.hash)}; onRefresh={onRefresh}",
+    "disabled": ""
+  },
+  {
+    "id": "editor-graph.tsx:90",
+    "file": "editor-graph.tsx",
+    "line": 90,
+    "tag": "GitTerminal",
+    "label": "",
+    "handlers": "onChanged={onRefresh}; onClose={() => setTerminalOpen(false)}",
+    "disabled": ""
+  },
+  {
+    "id": "editor-graph.tsx:91",
+    "file": "editor-graph.tsx",
+    "line": 91,
+    "tag": "GraphSettingsDialog",
+    "label": "",
+    "handlers": "onSave={setSettings}; onClose={() => setSettingsOpen(false)}; onCredentials={() => { setSettingsOpen(false); setCredentialsOpen(true) }}",
+    "disabled": ""
+  },
+  {
+    "id": "editor-graph.tsx:92",
+    "file": "editor-graph.tsx",
+    "line": 92,
+    "tag": "RemoteSettings",
+    "label": "",
+    "handlers": "onClose={() => setCredentialsOpen(false)}",
+    "disabled": ""
+  },
+  {
+    "id": "file-preview.tsx:23",
+    "file": "file-preview.tsx",
+    "line": 23,
+    "tag": "button",
+    "label": "{value === 'before' ? 'Before' : 'After'}",
+    "handlers": "onClick={() => setSide(value)}",
+    "disabled": "disabled={!versions[value]}"
+  },
+  {
+    "id": "file-preview.tsx:71",
+    "file": "file-preview.tsx",
+    "line": 71,
+    "tag": "button",
+    "label": "Previous page",
+    "handlers": "onClick={() => setPageNumber(value => value - 1)}",
+    "disabled": "disabled={!document || pageNumber === 1 || loading}"
+  },
+  {
+    "id": "file-preview.tsx:73",
+    "file": "file-preview.tsx",
+    "line": 73,
+    "tag": "button",
+    "label": "Next page",
+    "handlers": "onClick={() => setPageNumber(value => value + 1)}",
+    "disabled": "disabled={!document || pageNumber === document.numPages || loading}"
+  },
+  {
+    "id": "git-terminal.tsx:58",
+    "file": "git-terminal.tsx",
+    "line": 58,
+    "tag": "div",
+    "label": "\"Resize terminal\"",
+    "handlers": "onPointerDown={event => { drag.current = { y: event.clientY, height }; event.currentTarget.setPointerCapture(event.pointerId); event.preventDefault() }}; onPointerMove={event => { if (drag.current) { const max = Math.max(150, Math.min(700, (event.currentTarget.parentElement?.parentElement?.clientHeight || 800) - 160)); setHeight(Math.max(150, Math.min(max, drag.current.height + drag.current.y - event.clientY))) } }}; onPointerUp={() => { drag.current = undefined }}; onPointerCancel={() => { drag.current = undefined }}; onKeyDown={event => { if (event.key === 'ArrowUp' || event.key === 'ArrowDown') { event.preventDefault(); setHeight(value => Math.max(150, Math.min(700, value + (event.key === 'ArrowUp' ? 20 : -20)))) } }}",
+    "disabled": ""
+  },
+  {
+    "id": "git-terminal.tsx:63",
+    "file": "git-terminal.tsx",
+    "line": 63,
+    "tag": "button",
+    "label": "\"Close terminal\"",
+    "handlers": "onClick={onClose}",
+    "disabled": ""
+  },
+  {
+    "id": "git-terminal.tsx:64",
+    "file": "git-terminal.tsx",
+    "line": 64,
+    "tag": "button",
+    "label": "Back to bottom ↓",
+    "handlers": "onClick={() => jumpToBottom.current?.()}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-history.tsx:100",
+    "file": "graph-history.tsx",
+    "line": 100,
+    "tag": "button",
+    "label": "{label}",
+    "handlers": "onClick={() => action?.()}",
+    "disabled": "disabled={graphProps.busy || !action}"
+  },
+  {
+    "id": "graph-history.tsx:103",
+    "file": "graph-history.tsx",
+    "line": 103,
+    "tag": "div",
+    "label": " <label htmlFor=\"native-git-branch-search\">Branches:</label>  <div className=\"native-git-branch-input\"> <input id=\"native-git-branch-search\" className=\"form-control\" role=\"combobox",
+    "handlers": "onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget as Node)) setPicker(false) }}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-history.tsx:106",
+    "file": "graph-history.tsx",
+    "line": 106,
+    "tag": "input",
+    "label": "\"Filter graph branches\"",
+    "handlers": "onFocus={() => { setFilter(''); setPicker(true) }}; onChange={event => { setFilter(event.target.value); setPicker(true) }}; onKeyDown={event => { if (event.key === 'Escape') { setPicker(false); event.currentTarget.blur() } if (event.key === 'ArrowDown') { event.preventDefault(); root.current?.querySelector<HTMLButtonElement>('#native-git-branch-options button')?.focus() } }}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-history.tsx:111",
+    "file": "graph-history.tsx",
+    "line": 111,
+    "tag": "button",
+    "label": "{branch.name}",
+    "handlers": "onClick={() => { setMode(branch.ref ? 'selected' : 'all'); setRefs(branch.ref ? [branch.ref] : []); setRef(''); setPicker(false) }}; onKeyDown={event => { if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); const next = event.key === 'ArrowDown' ? event.currentTarget.nextElementSibling : event.currentTarget.previousElementSibling; (next as HTMLElement | null)?.focus() } if (event.key === 'Escape') { setPicker(false); root.current?.querySelector<HTMLInputElement>('#native-git-branch-search')?.blur() } }}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-history.tsx:116",
+    "file": "graph-history.tsx",
+    "line": 116,
+    "tag": "button",
+    "label": "\"Select history references\"",
+    "handlers": "onClick={() => { setDraft(refs.length ? refs : ref ? [ref] : []); setDraftMode(mode); setFilter(''); setPicker(true) }}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-history.tsx:123",
+    "file": "graph-history.tsx",
+    "line": 123,
+    "tag": "Dropdown.Toggle",
+    "label": "\"More graph actions\"",
+    "handlers": "",
+    "disabled": ""
+  },
+  {
+    "id": "graph-history.tsx:124",
+    "file": "graph-history.tsx",
+    "line": 124,
+    "tag": "Dropdown.Item",
+    "label": "Go to Current History Item",
+    "handlers": "onClick={goCurrent}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-history.tsx:125",
+    "file": "graph-history.tsx",
+    "line": 125,
+    "tag": "Dropdown.Item",
+    "label": "Fetch From All Remotes",
+    "handlers": "onClick={() => onFetchAll?.()}",
+    "disabled": "disabled={graphProps.busy || !onFetchAll}"
+  },
+  {
+    "id": "graph-history.tsx:126",
+    "file": "graph-history.tsx",
+    "line": 126,
+    "tag": "Dropdown.Item",
+    "label": "Pull",
+    "handlers": "onClick={() => onPull?.()}",
+    "disabled": "disabled={graphProps.busy || !onPull}"
+  },
+  {
+    "id": "graph-history.tsx:127",
+    "file": "graph-history.tsx",
+    "line": 127,
+    "tag": "Dropdown.Item",
+    "label": "Publish Branch",
+    "handlers": "onClick={() => onPublish?.()}",
+    "disabled": "disabled={graphProps.busy || !onPublish}"
+  },
+  {
+    "id": "graph-history.tsx:128",
+    "file": "graph-history.tsx",
+    "line": 128,
+    "tag": "Dropdown.Item",
+    "label": "Refresh",
+    "handlers": "onClick={() => { onRefresh?.(); setRefreshVersion(value => value + 1) }}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-history.tsx:129",
+    "file": "graph-history.tsx",
+    "line": 129,
+    "tag": "Dropdown.Item",
+    "label": "{tree ? 'View as List' : 'View as Tree'}",
+    "handlers": "onClick={() => setTree(value => !value)}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-history.tsx:135",
+    "file": "graph-history.tsx",
+    "line": 135,
+    "tag": "Modal",
+    "label": "\"History references\"",
+    "handlers": "onHide={() => setPicker(false)}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-history.tsx:137",
+    "file": "graph-history.tsx",
+    "line": 137,
+    "tag": "input",
+    "label": "\"Filter history references\"",
+    "handlers": "onChange={e => setFilter(e.target.value)}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-history.tsx:138",
+    "file": "graph-history.tsx",
+    "line": 138,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={() => { setDraftMode('all'); setDraft([]) }}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-history.tsx:139",
+    "file": "graph-history.tsx",
+    "line": 139,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={() => { setDraftMode('auto'); setDraft([]) }}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-history.tsx:140",
+    "file": "graph-history.tsx",
+    "line": 140,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={e => { setDraftMode('selected'); setDraft(previous => e.target.checked ? [...previous, branch.ref] : previous.filter(ref => ref !== branch.ref)) }}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-history.tsx:141",
+    "file": "graph-history.tsx",
+    "line": 141,
+    "tag": "button",
+    "label": "OK",
+    "handlers": "onClick={() => { setMode(draftMode); setRef(draftMode === 'auto' ? currentRef : ''); setRefs(draftMode === 'selected' ? draft : []); setPicker(false) }}",
+    "disabled": "disabled={draftMode === 'selected' && !draft.length}"
+  },
+  {
+    "id": "graph-history.tsx:143",
+    "file": "graph-history.tsx",
+    "line": 143,
+    "tag": "input",
+    "label": "\"Search history\"",
+    "handlers": "onChange={event => setQuery(event.target.value)}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-history.tsx:146",
+    "file": "graph-history.tsx",
+    "line": 146,
+    "tag": "button",
+    "label": "{loading ? 'Loading history…' : 'Load earlier commits'}",
+    "handlers": "onClick={loadMore}",
+    "disabled": "disabled={loading}"
+  },
+  {
+    "id": "graph-settings.tsx:20",
+    "file": "graph-settings.tsx",
+    "line": 20,
+    "tag": "Modal",
+    "label": "\"Graph repository settings\"",
+    "handlers": "onHide={() => { if (!busy) onClose() }}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-settings.tsx:23",
+    "file": "graph-settings.tsx",
+    "line": 23,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={e => setDraft({ ...draft, name: e.target.value })}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-settings.tsx:24",
+    "file": "graph-settings.tsx",
+    "line": 24,
+    "tag": "select",
+    "label": "<option value=\"all\">Show All</option> <option value=\"auto\">Current branch</option> <option value=\"selected\">Selected branches</option>",
+    "handlers": "onChange={e => setDraft({ ...draft, initialMode: e.target.value as GraphSettings['initialMode'] })}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-settings.tsx:25",
+    "file": "graph-settings.tsx",
+    "line": 25,
+    "tag": "select",
+    "label": "\"Initial selected branches\"",
+    "handlers": "onChange={e => setDraft({ ...draft, initialRefs: Array.from(e.target.selectedOptions, option => option.value) })}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-settings.tsx:26",
+    "file": "graph-settings.tsx",
+    "line": 26,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={e => setDraft({ ...draft, [key]: e.target.checked })}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-settings.tsx:28",
+    "file": "graph-settings.tsx",
+    "line": 28,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={e => setDraft({ ...draft, userName: e.target.value })}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-settings.tsx:29",
+    "file": "graph-settings.tsx",
+    "line": 29,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={e => setDraft({ ...draft, userEmail: e.target.value })}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-settings.tsx:30",
+    "file": "graph-settings.tsx",
+    "line": 30,
+    "tag": "button",
+    "label": "Remove override",
+    "handlers": "onClick={() => setDraft({ ...draft, userName: '', userEmail: '' })}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-settings.tsx:32",
+    "file": "graph-settings.tsx",
+    "line": 32,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={e => setDraft({ ...draft, hiddenRemotes: e.target.checked ? draft.hiddenRemotes.filter(name => name !== remote.name) : [...draft.hiddenRemotes, remote.name] })}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-settings.tsx:33",
+    "file": "graph-settings.tsx",
+    "line": 33,
+    "tag": "button",
+    "label": "Fetch",
+    "handlers": "onClick={() => perform(() => api.command({ command: 'fetch', remote: remote.name }))}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "graph-settings.tsx:34",
+    "file": "graph-settings.tsx",
+    "line": 34,
+    "tag": "button",
+    "label": "Edit",
+    "handlers": "onClick={() => setEdit({ name: remote.name, expectedUrl: remote.refs.fetch, fetchUrl: remote.refs.fetch, pushUrl: remote.refs.push })}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-settings.tsx:35",
+    "file": "graph-settings.tsx",
+    "line": 35,
+    "tag": "button",
+    "label": "Remove",
+    "handlers": "onClick={() => setRemove(remote.name)}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-settings.tsx:36",
+    "file": "graph-settings.tsx",
+    "line": 36,
+    "tag": "button",
+    "label": "Remove remote",
+    "handlers": "onClick={() => perform(async () => { await api.command({ command: 'removeRemote', name: remote.name, expectedUrl: remote.refs.fetch }); setRemove(undefined); await reload() })}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "graph-settings.tsx:38",
+    "file": "graph-settings.tsx",
+    "line": 38,
+    "tag": "button",
+    "label": "Add Remote",
+    "handlers": "onClick={() => setEdit({ name: '', fetchUrl: '', pushUrl: '' })}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-settings.tsx:38",
+    "file": "graph-settings.tsx",
+    "line": 38,
+    "tag": "button",
+    "label": "Credentials",
+    "handlers": "onClick={onCredentials}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-settings.tsx:39",
+    "file": "graph-settings.tsx",
+    "line": 39,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={e => setEdit({ ...edit, [key]: e.target.value })}",
+    "disabled": "disabled={key === 'name' && !!edit.expectedUrl}"
+  },
+  {
+    "id": "graph-settings.tsx:39",
+    "file": "graph-settings.tsx",
+    "line": 39,
+    "tag": "button",
+    "label": "Save remote",
+    "handlers": "onClick={() => perform(async () => { if (edit.expectedUrl) await api.command({ command: 'changeRemote', ...edit, pushUrl: edit.pushUrl || edit.fetchUrl }); else { await api.command({ command: 'addRemote', name: edit.name, url: edit.fetchUrl }); if (edit.pushUrl && edit.pushUrl !== edit.fetchUrl) await api.command({ command: 'changeRemote', ...edit, expectedUrl: edit.fetchUrl }) } setEdit(undefined); await reload() })}",
+    "disabled": "disabled={busy || !edit.name || !edit.fetchUrl}"
+  },
+  {
+    "id": "graph-settings.tsx:40",
+    "file": "graph-settings.tsx",
+    "line": 40,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={e => setDraft({ ...draft, issueUrl: e.target.value })}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-settings.tsx:41",
+    "file": "graph-settings.tsx",
+    "line": 41,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={e => setDraft({ ...draft, pullRequestUrl: e.target.value })}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-settings.tsx:42",
+    "file": "graph-settings.tsx",
+    "line": 42,
+    "tag": "button",
+    "label": "Export Repository Configuration",
+    "handlers": "onClick={() => { const { effectiveUser, ...settings } = draft; const url = URL.createObjectURL(new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' })); const link = document.createElement('a'); link.href = url; link.download = 'git-graph-settings.json'; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000) }}",
+    "disabled": ""
+  },
+  {
+    "id": "graph-settings.tsx:43",
+    "file": "graph-settings.tsx",
+    "line": 43,
+    "tag": "button",
+    "label": "Cancel",
+    "handlers": "onClick={onClose}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "graph-settings.tsx:43",
+    "file": "graph-settings.tsx",
+    "line": 43,
+    "tag": "button",
+    "label": "Save settings",
+    "handlers": "onClick={() => perform(async () => { const { effectiveUser, ...settings } = draft; const result = await api.command({ command: 'saveGraphSettings', settings }); onSave({ ...result.result as GraphSettings, effectiveUser: value.effectiveUser }); onClose() })}",
+    "disabled": "disabled={busy || (draft.initialMode === 'selected' && !draft.initialRefs.length)}"
+  },
+  {
+    "id": "ignored-files.tsx:10",
+    "file": "ignored-files.tsx",
+    "line": 10,
+    "tag": "Modal",
+    "label": "\"Ignored files\"",
+    "handlers": "onHide={() => { if (!busy) onClose() }}",
+    "disabled": ""
+  },
+  {
+    "id": "ignored-files.tsx:15",
+    "file": "ignored-files.tsx",
+    "line": 15,
+    "tag": "input",
+    "label": "\"Search ignored files\"",
+    "handlers": "onChange={event => setQuery(event.target.value)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "ignored-files.tsx:19",
+    "file": "ignored-files.tsx",
+    "line": 19,
+    "tag": "button",
+    "label": "{`Stage ignored file ${path}`}",
+    "handlers": "onClick={() => onStage(path)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "ignored-files.tsx:25",
+    "file": "ignored-files.tsx",
+    "line": 25,
+    "tag": "button",
+    "label": "Refresh",
+    "handlers": "onClick={onRefresh}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "ignored-files.tsx:26",
+    "file": "ignored-files.tsx",
+    "line": 26,
+    "tag": "button",
+    "label": "Close",
+    "handlers": "onClick={onClose}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "merge-branch-picker.tsx:16",
+    "file": "merge-branch-picker.tsx",
+    "line": 16,
+    "tag": "Modal",
+    "label": "\"Merge branch\"",
+    "handlers": "onHide={() => { if (!busy) onClose() }}",
+    "disabled": ""
+  },
+  {
+    "id": "merge-branch-picker.tsx:21",
+    "file": "merge-branch-picker.tsx",
+    "line": 21,
+    "tag": "input",
+    "label": "\"Search source branches\"",
+    "handlers": "onChange={event => { setQuery(event.target.value); setSelected(undefined) }}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "merge-branch-picker.tsx:25",
+    "file": "merge-branch-picker.tsx",
+    "line": 25,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={() => setSelected(branch.ref)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "merge-branch-picker.tsx:37",
+    "file": "merge-branch-picker.tsx",
+    "line": 37,
+    "tag": "button",
+    "label": "Cancel",
+    "handlers": "onClick={onClose}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "merge-branch-picker.tsx:38",
+    "file": "merge-branch-picker.tsx",
+    "line": 38,
+    "tag": "button",
+    "label": "Merge into {target}",
+    "handlers": "onClick={() => { if (source) onMerge(source.ref) }}",
+    "disabled": "disabled={busy || !source}"
+  },
+  {
+    "id": "remote-settings.tsx:61",
+    "file": "remote-settings.tsx",
+    "line": 61,
+    "tag": "Modal",
+    "label": "\"Repository settings\"",
+    "handlers": "onHide={() => { if (!busy) onClose() }}",
+    "disabled": ""
+  },
+  {
+    "id": "remote-settings.tsx:67",
+    "file": "remote-settings.tsx",
+    "line": 67,
+    "tag": "select",
+    "label": " {remotes.map(item => <option key={item.name} value={item.name}>{item.name}</option>)} ",
+    "handlers": "onChange={event => { setRemote(event.target.value); setTarget('fetch'); setRemoving(false) }}",
+    "disabled": "disabled={busy || loading}"
+  },
+  {
+    "id": "remote-settings.tsx:70",
+    "file": "remote-settings.tsx",
+    "line": 70,
+    "tag": "select",
+    "label": "<option value=\"fetch\">Fetch / Pull</option> <option value=\"push\">Push / Publish</option>",
+    "handlers": "onChange={event => setTarget(event.target.value as 'fetch' | 'push')}",
+    "disabled": "disabled={busy || loading}"
+  },
+  {
+    "id": "remote-settings.tsx:73",
+    "file": "remote-settings.tsx",
+    "line": 73,
+    "tag": "form",
+    "label": " <label className=\"native-git-field\">Username<input className=\"form-control\" autoComplete=\"off\" value={username} disabled={busy || loading} onChange={event => setUsername(event.tar",
+    "handlers": "onSubmit={event => { event.preventDefault(); void update(false) }}",
+    "disabled": ""
+  },
+  {
+    "id": "remote-settings.tsx:74",
+    "file": "remote-settings.tsx",
+    "line": 74,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={event => setUsername(event.target.value)}",
+    "disabled": "disabled={busy || loading}"
+  },
+  {
+    "id": "remote-settings.tsx:75",
+    "file": "remote-settings.tsx",
+    "line": 75,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={event => setToken(event.target.value)}",
+    "disabled": "disabled={busy || loading}"
+  },
+  {
+    "id": "remote-settings.tsx:77",
+    "file": "remote-settings.tsx",
+    "line": 77,
+    "tag": "button",
+    "label": "{configured ? 'Replace token' : 'Save token'}",
+    "handlers": "",
+    "disabled": "disabled={busy || loading || !username.trim() || !token}"
+  },
+  {
+    "id": "remote-settings.tsx:78",
+    "file": "remote-settings.tsx",
+    "line": 78,
+    "tag": "button",
+    "label": "Remove token",
+    "handlers": "onClick={() => update(true)}",
+    "disabled": "disabled={busy || loading}"
+  },
+  {
+    "id": "remote-settings.tsx:84",
+    "file": "remote-settings.tsx",
+    "line": 84,
+    "tag": "button",
+    "label": "Confirm remove remote",
+    "handlers": "onClick={removeRemote}",
+    "disabled": "disabled={busy || loading}"
+  },
+  {
+    "id": "remote-settings.tsx:85",
+    "file": "remote-settings.tsx",
+    "line": 85,
+    "tag": "button",
+    "label": "Cancel",
+    "handlers": "onClick={() => setRemoving(false)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "remote-settings.tsx:87",
+    "file": "remote-settings.tsx",
+    "line": 87,
+    "tag": "button",
+    "label": "Remove remote…",
+    "handlers": "onClick={() => setRemoving(true)}",
+    "disabled": "disabled={busy || loading}"
+  },
+  {
+    "id": "reset-dialog.tsx:30",
+    "file": "reset-dialog.tsx",
+    "line": 30,
+    "tag": "Modal",
+    "label": "\"Reset current branch\"",
+    "handlers": "onHide={() => { if (!busy) onClose() }}",
+    "disabled": ""
+  },
+  {
+    "id": "reset-dialog.tsx:34",
+    "file": "reset-dialog.tsx",
+    "line": 34,
+    "tag": "input",
+    "label": "\"Search reset commits\"",
+    "handlers": "onChange={event => { setQuery(event.target.value); setSelected(undefined); setPreview(undefined); setConfirmed(false) }}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "reset-dialog.tsx:38",
+    "file": "reset-dialog.tsx",
+    "line": 38,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={() => { setSelected(commit.hash); setPreview(undefined); setConfirmed(false) }}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "reset-dialog.tsx:43",
+    "file": "reset-dialog.tsx",
+    "line": 43,
+    "tag": "button",
+    "label": "Preview reset",
+    "handlers": "onClick={refresh}",
+    "disabled": "disabled={busy || !selected}"
+  },
+  {
+    "id": "reset-dialog.tsx:49",
+    "file": "reset-dialog.tsx",
+    "line": 49,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={() => { setMode(option.value); setConfirmed(false) }}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "reset-dialog.tsx:52",
+    "file": "reset-dialog.tsx",
+    "line": 52,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={event => setConfirmed(event.target.checked)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "reset-dialog.tsx:56",
+    "file": "reset-dialog.tsx",
+    "line": 56,
+    "tag": "button",
+    "label": "Cancel",
+    "handlers": "onClick={onClose}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "reset-dialog.tsx:57",
+    "file": "reset-dialog.tsx",
+    "line": 57,
+    "tag": "button",
+    "label": "Reset branch",
+    "handlers": "onClick={() => { if (preview) onReset(preview, mode) }}",
+    "disabled": "disabled={busy || !preview || (mode === 'hard' && !confirmed)}"
+  },
+  {
+    "id": "source-control-panel.tsx:372",
+    "file": "source-control-panel.tsx",
+    "line": 372,
+    "tag": "button",
+    "label": "{file.from ? `${file.from} → ${file.path}` : file.path}",
+    "handlers": "onClick={() => { setChangeQueue(undefined); openFileDiff(file.path, inIndex) }}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:376",
+    "file": "source-control-panel.tsx",
+    "line": 376,
+    "tag": "button",
+    "label": "\"Open file in editor\"",
+    "handlers": "onClick={() => openProjectFile(file.path)}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:377",
+    "file": "source-control-panel.tsx",
+    "line": 377,
+    "tag": "button",
+    "label": "{`History ${file.path}`}",
+    "handlers": "onClick={() => openFileHistory(file.path)}",
+    "disabled": "disabled={busy || file.index === '?'}"
+  },
+  {
+    "id": "source-control-panel.tsx:383",
+    "file": "source-control-panel.tsx",
+    "line": 383,
+    "tag": "button",
+    "label": "{`Discard changes to ${file.path}`}",
+    "handlers": "onClick={() => previewDiscard(file.path)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:385",
+    "file": "source-control-panel.tsx",
+    "line": 385,
+    "tag": "button",
+    "label": "{`${inIndex ? 'Unstage' : 'Stage'} ${file.path}`}",
+    "handlers": "onClick={() => command({ command: inIndex ? 'unstage' : 'stage', paths: [file.path] })}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:421",
+    "file": "source-control-panel.tsx",
+    "line": 421,
+    "tag": "ActionSubmenu",
+    "label": "{children}",
+    "handlers": "onOpen={() => setSubmenu(label)}; onClose={() => setSubmenu(undefined)}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:424",
+    "file": "source-control-panel.tsx",
+    "line": 424,
+    "tag": "Dropdown.Item",
+    "label": "Pull…",
+    "handlers": "onClick={() => remoteAction('pull')}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:425",
+    "file": "source-control-panel.tsx",
+    "line": 425,
+    "tag": "Dropdown.Item",
+    "label": "Push…",
+    "handlers": "onClick={() => remoteAction('push')}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:426",
+    "file": "source-control-panel.tsx",
+    "line": 426,
+    "tag": "Dropdown.Item",
+    "label": "Clone…",
+    "handlers": "onClick={() => { setError('');setCloneOpen(true) }}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:427",
+    "file": "source-control-panel.tsx",
+    "line": 427,
+    "tag": "Dropdown.Item",
+    "label": "Checkout to…",
+    "handlers": "onClick={() => setPicker(true)}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:428",
+    "file": "source-control-panel.tsx",
+    "line": 428,
+    "tag": "Dropdown.Item",
+    "label": "Fetch…",
+    "handlers": "onClick={() => remoteAction('fetch')}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:431",
+    "file": "source-control-panel.tsx",
+    "line": 431,
+    "tag": "Dropdown.Item",
+    "label": "{scope==='auto'?'Commit':scope==='staged'?'Commit Staged':'Commit All'}",
+    "handlers": "onClick={()=>commitVariant(scope)}",
+    "disabled": "disabled={!!status?.conflicted.length || !(scope==='staged'?indexFiles.length:status?.files.length)}"
+  },
+  {
+    "id": "source-control-panel.tsx:432",
+    "file": "source-control-panel.tsx",
+    "line": 432,
+    "tag": "Dropdown.Item",
+    "label": "Undo Last Commit",
+    "handlers": "onClick={undoLastCommit}",
+    "disabled": "disabled={!!status?.operation || !snapshot?.graph?.length}"
+  },
+  {
+    "id": "source-control-panel.tsx:433",
+    "file": "source-control-panel.tsx",
+    "line": 433,
+    "tag": "Dropdown.Item",
+    "label": "Abort Rebase",
+    "handlers": "onClick={() => command({command:'continueOperation',operation:'rebase',action:'abort'})}",
+    "disabled": "disabled={status?.operation !== 'rebase'}"
+  },
+  {
+    "id": "source-control-panel.tsx:435",
+    "file": "source-control-panel.tsx",
+    "line": 435,
+    "tag": "Dropdown.Item",
+    "label": "{scope==='auto'?'Commit (Amend)':scope==='staged'?'Commit Staged (Amend)':'Commit All (Amend)'}",
+    "handlers": "onClick={()=>commitVariant(scope,true)}",
+    "disabled": "disabled={!!status?.operation || !!status?.conflicted.length || !snapshot?.graph?.length}"
+  },
+  {
+    "id": "source-control-panel.tsx:437",
+    "file": "source-control-panel.tsx",
+    "line": 437,
+    "tag": "Dropdown.Item",
+    "label": "{scope==='auto'?'Commit (Signed Off)':scope==='staged'?'Commit Staged (Signed Off)':'Commit All (Signed Off)'}",
+    "handlers": "onClick={()=>commitVariant(scope,false,true)}",
+    "disabled": "disabled={!!status?.conflicted.length || !(scope==='staged'?indexFiles.length:status?.files.length)}"
+  },
+  {
+    "id": "source-control-panel.tsx:439",
+    "file": "source-control-panel.tsx",
+    "line": 439,
+    "tag": "Dropdown.Item",
+    "label": "Cherry-pick…",
+    "handlers": "onClick={() => refAction('Cherry-pick commit', 'cherryPick')}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:440",
+    "file": "source-control-panel.tsx",
+    "line": 440,
+    "tag": "Dropdown.Item",
+    "label": "Revert commit…",
+    "handlers": "onClick={() => refAction('Revert commit', 'revert')}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:441",
+    "file": "source-control-panel.tsx",
+    "line": 441,
+    "tag": "Dropdown.Item",
+    "label": "Amend latest commit…",
+    "handlers": "onClick={amendCommit}",
+    "disabled": "disabled={!!status?.operation || !!status?.conflicted.length || !snapshot?.graph?.length}"
+  },
+  {
+    "id": "source-control-panel.tsx:444",
+    "file": "source-control-panel.tsx",
+    "line": 444,
+    "tag": "Dropdown.Item",
+    "label": "Ignored files…",
+    "handlers": "onClick={openIgnoredFiles}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:445",
+    "file": "source-control-panel.tsx",
+    "line": 445,
+    "tag": "Dropdown.Item",
+    "label": "File history…",
+    "handlers": "onClick={() => setAction({ title: 'File history', fields: [{ key: 'path', label: 'File path' }], execute: values => openFileHistory(values.path) })}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:447",
+    "file": "source-control-panel.tsx",
+    "line": 447,
+    "tag": "Dropdown.Item",
+    "label": "Open Changes",
+    "handlers": "onClick={() => openChanges(workingFiles,false)}",
+    "disabled": "disabled={!workingFiles.length}"
+  },
+  {
+    "id": "source-control-panel.tsx:448",
+    "file": "source-control-panel.tsx",
+    "line": 448,
+    "tag": "Dropdown.Item",
+    "label": "Stage All Changes",
+    "handlers": "onClick={() => command({command:'stage',paths:workingFiles.map(file=>file.path)})}",
+    "disabled": "disabled={!workingFiles.length}"
+  },
+  {
+    "id": "source-control-panel.tsx:449",
+    "file": "source-control-panel.tsx",
+    "line": 449,
+    "tag": "Dropdown.Item",
+    "label": "Unstage All Changes",
+    "handlers": "onClick={() => command({command:'unstage',paths:indexFiles.map(file=>file.path)})}",
+    "disabled": "disabled={!indexFiles.length}"
+  },
+  {
+    "id": "source-control-panel.tsx:450",
+    "file": "source-control-panel.tsx",
+    "line": 450,
+    "tag": "Dropdown.Item",
+    "label": "Discard All Changes…",
+    "handlers": "onClick={previewDiscardAll}",
+    "disabled": "disabled={!workingFiles.length}"
+  },
+  {
+    "id": "source-control-panel.tsx:453",
+    "file": "source-control-panel.tsx",
+    "line": 453,
+    "tag": "Dropdown.Item",
+    "label": "Sync…",
+    "handlers": "onClick={sync}",
+    "disabled": "disabled={!status?.branch}"
+  },
+  {
+    "id": "source-control-panel.tsx:456",
+    "file": "source-control-panel.tsx",
+    "line": 456,
+    "tag": "Dropdown.Item",
+    "label": "Pull",
+    "handlers": "onClick={() => remoteAction('pull')}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:457",
+    "file": "source-control-panel.tsx",
+    "line": 457,
+    "tag": "Dropdown.Item",
+    "label": "Pull (Rebase)…",
+    "handlers": "onClick={() => remoteAction('pull',false,true)}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:458",
+    "file": "source-control-panel.tsx",
+    "line": 458,
+    "tag": "Dropdown.Item",
+    "label": "Pull from…",
+    "handlers": "onClick={() => remoteAction('pull')}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:459",
+    "file": "source-control-panel.tsx",
+    "line": 459,
+    "tag": "Dropdown.Item",
+    "label": "Push",
+    "handlers": "onClick={() => remoteAction('push')}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:460",
+    "file": "source-control-panel.tsx",
+    "line": 460,
+    "tag": "Dropdown.Item",
+    "label": "Push to…",
+    "handlers": "onClick={() => remoteAction('push')}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:462",
+    "file": "source-control-panel.tsx",
+    "line": 462,
+    "tag": "Dropdown.Item",
+    "label": "Fetch",
+    "handlers": "onClick={() => remoteAction('fetch')}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:463",
+    "file": "source-control-panel.tsx",
+    "line": 463,
+    "tag": "Dropdown.Item",
+    "label": "Fetch (Prune)…",
+    "handlers": "onClick={() => setAction({title:'Fetch (Prune)',fields:[{key:'remote',label:'Remote',value:'origin'}],execute:values=>command({command:'fetch',...values,prune:true})})}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:464",
+    "file": "source-control-panel.tsx",
+    "line": 464,
+    "tag": "Dropdown.Item",
+    "label": "Fetch From All Remotes",
+    "handlers": "onClick={() => run(async () => { const remotes=(await api.command({command:'remotes'})).result as {name:string}[]; for(const remote of remotes) await api.command({command:'fetch',remote:remote.name}); return api.status() })}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:467",
+    "file": "source-control-panel.tsx",
+    "line": 467,
+    "tag": "Dropdown.Item",
+    "label": "Delete Remote Branch…",
+    "handlers": "onClick={()=>deleteRemoteRef('branch')}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:468",
+    "file": "source-control-panel.tsx",
+    "line": 468,
+    "tag": "Dropdown.Item",
+    "label": "Merge into current branch…",
+    "handlers": "onClick={mergeBranch}",
+    "disabled": "disabled={!status?.branch}"
+  },
+  {
+    "id": "source-control-panel.tsx:469",
+    "file": "source-control-panel.tsx",
+    "line": 469,
+    "tag": "Dropdown.Item",
+    "label": "Rebase onto…",
+    "handlers": "onClick={() => refAction('Rebase onto', 'rebase')}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:470",
+    "file": "source-control-panel.tsx",
+    "line": 470,
+    "tag": "Dropdown.Item",
+    "label": "Create branch…",
+    "handlers": "onClick={() => createBranch(false)}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:471",
+    "file": "source-control-panel.tsx",
+    "line": 471,
+    "tag": "Dropdown.Item",
+    "label": "Create branch from…",
+    "handlers": "onClick={() => createBranch(true)}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:472",
+    "file": "source-control-panel.tsx",
+    "line": 472,
+    "tag": "Dropdown.Item",
+    "label": "Rename branch…",
+    "handlers": "onClick={() => setAction({ title: 'Rename branch', fields: [ { key: 'from', label: 'Branch', value: status?.branch || '' }, { key: 'to', label: 'New name' }], execute: values => command({ command: 'renameBranch', ...values }) })}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:475",
+    "file": "source-control-panel.tsx",
+    "line": 475,
+    "tag": "Dropdown.Item",
+    "label": "Delete branch…",
+    "handlers": "onClick={() => setAction({ title: 'Delete merged branch', fields: [{ key: 'name', label: 'Branch name' }], execute: values => command({ command: 'deleteBranch', name: values.name }) })}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:477",
+    "file": "source-control-panel.tsx",
+    "line": 477,
+    "tag": "Dropdown.Item",
+    "label": "Reset current branch…",
+    "handlers": "onClick={() => { setError(''); setResetOpen(true) }}",
+    "disabled": "disabled={!!status?.operation || !snapshot?.graph?.length}"
+  },
+  {
+    "id": "source-control-panel.tsx:478",
+    "file": "source-control-panel.tsx",
+    "line": 478,
+    "tag": "Dropdown.Item",
+    "label": "Publish branch…",
+    "handlers": "onClick={() => remoteAction('push', true)}",
+    "disabled": "disabled={!!status?.detached}"
+  },
+  {
+    "id": "source-control-panel.tsx:482",
+    "file": "source-control-panel.tsx",
+    "line": 482,
+    "tag": "Dropdown.Item",
+    "label": "Add remote…",
+    "handlers": "onClick={() => setAction({ title: 'Add remote', fields: [ { key: 'name', label: 'Remote name', value: 'origin' }, { key: 'url', label: 'HTTPS repository URL' }], execute: values => command({ command: 'addRemote', ...values }) })}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:485",
+    "file": "source-control-panel.tsx",
+    "line": 485,
+    "tag": "Dropdown.Item",
+    "label": "Remove Remote…",
+    "handlers": "onClick={() => setSettings(true)}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:488",
+    "file": "source-control-panel.tsx",
+    "line": 488,
+    "tag": "Dropdown.Item",
+    "label": "Stash",
+    "handlers": "onClick={()=>createStash('tracked')}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:489",
+    "file": "source-control-panel.tsx",
+    "line": 489,
+    "tag": "Dropdown.Item",
+    "label": "Stash (Include Untracked)",
+    "handlers": "onClick={()=>createStash('include-untracked')}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:490",
+    "file": "source-control-panel.tsx",
+    "line": 490,
+    "tag": "Dropdown.Item",
+    "label": "Stash Staged",
+    "handlers": "onClick={()=>createStash('staged')}",
+    "disabled": "disabled={!indexFiles.length}"
+  },
+  {
+    "id": "source-control-panel.tsx:492",
+    "file": "source-control-panel.tsx",
+    "line": 492,
+    "tag": "Dropdown.Item",
+    "label": "Apply Latest Stash",
+    "handlers": "onClick={()=>latestStash()}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:493",
+    "file": "source-control-panel.tsx",
+    "line": 493,
+    "tag": "Dropdown.Item",
+    "label": "Apply Stash…",
+    "handlers": "onClick={()=>openStashFor('apply')}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:494",
+    "file": "source-control-panel.tsx",
+    "line": 494,
+    "tag": "Dropdown.Item",
+    "label": "Pop Latest Stash",
+    "handlers": "onClick={()=>latestStash(true)}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:495",
+    "file": "source-control-panel.tsx",
+    "line": 495,
+    "tag": "Dropdown.Item",
+    "label": "Pop Stash…",
+    "handlers": "onClick={()=>openStashFor('pop')}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:497",
+    "file": "source-control-panel.tsx",
+    "line": 497,
+    "tag": "Dropdown.Item",
+    "label": "Drop Stash…",
+    "handlers": "onClick={()=>openStashFor('drop')}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:498",
+    "file": "source-control-panel.tsx",
+    "line": 498,
+    "tag": "Dropdown.Item",
+    "label": "Drop All Stashes…",
+    "handlers": "onClick={dropAllStashes}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:499",
+    "file": "source-control-panel.tsx",
+    "line": 499,
+    "tag": "Dropdown.Item",
+    "label": "View Stash…",
+    "handlers": "onClick={()=>openStashFor('view')}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:500",
+    "file": "source-control-panel.tsx",
+    "line": 500,
+    "tag": "Dropdown.Item",
+    "label": "Stashes…",
+    "handlers": "onClick={openStashes}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:503",
+    "file": "source-control-panel.tsx",
+    "line": 503,
+    "tag": "Dropdown.Item",
+    "label": "Delete Remote Tag…",
+    "handlers": "onClick={()=>deleteRemoteRef('tag')}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:504",
+    "file": "source-control-panel.tsx",
+    "line": 504,
+    "tag": "Dropdown.Item",
+    "label": "Push Tags…",
+    "handlers": "onClick={()=>setAction({title:'Push Tags',summary:'Push all local tags to the selected remote without replacing existing remote tags.',fields:[{key:'remote',label:'Remote',value:'origin'}],execute:values=>command({command:'pushTags',...values})})}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:505",
+    "file": "source-control-panel.tsx",
+    "line": 505,
+    "tag": "Dropdown.Item",
+    "label": "Create tag…",
+    "handlers": "onClick={() => setAction({ title: 'Create tag', fields: [{ key: 'name', label: 'Tag name' }, { key: 'ref', label: 'Branch or commit', value: 'HEAD' }], execute: values => command({ command: 'createTag', ...values }) })}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:508",
+    "file": "source-control-panel.tsx",
+    "line": 508,
+    "tag": "Dropdown.Item",
+    "label": "Delete tag…",
+    "handlers": "onClick={() => setAction({ title: 'Delete local tag', fields: [{ key: 'name', label: 'Tag name' }], execute: values => command({ command: 'deleteTag', name: values.name }) })}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:513",
+    "file": "source-control-panel.tsx",
+    "line": 513,
+    "tag": "Dropdown.Item",
+    "label": "Create Worktree…",
+    "handlers": "onClick={()=>setAction({title:'Create Worktree',summary:'Create a separate server workspace on a new branch. Keep the current editor and its unfinished files unchanged.',fields:[{key:'name',label:'New branch name'},{key:'from',label:'Start from',value:'HEAD'}],execute:values=>command({command:'createWorktree',...values})})}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:514",
+    "file": "source-control-panel.tsx",
+    "line": 514,
+    "tag": "Dropdown.Item",
+    "label": "Worktrees…",
+    "handlers": "onClick={openWorktrees}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:518",
+    "file": "source-control-panel.tsx",
+    "line": 518,
+    "tag": "Dropdown.Item",
+    "label": "Refresh",
+    "handlers": "onClick={() => run(() => api.status())}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:519",
+    "file": "source-control-panel.tsx",
+    "line": 519,
+    "tag": "Dropdown.Item",
+    "label": "Repository settings…",
+    "handlers": "onClick={() => setSettings(true)}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:520",
+    "file": "source-control-panel.tsx",
+    "line": 520,
+    "tag": "Dropdown.Item",
+    "label": "Show Git Output",
+    "handlers": "onClick={showGitOutput}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:522",
+    "file": "source-control-panel.tsx",
+    "line": 522,
+    "tag": "button",
+    "label": "{label}",
+    "handlers": "onClick={() => action()}",
+    "disabled": "disabled={busy || disabled}"
+  },
+  {
+    "id": "source-control-panel.tsx:536",
+    "file": "source-control-panel.tsx",
+    "line": 536,
+    "tag": "button",
+    "label": "\"View Git Graph\"",
+    "handlers": "onClick={viewGraph}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:537",
+    "file": "source-control-panel.tsx",
+    "line": 537,
+    "tag": "Dropdown",
+    "label": "<Dropdown.Toggle variant=\"link\" className=\"native-git-icon-button\" aria-label=\"More changes actions\" disabled={busy}>⋯</Dropdown.Toggle>  {createPortal(<Dropdown.Menu className=\"na",
+    "handlers": "onToggle={open => { setChangesMenuOpen(open); setSubmenu(undefined) }}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:537",
+    "file": "source-control-panel.tsx",
+    "line": 537,
+    "tag": "Dropdown.Toggle",
+    "label": "\"More changes actions\"",
+    "handlers": "",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:538",
+    "file": "source-control-panel.tsx",
+    "line": 538,
+    "tag": "Dropdown.Menu",
+    "label": " <Dropdown.Item onClick={() => setChangesTree(value => !value)}>{changesTree ? 'View as List' : 'View as Tree'}</Dropdown.Item>  {changesMenuOpen && subgroup('View & Sort', <> <Dro",
+    "handlers": "onMouseOver={event => { if (event.currentTarget.contains(event.target as Node) && !(event.target as Element).closest('.native-git-submenu-trigger')) setSubmenu(undefined) }}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:539",
+    "file": "source-control-panel.tsx",
+    "line": 539,
+    "tag": "Dropdown.Item",
+    "label": "{changesTree ? 'View as List' : 'View as Tree'}",
+    "handlers": "onClick={() => setChangesTree(value => !value)}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:541",
+    "file": "source-control-panel.tsx",
+    "line": 541,
+    "tag": "Dropdown.Item",
+    "label": "<span className=\"native-git-menu-check\" aria-hidden=\"true\">{!changesTree ? '✓' : ''}</span> View as List",
+    "handlers": "onClick={() => setChangesTree(false)}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:542",
+    "file": "source-control-panel.tsx",
+    "line": 542,
+    "tag": "Dropdown.Item",
+    "label": "<span className=\"native-git-menu-check\" aria-hidden=\"true\">{changesTree ? '✓' : ''}</span> View as Tree",
+    "handlers": "onClick={() => setChangesTree(true)}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:544",
+    "file": "source-control-panel.tsx",
+    "line": 544,
+    "tag": "Dropdown.Item",
+    "label": "<span className=\"native-git-menu-check\" aria-hidden=\"true\">{changesSort === sort ? '✓' : ''}</span> Sort Changes by {sort[0].toUpperCase() + sort.slice(1)}",
+    "handlers": "onClick={() => setChangesSort(sort)}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:547",
+    "file": "source-control-panel.tsx",
+    "line": 547,
+    "tag": "Dropdown.Item",
+    "label": "View Git Graph",
+    "handlers": "onClick={viewGraph}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:552",
+    "file": "source-control-panel.tsx",
+    "line": 552,
+    "tag": "button",
+    "label": "Retry",
+    "handlers": "onClick={() => run(() => api.status())}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:556",
+    "file": "source-control-panel.tsx",
+    "line": 556,
+    "tag": "button",
+    "label": "Initialize repository",
+    "handlers": "onClick={() => run(() => api.initialize())}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:562",
+    "file": "source-control-panel.tsx",
+    "line": 562,
+    "tag": "button",
+    "label": "Refresh repository status",
+    "handlers": "onClick={() => run(() => api.status())}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:564",
+    "file": "source-control-panel.tsx",
+    "line": 564,
+    "tag": "button",
+    "label": "Retry",
+    "handlers": "onClick={() => command({ command: 'resumeTransfer' })}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:569",
+    "file": "source-control-panel.tsx",
+    "line": 569,
+    "tag": "button",
+    "label": "{status?.branch || 'Detached HEAD'}",
+    "handlers": "onClick={() => setPicker(value => !value)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:572",
+    "file": "source-control-panel.tsx",
+    "line": 572,
+    "tag": "Dropdown",
+    "label": " <Dropdown.Toggle className=\"native-git-icon-button\" variant=\"link\" title=\"More Actions\" aria-label=\"Repository actions\" disabled={busy}>⋯</Dropdown.Toggle>  {createPortal(<Dropdow",
+    "handlers": "onToggle={open => { setRepositoryMenuOpen(open); setSubmenu(undefined) }}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:573",
+    "file": "source-control-panel.tsx",
+    "line": 573,
+    "tag": "Dropdown.Toggle",
+    "label": "\"More Actions\"",
+    "handlers": "",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:574",
+    "file": "source-control-panel.tsx",
+    "line": 574,
+    "tag": "Dropdown.Menu",
+    "label": " {repositoryMenuOpen && repositoryActions()} ",
+    "handlers": "onMouseOver={event => { if (event.currentTarget.contains(event.target as Node) && !(event.target as Element).closest('.native-git-submenu-trigger')) setSubmenu(undefined) }}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:583",
+    "file": "source-control-panel.tsx",
+    "line": 583,
+    "tag": "form",
+    "label": " <div className=\"native-git-message\"><input className=\"form-control\" aria-label=\"Commit message\" placeholder=\"Message describing your changes\" value={message} disabled={busy} onCha",
+    "handlers": "onSubmit={event => { event.preventDefault(); void commit() }}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:584",
+    "file": "source-control-panel.tsx",
+    "line": 584,
+    "tag": "input",
+    "label": "\"Commit message\"",
+    "handlers": "onChange={event => setMessage(event.target.value)}; onKeyDown={event => { if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') { event.preventDefault(); void commit() } }}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:586",
+    "file": "source-control-panel.tsx",
+    "line": 586,
+    "tag": "button",
+    "label": "\"Generate commit message with AI\"",
+    "handlers": "onClick={async () => { const result = await command({ command: 'generateMessage' }); if (typeof result?.result === 'string') setMessage(result.result) }}",
+    "disabled": "disabled={busy || !indexFiles.length}"
+  },
+  {
+    "id": "source-control-panel.tsx:590",
+    "file": "source-control-panel.tsx",
+    "line": 590,
+    "tag": "button",
+    "label": "Commit",
+    "handlers": "",
+    "disabled": "disabled={busy || !message.trim() || indexFiles.length === 0 || !!status?.conflicted.length}"
+  },
+  {
+    "id": "source-control-panel.tsx:595",
+    "file": "source-control-panel.tsx",
+    "line": 595,
+    "tag": "button",
+    "label": "Continue {status.operation}",
+    "handlers": "onClick={() => command({ command: 'continueOperation', operation: status.operation, action: 'continue' })}",
+    "disabled": "disabled={busy || !!status.conflicted.length}"
+  },
+  {
+    "id": "source-control-panel.tsx:597",
+    "file": "source-control-panel.tsx",
+    "line": 597,
+    "tag": "button",
+    "label": "Abort {status.operation}",
+    "handlers": "onClick={() => command({ command: 'continueOperation', operation: status.operation, action: 'abort' })}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:599",
+    "file": "source-control-panel.tsx",
+    "line": 599,
+    "tag": "button",
+    "label": "Skip commit",
+    "handlers": "onClick={() => command({ command: 'continueOperation', operation: status.operation, action: 'skip' })}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:605",
+    "file": "source-control-panel.tsx",
+    "line": 605,
+    "tag": "button",
+    "label": "{file.path}",
+    "handlers": "onClick={() => openConflict(file.path)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:606",
+    "file": "source-control-panel.tsx",
+    "line": 606,
+    "tag": "button",
+    "label": "{`Resolve ${file.path}`}",
+    "handlers": "onClick={() => openConflict(file.path)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:622",
+    "file": "source-control-panel.tsx",
+    "line": 622,
+    "tag": "GraphHistory",
+    "label": "",
+    "handlers": "onRefresh={() => run(() => api.status())}; onPull={() => remoteAction('pull')}; onPublish={() => remoteAction('push', true)}; onFetchAll={() => run(async () => { const remotes = (await api.command({ command: 'remotes' })).result as { name: string }[] for (const remote of remotes) await api.command({ command: 'fetch', remote: remote.name }) return api.status() })}; onSelect={expandCommit}; onInspect={inspectCommit}; onFile={openCommitFile}; onOpenFile={onOpenFile ? openProjectFile : undefined}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:632",
+    "file": "source-control-panel.tsx",
+    "line": 632,
+    "tag": "BranchPicker",
+    "label": "",
+    "handlers": "onClose={() => setPicker(false)}; onCheckout={checkout}; onCreate={createBranch}; onDetached={() => refAction('Checkout detached', 'checkoutDetached')}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:634",
+    "file": "source-control-panel.tsx",
+    "line": 634,
+    "tag": "CloneRepository",
+    "label": "",
+    "handlers": "onClose={()=>setCloneOpen(false)}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:635",
+    "file": "source-control-panel.tsx",
+    "line": 635,
+    "tag": "ActionDialog",
+    "label": "",
+    "handlers": "onClose={() => setAction(undefined)}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:636",
+    "file": "source-control-panel.tsx",
+    "line": 636,
+    "tag": "RemoteSettings",
+    "label": "",
+    "handlers": "onClose={() => { setSettings(false); void run(() => api.status()) }}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:637",
+    "file": "source-control-panel.tsx",
+    "line": 637,
+    "tag": "StashManager",
+    "label": "",
+    "handlers": "onClose={() => setStashes(undefined)}; onPreview={(title, text) => { setStashes(undefined); setDiff({ title, text }) }}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:638",
+    "file": "source-control-panel.tsx",
+    "line": 638,
+    "tag": "Modal",
+    "label": "\"File history\"",
+    "handlers": "onHide={() => setFileHistory(undefined)}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:642",
+    "file": "source-control-panel.tsx",
+    "line": 642,
+    "tag": "button",
+    "label": "Line authors",
+    "handlers": "onClick={() => openBlame(fileHistory.path)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:645",
+    "file": "source-control-panel.tsx",
+    "line": 645,
+    "tag": "button",
+    "label": "{entry.subject}",
+    "handlers": "onClick={() => { setFileHistory(undefined) void openDiff(entry.subject, { command: 'commitDiff', ref: entry.hash }) }}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:653",
+    "file": "source-control-panel.tsx",
+    "line": 653,
+    "tag": "Modal",
+    "label": "\"Git output\"",
+    "handlers": "onHide={() => setGitOutput(undefined)}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:654",
+    "file": "source-control-panel.tsx",
+    "line": 654,
+    "tag": "Modal",
+    "label": "\"Discard all changes\"",
+    "handlers": "onHide={() => { if (!busy) setDiscardAll(undefined) }}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:659",
+    "file": "source-control-panel.tsx",
+    "line": 659,
+    "tag": "button",
+    "label": "Cancel",
+    "handlers": "onClick={() => setDiscardAll(undefined)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:660",
+    "file": "source-control-panel.tsx",
+    "line": 660,
+    "tag": "button",
+    "label": "Refresh preview",
+    "handlers": "onClick={previewDiscardAll}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:661",
+    "file": "source-control-panel.tsx",
+    "line": 661,
+    "tag": "button",
+    "label": "Discard all changes",
+    "handlers": "onClick={async () => { const result = await command({ command: 'discardAll', paths: discardAll.paths, fingerprint: discardAll.fingerprint }); if (result) setDiscardAll(undefined) }}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:664",
+    "file": "source-control-panel.tsx",
+    "line": 664,
+    "tag": "Modal",
+    "label": "\"Discard unstaged changes\"",
+    "handlers": "onHide={() => { if (!busy) setDiscard(undefined) }}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:672",
+    "file": "source-control-panel.tsx",
+    "line": 672,
+    "tag": "button",
+    "label": "Refresh preview",
+    "handlers": "onClick={() => previewDiscard(discard.path)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:673",
+    "file": "source-control-panel.tsx",
+    "line": 673,
+    "tag": "button",
+    "label": "Cancel",
+    "handlers": "onClick={() => setDiscard(undefined)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:674",
+    "file": "source-control-panel.tsx",
+    "line": 674,
+    "tag": "button",
+    "label": "Discard changes",
+    "handlers": "onClick={async () => { const result = await command({ command: 'discard', paths: [discard.path], fingerprint: discard.fingerprint }) if (result) setDiscard(undefined) }}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:680",
+    "file": "source-control-panel.tsx",
+    "line": 680,
+    "tag": "WorktreeManager",
+    "label": "",
+    "handlers": "onClose={() => setWorktrees(undefined)}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:687",
+    "file": "source-control-panel.tsx",
+    "line": 687,
+    "tag": "IgnoredFiles",
+    "label": "",
+    "handlers": "onClose={() => setIgnoredFiles(undefined)}; onRefresh={openIgnoredFiles}; onStage={async path => { if (await command({ command: 'stage', paths: [path], force: true })) await openIgnoredFiles() }}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:691",
+    "file": "source-control-panel.tsx",
+    "line": 691,
+    "tag": "ResetDialog",
+    "label": "",
+    "handlers": "onClose={() => setResetOpen(false)}; onPreview={async ref => (await command({ command: 'resetDetails', ref }))?.result as ResetPreview | undefined}; onReset={async (preview, mode) => { if (await command({ command: 'reset', ref: preview.target, mode, fingerprint: preview.fingerprint })) { setResetOpen(false); closeDiff() } }}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:698",
+    "file": "source-control-panel.tsx",
+    "line": 698,
+    "tag": "MergeBranchPicker",
+    "label": "",
+    "handlers": "onClose={() => setMergeTarget(undefined)}; onMerge={async ref => { const result = await command({ command: 'merge', ref, expectedBranch: mergeTarget }) if (result) setMergeTarget(undefined) }}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:704",
+    "file": "source-control-panel.tsx",
+    "line": 704,
+    "tag": "ConflictEditor",
+    "label": "",
+    "handlers": "onClose={() => setConflict(undefined)}; onResolve={async (choice, text) => { const result = await command({ command: 'resolveConflict', path: conflict.path, fingerprint: conflict.fingerprint, choice, ...(choice === 'edited' ? { text } : {}) }) if (result) setConflict(undefined) }}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:709",
+    "file": "source-control-panel.tsx",
+    "line": 709,
+    "tag": "BlameView",
+    "label": "",
+    "handlers": "onClose={() => setBlame(undefined)}; onCommit={async hash => { const result = await command({ command: 'commitDiff', ref: hash }) if (typeof result?.result === 'string') { setBlame(undefined); setDiff({ title: hash.slice(0, 8), text: result.result }) } }}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:714",
+    "file": "source-control-panel.tsx",
+    "line": 714,
+    "tag": "EditorGraph",
+    "label": "",
+    "handlers": "onCheckout={branch => void checkout({ ...branch, current: branch.name === status?.branch })}; onClose={() => setGraphOpen(false)}; onFile={openCommitFile}; onOpenFile={onOpenFile ? path => { setGraphOpen(false); void openProjectFile(path) } : undefined}; onRefresh={() => run(() => api.status())}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:715",
+    "file": "source-control-panel.tsx",
+    "line": 715,
+    "tag": "EditorDiff",
+    "label": "{diff.title}",
+    "handlers": "onClose={closeDiff}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:716",
+    "file": "source-control-panel.tsx",
+    "line": 716,
+    "tag": "select",
+    "label": "\"Changed file\"",
+    "handlers": "onChange={event => openFileDiff(event.target.value, changeQueue.staged)}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:720",
+    "file": "source-control-panel.tsx",
+    "line": 720,
+    "tag": "button",
+    "label": "Refresh diff",
+    "handlers": "onClick={() => diff.file && openFileDiff(diff.file.path, diff.file.staged)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:722",
+    "file": "source-control-panel.tsx",
+    "line": 722,
+    "tag": "PatchComparison",
+    "label": "",
+    "handlers": "onHunk={diff.file?.hunks.length ? applyHunk : undefined}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:730",
+    "file": "source-control-panel.tsx",
+    "line": 730,
+    "tag": "Panel",
+    "label": " <section className=\"native-git-section\"> <div className=\"native-git-section-header\" onClick={event => { // Blank header space toggles the section; action controls keep their own b",
+    "handlers": "onCollapse={() => setCollapsed(true)}; onExpand={() => setCollapsed(false)}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:732",
+    "file": "source-control-panel.tsx",
+    "line": 732,
+    "tag": "div",
+    "label": "<button type=\"button\" className=\"native-git-section-heading\" data-section={title} aria-expanded={!collapsed} onClick={() => collapsed ? expand() : collapse()}><svg className={`nati",
+    "handlers": "onClick={event => { // Blank header space toggles the section; action controls keep their own behavior. if (event.target !== event.currentTarget) return collapsed ? expand() : collapse() }}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:736",
+    "file": "source-control-panel.tsx",
+    "line": 736,
+    "tag": "button",
+    "label": "<svg className={`native-git-chevron ${collapsed ? '' : 'is-open'}`} width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.6\" strokeLinecap=\"ro",
+    "handlers": "onClick={() => collapsed ? expand() : collapse()}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:745",
+    "file": "source-control-panel.tsx",
+    "line": 745,
+    "tag": "Modal",
+    "label": "{action.title}",
+    "handlers": "onHide={() => { if (!busy) onClose() }}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:747",
+    "file": "source-control-panel.tsx",
+    "line": 747,
+    "tag": "form",
+    "label": " <Modal.Body>{action.summary && <p>{action.summary}</p>}{error && <p role=\"alert\" className=\"native-git-error\">{error}</p>}{action.fields.map((field, index) => <label className=\"na",
+    "handlers": "onSubmit={async event => { event.preventDefault(); if (await action.execute(values)) onClose() }}",
+    "disabled": ""
+  },
+  {
+    "id": "source-control-panel.tsx:749",
+    "file": "source-control-panel.tsx",
+    "line": 749,
+    "tag": "textarea",
+    "label": "",
+    "handlers": "onChange={event => setValues(previous => ({ ...previous, [field.key]: event.target.value }))}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:750",
+    "file": "source-control-panel.tsx",
+    "line": 750,
+    "tag": "input",
+    "label": "",
+    "handlers": "onChange={event => setValues(previous => ({ ...previous, [field.key]: event.target.value }))}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:752",
+    "file": "source-control-panel.tsx",
+    "line": 752,
+    "tag": "button",
+    "label": "Cancel",
+    "handlers": "onClick={onClose}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:753",
+    "file": "source-control-panel.tsx",
+    "line": 753,
+    "tag": "button",
+    "label": "{action.submitLabel || 'Continue'}",
+    "handlers": "",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "source-control-panel.tsx:779",
+    "file": "source-control-panel.tsx",
+    "line": 779,
+    "tag": "SourceControlView",
+    "label": "",
+    "handlers": "onOpenFile={openFile}",
+    "disabled": ""
+  },
+  {
+    "id": "stash-manager.tsx:31",
+    "file": "stash-manager.tsx",
+    "line": 31,
+    "tag": "Modal",
+    "label": "\"Stashes\"",
+    "handlers": "onHide={onClose}",
+    "disabled": ""
+  },
+  {
+    "id": "stash-manager.tsx:36",
+    "file": "stash-manager.tsx",
+    "line": 36,
+    "tag": "button",
+    "label": "Refresh stashes",
+    "handlers": "onClick={async () => { setDeleting(undefined); await reload() }}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "stash-manager.tsx:44",
+    "file": "stash-manager.tsx",
+    "line": 44,
+    "tag": "button",
+    "label": "View changes",
+    "handlers": "onClick={() => action('stashDiff', entry, index)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "stash-manager.tsx:45",
+    "file": "stash-manager.tsx",
+    "line": 45,
+    "tag": "button",
+    "label": "\"Restore changes and keep this stash\"",
+    "handlers": "onClick={() => action('applyStash', entry, index)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "stash-manager.tsx:46",
+    "file": "stash-manager.tsx",
+    "line": 46,
+    "tag": "button",
+    "label": "\"Restore changes and remove this stash on success\"",
+    "handlers": "onClick={() => action('applyStash', entry, index, true)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "stash-manager.tsx:47",
+    "file": "stash-manager.tsx",
+    "line": 47,
+    "tag": "button",
+    "label": "Delete…",
+    "handlers": "onClick={() => setDeleting(entry.hash)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "stash-manager.tsx:51",
+    "file": "stash-manager.tsx",
+    "line": 51,
+    "tag": "button",
+    "label": "Delete stash",
+    "handlers": "onClick={() => action('dropStash', entry, index)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "stash-manager.tsx:52",
+    "file": "stash-manager.tsx",
+    "line": 52,
+    "tag": "button",
+    "label": "Cancel",
+    "handlers": "onClick={() => setDeleting(undefined)}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "worktree-manager.tsx:13",
+    "file": "worktree-manager.tsx",
+    "line": 13,
+    "tag": "Modal",
+    "label": "\"Worktrees\"",
+    "handlers": "onHide={() => { if (!busy) onClose() }}",
+    "disabled": ""
+  },
+  {
+    "id": "worktree-manager.tsx:18",
+    "file": "worktree-manager.tsx",
+    "line": 18,
+    "tag": "button",
+    "label": "Refresh worktrees",
+    "handlers": "onClick={() => { setConfirm(undefined); reload() }}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "worktree-manager.tsx:23",
+    "file": "worktree-manager.tsx",
+    "line": 23,
+    "tag": "button",
+    "label": "Clean up workspace…",
+    "handlers": "onClick={() => setConfirm(entry.id)}",
+    "disabled": "disabled={busy || !!entry.cleanupBlocked}"
+  },
+  {
+    "id": "worktree-manager.tsx:26",
+    "file": "worktree-manager.tsx",
+    "line": 26,
+    "tag": "button",
+    "label": "Clean up workspace",
+    "handlers": "onClick={async () => { if (await clean(entry)) setConfirm(undefined) }}",
+    "disabled": "disabled={busy}"
+  },
+  {
+    "id": "worktree-manager.tsx:27",
+    "file": "worktree-manager.tsx",
+    "line": 27,
+    "tag": "button",
+    "label": "Cancel",
+    "handlers": "onClick={() => setConfirm(undefined)}",
+    "disabled": "disabled={busy}"
+  }
+]

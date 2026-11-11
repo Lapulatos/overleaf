@@ -29,11 +29,20 @@ import ProjectDetailsHandler from '../Project/ProjectDetailsHandler.mjs'
 import ProjectEntityUpdateHandler from '../Project/ProjectEntityUpdateHandler.mjs'
 /** @type {any} */
 import RestoreManager from './RestoreManager.mjs'
+import HistoryRangesSupportMigration from './HistoryRangesSupportMigration.mjs'
+import { createHistoryRestorePreparation } from './HistoryRestorePreparation.mjs'
 import { prepareZipAttachment } from '../../infrastructure/Response.mjs'
 import Features from '../../infrastructure/Features.mjs'
 import { z, zz, parseReq } from '../../infrastructure/Validation.mjs'
 /** @type {any} */
 import ProjectAuditLogHandler from '../Project/ProjectAuditLogHandler.mjs'
+
+const prepareHistoryRestore = createHistoryRestorePreparation({
+  getProject: projectId =>
+    ProjectGetter.promises.getProject(projectId, { overleaf: true }),
+  migrateProject: (projectId, direction) =>
+    HistoryRangesSupportMigration.promises.migrateProject(projectId, direction),
+})
 
 // Number of seconds after which the browser should send a request to revalidate
 // blobs
@@ -269,6 +278,10 @@ async function revertFile(req, res, next) {
   const { version, pathname } = req.body
   const userId = SessionManager.getLoggedInUserId(req.session)
 
+  if (!Features.hasFeature('saas')) {
+    await prepareHistoryRestore(projectId)
+  }
+
   const entity = await RestoreManager.promises.revertFile(
     userId,
     projectId,
@@ -305,6 +318,10 @@ async function revertProject(req, res, next) {
   const { project_id: projectId } = req.params
   const { version } = req.body
   const userId = SessionManager.getLoggedInUserId(req.session)
+
+  if (!Features.hasFeature('saas')) {
+    await prepareHistoryRestore(projectId)
+  }
 
   const reverted = await RestoreManager.promises.revertProject(
     userId,

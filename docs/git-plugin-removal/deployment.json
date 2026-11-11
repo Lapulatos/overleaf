@@ -1,0 +1,7 @@
+{
+  "previousImage": "overleaf-agent-acceptance:20261107-git-ui-r23",
+  "image": "overleaf-agent-acceptance:20261109-without-git",
+  "url": "http://127.0.0.1:18081",
+  "browserUntouched": true,
+  "volumesPreserved": true
+}

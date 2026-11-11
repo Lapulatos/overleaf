@@ -1,0 +1,40 @@
+{
+  "pointerResize": [
+    300,
+    360
+  ],
+  "keyboardResize": true,
+  "all56CommitsScrollable": true,
+  "graphFillsBottom": true,
+  "icons": [
+    {
+      "label": "",
+      "width": 20,
+      "height": 20,
+      "fontSize": "16px"
+    },
+    {
+      "label": "extensionPlugins",
+      "width": 18,
+      "height": 20,
+      "fontSize": "18px"
+    },
+    {
+      "label": "References",
+      "width": 20,
+      "height": 20,
+      "fontSize": "16px"
+    },
+    {
+      "label": "blockDismiss Notes",
+      "width": 18,
+      "height": 20,
+      "fontSize": "18px"
+    }
+  ],
+  "workspace": {
+    "status": 200,
+    "matches": true
+  },
+  "passed": true
+}

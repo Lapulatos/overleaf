@@ -1,0 +1,163 @@
+
+
+  RedisManager
+    project write lease
+      ✔ rejects ordinary document work before touching the document while Git holds the lease
+      ✔ admits a matching internal lease without removing the existing deletion guard
+    getDoc
+      successfully
+        ✔ should get all the details in one call to redis
+        ✔ should return the document
+        ✔ should not log any errors
+      with a corrupted document
+        ✔ should log a hash error
+        ✔ should return the document
+      with a slow request to redis
+        ✔ should return an error
+      getDoc with an invalid project id
+        ✔ should throw an error
+      with history ranges support
+        ✔ should return the document with the history ranges flag set
+    getPreviousDocOpsTests
+      with a start and an end value
+        ✔ should get the length of the existing doc ops
+        ✔ should get the current version of the doc
+        ✔ should get the appropriate docs ops
+        ✔ should return the docs with the doc ops deserialized
+      with an end value of -1
+        ✔ should get the appropriate docs ops to the end of list
+        ✔ should return the docs with the doc ops deserialized
+      when the requested range is not in Redis
+        ✔ should throw an error
+        ✔ should send details for metrics
+      with a slow request to redis
+        ✔ should return an error
+    updateDocument
+      with a consistent version
+        ✔ should get the current doc version to check for consistency
+        ✔ should set most details in a single MSET call
+        ✔ should set the unflushed time
+        ✔ should push the doc op into the doc ops list
+        ✔ should renew the expiry ttl on the doc ops array
+        ✔ should truncate the list to 100 members
+        ✔ should not log any errors
+        with a doc using project history only
+          ✔ should succeed
+      with an inconsistent version
+        ✔ should not call multi.exec
+      with no updates
+        ✔ should set the unflushed time (potential ranges changes)
+        ✔ should not try to enqueue doc updates
+        ✔ should still set the doclines
+      with empty ranges
+        ✔ should set empty ranges
+      with null bytes in the serialized doc lines
+        ✔ should throw an error
+      with ranges that are too big
+        ✔ should throw an error
+      without user id from meta
+        ✔ should unset last updater
+    putDocInMemory
+      with non-empty ranges
+        ✔ should set all the details in a single MSET call
+        ✔ should add the docId to the project set
+        ✔ should not log any errors
+        ✔ should remove the document from the HistoryRangesSupport set in Redis
+        ✔ should not store the resolved comments in Redis
+      with empty ranges
+        ✔ should unset ranges
+      with null bytes in the serialized doc lines
+        ✔ should throw an error
+      with ranges that are too big
+        ✔ should throw an error
+      with history ranges support
+        ✔ should add the document to the HistoryRangesSupport set in Redis
+        ✔ should store the resolved comments in Redis
+      when the project is blocked
+        ✔ should not store the doc
+    removeDocFromMemory
+      ✔ should check the length of the current doclines
+      ✔ should delete the details in a singe call
+      ✔ should remove the docId from the project set
+      ✔ should remove the docId from the HistoryRangesSupport set
+    clearProjectState
+      ✔ should delete the project state
+    renameDoc
+      the document is cached in redis
+        ✔ update the cached pathname
+      the document is not cached in redis
+        ✔ does not update the cached pathname
+      getDocVersion
+        ✔ should return the document version
+
+  UpdateManager
+    processOutstandingUpdates
+      ✔ should apply the updates
+      ✔ should time the execution
+    processOutstandingUpdatesWithLock
+      ✔ notifies clients when a durable guard rejects without consuming queued edits
+      ✔ does not duplicate errors already handled by the update application path
+      ✔ releases the lock even when guard error publication fails
+      when the lock is free
+        successfully
+          ✔ should acquire the lock
+          ✔ should free the lock
+          ✔ should process the outstanding updates
+          ✔ should do everything with the lock acquired
+          ✔ should continue processing new updates that may have come in
+        when processOutstandingUpdates returns an error
+          ✔ should free the lock
+      when the lock is taken
+        ✔ should not process the updates
+    continueProcessingUpdatesWithLock
+      when there are outstanding updates
+        ✔ should process the outstanding updates
+      when there are no outstanding updates
+        ✔ should not try to process the outstanding updates
+    fetchAndApplyUpdates
+      with updates
+        ✔ should get the pending updates
+        ✔ should apply the updates
+      when there are no updates
+        ✔ should not call applyUpdate
+    applyUpdate
+      normally
+        ✔ should apply the updates via ShareJS
+        ✔ should update the ranges
+        ✔ should save the document
+        ✔ should add metadata to the ops
+        ✔ should push the applied ops into the history queue
+      with UTF-16 surrogate pairs in the update
+        ✔ should apply the update but with surrogate pairs removed
+      with an error
+        ✔ should call RealTimeRedisManager.sendData with the error
+      when ranges get collapsed
+        ✔ should increment the doc-snapshot metric
+        ✔ should call SnapshotManager.recordSnapshot
+      when history ranges are supported
+        ✔ should push the history updates into the history queue
+      when tracked changes are rejected
+        ✔ should notify web of the rejected tracked changes
+      when no tracked changes are rejected
+        ✔ should not notify web
+    _adjustHistoryUpdatesMetadata
+      ✔ should add projectHistoryId, pathname and doc_length metadata to the ops
+      ✔ should add additional metadata when ranges support is enabled
+      ✔ should calculate the right doc length for an empty document
+    lockUpdatesAndDo
+      ✔ releases the lock without reading or writing when the durable guard rejects
+      successfully
+        ✔ should lock the doc
+        ✔ should process any outstanding updates
+        ✔ should call the method
+        ✔ should return the method response arguments
+        ✔ should release the lock
+        ✔ should continue processing updates
+      when processOutstandingUpdates returns an error
+        ✔ should free the lock
+      when the method returns an error
+        ✔ should free the lock
+
+
+  95 passing (428ms)
+

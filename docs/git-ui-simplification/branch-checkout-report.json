@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "switches": [
+    {
+      "branch": "refs/heads/main",
+      "baseCommit": "ade955648d9fdc953dc6b9d0caba7533178f4929",
+      "files": [
+        "build.aux",
+        "sample.pdf"
+      ]
+    },
+    {
+      "branch": "refs/heads/conflict-review",
+      "baseCommit": "481c32acf24e05b4b38ea7567cd16064a32db887",
+      "files": [
+        "build.aux",
+        "sample.pdf"
+      ]
+    }
+  ],
+  "roundTripProjectBytesUnchanged": true
+}

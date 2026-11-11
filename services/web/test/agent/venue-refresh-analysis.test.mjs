@@ -1,0 +1,4 @@
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import {refreshEvidence,parseRefreshAnalysis} from '../../app/src/Features/SubmissionDeadlines/VenueRefreshAnalysis.mjs'
+test('AI venue summaries require exact venue and source references',()=>{const records=[refreshEvidence({id:'C',title:'CAV'},{tracks:[{title:'Tools',url:'https://example.org/cfp',events:[{label:'Paper',date:'2027-01-20'}]}]})];const row={venueId:'C',summary:'Tool papers due January20',evidenceIds:['e1']};assert.equal(parseRefreshAnalysis(JSON.stringify({entries:[row]}),records)[0].evidence[0].source,'https://example.org/cfp');assert.throws(()=>parseRefreshAnalysis(JSON.stringify({entries:[{...row,evidenceIds:['invented']}]}),records));assert.throws(()=>parseRefreshAnalysis(JSON.stringify({entries:[{...row,venueId:'OTHER'}]}),records))})

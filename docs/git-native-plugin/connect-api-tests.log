@@ -1,0 +1,15 @@
+✔ connect clones real history and retains all current project bytes as uncommitted changes (520.737875ms)
+✔ connect resumes after clone installation acknowledgement failure without discarding the repository (503.832292ms)
+✔ failed clone leaves editor unbound and allows retry (383.312167ms)
+✔ disabled, anonymous and unauthorized requests cannot access native repository storage (1.797583ms)
+✔ HTTP command rejects traversal project IDs, unknown commands and supplied filesystem/config fields (1.710667ms)
+✔ authenticated request is bound to the session user and authorized project, with no-store responses (0.373375ms)
+✔ pending editor integration reports unavailable without pretending a command succeeded (0.288666ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1565.838584

@@ -1,0 +1,174 @@
+npm notice run npx
+npm notice run 'mocha' --timeout 15000 --exit --require test/frontend/bootstrap.js test/frontend/features/git-sync/*.test.tsx ../../docs/git-improvements/selection-regression.cjs
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+
+  Git application controls
+    ✔ shows blocked paths without submitting and updates after a revised review (90ms)
+    ✔ posts the reviewed revision and distinguishes local save from repository push
+    ✔ queries the same operation after a lost response and never automatically replays a write
+    ✔ offers only status checking when both mutation and status responses are lost
+    ✔ checks resumed state before offering a stop and preserves the partial-save explanation
+    ✔ continues a supported deletion only on explicit click and does not resume remaining changes
+    ✔ continues a supported creation only on explicit click and does not resume remaining changes
+    ✔ continues a supported asset change only on explicit click and does not resume remaining changes
+    ✔ checks status after a lost deletion response without replaying the deletion
+    ✔ checks status after a lost asset change response without replaying the asset change
+    ✔ does not offer deletion continuation without server capability
+    ✔ does not offer asset change continuation without server capability
+
+  Automatic web sync transaction
+    ✔ fetches, prepares a fingerprint-pinned full selection and pushes once
+    ✔ excludes ignored new files from automatic synchronization
+    ✔ does not create empty commits
+    ✔ pauses before writes for state
+    ✔ pauses before writes for activePushId
+    ✔ pauses before writes for activeApplicationId
+    ✔ pauses before writes for pendingMerge
+    ✔ pauses before writes for hasKnownRemoteChanges
+    ✔ detects remote updates found by the fetch
+    ✔ stops before dispatch if disabled during preparation
+    ✔ reads status after a lost push response without replaying it
+    ✔ pauses with the operation id if push outcome remains unknown
+
+  Automatic sync preflight recovery
+    ✔ defers a changing web snapshot to the next interval without pausing or pushing
+    ✔ defers a definite stale-binding rejection before dispatch
+    ✔ never retries an ambiguous dispatch, even when status still says prepared
+    ✔ reports the failed stage and server error instead of generic credentials advice
+
+  Automatic web sync settings and scheduling
+    ✔ defaults off, persists interval and enabled state, and respects a blocked review
+    ✔ does not overlap runs and persists a pause after failure
+    ✔ does not run offline and does not reuse settings for another binding
+
+  Git commit details
+    ✔ reads changed files without a mutation and closes on request
+    ✔ shows historical deleted lines after selecting a file
+    ✔ shows load failure without claiming an empty commit
+    ✔ switches between changed text and binary files without showing the previous diff
+    ✔ prepares a restoration only after an explicit action and offers file history
+
+  Git commit graph
+    ✔ draws both merge parents and rejoins their common ancestor
+    ✔ keeps unseen parent lanes for truncated history
+    ✔ renders branch names and untrusted commit subjects as text
+
+  Conflict blocks and drafts
+    ✔ preserves clean lines while resolving separate blocks
+    ✔ retains failed drafts across remount and clears after confirmed save
+    ✔ does not edit a truncated merged result
+    ✔ preserves CRLF and parses an empty side and unterminated final marker
+
+  Git conflict controls
+    ✔ does not imply that an unsaved web choice overrides automatic deletion
+    ✔ restores a saved manual merge instead of replacing it with the web version
+    ✔ sends explicit manual text without altering source versions
+    ✔ never offers truncated text as a complete manual merge
+    ✔ makes deletion explicit before a preview decision
+
+  Git own-credential controls
+    ✔ saves password input without user identity in body and clears it before response
+    ✔ removes only the selected repository credential without resending token
+    ✔ ignores old save responses and clears input when repository changes
+
+  Git sync panel
+    ✔ previews a branch switch and updates the displayed branch only after all files are applied (97ms)
+    ✔ reviews a merge without switching branches and keeps pending ancestry visible after apply (71ms)
+    ✔ reports unbound repositories without showing change actions
+    ✔ explains failed binding with credential configured=false (551ms)
+    ✔ explains failed binding with credential configured=true (552ms)
+    ✔ retains binding when history loading fails (561ms)
+    ✔ separates settings and commit history without losing the selected view (85ms)
+    ✔ loads a reviewed file and displays line differences without applying edits (106ms)
+    ✔ passes server restrictions to apply controls while retaining file review (66ms)
+    ✔ blocks applying and changing review while a decision is unsaved, and permits explicit discard (151ms)
+    ✔ checks the remote without creating or applying a preview (46ms)
+    ✔ connects a repository into initial review without applying content (551ms)
+    ✔ submits the displayed revision and reloads the resolved preview (117ms)
+    ✔ keeps recovery status accessible when the active preview cannot be reconstructed (72ms)
+    ✔ automatically fetches and notifies without preparing or applying changes (71ms)
+
+  Git Graph workspace
+(node:28713) TimeoutNaNWarning: NaN is not a number.
+Timeout duration was set to 1.
+(Use `node --trace-warnings ...` to show where the warning was created)
+    ✔ opens commit details and its first file directly from history (61ms)
+
+  Git changes workflow
+    ✔ defaults to Changes and keeps local files readable while initial sync blocks committing (74ms)
+    ✔ marks local-only repositories and disables remote checks (50ms)
+
+  Git history browser
+    ✔ loads older commits from the pinned head and opens commit details
+    ✔ sends message and exact file filters to the server and starts a new snapshot
+    ✔ retains filters after a request failure and retries a read without mutations
+    ✔ selects a comparison base before opening another commit
+
+  Git ignore rules
+    ✔ loads saved rules and saves the explicit LaTeX preset without excluding PDFs
+    ✔ excludes ignored files from select-all but allows explicit selection after revealing them
+
+  Local change previews
+    ✔ opens modify diff independently of commit selection
+    ✔ opens add diff independently of commit selection
+    ✔ opens delete diff independently of commit selection
+    ✔ invalidates selection if the source snapshot changed
+    ✔ keeps the selected file and open diff when leaving and returning to the view
+    ✔ retains selection on an unchanged refresh but invalidates it when project content changes
+    ✔ selects individual blocks and retains them on an unchanged refresh
+    ✔ reloads local differences after a confirmed project application
+
+  Git media preview
+    ✔ shows a typed image with descriptive alt and a decoding error
+    ✔ requires an explicit action to load PDF pages and explains oversized media
+    ✔ does not embed SVG or HTML payloads
+
+  Saved commits
+    ✔ commits without dispatch and reopens the retained commit after remount
+    ✔ paginates saved commits without dispatching them
+
+  Git reviewed push controls
+    ✔ reviews a new branch explicitly and reports binding change only after confirmed push
+    ✔ allows an optional immutable snapshot review before pushing
+    ✔ reconciles a lost response without replaying the push
+    ✔ recovers status even when restoring the active review fails
+    ✔ discards old project responses and releases busy state after project switch
+    ✔ offers a new review after confirmed pre-dispatch rejection
+    ✔ closes an unsent review without a mutation and resumes automatic checks
+
+  Selective Git commits
+    ✔ sends only checked paths with the reviewed snapshot fingerprint
+    ✔ invalidates selection when a diff belongs to a newer project snapshot
+    ✔ explains a rejected preflight when the durable operation is still prepared
+    ✔ clears the error when status confirms a push despite a lost response
+    ✔ does not infer rejection from a prepared status after a lost execution response
+
+  Continuous commit and push
+    ✔ prepares the selected immutable snapshot then pushes it with one user action
+    ✔ does not replay an uncertain push from the continuous flow
+    ✔ retains the message and selection if preparation fails before a push
+
+  Independent Git branch creation
+    ✔ creates a branch at the existing commit without requiring file edits
+
+  Remote branch picker
+    ✔ automatically loads branches and asks the user to choose an existing branch (514ms)
+    ✔ ignores a delayed response for a previous URL (1037ms)
+
+  Automatic Git remote checks
+    ✔ checks each minute only when visible and online, stops while paused and on unmount
+    ✔ does not overlap requests and uses the newest callback after render
+
+  Saved work UI
+    ✔ saves without clearing and requests review explicitly for restore or clearing
+    ✔ preserves the name after an uncertain save and explains how to check it
+
+  Audit: remote checks and manual file selection
+    ✔ preserves selection after a successful periodic remote check (45ms)
+
+
+  111 passing (6s)
+

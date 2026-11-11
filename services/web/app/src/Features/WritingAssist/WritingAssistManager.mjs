@@ -69,14 +69,14 @@ If there are no issues, return {"issues":[]}.`
 /**
  * Run a writing check.
  *
- * @param {{ text: string, enabledCategories: string[], provider: string, providerConfig: { apiKey: string, model: string, endpoint?: string, timeout?: number } }} params
+ * @param {{ text: string, enabledCategories: string[], provider: string, providerConfig: { apiKey: string, model: string, endpoint?: string, timeout?: number, signal?: AbortSignal } }} params
  * @returns {Promise<Array<{ offset: number, length: number, suggestion: string, message: string, category: string }>>}
  */
 async function check(params) {
   const { text, enabledCategories, provider, providerConfig } = params
 
   if (!text || text.trim().length === 0) return []
-  if (!providerConfig.apiKey) {
+  if (provider !== 'agent' && !providerConfig.apiKey) {
     throw Object.assign(new Error('API key not configured'), { statusCode: 400 })
   }
 
@@ -89,7 +89,7 @@ async function check(params) {
     ? text.slice(0, MAX_TEXT_LENGTH)
     : text
 
-  const apiKey = providerConfig.apiKey.startsWith('enc:')
+  const apiKey = providerConfig.apiKey?.startsWith('enc:')
     ? WritingAssistEncryption.decrypt(providerConfig.apiKey.slice(4), ENCRYPTION_KEY)
     : providerConfig.apiKey
 
@@ -97,7 +97,7 @@ async function check(params) {
   for (let attempt = 0; attempt <= RETRY_ATTEMPTS; attempt++) {
     try {
       const rawResponse = await WritingAssistLLMProvider.check(
-        { provider, apiKey, model: providerConfig.model, endpoint: providerConfig.endpoint, timeout: providerConfig.timeout ?? DEFAULT_TIMEOUT },
+        { provider, apiKey, model: providerConfig.model, endpoint: providerConfig.endpoint, timeout: providerConfig.timeout ?? DEFAULT_TIMEOUT, signal: providerConfig.signal },
         truncated,
         SYSTEM_PROMPT,
         validCategories

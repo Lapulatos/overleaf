@@ -14,6 +14,7 @@ import EditorWatchdogManager from '@/features/ide-react/connection/editor-watchd
 import { useIdeReactContext } from '@/features/ide-react/context/ide-react-context'
 import { useConnectionContext } from '@/features/ide-react/context/connection-context'
 import { debugConsole } from '@/utils/debugging'
+import { joinCurrentDocument } from '@/features/ide-react/editor/join-current-document'
 import { DocumentContainer } from '@/features/ide-react/editor/document-container'
 import { useLayoutContext } from '@/shared/context/layout-context'
 import { useUserContext } from '@/shared/context/user-context'
@@ -290,38 +291,20 @@ export const EditorManagerProvider: FC<React.PropsWithChildren> = ({
   )
 
   const doOpenNewDocument = useCallback(
-    (doc: Doc) =>
-      new Promise<DocumentContainer>((resolve, reject) => {
-        debugConsole.log('[doOpenNewDocument] Opening...')
-        const newDocument = openDocs.getDocument(doc._id)
-        if (!newDocument) {
-          debugConsole.error(`No open document with ID '${doc._id}' found`)
-          reject(new Error('no open document found'))
-          return
-        }
-        const preJoinEpoch = ++editorOpenDocEpochRef.current
-        newDocument.join(error => {
-          if (error) {
-            debugConsole.log(
-              `[doOpenNewDocument] error joining doc ${doc._id}`,
-              error
-            )
-            reject(error)
-            return
-          }
-
-          if (editorOpenDocEpochRef.current !== preJoinEpoch) {
-            debugConsole.log(
-              `[doOpenNewDocument] editorOpenDocEpoch mismatch ${editorOpenDocEpochRef.current} vs ${preJoinEpoch}`
-            )
-            newDocument.leaveAndCleanUp()
-            reject(new Error('another document was loaded'))
-            return
-          }
-          bindToDocumentEvents(doc, newDocument)
-          resolve(newDocument)
-        })
-      }),
+    (doc: Doc): Promise<DocumentContainer> => {
+      debugConsole.log('[doOpenNewDocument] Opening...')
+      const newDocument = openDocs.getDocument(doc._id)
+      if (!newDocument) {
+        debugConsole.error(`No open document with ID '${doc._id}' found`)
+        return Promise.reject(new Error('no open document found'))
+      }
+      const preJoinEpoch = ++editorOpenDocEpochRef.current
+      return joinCurrentDocument(
+        newDocument,
+        () => editorOpenDocEpochRef.current === preJoinEpoch,
+        () => bindToDocumentEvents(doc, newDocument)
+      )
+    },
     [bindToDocumentEvents, openDocs]
   )
 

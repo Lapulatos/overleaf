@@ -1,0 +1,42 @@
+Using default settings from /overleaf/services/web/config/settings.defaults.js
+Using settings from /etc/overleaf/prism-deletion-settings.cjs
+Set UV_THREADPOOL_SIZE=16
+{
+  "status": "recovery-required",
+  "nextIndex": 0,
+  "receipts": [],
+  "inFlight": {
+    "index": 0,
+    "writeId": "a5d4f8e5-77e7-47a3-937e-a23ef9a447bc",
+    "startedAt": "2026-11-06T20:04:25.973Z"
+  },
+  "projectVersion": 2,
+  "gate": {
+    "kind": "apply",
+    "operationId": "54b16f08-6eec-4fc3-9edf-aa9bcacdcd7d",
+    "attemptId": "d760837d-8429-4473-bbce-db773d374853",
+    "userId": "6ae57d2fa2564a345a7efb9f",
+    "treeVersion": 2,
+    "admittedAt": "2026-11-06T20:04:25.875Z"
+  },
+  "deletionReceipts": null,
+  "reservations": [],
+  "root": [
+    {
+      "name": "rootFolder",
+      "_id": "6aee30c179c897758e370d22",
+      "docs": [
+        {
+          "name": "main.tex",
+          "_id": "6aee30c179c897758e370d27"
+        },
+        {
+          "name": "build.aux",
+          "_id": "6aee30c179c897758e370d2d"
+        }
+      ],
+      "fileRefs": [],
+      "folders": []
+    }
+  ]
+}

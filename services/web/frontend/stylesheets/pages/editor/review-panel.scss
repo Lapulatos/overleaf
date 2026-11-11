@@ -444,8 +444,8 @@ del.review-panel-content-highlight {
 .review-panel-empty-state {
   position: fixed;
   width: var(--review-panel-width);
-  top: 0;
-  bottom: 0;
+  top: var(--review-panel-top, 0px);
+  bottom: calc(var(--review-panel-bottom, 0px) + 60px);
   pointer-events: none;
   overflow-y: auto;
 }
@@ -515,7 +515,7 @@ del.review-panel-content-highlight {
 .review-panel-footer {
   position: fixed;
   height: 60px;
-  bottom: 0;
+  bottom: var(--review-panel-bottom, 0px);
   width: var(--review-panel-width);
   z-index: 2;
   background-color: var(--review-panel-footer-bg-color);
@@ -588,7 +588,7 @@ del.review-panel-content-highlight {
 
   &.downwards {
     // TODO: fix this to not use a magic number when we have updated the footer ui
-    top: calc(100% - 102px);
+    top: calc(100% - var(--review-panel-bottom, 0px) - 102px);
   }
 
   &.upwards {

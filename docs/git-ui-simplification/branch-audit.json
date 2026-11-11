@@ -1,0 +1,83 @@
+{
+  "branch": "refs/remotes/origin/repo-test",
+  "baseCommit": "76d37985b8681d63e1322f939d24e1ab1d8cf4fd",
+  "branches": [
+    {
+      "ref": "refs/heads/test/ui-20261109-b",
+      "id": "cca7d1b36999847c4a4d17448161184b78134921",
+      "author": "owner-mvuxgsid",
+      "date": "2026-11-09T07:28:04+00:00",
+      "subject": "Update five balanced accuracy values in calibration table"
+    },
+    {
+      "ref": "refs/remotes/origin/repo-test",
+      "id": "76d37985b8681d63e1322f939d24e1ab1d8cf4fd",
+      "author": "owner-mvuxgsid",
+      "date": "2026-11-01T18:01:04+00:00",
+      "subject": "Auto-sync web edits \u00b7 2026-11-01T18:01:00.330Z"
+    },
+    {
+      "ref": "refs/remotes/origin/test/ui-20261109-a",
+      "id": "76d37985b8681d63e1322f939d24e1ab1d8cf4fd",
+      "author": "owner-mvuxgsid",
+      "date": "2026-11-01T18:01:04+00:00",
+      "subject": "Auto-sync web edits \u00b7 2026-11-01T18:01:00.330Z"
+    },
+    {
+      "ref": "refs/remotes/origin/test/ui-20261109-b",
+      "id": "76d37985b8681d63e1322f939d24e1ab1d8cf4fd",
+      "author": "owner-mvuxgsid",
+      "date": "2026-11-01T18:01:04+00:00",
+      "subject": "Auto-sync web edits \u00b7 2026-11-01T18:01:00.330Z"
+    },
+    {
+      "ref": "refs/remotes/origin/test/ui-20261109-c",
+      "id": "76d37985b8681d63e1322f939d24e1ab1d8cf4fd",
+      "author": "owner-mvuxgsid",
+      "date": "2026-11-01T18:01:04+00:00",
+      "subject": "Auto-sync web edits \u00b7 2026-11-01T18:01:00.330Z"
+    }
+  ],
+  "files": [
+    {
+      "path": "figures/fig_cubeA_correlations1.pdf",
+      "action": "add"
+    },
+    {
+      "path": "tex/01_introduction.tex",
+      "action": "modify"
+    },
+    {
+      "path": "tex/03_methods.tex",
+      "action": "modify"
+    },
+    {
+      "path": "tex/04_experimental_setup.tex",
+      "action": "modify"
+    },
+    {
+      "path": "tex/05a_rq1.tex",
+      "action": "modify"
+    },
+    {
+      "path": "tex/05b_rq2.tex",
+      "action": "modify"
+    },
+    {
+      "path": "tex/05c_rq3.tex",
+      "action": "modify"
+    },
+    {
+      "path": "tex/08_declarations.tex",
+      "action": "modify"
+    },
+    {
+      "path": "tex/frontmatter.tex",
+      "action": "modify"
+    },
+    {
+      "path": "tex/references.bib",
+      "action": "modify"
+    }
+  ]
+}

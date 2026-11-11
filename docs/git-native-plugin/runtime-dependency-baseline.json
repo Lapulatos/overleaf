@@ -1,0 +1,8 @@
+{
+  "package.json": "6d3e19cddedd0c9f64520cf54dcd2b3aa321b7910e7c22e7d7192e6ef00bdc08",
+  "yarn.lock": "a13ceedb3a69513d61f7778b1a8d571be8273b466d012ac5e2ecc6f1dbe4ec80",
+  "services/web/package.json": "0ba63dcbd2be80f88a202d181a26aab66ae9eae07236e70983178e9485d0c0a0",
+  "services/agent/package.json": "4d5ca678c36743c4bc2925b59ca8126e12dcded19b316ec3326d5d93ac4b5090",
+  "libraries/redis-wrapper/package.json": "1bf96533bf7081a6d572c27eec089d6249337c5a4c6f8ae137f6da92f6eb757a",
+  "server-ce/test/package.json": "afd2fe4e7c71df12e4d2007d786346c1cc5e6da18a8506129de0447740234c9d"
+}

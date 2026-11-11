@@ -1,7 +1,11 @@
 import React, { FC, useCallback, useState } from 'react'
 import { useTranslation, Trans } from 'react-i18next'
 import { ThreadId } from '../../../../../types/review-panel/review-panel'
-import { useThreadsActionsContext } from '../context/threads-context'
+import {
+  useThreadsActionsContext,
+  useThreadsContext,
+} from '../context/threads-context'
+import { useProjectContext } from '@/shared/context/project-context'
 import OLTooltip from '@/shared/components/ol/ol-tooltip'
 import MaterialIcon from '@/shared/components/material-icon'
 import { ExpandableContent } from './review-panel-expandable-content'
@@ -24,11 +28,15 @@ export const ReviewPanelResolvedThread: FC<{
   const { showGenericMessageModal } = useModalsContext()
   const permissions = usePermissionsContext()
   const user = useUserContext()
-  const isCommentAuthor = user.id === comment.metadata?.user_id
+  const { features } = useProjectContext()
+  const threads = useThreadsContext()
+  const authorId =
+    threads?.[id]?.messages[0]?.user_id ?? comment.metadata?.user_id
+  const isCommentAuthor = user.id === authorId
   const canDelete =
     permissions.resolveAllComments ||
     (permissions.resolveOwnComments && isCommentAuthor)
-  const canReopen = permissions.comment
+  const canReopen = features.nativeComments ? canDelete : permissions.comment
 
   const handleReopenThread = useCallback(async () => {
     setProcessing(true)

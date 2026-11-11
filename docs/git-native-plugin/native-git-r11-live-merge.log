@@ -1,0 +1,118 @@
+{
+  "projectId": "6af1bc2a0a5b55d96038512e",
+  "status": {
+    "connected": true,
+    "switching": false,
+    "status": {
+      "branch": "main",
+      "detached": false,
+      "upstream": null,
+      "operation": null,
+      "ahead": 0,
+      "behind": 0,
+      "conflicted": [],
+      "files": [
+        {
+          "path": "main.tex",
+          "index": " ",
+          "workingTree": "M"
+        }
+      ]
+    },
+    "branches": [
+      {
+        "ref": "refs/heads/acceptance-r11-b",
+        "name": "acceptance-r11-b",
+        "commit": "bf23a66fc28df05746031318495119b85fdc7969",
+        "upstream": null,
+        "author": "owner-mvuxgsid",
+        "email": "<owner-mvuxgsid@acceptance.invalid>",
+        "date": "2026-11-09T16:39:18+00:00",
+        "subject": "Fixture B title change",
+        "remote": false,
+        "symbolic": ""
+      },
+      {
+        "ref": "refs/heads/main",
+        "name": "main",
+        "commit": "2417d27c909cec5a7e3f220ee182c35d66f37db0",
+        "upstream": null,
+        "author": "owner-mvuxgsid",
+        "email": "<owner-mvuxgsid@acceptance.invalid>",
+        "date": "2026-11-09T16:39:14+00:00",
+        "subject": "Fixture initial manuscript",
+        "remote": false,
+        "symbolic": ""
+      },
+      {
+        "ref": "refs/heads/B",
+        "name": "B",
+        "commit": "48d87555ead25a9082e03a2635093dca2edebb9c",
+        "upstream": null,
+        "author": "owner-mvuxgsid",
+        "email": "<owner-mvuxgsid@acceptance.invalid>",
+        "date": "2026-11-09T12:37:11+00:00",
+        "subject": "Fixture B title change",
+        "remote": false,
+        "symbolic": ""
+      }
+    ],
+    "graph": [
+      {
+        "hash": "bf23a66fc28df05746031318495119b85fdc7969",
+        "parents": [
+          "2417d27c909cec5a7e3f220ee182c35d66f37db0"
+        ],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T16:39:18+00:00",
+        "subject": "Fixture B title change",
+        "refs": "acceptance-r11-b"
+      },
+      {
+        "hash": "2417d27c909cec5a7e3f220ee182c35d66f37db0",
+        "parents": [
+          "b00292bce181e70e2ae0313abdee57eefbd280e1"
+        ],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T16:39:14+00:00",
+        "subject": "Fixture initial manuscript",
+        "refs": "HEAD -> main"
+      },
+      {
+        "hash": "48d87555ead25a9082e03a2635093dca2edebb9c",
+        "parents": [
+          "b00292bce181e70e2ae0313abdee57eefbd280e1"
+        ],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T12:37:11+00:00",
+        "subject": "Fixture B title change",
+        "refs": "B"
+      },
+      {
+        "hash": "b00292bce181e70e2ae0313abdee57eefbd280e1",
+        "parents": [],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T12:37:07+00:00",
+        "subject": "Fixture initial manuscript",
+        "refs": ""
+      }
+    ]
+  }
+}
+PASS live branch/commit/graph and per-branch document preservation
+PASS merge baseline stage
+PASS merge baseline commit
+PASS create merge source
+PASS checkout merge source
+PASS read merge source content
+PASS edit merge source
+PASS stage merge source
+PASS commit merge source
+PASS checkout merge target
+PASS merge source into main
+PASS verify merged editor bytes
+PASS live source-to-target merge imports exact document bytes and refreshes graph

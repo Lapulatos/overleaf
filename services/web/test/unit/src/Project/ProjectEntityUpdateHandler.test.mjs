@@ -270,6 +270,21 @@ describe('ProjectEntityUpdateHandler', function () {
     ctx.ProjectEntityUpdateHandler = (await import(MODULE_PATH)).default
   })
 
+  it('rejects an expired privileged structure scope before starting an entity mutation', async function (ctx) {
+    const { default: gate } = await import('@overleaf/redis-wrapper/ProjectWriteGate.js')
+    const check = sinon.stub().rejects(new Error('Expired project write lease'))
+    let failure
+    try {
+      await gate.runWithToken(projectId, '00000000-0000-4000-8000-000000000001',
+        () => ctx.ProjectEntityUpdateHandler.promises.deleteEntity(projectId, docId, 'doc', userId, 'git'), true, check)
+    } catch (error) {
+      failure = error
+    }
+    expect(failure).to.be.instanceOf(Error)
+    expect(failure.message).to.equal('Expired project write lease')
+    expect(check.calledOnce).to.equal(true)
+  })
+
   describe('updateDocLines', function () {
     beforeEach(function (ctx) {
       ctx.path = '/somewhere/something.tex'

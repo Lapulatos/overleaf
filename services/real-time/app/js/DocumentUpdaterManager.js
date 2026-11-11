@@ -11,6 +11,7 @@ import {
   RequestFailedError,
 } from '@overleaf/fetch-utils'
 import { callbackify } from 'node:util'
+import ProjectWriteGate from '@overleaf/redis-wrapper/ProjectWriteGate.js'
 
 const {
   ClientRequestedMissingOpsError,
@@ -20,6 +21,7 @@ const {
 } = Errors
 
 const rclient = RedisWrapper.createClient(settings.redis.documentupdater)
+const projectWriteGate = ProjectWriteGate.createProjectWriteGate(rclient)
 const Keys = settings.redis.documentupdater.key_schema
 
 async function getDocument(projectId, docId, fromVersion) {
@@ -128,7 +130,7 @@ async function queueChange(projectId, docId, change) {
   // Push onto pendingUpdates for doc_id first, because once the doc updater
   // gets an entry on pending-updates-list, it starts processing.
   try {
-    await rclient.rpush(Keys.pendingUpdates({ doc_id: docId }), jsonChange)
+    await projectWriteGate.enqueue(projectId, Keys.pendingUpdates({ doc_id: docId }), jsonChange)
   } catch (error) {
     throw new OError('error pushing update into redis').withCause(error)
   }
@@ -144,6 +146,7 @@ async function queueChange(projectId, docId, change) {
 }
 
 export default {
+  nativeGitWriteGateEnabled: () => projectWriteGate.supported(),
   getDocument: callbackify(getDocument),
   checkDocument: callbackify(checkDocument),
   flushProjectToMongoAndDelete: callbackify(flushProjectToMongoAndDelete),

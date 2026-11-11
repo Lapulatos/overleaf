@@ -1,0 +1,17 @@
+{
+  "source": "services/agent/src/repository-terminal-runner.mjs",
+  "sha256": "edb460399c294f7a358d18a5472036989121bf174027d90b97876b7e1a085824",
+  "port": 47292,
+  "authentication": "dedicated token, separate from AI agent token",
+  "defaultMode": "workspace-write",
+  "scope": "current project and user",
+  "modes": [
+    "read-only",
+    "workspace-write",
+    "extended"
+  ],
+  "network": "disabled",
+  "gitMetadata": "read-only mounts including worktree .git pointer",
+  "extendedApproval": "single-use approval for exact directories; expires after30minutes or terminal close",
+  "aiDirectTerminalToolEnabled": false
+}

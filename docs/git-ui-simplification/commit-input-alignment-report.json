@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "singleLineInput": true,
+  "measurements": [
+    {
+      "viewportWidth": 1600,
+      "centerDifferencePx": 0.0,
+      "inputHeight": 36
+    },
+    {
+      "viewportWidth": 1100,
+      "centerDifferencePx": 0.0,
+      "inputHeight": 36
+    }
+  ],
+  "gitMutationsBlocked": true
+}

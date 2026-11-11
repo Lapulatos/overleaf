@@ -6,6 +6,7 @@ import ProjectApiController from './Features/Project/ProjectApiController.mjs'
 import ProjectListController from './Features/Project/ProjectListController.mjs'
 import SpellingController from './Features/Spelling/SpellingController.mjs'
 import WritingAssistRouter from './Features/WritingAssist/WritingAssistRouter.mjs'
+import NativeGitRouter from './Features/NativeGit/NativeGitRouter.mjs'
 import EditorRouter from './Features/Editor/EditorRouter.mjs'
 import Settings from '@overleaf/settings'
 import TpdsController from './Features/ThirdPartyDataStore/TpdsController.mjs'
@@ -25,6 +26,7 @@ import UserEmailsController from './Features/User/UserEmailsController.mjs'
 import UserPagesController from './Features/User/UserPagesController.mjs'
 import TutorialController from './Features/Tutorial/TutorialController.mjs'
 import DocumentController from './Features/Documents/DocumentController.mjs'
+import DocumentDeletionRecoveryController from './Features/WritingAssist/DocumentDeletionRecoveryController.mjs'
 import CompileManager from './Features/Compile/CompileManager.mjs'
 import CompileController from './Features/Compile/CompileController.mjs'
 import HealthCheckController from './Features/HealthCheck/HealthCheckController.mjs'
@@ -36,6 +38,7 @@ import ExportsController from './Features/Exports/ExportsController.mjs'
 import PasswordResetRouter from './Features/PasswordReset/PasswordResetRouter.mjs'
 import StaticPagesRouter from './Features/StaticPages/StaticPagesRouter.mjs'
 import ChatController from './Features/Chat/ChatController.mjs'
+import { applyNativeCommentRoutes } from './Features/Chat/NativeCommentsController.mjs'
 import Modules from './infrastructure/Modules.mjs'
 import {
   RateLimiter,
@@ -305,6 +308,8 @@ async function initialize(webRouter, privateApiRouter, publicApiRouter) {
   UserMembershipRouter.apply(webRouter)
   TokenAccessRouter.apply(webRouter)
   HistoryRouter.apply(webRouter, privateApiRouter)
+  WritingAssistRouter.apply(webRouter, privateApiRouter)
+  NativeGitRouter.apply(webRouter)
 
   await Modules.applyRouter(webRouter, privateApiRouter, publicApiRouter)
 
@@ -946,6 +951,12 @@ async function initialize(webRouter, privateApiRouter, publicApiRouter) {
   )
 
   privateApiRouter.get(
+    '/project/:Project_id/doc/:doc_id/deletion/:operation_id/recovery-snapshot',
+    AuthenticationController.requirePrivateApiAuth(),
+    DocumentDeletionRecoveryController
+  )
+
+  privateApiRouter.get(
     '/project/:Project_id/doc/:doc_id',
     AuthenticationController.requirePrivateApiAuth(),
     DocumentController.getDocument
@@ -1016,6 +1027,12 @@ async function initialize(webRouter, privateApiRouter, publicApiRouter) {
   )
 
   if (Features.hasFeature('chat')) {
+    if (!Features.hasFeature('track-changes')) {
+      applyNativeCommentRoutes(
+        webRouter,
+        RateLimiterMiddleware.rateLimit(rateLimiters.sendChatMessage)
+      )
+    }
     webRouter.get(
       '/project/:project_id/messages',
       AuthorizationMiddleware.blockRestrictedUserFromProject,
@@ -1275,8 +1292,6 @@ async function initialize(webRouter, privateApiRouter, publicApiRouter) {
   webRouter.get('/unsupported-browser', renderUnsupportedBrowserPage)
 
   webRouter.get('*', ErrorController.notFound)
-
-  WritingAssistRouter.apply(webRouter, privateApiRouter)
 }
 
 export default { initialize, rateLimiters }

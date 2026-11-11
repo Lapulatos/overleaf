@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "scope": "Real isolated history restore, branch switch preserving edits, conflict draft reload; external transport blocked.",
+  "fileHistory": true,
+  "historicalFileRestored": true,
+  "branchSwitchPreservesEdits": true,
+  "perBlockChoice": true,
+  "conflictDraftReload": true,
+  "resolvedPreviewReady": true,
+  "pageErrors": []
+}

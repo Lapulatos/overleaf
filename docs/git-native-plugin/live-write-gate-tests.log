@@ -1,0 +1,4 @@
+Using default settings from /overleaf/services/web/config/settings.defaults.js
+Using settings from /etc/overleaf/prism-deletion-settings.cjs
+Set UV_THREADPOOL_SIZE=16
+PASS privileged document access, concurrent write rejection, unchanged bytes/version, released write gate

@@ -1,0 +1,28 @@
+✔ B commit, old branch checkout, and branch-specific unfinished files follow native worktrees (995.057875ms)
+✔ native index staging and commit include only selected changes, including deletion and unusual filenames (613.33075ms)
+✔ create from older commit and detached checkout do not move branches (732.802709ms)
+✔ stash preserves tracked, staged and untracked work through native Git (555.604417ms)
+✔ publish, fetch and pull use a real bare remote; local commit is visible before push (800.0975ms)
+✔ merge conflict is native unmerged index and abort restores original HEAD (863.540125ms)
+✔ unsafe inputs cannot become options or escape the worktree (257.538583ms)
+✔ resolved merge creates real two-parent commit and graph topology (733.593958ms)
+✔ cherry-pick, revert and reset are native operations, preserving soft-reset staged content (886.166792ms)
+✔ rebase uses native parent rewriting and does not alter the other branch (651.622084ms)
+✔ worktree removal refuses unfinished work and branch deletion refuses an active worktree (567.795917ms)
+✔ unborn repository has empty graph and can unstage before its first commit (251.465583ms)
+✔ branch-filtered graph returns ancestry of requested branch, not a range against current HEAD (535.103958ms)
+✔ file history follows renames and blame uses the selected commit rather than another branch (833.960459ms)
+✔ rebase, cherry-pick and revert conflicts expose native worktree operation and clear after abort (1162.713833ms)
+✔ native apply stages and unstages selected hunks without including other edits and rejects stale diffs (1145.112083ms)
+✔ stash preview includes untracked content and stale list indices cannot apply or delete another stash (520.747917ms)
+✔ conflict versions come from native index; stale resolution refuses edits and incoming choice stages exact bytes (1244.945792ms)
+✔ explicit edited conflict resolution stages only the supplied result (917.427458ms)
+✔ modify-delete conflict permits selecting native deletion and preserves the other branch (805.751542ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15252.867542

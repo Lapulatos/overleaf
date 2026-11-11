@@ -1,0 +1,12 @@
+✔ explicit choices preserve selected versions and never change input snapshots (25.790708ms)
+✔ structural conflict requires resolving both colliding paths (0.3ms)
+✔ unknown paths and invalid edited contents are rejected (0.332709ms)
+✔ remaining generated conflict markers cannot be saved as a resolved file (10.996208ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 126.7675

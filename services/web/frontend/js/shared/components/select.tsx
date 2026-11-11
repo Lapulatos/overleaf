@@ -1,5 +1,7 @@
+import { createPortal } from 'react-dom'
 import {
   useRef,
+  useLayoutEffect,
   useEffect,
   KeyboardEventHandler,
   useCallback,
@@ -44,6 +46,10 @@ export type SelectProps<T> = {
   itemToLeadingIcon?: (
     item: T | null | undefined
   ) => DropdownItemProps['leadingIcon']
+  menuPortalClassName?: string
+  itemToTitle?: (item: T) => string
+  itemToGroup?: (item: T) => string
+  itemToClassName?: (item: T) => string
   // Callback invoked after the selected item is updated.
   onSelectedItemChanged?: (item: T | null | undefined) => void
   // Optionally directly control the selected item.
@@ -75,6 +81,10 @@ export const Select = <T,>({
   itemToSubtitle,
   itemToKey,
   itemToLeadingIcon,
+  menuPortalClassName,
+  itemToTitle,
+  itemToGroup,
+  itemToClassName,
   onSelectedItemChanged,
   selected,
   disabled = false,
@@ -118,6 +128,27 @@ export const Select = <T,>({
   }, [selected])
 
   const rootRef = useRef<HTMLDivElement | null>(null)
+  const portalRef = useRef<HTMLDivElement | null>(null)
+  const [menuPosition, setMenuPosition] = useState({left: 12, top: 12, minWidth: 0, maxHeight: 260})
+  useLayoutEffect(() => {
+    if (!isOpen || !menuPortalClassName) return
+    const position = () => {
+      const input = rootRef.current?.querySelector('[role="combobox"]')
+      if (!input) return
+      const anchor = input.getBoundingClientRect()
+      const width = Math.min(window.innerWidth - 24, Math.max(anchor.width, portalRef.current?.getBoundingClientRect().width || 0))
+      const below = window.innerHeight - anchor.bottom - 12
+      const above = anchor.top - 12
+      const upward = below < 260 && above > below
+      const height = Math.min(260, Math.max(80, upward ? above : below))
+      setMenuPosition({left: Math.max(12, Math.min(anchor.left, window.innerWidth - width - 12)), top: upward ? Math.max(12, anchor.top - height - 2) : anchor.bottom + 2, minWidth: anchor.width, maxHeight: height})
+    }
+    position()
+    window.addEventListener('resize', position)
+    window.addEventListener('scroll', position, true)
+    return () => { window.removeEventListener('resize', position); window.removeEventListener('scroll', position, true) }
+  }, [isOpen, menuPortalClassName, items.length])
+
   useEffect(() => {
     if (!name || !rootRef.current) return
 
@@ -182,7 +213,8 @@ export const Select = <T,>({
             index,
           })
           return (
-            <li role="none" key={itemToKey(item)}>
+            <li role="none" title={itemToTitle?.(item)} key={itemToKey(item)} className={itemToClassName?.(item)}>
+              {itemToGroup && (index === 0 || itemToGroup(items[index-1]) !== itemToGroup(item)) && <div className="select-option-group" role="presentation">{itemToGroup(item)}</div>}
               <DropdownItem
                 as="button"
                 type="button"
@@ -208,6 +240,10 @@ export const Select = <T,>({
     </ul>
   )
 
+  const renderedDropdown = menuPortalClassName && isOpen
+    ? createPortal(<div ref={portalRef} className={menuPortalClassName} style={{position:'fixed',zIndex:2000,padding:0,overflow:'visible',...menuPosition}}><div className="sequence-venue-select" style={{maxHeight:menuPosition.maxHeight}}>{dropdown}</div></div>, document.body)
+    : dropdown
+
   if (isCiam) {
     return (
       <div className="select-wrapper" ref={rootRef}>
@@ -229,7 +265,7 @@ export const Select = <T,>({
             readOnly
             append={isOpen ? <CaretUp /> : <CaretDown />}
           />
-          {dropdown}
+          {renderedDropdown}
         </DSFormGroup>
       </div>
     )
@@ -247,6 +283,7 @@ export const Select = <T,>({
         </Form.Label>
       ) : null}
       <FormControl
+        title={selectedItem && itemToTitle ? itemToTitle(selectedItem) : undefined}
         data-testid={dataTestId}
         {...getToggleButtonProps({
           disabled,
@@ -263,7 +300,7 @@ export const Select = <T,>({
         }
         size={size}
       />
-      {dropdown}
+      {renderedDropdown}
     </div>
   )
 }

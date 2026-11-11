@@ -1,4 +1,4 @@
-const { createHash } = require('node:crypto')
+const { createHash, randomUUID } = require('node:crypto')
 const sinon = require('sinon')
 const { expect } = require('chai')
 const SandboxedModule = require('sandboxed-module')
@@ -33,6 +33,7 @@ describe('UpdateManager', function () {
 
     this.RedisManager = {
       promises: {
+        withDocumentWriteContext: sinon.stub().callsFake(async (projectId, docId, action) => action()),
         setDocument: sinon.stub().resolves(),
         updateDocument: sinon.stub(),
       },
@@ -128,6 +129,35 @@ describe('UpdateManager', function () {
   })
 
   describe('processOutstandingUpdatesWithLock', function () {
+    it('notifies clients when a durable guard rejects without consuming queued edits', async function () {
+      const error = new Error('DOCUMENT_DELETION_FENCED')
+      this.RedisManager.promises.withDocumentWriteContext.rejects(error)
+      this.UpdateManager.promises.processOutstandingUpdates = sinon.stub().resolves()
+      await expect(this.UpdateManager.promises.processOutstandingUpdatesWithLock(this.project_id, this.doc_id)).to.be.rejectedWith(error)
+      sinon.assert.calledWith(this.RealTimeRedisManager.sendData, {
+        project_id: this.project_id, doc_id: this.doc_id, error: 'DOCUMENT_DELETION_FENCED',
+      })
+      sinon.assert.notCalled(this.UpdateManager.promises.processOutstandingUpdates)
+      sinon.assert.notCalled(this.RealTimeRedisManager.promises.getPendingUpdatesForDoc)
+      sinon.assert.calledOnce(this.LockManager.promises.releaseLock)
+    })
+
+    it('does not duplicate errors already handled by the update application path', async function () {
+      const error = new Error('apply failure')
+      this.UpdateManager.promises.processOutstandingUpdates = sinon.stub().rejects(error)
+      await expect(this.UpdateManager.promises.processOutstandingUpdatesWithLock(this.project_id, this.doc_id)).to.be.rejectedWith(error)
+      sinon.assert.notCalled(this.RealTimeRedisManager.sendData)
+      sinon.assert.calledOnce(this.LockManager.promises.releaseLock)
+    })
+
+    it('releases the lock even when guard error publication fails', async function () {
+      this.RedisManager.promises.withDocumentWriteContext.rejects(new Error('DOCUMENT_DELETION_FENCED'))
+      this.RealTimeRedisManager.sendData.rejects(new Error('pubsub unavailable'))
+      await expect(this.UpdateManager.promises.processOutstandingUpdatesWithLock(this.project_id, this.doc_id)).to.be.rejectedWith('pubsub unavailable')
+      sinon.assert.notCalled(this.RealTimeRedisManager.promises.getPendingUpdatesForDoc)
+      sinon.assert.calledOnce(this.LockManager.promises.releaseLock)
+    })
+
     describe('when the lock is free', function () {
       beforeEach(function () {
         this.UpdateManager.promises.continueProcessingUpdatesWithLock = sinon
@@ -354,6 +384,8 @@ describe('UpdateManager', function () {
       this.RedisManager.promises.updateDocument.resolves()
       this.UpdateManager.promises._adjustHistoryUpdatesMetadata = sinon.stub()
     })
+
+
 
     describe('normally', function () {
       beforeEach(async function () {
@@ -807,6 +839,17 @@ describe('UpdateManager', function () {
       this.methodResult = 'method result'
       this.method = sinon.stub().resolves(this.methodResult)
       this.arg1 = 'argument 1'
+    })
+
+    it('releases the lock without reading or writing when the durable guard rejects', async function () {
+      this.RedisManager.promises.withDocumentWriteContext.rejects(new Error('DOCUMENT_DELETION_FENCED'))
+      this.UpdateManager.promises.processOutstandingUpdates = sinon.stub().resolves()
+      await expect(this.UpdateManager.promises.lockUpdatesAndDo(
+        this.method, this.project_id, this.doc_id, this.arg1
+      )).to.be.rejectedWith('DOCUMENT_DELETION_FENCED')
+      sinon.assert.notCalled(this.method)
+      sinon.assert.notCalled(this.UpdateManager.promises.processOutstandingUpdates)
+      sinon.assert.calledWith(this.LockManager.promises.releaseLock, this.doc_id, this.lockValue)
     })
 
     describe('successfully', function () {

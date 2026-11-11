@@ -1,0 +1,11 @@
+{
+  "scope": "isolated headless component fixture, not deployed authenticated project",
+  "realCaretVisible": true,
+  "arrowMovement": true,
+  "typingAndEnterPreserveText": true,
+  "cursorEvent": {
+    "side": "After",
+    "line": "27"
+  },
+  "screenshot": "/tmp/native-git-r34-caret.png"
+}

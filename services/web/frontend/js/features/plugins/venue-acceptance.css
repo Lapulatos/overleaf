@@ -1,0 +1,8 @@
+.venue-acceptance-modal .modal-dialog{width:min(900px,calc(100vw - 32px));max-width:900px}
+.venue-acceptance-modal .modal-body{padding:24px;max-height:calc(100vh - 160px);overflow:auto}
+.venue-acceptance-modal .acceptance-context,.acceptance-source{font-size:12px;color:#596b61;line-height:1.6}
+.acceptance-chart{border:1px solid #dce5df;border-radius:12px;padding:16px;margin:16px 0;background:#f7faf8}
+.acceptance-chart h3{font-size:16px;margin:0 0 8px}.acceptance-chart svg{width:100%;display:block}.acceptance-chart text{font-size:12px;fill:#54635b}.acceptance-chart circle:focus{outline:2px solid #1c4935;outline-offset:3px}.acceptance-point-detail{font-size:12px;min-height:18px;margin:4px 0 0;color:#435a4c}
+.acceptance-table summary{cursor:pointer;padding:10px 0;font-weight:600}.acceptance-table>div{overflow-x:auto}.acceptance-table table{width:100%;border-collapse:collapse}.acceptance-table th,.acceptance-table td{padding:8px;text-align:left;border-bottom:1px solid #dce5df;font-size:12px}.acceptance-table small{display:block}.acceptance-source{margin-top:18px}
+
+.acceptance-chart-legend{display:flex;flex-wrap:wrap;gap:18px;font-size:12px;margin:8px 0}.acceptance-chart-legend span{display:inline-flex;gap:6px;align-items:center}.acceptance-chart-legend i{width:24px;height:3px;display:inline-block}.acceptance-chart-legend i.is-dashed{height:0;border-top:3px dashed;background:none}.acceptance-value-label{font-size:12px;font-weight:600;paint-order:stroke;stroke:#f7faf8;stroke-width:4px;stroke-linejoin:round}.acceptance-chart-scroll{overflow-x:auto}.acceptance-chart-scroll svg{min-width:540px}.acceptance-chart rect:focus{outline:1px dashed #789383;outline-offset:-2px}

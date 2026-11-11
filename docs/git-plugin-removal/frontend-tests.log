@@ -1,0 +1,4402 @@
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+
+  ✔ requires Track-specific assessment for companion tracks instead of inheriting venue fit
+  ✔ keeps a date-only end edit at whole review days even when the start has a time of day (236ms)
+  ✔ places a suitable A journal first even with more than ten points of fit difference
+  ✔ restores the last check even after a separate requirement-organization task (340ms)
+  ✔ shows stable report and issue commands with separate resolution state (148ms)
+  ✔ does not render empty-array zeroes or stale human blockers on resolved issues
+  ✔ groups annual rounds for display while preserving their original planning entries
+  Venue calendar exports
+    ✔ exports conference and Track dates, excludes journals and deduplicates milestones
+    ✔ includes journal plan dates and stable project-specific IDs after rescheduling
+    ✔ escapes text and folds UTF-8 content without injecting calendar properties
+    ✔ omits invalid dates rather than fabricating dates
+    ✔ downloads ICS and explains import without hiding either provider (110ms)
+
+  Conference detail milestone graph
+    ✔ selects only the next two milestones across main and Track dates
+    ✔ does not count the same main-track day twice when the catalog supplies its cutoff
+    ✔ preserves date-only precision and includes today without inventing a cutoff
+    ✔ uses the latest two elapsed milestones when an edition is over
+    ✔ forks before first nodes, merges after last nodes, separates overlapping branches and reuses free lanes
+    ✔ highlights only the hovered Track and changes its legend (52ms)
+    ✔ omits undated branches and supports keyboard focus without blur crashes
+
+  Conference Track fit
+    ✔ requests only this conference and exposes the best Track and unresolved eligibility (85ms)
+    ✔ reopens saved Track results without starting another analysis (40ms)
+
+  Conference Track branches
+    ✔ distinguishes identically abbreviated journals and conferences by full name
+    ✔ defaults to Main Track and highlights the hovered branch and its points (183ms)
+    ✔ keeps requirements collapsed inside each Track and navigation selects its article (230ms)
+    ✔ keeps undated and unavailable Tracks visible without drawing invented points (50ms)
+    ✔ shows all Track names even when every date is unknown
+    ✔ sends the exact conference scope when asking AI to compare Tracks
+
+  Conversion file tree
+    ✔ keeps files and diffs unloaded until the user opens their folder and file
+
+  Conversion result severity and actions
+    ✔ separates changed files, urgent failures and previous-year warnings without hiding next steps
+
+  Submission calendar and timeline
+    ✔ places separate milestones on their actual local dates and excludes unknown dates
+    ✔ opens an event and navigates months without an extra undated directory (403ms)
+    ✔ selects a day with 0 events through its date button (196ms)
+    ✔ selects a day with 1 events through its date button (267ms)
+    ✔ selects a day with 2 events through its date button (211ms)
+    ✔ selects a day with 3 events through its date button (210ms)
+    ✔ selects a day with 5 events through its date button (234ms)
+    ✔ groups same-day milestones into a venue card with classification and fit (218ms)
+    ✔ expands crowded days without losing events (189ms)
+    ✔ shows a dated axis and warns about passed registration without asserting eligibility
+
+  Track calendar dates
+    ✔ places date-only Track milestones on the published day without timezone invention (174ms)
+
+  Environment confirmation boundary
+    ✔ does not mutate on opening settings and requires confirmation of each exact plan (73ms)
+    ✔ offers the same review and authorization inside Paper Assistant after a maintenance tool call (142ms)
+
+  Journal detail
+    ✔ shows article types and scope without a conference timeline or empty Track section
+    ✔ reuses requirements only when sourced evidence exists
+    ✔ omits a missing or failed cover without a broken image placeholder
+
+  Journal coverage gaps
+    ✔ does not render an empty Publishing card for any journal without source data
+
+  Shared Track icons
+    ✔ uses shared SVG icons for Research Papers
+    ✔ uses shared SVG icons for Tool Papers
+    ✔ uses shared SVG icons for AI Models / Data
+    ✔ uses shared SVG icons for Most Influential Paper Awards
+    ✔ uses shared SVG icons for Posters and Vision
+    ✔ uses shared SVG icons for Reproducibility and Negative Results
+    ✔ uses shared SVG icons for Short Papers and Emerging Results
+    ✔ uses shared SVG icons for Tutorials
+    ✔ uses shared SVG icons for Workshops
+    ✔ uses shared SVG icons for Ideas, Visions and Reflections
+    ✔ uses shared SVG icons for Software Engineering Education
+    ✔ uses shared SVG icons for Tool Demonstration and Data Showcase Track
+
+  /plan command
+    ✔ defaults to current project, accepts a project ID, and rejects malformed IDs
+    ✔ starts once, sends user requirements, saves planning options, and opens the completed result
+    ✔ shows live execution messages and tool activity (47ms)
+    ✔ releases running state on poll failure and retries the same task
+    ✔ does not poll forever after completion without a result
+
+  AI planning action
+    ✔ refreshes manuscript analysis on explicit AI action even when an older result exists (1257ms)
+    ✔ entering Plan only reads cached status and never shows AI busy while that read is pending (740ms)
+    ✔ starts manuscript AI once, preserves plan while running, applies fresh fit without the removed explanation panels (1387ms)
+    ✔ applies a completed suggestion once when returning from another view (1242ms)
+    ✔ keeps saved choices when AI request fails (531ms)
+    ✔ keeps the plan when AI finds no suitable candidate (694ms)
+
+  Plan venue details navigation
+    ✔ shows metadata and returns to the saved Plan without rerunning AI (768ms)
+
+  Completed /plan handoff
+    ✔ applies command settings and results to an already open Plan without another AI call (479ms)
+
+  Skill command picker
+    ✔ lists only enabled matching commands and inserts slash invocation
+    ✔ shows no match without inventing a command
+
+  Installed Skill card
+    ✔ shows a short description and usage details without a fixed-action button (45ms)
+
+  Per-requirement manuscript advice
+    ✔ requests real file diffs and never applies them automatically
+    ✔ limits content-length checks to advice and makes no silent edit request
+
+  Source network settings
+    ✔ saves custom settings without displaying a stored password, then tests saved settings
+    ✔ shows owner authorization errors without exposing settings or saving
+
+  Submission deadline planner
+    1) shows cutoff timezone, passed abstract warning and persistent tracking
+    ✔ retains an elapsed box after the final conference milestone
+    ✔ keeps detail actions on Tracks and moves the official link and star into the title (323ms)
+    ✔ shows journal badges and requirements without a conference timeline (206ms)
+    2) keeps all rank menus stable when blank areas receive focus and closes on outside clicks
+    3) dismisses ranking menus without discarding selected values
+    4) simplifies source disclosures and star controls for both venue kinds
+    5) shows conference dates and location independently only when confirmed
+    ✔ hides uncertain metrics and ranks and puts primary links first (46ms)
+    ✔ does not turn an unknown date into a countdown
+    6) combines multiple full-name areas, rank groups and an enabled calendar window
+
+  Inline submission planner
+downshift: A component has changed the controlled prop "selectedItem" to be uncontrolled. This prop should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled Downshift element for the lifetime of the component. More info: https://github.com/downshift-js/downshift#control-props
+downshift: A component has changed the uncontrolled prop "selectedItem" to be controlled. This prop should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled Downshift element for the lifetime of the component. More info: https://github.com/downshift-js/downshift#control-props
+    ✔ renders inline, adds via chart plus, shows one editor, and deletes only explicitly (309ms)
+    ✔ ignores legacy withdrawal values and persists explicit journal estimates (96ms)
+downshift: A component has changed the uncontrolled prop "selectedItem" to be controlled. This prop should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled Downshift element for the lifetime of the component. More info: https://github.com/downshift-js/downshift#control-props
+    ✔ requires a specific under-review Track and places it before subsequent choices (560ms)
+
+  Planner milestone labels
+    ✔ retains all dated Track milestones and adds the shared conference start
+
+  Preserve the user submission plan
+downshift: A component has changed the uncontrolled prop "selectedItem" to be controlled. This prop should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled Downshift element for the lifetime of the component. More info: https://github.com/downshift-js/downshift#control-props
+downshift: A component has changed the controlled prop "selectedItem" to be uncontrolled. This prop should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled Downshift element for the lifetime of the component. More info: https://github.com/downshift-js/downshift#control-props
+    ✔ does not remove choices on review toggles, review selection/date changes, or venue filters (207ms)
+    ✔ freezes the displayed initial suggestion before toggling review state (115ms)
+
+  Arrange submission targets
+downshift: A component has changed the controlled prop "selectedItem" to be uncontrolled. This prop should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled Downshift element for the lifetime of the component. More info: https://github.com/downshift-js/downshift#control-props
+downshift: A component has changed the uncontrolled prop "selectedItem" to be controlled. This prop should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled Downshift element for the lifetime of the component. More info: https://github.com/downshift-js/downshift#control-props
+    ✔ inserts between choices and preserves targets through keyboard and drag reordering (482ms)
+    ✔ keeps targets with visible deadline conflicts after moving a journal before a conference (306ms)
+
+  Planner snapping
+    ✔ snaps within eight pixels and leaves distant dates unchanged
+
+  All participants in a conflict
+downshift: A component has changed the controlled prop "selectedItem" to be uncontrolled. This prop should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled Downshift element for the lifetime of the component. More info: https://github.com/downshift-js/downshift#control-props
+    ✔ highlights every overlapping journal without inline reason text (194ms)
+
+  Review contact is not overlap
+    ✔ does not color touching journals even with a preparation gap (159ms)
+
+  Insertion ranking
+    ✔ puts available venues first and sorts those by descending fit (98ms)
+
+  Journal draft insertion with unknown prior outcome
+downshift: A component has changed the controlled prop "selectedItem" to be uncontrolled. This prop should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled Downshift element for the lifetime of the component. More info: https://github.com/downshift-js/downshift#control-props
+downshift: A component has changed the uncontrolled prop "selectedItem" to be controlled. This prop should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled Downshift element for the lifetime of the component. More info: https://github.com/downshift-js/downshift#control-props
+    ✔ allows choosing a journal while leaving its date pending (126ms)
+
+  Full review duration with conditional checkpoint
+    ✔ draws the conference bar through final notification with one conflict label across both severities
+
+  Rolling journal alternatives
+    ✔ reschedules a replacement instead of reusing its former window and never calls a journal unavailable (188ms)
+
+  Grouped timeline legend
+    ✔ keeps conflict areas, date lines, review bars and milestones in separate groups (53ms)
+
+  Simplified timeline
+downshift: A component has changed the controlled prop "selectedItem" to be uncontrolled. This prop should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled Downshift element for the lifetime of the component. More info: https://github.com/downshift-js/downshift#control-props
+    ✔ persists compact labels and restores details without changing choices (332ms)
+
+  Per-row deletion
+    ✔ removes the clicked unselected row only, also in compact mode, without opening insertion (281ms)
+
+  Journal duration while prior date is pending
+    ✔ retains the default estimate even without a start date (60ms)
+
+  Repeated journal plans
+downshift: A component has changed the controlled prop "selectedItem" to be uncontrolled. This prop should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled Downshift element for the lifetime of the component. More info: https://github.com/downshift-js/downshift#control-props
+downshift: A component has changed the uncontrolled prop "selectedItem" to be controlled. This prop should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled Downshift element for the lifetime of the component. More info: https://github.com/downshift-js/downshift#control-props
+    ✔ inserts the same journal twice with independent duration and deletion (349ms)
+
+  Adaptation card
+    ✔ marks new Tool manuscripts while keeping rewriting instructions in the card
+    ✔ marks new Dataset manuscripts while keeping rewriting instructions in the card
+    ✔ marks new Tool / Dataset manuscripts while keeping rewriting instructions in the card
+    ✔ marks new Research paper manuscripts while keeping rewriting instructions in the card
+    ✔ marks new Workshop manuscripts while keeping rewriting instructions in the card (52ms)
+    ✔ marks new Poster manuscripts while keeping rewriting instructions in the card (59ms)
+    ✔ marks new Industry / experience manuscripts while keeping rewriting instructions in the card (57ms)
+    ✔ marks new Doctoral symposium manuscripts while keeping rewriting instructions in the card
+    ✔ marks new Journal first manuscripts while keeping rewriting instructions in the card
+    ✔ marks new Survey / review manuscripts while keeping rewriting instructions in the card
+    ✔ marks new Tutorial manuscripts while keeping rewriting instructions in the card (49ms)
+    ✔ marks new Artifact evaluation manuscripts while keeping rewriting instructions in the card (41ms)
+    ✔ marks new Replication / negative results manuscripts while keeping rewriting instructions in the card (40ms)
+    ✔ marks new Short paper manuscripts while keeping rewriting instructions in the card
+
+  Journal date controls
+    ✔ synchronizes typed dates and duration while preserving a manually chosen start (136ms)
+
+  Submitted future conference Tracks
+downshift: A component has changed the uncontrolled prop "selectedItem" to be controlled. This prop should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled Downshift element for the lifetime of the component. More info: https://github.com/downshift-js/downshift#control-props
+    ✔ lets an author select an already-submitted Track before its first official milestone (383ms)
+
+  Current submitted venue card
+    ✔ shows an editable journal card and two endpoints even without any future choices (121ms)
+    ✔ opens the submitted journal card by clicking its row while retaining future choices (192ms)
+
+  Historical submitted Track with a known outcome
+    ✔ keeps historical outcome dates and displays a later fixed Track without a false conflict (43ms)
+
+  Manual insertion from the full venue catalog
+downshift: A component has changed the controlled prop "selectedItem" to be uncontrolled. This prop should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled Downshift element for the lifetime of the component. More info: https://github.com/downshift-js/downshift#control-props
+downshift: A component has changed the uncontrolled prop "selectedItem" to be controlled. This prop should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled Downshift element for the lifetime of the component. More info: https://github.com/downshift-js/downshift#control-props
+downshift: A component has changed the controlled prop "selectedItem" to be uncontrolled. This prop should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled Downshift element for the lifetime of the component. More info: https://github.com/downshift-js/downshift#control-props
+    ✔ finds and inserts TOSEM or TSE even when AI did not recommend either (678ms)
+    ✔ does not auto-recommend unassessed catalog journals
+
+  Area-aware submitted venue menu
+downshift: A component has changed the uncontrolled prop "selectedItem" to be controlled. This prop should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled Downshift element for the lifetime of the component. More info: https://github.com/downshift-js/downshift#control-props
+    ✔ groups matching areas first, keeps other areas selectable and shows all without filters (173ms)
+
+  Persistent quality preference
+    ✔ places the quality checkbox first and replans from existing scores without AI (139ms)
+
+  Insertion relevance without hiding the catalog
+downshift: A component has changed the controlled prop "selectedItem" to be uncontrolled. This prop should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled Downshift element for the lifetime of the component. More info: https://github.com/downshift-js/downshift#control-props
+downshift: A component has changed the uncontrolled prop "selectedItem" to be controlled. This prop should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled Downshift element for the lifetime of the component. More info: https://github.com/downshift-js/downshift#control-props
+    ✔ ranks related journals first and keeps lower-fit entries selectable in both AI modes (157ms)
+
+  Submission sequence planning
+    ✔ keeps later submissions after rejection and preparation
+    ✔ rejects overlapping deadlines and expired abstract gates
+    ✔ does not infer a decision from response scores or conference dates
+    ✔ allows a conditional withdrawal branch only on or after submission
+    ✔ defaults journal review to three calendar months
+    ✔ blocks new submissions while a current review has no release date
+    ✔ orders known quality before fit and unknown quality last
+
+  Dynamic sequential choices
+    ✔ recalculates available options after choosing a previous review window
+    ✔ reports horizon conflicts and selects a near-term initial target
+
+  Manual journal windows
+    ✔ preserves manual dates and flags overlapping reviews
+
+  Conflict intersections
+    ✔ returns only the actual overlap, not the whole window
+
+  Overlap threshold
+    ✔ ignores under 24h and includes exactly 24h
+
+  Author-response conditional transfer branch
+    ✔ schedules after author response and separates red/yellow overlap intervals
+
+  Manuscript-fit first suggestion
+    ✔ prefers stronger fit over rank and proximity while excluding infeasible targets
+
+  Alternative journal scheduling
+    ✔ ignores stale candidate dates but preserves the currently edited window
+
+  Continuous AI recommendation sequence
+    ✔ fills eighteen months with independent journal instances and default review lengths
+    ✔ uses Track dates and allows only warning overlap after response
+    ✔ skips expired gates and unknown dates and terminates when no candidates remain
+
+  Fixed conference opportunities in mixed plans
+    ✔ keeps a comparable conference before a journal would consume its deadline
+    ✔ does not force an unsuitable conference or a missed abstract gate
+
+  Adapted manuscript branches
+    ✔ schedules a new manuscript before original release without moving the original chain
+    ✔ ignores cross-manuscript overlaps but preserves conflicts within the same adapted draft
+
+  Workshop submission versus notification
+    ✔ retains the real conflicting paper deadline instead of submitting on notification day
+    ✔ does not use paper notification as a submission when no submission date is known
+
+  Quality-first feasible manuscript opportunities
+    ✔ does not spend the original manuscript on a C conference before a similarly suitable A journal
+    ✔ prioritizes shorter decisions among equally ranked and similarly suitable conferences
+    ✔ does not promote a poor-fit A venue merely for prestige
+
+  Immediate milestone information
+    ✔ shows tooltip synchronously on hover/focus without a native title delay
+    ✔ uses the same immediate tooltip for ordinary conference timeline points
+
+  Concise Track fit summaries
+    ✔ uses concise AI reasons and preserves unmet versus unconfirmed issues
+    ✔ shortens saved legacy reports without labeling already-met conditions as failures
+
+  Track navigation cards
+    ✔ keeps past submission red while displaying the next decision date
+    ✔ uses a later submission round and does not treat camera-ready as a new submission
+    ✔ keeps date-only deadlines today pending and unknown deadlines neutral
+    ✔ allows clicking an expired Track card
+
+  Track requirement summaries
+    ✔ separates mixed source paragraphs and retains initial rather than revision page limits
+    ✔ does not invent appendix limits or infer blind review from template options
+    ✔ extracts explicit appendix limits and single-blind review
+
+  Submission column layout
+    ✔ uses explicit submission layout without substituting camera-ready columns
+
+  Journal and conference layout evidence
+    ✔ reads explicit layout outside the format category
+    ✔ does not turn uncertainty or article-specific limits into general journal requirements
+
+  Track requirement workspace
+    ✔ starts exact Track read-only audit and shows findings with file evidence in a titled subcard (81ms)
+    ✔ organizes requirements on opening and shows category cards without nested category accordions
+
+  Draft check result reuse
+    ✔ reopens closed results without POST and starts a new check only through Recheck (141ms)
+    ✔ can reopen running progress and does not reopen a hidden report on completion (163ms)
+
+  Undated venue directory
+    ✔ paginates existing filter order and resets when filtered results change (102ms)
+    ✔ separates conferences, omits dated journals, and expands on request (76ms)
+
+  Conference history dialog
+(node:53396) TimeoutNaNWarning: NaN is not a number.
+Timeout duration was set to 1.
+(Use `node --trace-warnings ...` to show where the warning was created)
+    ✔ plots counts/rates and excludes future years even if returned by a source (164ms)
+    ✔ shows missing statistics instead of zero values (44ms)
+
+  Independent manuscript conversion
+    ✔ keeps history hidden until requested and restores it without starting a conversion (266ms)
+    ✔ starts an isolated task and imports the generated ZIP once into a new project (179ms)
+    ✔ does not import when automatic import is disabled, including after remount (113ms)
+    ✔ pauses automatic import for compiled output without submission evidence (126ms)
+    ✔ keeps an uncompiled conversion as a downloadable draft without automatic import (59ms)
+    ✔ shows an import error without retrying automatically or changing the original (106ms)
+
+  Conversion progress summary
+    ✔ updates the collapsed summary from actual tool activity instead of stale output
+
+  Venue deadline countdowns
+    ✔ uses UTC elapsed duration and handles boundary and unknown dates
+    ✔ emphasizes the earliest submission cutoff and lists abstract and paper separately
+    ✔ labels post-submission events as milestones without reopening the paper deadline
+
+  Conference location permission
+    ✔ defaults off and never reads location without opt-in
+    ✔ enables via the settings switch and clears permission preference when disabled
+    ✔ handles denial without retaining an enabled preference
+    ✔ discards a position that arrives after the setting is disabled
+    ✔ makes confirmed physical places clickable, while online and unknown places stay noninteractive
+
+  Multiple conference locations
+    ✔ draws a route for each destination and keeps a selectable entry for every site (78ms)
+    ✔ shows destinations without routes when current location is disabled
+    ✔ retains successful sites and explains an unresolved site (86ms)
+
+  Manuscript venue recommendations
+    7) combines independent calendar and recommendation switches without rerunning on view changes
+    ✔ hides recommendation execution details from the planner (189ms)
+    ✔ distinguishes closed papers, elapsed registration and unknown schedules
+    ✔ shows dated publisher metrics only for the matching journal
+    ✔ sorts by relevance and independent ranking systems without mutating input
+    8) filters multiple Xidian categories and sorts unknown entries last
+
+  Inline Plan navigation
+    ✔ opens Submission Plan below area filters and preserves view switching (536ms)
+
+  Venue and Track search
+    ✔ matches Early Research Achievements
+    ✔ matches ERA
+    ✔ matches Early Research Achievements (ERA)
+    ✔ matches   early   research  
+    ✔ matches achievements early
+    ✔ matches Early Research Achievments
+    ✔ matches ICPC ERA 2027
+    ✔ does not match an unrelated Track or use a short acronym inside another word
+    ✔ searches the selected Track rather than every sibling Track
+
+  Punctuated venue abbreviations
+    ✔ matches only the intended abbreviation: S&P
+    ✔ matches only the intended abbreviation: S & P
+    ✔ matches only the intended abbreviation: s & p
+    ✔ matches only the intended abbreviation: S and P
+    ✔ prioritizes exact venue names over descriptive matches
+
+  Venue metric sorting
+    ✔ sorts numeric impact factors descending, retaining zero ahead of unknown values
+    ✔ does not treat invalid factors or conference metrics as verified journal factors
+    ✔ orders Q1 through Q4, then unknown, using the best verified category
+    ✔ uses the existing displayed publisher fallback and reacts to newly supplied snapshots
+    ✔ keeps deterministic title ordering for equal and missing metrics without mutating input
+
+  Track availability summaries
+    ✔ separates closed and still-open Tracks and omits unknown dates
+    ✔ names only the exact catalog round until Track dates are available
+    ✔ does not treat revisions as reopened submissions or unavailable dates as closed
+
+  Private venue workspace persistence
+    ✔ restores server plans, favorites and recommendation pointer in a clean browser
+    ✔ clears the previous account local state instead of importing it
+    ✔ queues plan and favorite writes and retains a failed write for retry
+    ✔ preserves legacy fields when migrating a browser plan
+    ✔ keeps the local plan usable and backed up when migration is rejected
+    ✔ retries legacy favorites after an earlier migration already stamped the same owner
+
+
+  227 passing (29s)
+  8 failing
+
+  1) Submission deadline planner
+       shows cutoff timezone, passed abstract warning and persistent tracking:
+     TestingLibraryElementError: Unable to find an accessible element with the role "button" and name `/TESTCONF: Paper, Upcoming deadline AoE/`
+
+Here are the accessible roles:
+
+  button:
+
+  Name "← Plugin library":
+  [36m<button[39m
+    [33mclass[39m=[32m"deadline-back"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Calendar":
+  [36m<button[39m
+    [33maria-pressed[39m=[32m"false"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Card":
+  [36m<button[39m
+    [33maria-pressed[39m=[32m"true"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Timeline":
+  [36m<button[39m
+    [33maria-pressed[39m=[32m"false"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Submission Plan":
+  [36m<button[39m
+    [33maria-pressed[39m=[32m"false"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Show followed venues only":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Show followed venues only"[39m
+    [33maria-pressed[39m=[32m"false"[39m
+    [33mclass[39m=[32m"venue-tracked-filter"[39m
+    [33mtitle[39m=[32m"Show followed venues only"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Refresh deadlines":
+  [36m<button[39m
+    [33mtitle[39m=[32m"Refresh the venue catalog and submission deadlines"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Recommend":
+  [36m<button[39m
+    [33maria-pressed[39m=[32m"false"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Clear":
+  [36m<button[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Clear":
+  [36m<button[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Clear":
+  [36m<button[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Clear":
+  [36m<button[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Artificial Intelligence":
+  [36m<button[39m
+    [33maria-pressed[39m=[32m"false"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Clear areas":
+  [36m<button[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "TESTCONF 2027 (Conference)":
+  [36m<button[39m
+    [33mclass[39m=[32m"deadline-title"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Track TESTCONF Main track":
+  [36m<button[39m
+    [33maria-label[39m=[32m"Track TESTCONF Main track"[39m
+    [33maria-pressed[39m=[32m"false"[39m
+    [33mclass[39m=[32m"venue-star"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Submissions & acceptance rates ↗":
+  [36m<button[39m
+    [33mclass[39m=[32m"venue-location-link"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Google Calendar":
+  [36m<button[39m
+    [33mtitle[39m=[32m"Download TESTCONF 2027 as .ics for Google Calendar"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "iCloud Calendar":
+  [36m<button[39m
+    [33mtitle[39m=[32m"Download TESTCONF 2027 as .ics for iCloud Calendar"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Google Calendar":
+  [36m<button[39m
+    [33mtitle[39m=[32m"Download Filtered conferences as .ics for Google Calendar"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "iCloud Calendar":
+  [36m<button[39m
+    [33mtitle[39m=[32m"Download Filtered conferences as .ics for iCloud Calendar"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  banner:
+
+  Name "":
+  [36m<header[39m
+    [33mclass[39m=[32m"deadline-heading"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  heading:
+
+  Name "Venues":
+  [36m<h2 />[39m
+
+  --------------------------------------------------
+  group:
+
+  Name "Planner view":
+  [36m<div[39m
+    [33maria-label[39m=[32m"Planner view"[39m
+    [33mclass[39m=[32m"deadline-view-switch"[39m
+    [33mrole[39m=[32m"group"[39m
+  [36m/>[39m
+
+  Name "Venue recommendations":
+  [36m<div[39m
+    [33maria-label[39m=[32m"Venue recommendations"[39m
+    [33mclass[39m=[32m"deadline-view-switch"[39m
+    [33mrole[39m=[32m"group"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<details[39m
+    [33mclass[39m=[32m"venue-rank-filter"[39m
+  [36m/>[39m
+
+  Name "CCF rankings":
+  [36m<div[39m
+    [33maria-label[39m=[32m"CCF rankings"[39m
+    [33mrole[39m=[32m"group"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<details[39m
+    [33mclass[39m=[32m"venue-rank-filter"[39m
+  [36m/>[39m
+
+  Name "CORE rankings":
+  [36m<div[39m
+    [33maria-label[39m=[32m"CORE rankings"[39m
+    [33mrole[39m=[32m"group"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<details[39m
+    [33mclass[39m=[32m"venue-rank-filter"[39m
+  [36m/>[39m
+
+  Name "THCPL rankings":
+  [36m<div[39m
+    [33maria-label[39m=[32m"THCPL rankings"[39m
+    [33mrole[39m=[32m"group"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<details[39m
+    [33mclass[39m=[32m"venue-rank-filter"[39m
+  [36m/>[39m
+
+  Name "Xidian categories":
+  [36m<div[39m
+    [33maria-label[39m=[32m"Xidian categories"[39m
+    [33mrole[39m=[32m"group"[39m
+  [36m/>[39m
+
+  Name "Research areas":
+  [36m<div[39m
+    [33maria-label[39m=[32m"Research areas"[39m
+    [33mclass[39m=[32m"venue-area-chips"[39m
+    [33mrole[39m=[32m"group"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  strong:
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  Name "":
+  [36m<strong />[39m
+
+  --------------------------------------------------
+  textbox:
+
+  Name "Search venues":
+  [36m<input[39m
+    [33mid[39m=[32m"deadline-search"[39m
+    [33mplaceholder[39m=[32m"Name, topic or track"[39m
+    [33mvalue[39m=[32m""[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  combobox:
+
+  Name "Type":
+  [36m<select[39m
+    [33maria-label[39m=[32m"Type"[39m
+  [36m/>[39m
+
+  Name "Sort by":
+  [36m<select[39m
+    [33maria-label[39m=[32m"Sort by"[39m
+  [36m/>[39m
+
+  Name "Window":
+  [36m<select[39m
+    [33maria-label[39m=[32m"Window"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  option:
+
+  Name "All venues":
+  [36m<option[39m
+    [33mvalue[39m=[32m"all"[39m
+  [36m/>[39m
+
+  Name "Conferences":
+  [36m<option[39m
+    [33mvalue[39m=[32m"conference"[39m
+  [36m/>[39m
+
+  Name "Journals":
+  [36m<option[39m
+    [33mvalue[39m=[32m"journal"[39m
+  [36m/>[39m
+
+  Name "Manuscript relevance":
+  [36m<option[39m
+    [33mvalue[39m=[32m"relevance"[39m
+  [36m/>[39m
+
+  Name "CCF · highest first":
+  [36m<option[39m
+    [33mvalue[39m=[32m"ccf"[39m
+  [36m/>[39m
+
+  Name "CORE · highest first":
+  [36m<option[39m
+    [33mvalue[39m=[32m"core"[39m
+  [36m/>[39m
+
+  Name "THCPL · highest first":
+  [36m<option[39m
+    [33mvalue[39m=[32m"thcpl"[39m
+  [36m/>[39m
+
+  Name "Xidian category · highest first":
+  [36m<option[39m
+    [33mvalue[39m=[32m"xidian"[39m
+  [36m/>[39m
+
+  Name "JIF · highest first":
+  [36m<option[39m
+    [33mvalue[39m=[32m"jif"[39m
+  [36m/>[39m
+
+  Name "JCR quartile · Q1 first":
+  [36m<option[39m
+    [33mvalue[39m=[32m"jcr"[39m
+  [36m/>[39m
+
+  Name "Submission deadline · soonest":
+  [36m<option[39m
+    [33mvalue[39m=[32m"deadline"[39m
+  [36m/>[39m
+
+  Name "Research area":
+  [36m<option[39m
+    [33mvalue[39m=[32m"area"[39m
+  [36m/>[39m
+
+  Name "Next 30 days":
+  [36m<option[39m
+    [33mvalue[39m=[32m"30"[39m
+  [36m/>[39m
+
+  Name "Next 90 days":
+  [36m<option[39m
+    [33mvalue[39m=[32m"90"[39m
+  [36m/>[39m
+
+  Name "Next 180 days":
+  [36m<option[39m
+    [33mvalue[39m=[32m"180"[39m
+  [36m/>[39m
+
+  Name "All / unannounced":
+  [36m<option[39m
+    [33mvalue[39m=[32m"all"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  checkbox:
+
+  Name "CCF A":
+  [36m<input[39m
+    [33mtype[39m=[32m"checkbox"[39m
+  [36m/>[39m
+
+  Name "CCF B":
+  [36m<input[39m
+    [33mtype[39m=[32m"checkbox"[39m
+  [36m/>[39m
+
+  Name "CCF C":
+  [36m<input[39m
+    [33mtype[39m=[32m"checkbox"[39m
+  [36m/>[39m
+
+  Name "Non-CCF":
+  [36m<input[39m
+    [33mtype[39m=[32m"checkbox"[39m
+  [36m/>[39m
+
+  Name "CCF not provided":
+  [36m<input[39m
+    [33mtype[39m=[32m"checkbox"[39m
+  [36m/>[39m
+
+  Name "CORE A*":
+  [36m<input[39m
+    [33mtype[39m=[32m"checkbox"[39m
+  [36m/>[39m
+
+  Name "CORE A":
+  [36m<input[39m
+    [33mtype[39m=[32m"checkbox"[39m
+  [36m/>[39m
+
+  Name "CORE B":
+  [36m<input[39m
+    [33mtype[39m=[32m"checkbox"[39m
+  [36m/>[39m
+
+  Name "CORE C":
+  [36m<input[39m
+    [33mtype[39m=[32m"checkbox"[39m
+  [36m/>[39m
+
+  Name "Non-CORE":
+  [36m<input[39m
+    [33mtype[39m=[32m"checkbox"[39m
+  [36m/>[39m
+
+  Name "CORE not provided":
+  [36m<input[39m
+    [33mtype[39m=[32m"checkbox"[39m
+  [36m/>[39m
+
+  Name "THCPL A":
+  [36m<input[39m
+    [33mtype[39m=[32m"checkbox"[39m
+  [36m/>[39m
+
+  Name "THCPL B":
+  [36m<input[39m
+    [33mtype[39m=[32m"checkbox"[39m
+  [36m/>[39m
+
+  Name "Non-THCPL":
+  [36m<input[39m
+    [33mtype[39m=[32m"checkbox"[39m
+  [36m/>[39m
+
+  Name "THCPL not provided":
+  [36m<input[39m
+    [33mtype[39m=[32m"checkbox"[39m
+  [36m/>[39m
+
+  Name "Xidian · Top-tier A":
+  [36m<input[39m
+    [33mtype[39m=[32m"checkbox"[39m
+  [36m/>[39m
+
+  Name "Xidian · Top-tier B":
+  [36m<input[39m
+    [33mtype[39m=[32m"checkbox"[39m
+  [36m/>[39m
+
+  Name "Xidian · Category 1":
+  [36m<input[39m
+    [33mtype[39m=[32m"checkbox"[39m
+  [36m/>[39m
+
+  Name "Xidian · Category 2":
+  [36m<input[39m
+    [33mtype[39m=[32m"checkbox"[39m
+  [36m/>[39m
+
+  Name "Xidian · Category 3":
+  [36m<input[39m
+    [33mtype[39m=[32m"checkbox"[39m
+  [36m/>[39m
+
+  Name "Xidian · Not verified":
+  [36m<input[39m
+    [33mtype[39m=[32m"checkbox"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  article:
+
+  Name "":
+  [36m<article[39m
+    [33mclass[39m=[32m"deadline-card venue-row"[39m
+    [33mdata-venue-id[39m=[32m"AI/test~2027~0"[39m
+    [33mtabindex[39m=[32m"-1"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  link:
+
+  Name "Conference Link ↗":
+  [36m<a[39m
+    [33mclass[39m=[32m"venue-heading-link"[39m
+    [33mhref[39m=[32m"https://example.org"[39m
+    [33mrel[39m=[32m"noopener noreferrer"[39m
+    [33mtarget[39m=[32m"_blank"[39m
+  [36m/>[39m
+
+  Name "CCFDDL ↗":
+  [36m<a[39m
+    [33mhref[39m=[32m"https://ccfddl.com/"[39m
+    [33mrel[39m=[32m"noopener noreferrer"[39m
+    [33mtarget[39m=[32m"_blank"[39m
+  [36m/>[39m
+
+  Name "CCFDDL full calendar subscription ↗":
+  [36m<a[39m
+    [33mhref[39m=[32m"https://ccfddl.com/conference/deadlines/deadlines_en.ics"[39m
+    [33mrel[39m=[32m"noopener noreferrer"[39m
+    [33mtarget[39m=[32m"_blank"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p />[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"deadline-footnote"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  time:
+
+  Name "":
+  [36m<time[39m
+    [33mdatetime[39m=[32m"2026-11-14T09:18:24.303Z"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  contentinfo:
+
+  Name "Export TESTCONF 2027":
+  [36m<footer[39m
+    [33maria-label[39m=[32m"Export TESTCONF 2027"[39m
+    [33mclass[39m=[32m"venue-calendar-export"[39m
+  [36m/>[39m
+
+  Name "Export Filtered conferences":
+  [36m<footer[39m
+    [33maria-label[39m=[32m"Export Filtered conferences"[39m
+    [33mclass[39m=[32m"venue-calendar-export"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"deadline-panel"[39m
+    [36m>[39m
+      [36m<button[39m
+        [33mclass[39m=[32m"deadline-back"[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [0m← [0m
+        [0mPlugin library[0m
+      [36m</button>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"deadline-heading"[39m
+      [36m>[39m
+        [36m<h2>[39m
+          [0mVenues[0m
+        [36m</h2>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"deadline-toolbar"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33maria-label[39m=[32m"Planner view"[39m
+          [33mclass[39m=[32m"deadline-view-switch"[39m
+          [33mrole[39m=[32m"group"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"16"[39m
+                [33mrx[39m=[32m"2"[39m
+                [33mwidth[39m=[32m"18"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"5"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M7 3v4M17 3v4M3 10h18M7 14h2M12 14h2M7 17h2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCalendar[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"true"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"14"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M5 8h3M5 12h3M16 8h3M16 12h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCard[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M3 12h18M6 5v4M12 15v4M18 5v4"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"6"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"12"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"18"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mTimeline[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M9 4H5v17h14V4h-4"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"4"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"6"[39m
+                [33mx[39m=[32m"9"[39m
+                [33my[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"m8 11 1 1 2-2M13 11h3m-8 6 1 1 2-2M13 17h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mSubmission Plan[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"Show followed venues only"[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mclass[39m=[32m"venue-tracked-filter"[39m
+            [33mtitle[39m=[32m"Show followed venues only"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"material-symbols"[39m
+              [33mtranslate[39m=[32m"no"[39m
+            [36m>[39m
+              [0mstar_border[0m
+            [36m</span>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mtitle[39m=[32m"Refresh the venue catalog and submission deadlines"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mcla...
+      at Object.getElementError (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@testing-library/dom/dist/config.js:37:19)
+      at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at getByRole (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@testing-library/dom/dist/query-helpers.js:95:19)
+      at Context.<anonymous> (test/frontend/features/plugins/submission-deadlines.test.tsx:14:181)
+
+  2) Submission deadline planner
+       keeps all rank menus stable when blank areas receive focus and closes on outside clicks:
+     Unable to find an element with the text: 1 venues & rounds. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"deadline-panel"[39m
+    [36m>[39m
+      [36m<button[39m
+        [33mclass[39m=[32m"deadline-back"[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [0m← [0m
+        [0mPlugin library[0m
+      [36m</button>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"deadline-heading"[39m
+      [36m>[39m
+        [36m<h2>[39m
+          [0mVenues[0m
+        [36m</h2>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"deadline-toolbar"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33maria-label[39m=[32m"Planner view"[39m
+          [33mclass[39m=[32m"deadline-view-switch"[39m
+          [33mrole[39m=[32m"group"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"16"[39m
+                [33mrx[39m=[32m"2"[39m
+                [33mwidth[39m=[32m"18"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"5"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M7 3v4M17 3v4M3 10h18M7 14h2M12 14h2M7 17h2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCalendar[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"true"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"14"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M5 8h3M5 12h3M16 8h3M16 12h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCard[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M3 12h18M6 5v4M12 15v4M18 5v4"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"6"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"12"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"18"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mTimeline[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M9 4H5v17h14V4h-4"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"4"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"6"[39m
+                [33mx[39m=[32m"9"[39m
+                [33my[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"m8 11 1 1 2-2M13 11h3m-8 6 1 1 2-2M13 17h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mSubmission Plan[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"Show followed venues only"[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mclass[39m=[32m"venue-tracked-filter"[39m
+            [33mtitle[39m=[32m"Show followed venues only"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"material-symbols"[39m
+              [33mtranslate[39m=[32m"no"[39m
+            [36m>[39m
+              [0mstar_border[0m
+            [36m</span>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mtitle[39m=[32m"Refresh the venue catalog and submission deadlines"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mcla...
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"deadline-panel"[39m
+    [36m>[39m
+      [36m<button[39m
+        [33mclass[39m=[32m"deadline-back"[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [0m← [0m
+        [0mPlugin library[0m
+      [36m</button>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"deadline-heading"[39m
+      [36m>[39m
+        [36m<h2>[39m
+          [0mVenues[0m
+        [36m</h2>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"deadline-toolbar"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33maria-label[39m=[32m"Planner view"[39m
+          [33mclass[39m=[32m"deadline-view-switch"[39m
+          [33mrole[39m=[32m"group"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"16"[39m
+                [33mrx[39m=[32m"2"[39m
+                [33mwidth[39m=[32m"18"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"5"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M7 3v4M17 3v4M3 10h18M7 14h2M12 14h2M7 17h2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCalendar[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"true"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"14"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M5 8h3M5 12h3M16 8h3M16 12h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCard[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M3 12h18M6 5v4M12 15v4M18 5v4"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"6"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"12"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"18"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mTimeline[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M9 4H5v17h14V4h-4"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"4"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"6"[39m
+                [33mx[39m=[32m"9"[39m
+                [33my[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"m8 11 1 1 2-2M13 11h3m-8 6 1 1 2-2M13 17h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mSubmission Plan[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"Show followed venues only"[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mclass[39m=[32m"venue-tracked-filter"[39m
+            [33mtitle[39m=[32m"Show followed venues only"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"material-symbols"[39m
+              [33mtranslate[39m=[32m"no"[39m
+            [36m>[39m
+              [0mstar_border[0m
+            [36m</span>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mtitle[39m=[32m"Refresh the venue catalog and submission deadlines"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mcla...
+  Error: Unable to find an element with the text: 1 venues & rounds. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+  
+  Ignored nodes: comments, script, style
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"deadline-panel"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"deadline-back"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0m← [0m
+          [0mPlugin library[0m
+        [36m</button>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"deadline-heading"[39m
+        [36m>[39m
+          [36m<h2>[39m
+            [0mVenues[0m
+          [36m</h2>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"deadline-toolbar"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33maria-label[39m=[32m"Planner view"[39m
+            [33mclass[39m=[32m"deadline-view-switch"[39m
+            [33mrole[39m=[32m"group"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"false"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"venue-action-icon"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.7"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<rect[39m
+                  [33mheight[39m=[32m"16"[39m
+                  [33mrx[39m=[32m"2"[39m
+                  [33mwidth[39m=[32m"18"[39m
+                  [33mx[39m=[32m"3"[39m
+                  [33my[39m=[32m"5"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M7 3v4M17 3v4M3 10h18M7 14h2M12 14h2M7 17h2"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [0mCalendar[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"true"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"venue-action-icon"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.7"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<rect[39m
+                  [33mheight[39m=[32m"18"[39m
+                  [33mrx[39m=[32m"1"[39m
+                  [33mwidth[39m=[32m"7"[39m
+                  [33mx[39m=[32m"3"[39m
+                  [33my[39m=[32m"3"[39m
+                [36m/>[39m
+                [36m<rect[39m
+                  [33mheight[39m=[32m"18"[39m
+                  [33mrx[39m=[32m"1"[39m
+                  [33mwidth[39m=[32m"7"[39m
+                  [33mx[39m=[32m"14"[39m
+                  [33my[39m=[32m"3"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M5 8h3M5 12h3M16 8h3M16 12h3"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [0mCard[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"false"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"venue-action-icon"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.7"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M3 12h18M6 5v4M12 15v4M18 5v4"[39m
+                [36m/>[39m
+                [36m<circle[39m
+                  [33mcx[39m=[32m"6"[39m
+                  [33mcy[39m=[32m"12"[39m
+                  [33mr[39m=[32m"2"[39m
+                [36m/>[39m
+                [36m<circle[39m
+                  [33mcx[39m=[32m"12"[39m
+                  [33mcy[39m=[32m"12"[39m
+                  [33mr[39m=[32m"2"[39m
+                [36m/>[39m
+                [36m<circle[39m
+                  [33mcx[39m=[32m"18"[39m
+                  [33mcy[39m=[32m"12"[39m
+                  [33mr[39m=[32m"2"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [0mTimeline[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"false"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"venue-action-icon"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.7"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M9 4H5v17h14V4h-4"[39m
+                [36m/>[39m
+                [36m<rect[39m
+                  [33mheight[39m=[32m"4"[39m
+                  [33mrx[39m=[32m"1"[39m
+                  [33mwidth[39m=[32m"6"[39m
+                  [33mx[39m=[32m"9"[39m
+                  [33my[39m=[32m"2"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"m8 11 1 1 2-2M13 11h3m-8 6 1 1 2-2M13 17h3"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [0mSubmission Plan[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-label[39m=[32m"Show followed venues only"[39m
+              [33maria-pressed[39m=[32m"false"[39m
+              [33mclass[39m=[32m"venue-tracked-filter"[39m
+              [33mtitle[39m=[32m"Show followed venues only"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"material-symbols"[39m
+                [33mtranslate[39m=[32m"no"[39m
+              [36m>[39m
+                [0mstar_border[0m
+              [36m</span>[39m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33mtitle[39m=[32m"Refresh the venue catalog and submission deadlines"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mcla...
+      at waitForWrapper (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@testing-library/dom/dist/wait-for.js:163:27)
+      at findByText (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@testing-library/dom/dist/query-helpers.js:86:33)
+      at Context.<anonymous> (test/frontend/features/plugins/submission-deadlines.test.tsx:32:152)
+      at processImmediate (node:internal/timers:504:21)
+
+  3) Submission deadline planner
+       dismisses ranking menus without discarding selected values:
+     Unable to find an element with the text: 1 venues & rounds. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"deadline-panel"[39m
+    [36m>[39m
+      [36m<button[39m
+        [33mclass[39m=[32m"deadline-back"[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [0m← [0m
+        [0mPlugin library[0m
+      [36m</button>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"deadline-heading"[39m
+      [36m>[39m
+        [36m<h2>[39m
+          [0mVenues[0m
+        [36m</h2>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"deadline-toolbar"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33maria-label[39m=[32m"Planner view"[39m
+          [33mclass[39m=[32m"deadline-view-switch"[39m
+          [33mrole[39m=[32m"group"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"16"[39m
+                [33mrx[39m=[32m"2"[39m
+                [33mwidth[39m=[32m"18"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"5"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M7 3v4M17 3v4M3 10h18M7 14h2M12 14h2M7 17h2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCalendar[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"true"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"14"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M5 8h3M5 12h3M16 8h3M16 12h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCard[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M3 12h18M6 5v4M12 15v4M18 5v4"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"6"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"12"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"18"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mTimeline[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M9 4H5v17h14V4h-4"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"4"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"6"[39m
+                [33mx[39m=[32m"9"[39m
+                [33my[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"m8 11 1 1 2-2M13 11h3m-8 6 1 1 2-2M13 17h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mSubmission Plan[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"Show followed venues only"[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mclass[39m=[32m"venue-tracked-filter"[39m
+            [33mtitle[39m=[32m"Show followed venues only"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"material-symbols"[39m
+              [33mtranslate[39m=[32m"no"[39m
+            [36m>[39m
+              [0mstar_border[0m
+            [36m</span>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mtitle[39m=[32m"Refresh the venue catalog and submission deadlines"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mcla...
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"deadline-panel"[39m
+    [36m>[39m
+      [36m<button[39m
+        [33mclass[39m=[32m"deadline-back"[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [0m← [0m
+        [0mPlugin library[0m
+      [36m</button>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"deadline-heading"[39m
+      [36m>[39m
+        [36m<h2>[39m
+          [0mVenues[0m
+        [36m</h2>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"deadline-toolbar"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33maria-label[39m=[32m"Planner view"[39m
+          [33mclass[39m=[32m"deadline-view-switch"[39m
+          [33mrole[39m=[32m"group"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"16"[39m
+                [33mrx[39m=[32m"2"[39m
+                [33mwidth[39m=[32m"18"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"5"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M7 3v4M17 3v4M3 10h18M7 14h2M12 14h2M7 17h2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCalendar[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"true"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"14"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M5 8h3M5 12h3M16 8h3M16 12h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCard[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M3 12h18M6 5v4M12 15v4M18 5v4"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"6"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"12"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"18"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mTimeline[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M9 4H5v17h14V4h-4"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"4"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"6"[39m
+                [33mx[39m=[32m"9"[39m
+                [33my[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"m8 11 1 1 2-2M13 11h3m-8 6 1 1 2-2M13 17h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mSubmission Plan[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"Show followed venues only"[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mclass[39m=[32m"venue-tracked-filter"[39m
+            [33mtitle[39m=[32m"Show followed venues only"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"material-symbols"[39m
+              [33mtranslate[39m=[32m"no"[39m
+            [36m>[39m
+              [0mstar_border[0m
+            [36m</span>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mtitle[39m=[32m"Refresh the venue catalog and submission deadlines"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mcla...
+  Error: Unable to find an element with the text: 1 venues & rounds. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+  
+  Ignored nodes: comments, script, style
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"deadline-panel"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"deadline-back"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0m← [0m
+          [0mPlugin library[0m
+        [36m</button>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"deadline-heading"[39m
+        [36m>[39m
+          [36m<h2>[39m
+            [0mVenues[0m
+          [36m</h2>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"deadline-toolbar"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33maria-label[39m=[32m"Planner view"[39m
+            [33mclass[39m=[32m"deadline-view-switch"[39m
+            [33mrole[39m=[32m"group"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"false"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"venue-action-icon"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.7"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<rect[39m
+                  [33mheight[39m=[32m"16"[39m
+                  [33mrx[39m=[32m"2"[39m
+                  [33mwidth[39m=[32m"18"[39m
+                  [33mx[39m=[32m"3"[39m
+                  [33my[39m=[32m"5"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M7 3v4M17 3v4M3 10h18M7 14h2M12 14h2M7 17h2"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [0mCalendar[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"true"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"venue-action-icon"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.7"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<rect[39m
+                  [33mheight[39m=[32m"18"[39m
+                  [33mrx[39m=[32m"1"[39m
+                  [33mwidth[39m=[32m"7"[39m
+                  [33mx[39m=[32m"3"[39m
+                  [33my[39m=[32m"3"[39m
+                [36m/>[39m
+                [36m<rect[39m
+                  [33mheight[39m=[32m"18"[39m
+                  [33mrx[39m=[32m"1"[39m
+                  [33mwidth[39m=[32m"7"[39m
+                  [33mx[39m=[32m"14"[39m
+                  [33my[39m=[32m"3"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M5 8h3M5 12h3M16 8h3M16 12h3"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [0mCard[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"false"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"venue-action-icon"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.7"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M3 12h18M6 5v4M12 15v4M18 5v4"[39m
+                [36m/>[39m
+                [36m<circle[39m
+                  [33mcx[39m=[32m"6"[39m
+                  [33mcy[39m=[32m"12"[39m
+                  [33mr[39m=[32m"2"[39m
+                [36m/>[39m
+                [36m<circle[39m
+                  [33mcx[39m=[32m"12"[39m
+                  [33mcy[39m=[32m"12"[39m
+                  [33mr[39m=[32m"2"[39m
+                [36m/>[39m
+                [36m<circle[39m
+                  [33mcx[39m=[32m"18"[39m
+                  [33mcy[39m=[32m"12"[39m
+                  [33mr[39m=[32m"2"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [0mTimeline[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"false"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"venue-action-icon"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.7"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M9 4H5v17h14V4h-4"[39m
+                [36m/>[39m
+                [36m<rect[39m
+                  [33mheight[39m=[32m"4"[39m
+                  [33mrx[39m=[32m"1"[39m
+                  [33mwidth[39m=[32m"6"[39m
+                  [33mx[39m=[32m"9"[39m
+                  [33my[39m=[32m"2"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"m8 11 1 1 2-2M13 11h3m-8 6 1 1 2-2M13 17h3"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [0mSubmission Plan[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-label[39m=[32m"Show followed venues only"[39m
+              [33maria-pressed[39m=[32m"false"[39m
+              [33mclass[39m=[32m"venue-tracked-filter"[39m
+              [33mtitle[39m=[32m"Show followed venues only"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"material-symbols"[39m
+                [33mtranslate[39m=[32m"no"[39m
+              [36m>[39m
+                [0mstar_border[0m
+              [36m</span>[39m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33mtitle[39m=[32m"Refresh the venue catalog and submission deadlines"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mcla...
+      at waitForWrapper (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@testing-library/dom/dist/wait-for.js:163:27)
+      at findByText (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@testing-library/dom/dist/query-helpers.js:86:33)
+      at Context.<anonymous> (test/frontend/features/plugins/submission-deadlines.test.tsx:36:152)
+      at processImmediate (node:internal/timers:504:21)
+
+  4) Submission deadline planner
+       simplifies source disclosures and star controls for both venue kinds:
+     Unable to find an element with the text: 2 venues & rounds. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"deadline-panel"[39m
+    [36m>[39m
+      [36m<button[39m
+        [33mclass[39m=[32m"deadline-back"[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [0m← [0m
+        [0mPlugin library[0m
+      [36m</button>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"deadline-heading"[39m
+      [36m>[39m
+        [36m<h2>[39m
+          [0mVenues[0m
+        [36m</h2>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"deadline-toolbar"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33maria-label[39m=[32m"Planner view"[39m
+          [33mclass[39m=[32m"deadline-view-switch"[39m
+          [33mrole[39m=[32m"group"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"16"[39m
+                [33mrx[39m=[32m"2"[39m
+                [33mwidth[39m=[32m"18"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"5"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M7 3v4M17 3v4M3 10h18M7 14h2M12 14h2M7 17h2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCalendar[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"true"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"14"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M5 8h3M5 12h3M16 8h3M16 12h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCard[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M3 12h18M6 5v4M12 15v4M18 5v4"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"6"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"12"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"18"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mTimeline[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M9 4H5v17h14V4h-4"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"4"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"6"[39m
+                [33mx[39m=[32m"9"[39m
+                [33my[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"m8 11 1 1 2-2M13 11h3m-8 6 1 1 2-2M13 17h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mSubmission Plan[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"Show followed venues only"[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mclass[39m=[32m"venue-tracked-filter"[39m
+            [33mtitle[39m=[32m"Show followed venues only"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"material-symbols"[39m
+              [33mtranslate[39m=[32m"no"[39m
+            [36m>[39m
+              [0mstar_border[0m
+            [36m</span>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mtitle[39m=[32m"Refresh the venue catalog and submission deadlines"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mcla...
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"deadline-panel"[39m
+    [36m>[39m
+      [36m<button[39m
+        [33mclass[39m=[32m"deadline-back"[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [0m← [0m
+        [0mPlugin library[0m
+      [36m</button>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"deadline-heading"[39m
+      [36m>[39m
+        [36m<h2>[39m
+          [0mVenues[0m
+        [36m</h2>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"deadline-toolbar"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33maria-label[39m=[32m"Planner view"[39m
+          [33mclass[39m=[32m"deadline-view-switch"[39m
+          [33mrole[39m=[32m"group"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"16"[39m
+                [33mrx[39m=[32m"2"[39m
+                [33mwidth[39m=[32m"18"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"5"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M7 3v4M17 3v4M3 10h18M7 14h2M12 14h2M7 17h2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCalendar[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"true"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"14"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M5 8h3M5 12h3M16 8h3M16 12h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCard[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M3 12h18M6 5v4M12 15v4M18 5v4"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"6"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"12"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"18"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mTimeline[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M9 4H5v17h14V4h-4"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"4"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"6"[39m
+                [33mx[39m=[32m"9"[39m
+                [33my[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"m8 11 1 1 2-2M13 11h3m-8 6 1 1 2-2M13 17h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mSubmission Plan[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"Show followed venues only"[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mclass[39m=[32m"venue-tracked-filter"[39m
+            [33mtitle[39m=[32m"Show followed venues only"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"material-symbols"[39m
+              [33mtranslate[39m=[32m"no"[39m
+            [36m>[39m
+              [0mstar_border[0m
+            [36m</span>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mtitle[39m=[32m"Refresh the venue catalog and submission deadlines"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mcla...
+  Error: Unable to find an element with the text: 2 venues & rounds. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+  
+  Ignored nodes: comments, script, style
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"deadline-panel"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"deadline-back"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0m← [0m
+          [0mPlugin library[0m
+        [36m</button>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"deadline-heading"[39m
+        [36m>[39m
+          [36m<h2>[39m
+            [0mVenues[0m
+          [36m</h2>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"deadline-toolbar"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33maria-label[39m=[32m"Planner view"[39m
+            [33mclass[39m=[32m"deadline-view-switch"[39m
+            [33mrole[39m=[32m"group"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"false"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"venue-action-icon"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.7"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<rect[39m
+                  [33mheight[39m=[32m"16"[39m
+                  [33mrx[39m=[32m"2"[39m
+                  [33mwidth[39m=[32m"18"[39m
+                  [33mx[39m=[32m"3"[39m
+                  [33my[39m=[32m"5"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M7 3v4M17 3v4M3 10h18M7 14h2M12 14h2M7 17h2"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [0mCalendar[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"true"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"venue-action-icon"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.7"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<rect[39m
+                  [33mheight[39m=[32m"18"[39m
+                  [33mrx[39m=[32m"1"[39m
+                  [33mwidth[39m=[32m"7"[39m
+                  [33mx[39m=[32m"3"[39m
+                  [33my[39m=[32m"3"[39m
+                [36m/>[39m
+                [36m<rect[39m
+                  [33mheight[39m=[32m"18"[39m
+                  [33mrx[39m=[32m"1"[39m
+                  [33mwidth[39m=[32m"7"[39m
+                  [33mx[39m=[32m"14"[39m
+                  [33my[39m=[32m"3"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M5 8h3M5 12h3M16 8h3M16 12h3"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [0mCard[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"false"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"venue-action-icon"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.7"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M3 12h18M6 5v4M12 15v4M18 5v4"[39m
+                [36m/>[39m
+                [36m<circle[39m
+                  [33mcx[39m=[32m"6"[39m
+                  [33mcy[39m=[32m"12"[39m
+                  [33mr[39m=[32m"2"[39m
+                [36m/>[39m
+                [36m<circle[39m
+                  [33mcx[39m=[32m"12"[39m
+                  [33mcy[39m=[32m"12"[39m
+                  [33mr[39m=[32m"2"[39m
+                [36m/>[39m
+                [36m<circle[39m
+                  [33mcx[39m=[32m"18"[39m
+                  [33mcy[39m=[32m"12"[39m
+                  [33mr[39m=[32m"2"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [0mTimeline[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"false"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"venue-action-icon"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.7"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M9 4H5v17h14V4h-4"[39m
+                [36m/>[39m
+                [36m<rect[39m
+                  [33mheight[39m=[32m"4"[39m
+                  [33mrx[39m=[32m"1"[39m
+                  [33mwidth[39m=[32m"6"[39m
+                  [33mx[39m=[32m"9"[39m
+                  [33my[39m=[32m"2"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"m8 11 1 1 2-2M13 11h3m-8 6 1 1 2-2M13 17h3"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [0mSubmission Plan[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-label[39m=[32m"Show followed venues only"[39m
+              [33maria-pressed[39m=[32m"false"[39m
+              [33mclass[39m=[32m"venue-tracked-filter"[39m
+              [33mtitle[39m=[32m"Show followed venues only"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"material-symbols"[39m
+                [33mtranslate[39m=[32m"no"[39m
+              [36m>[39m
+                [0mstar_border[0m
+              [36m</span>[39m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33mtitle[39m=[32m"Refresh the venue catalog and submission deadlines"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mcla...
+      at waitForWrapper (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@testing-library/dom/dist/wait-for.js:163:27)
+      at findByText (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@testing-library/dom/dist/query-helpers.js:86:33)
+      at Context.<anonymous> (test/frontend/features/plugins/submission-deadlines.test.tsx:40:244)
+      at processImmediate (node:internal/timers:504:21)
+
+  5) Submission deadline planner
+       shows conference dates and location independently only when confirmed:
+     AssertionError: expected <span …(1)></span> to equal null
+      at Context.<anonymous> (test/frontend/features/plugins/submission-deadlines.test.tsx:46:153)
+      at processImmediate (node:internal/timers:504:21)
+
+  6) Submission deadline planner
+       combines multiple full-name areas, rank groups and an enabled calendar window:
+     Unable to find an element with the text: 3 venues & rounds. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"deadline-panel deadline-panel-workspace"[39m
+    [36m>[39m
+      [36m<button[39m
+        [33mclass[39m=[32m"deadline-back"[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [0m← [0m
+        [0mBack to editor[0m
+      [36m</button>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"deadline-heading"[39m
+      [36m>[39m
+        [36m<h2>[39m
+          [0mVenues[0m
+        [36m</h2>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"deadline-toolbar"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33maria-label[39m=[32m"Planner view"[39m
+          [33mclass[39m=[32m"deadline-view-switch"[39m
+          [33mrole[39m=[32m"group"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"true"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"16"[39m
+                [33mrx[39m=[32m"2"[39m
+                [33mwidth[39m=[32m"18"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"5"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M7 3v4M17 3v4M3 10h18M7 14h2M12 14h2M7 17h2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCalendar[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"14"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M5 8h3M5 12h3M16 8h3M16 12h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCard[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M3 12h18M6 5v4M12 15v4M18 5v4"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"6"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"12"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"18"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mTimeline[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M9 4H5v17h14V4h-4"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"4"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"6"[39m
+                [33mx[39m=[32m"9"[39m
+                [33my[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"m8 11 1 1 2-2M13 11h3m-8 6 1 1 2-2M13 17h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mSubmission Plan[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"Show followed venues only"[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mclass[39m=[32m"venue-tracked-filter"[39m
+            [33mtitle[39m=[32m"Show followed venues only"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"material-symbols"[39m
+              [33mtranslate[39m=[32m"no"[39m
+            [36m>[39m
+              [0mstar_border[0m
+            [36m</span>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mtitle[39m=[32m"Refresh the venue catalog and submission deadlines"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"...
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"deadline-panel deadline-panel-workspace"[39m
+    [36m>[39m
+      [36m<button[39m
+        [33mclass[39m=[32m"deadline-back"[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [0m← [0m
+        [0mBack to editor[0m
+      [36m</button>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"deadline-heading"[39m
+      [36m>[39m
+        [36m<h2>[39m
+          [0mVenues[0m
+        [36m</h2>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"deadline-toolbar"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33maria-label[39m=[32m"Planner view"[39m
+          [33mclass[39m=[32m"deadline-view-switch"[39m
+          [33mrole[39m=[32m"group"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"true"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"16"[39m
+                [33mrx[39m=[32m"2"[39m
+                [33mwidth[39m=[32m"18"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"5"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M7 3v4M17 3v4M3 10h18M7 14h2M12 14h2M7 17h2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCalendar[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"14"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M5 8h3M5 12h3M16 8h3M16 12h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCard[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M3 12h18M6 5v4M12 15v4M18 5v4"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"6"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"12"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"18"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mTimeline[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M9 4H5v17h14V4h-4"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"4"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"6"[39m
+                [33mx[39m=[32m"9"[39m
+                [33my[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"m8 11 1 1 2-2M13 11h3m-8 6 1 1 2-2M13 17h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mSubmission Plan[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"Show followed venues only"[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mclass[39m=[32m"venue-tracked-filter"[39m
+            [33mtitle[39m=[32m"Show followed venues only"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"material-symbols"[39m
+              [33mtranslate[39m=[32m"no"[39m
+            [36m>[39m
+              [0mstar_border[0m
+            [36m</span>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mtitle[39m=[32m"Refresh the venue catalog and submission deadlines"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"...
+  Error: Unable to find an element with the text: 3 venues & rounds. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+  
+  Ignored nodes: comments, script, style
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"deadline-panel deadline-panel-workspace"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"deadline-back"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0m← [0m
+          [0mBack to editor[0m
+        [36m</button>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"deadline-heading"[39m
+        [36m>[39m
+          [36m<h2>[39m
+            [0mVenues[0m
+          [36m</h2>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"deadline-toolbar"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33maria-label[39m=[32m"Planner view"[39m
+            [33mclass[39m=[32m"deadline-view-switch"[39m
+            [33mrole[39m=[32m"group"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"true"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"venue-action-icon"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.7"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<rect[39m
+                  [33mheight[39m=[32m"16"[39m
+                  [33mrx[39m=[32m"2"[39m
+                  [33mwidth[39m=[32m"18"[39m
+                  [33mx[39m=[32m"3"[39m
+                  [33my[39m=[32m"5"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M7 3v4M17 3v4M3 10h18M7 14h2M12 14h2M7 17h2"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [0mCalendar[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"false"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"venue-action-icon"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.7"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<rect[39m
+                  [33mheight[39m=[32m"18"[39m
+                  [33mrx[39m=[32m"1"[39m
+                  [33mwidth[39m=[32m"7"[39m
+                  [33mx[39m=[32m"3"[39m
+                  [33my[39m=[32m"3"[39m
+                [36m/>[39m
+                [36m<rect[39m
+                  [33mheight[39m=[32m"18"[39m
+                  [33mrx[39m=[32m"1"[39m
+                  [33mwidth[39m=[32m"7"[39m
+                  [33mx[39m=[32m"14"[39m
+                  [33my[39m=[32m"3"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M5 8h3M5 12h3M16 8h3M16 12h3"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [0mCard[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"false"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"venue-action-icon"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.7"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M3 12h18M6 5v4M12 15v4M18 5v4"[39m
+                [36m/>[39m
+                [36m<circle[39m
+                  [33mcx[39m=[32m"6"[39m
+                  [33mcy[39m=[32m"12"[39m
+                  [33mr[39m=[32m"2"[39m
+                [36m/>[39m
+                [36m<circle[39m
+                  [33mcx[39m=[32m"12"[39m
+                  [33mcy[39m=[32m"12"[39m
+                  [33mr[39m=[32m"2"[39m
+                [36m/>[39m
+                [36m<circle[39m
+                  [33mcx[39m=[32m"18"[39m
+                  [33mcy[39m=[32m"12"[39m
+                  [33mr[39m=[32m"2"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [0mTimeline[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"false"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"venue-action-icon"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.7"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M9 4H5v17h14V4h-4"[39m
+                [36m/>[39m
+                [36m<rect[39m
+                  [33mheight[39m=[32m"4"[39m
+                  [33mrx[39m=[32m"1"[39m
+                  [33mwidth[39m=[32m"6"[39m
+                  [33mx[39m=[32m"9"[39m
+                  [33my[39m=[32m"2"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"m8 11 1 1 2-2M13 11h3m-8 6 1 1 2-2M13 17h3"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [0mSubmission Plan[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-label[39m=[32m"Show followed venues only"[39m
+              [33maria-pressed[39m=[32m"false"[39m
+              [33mclass[39m=[32m"venue-tracked-filter"[39m
+              [33mtitle[39m=[32m"Show followed venues only"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"material-symbols"[39m
+                [33mtranslate[39m=[32m"no"[39m
+              [36m>[39m
+                [0mstar_border[0m
+              [36m</span>[39m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33mtitle[39m=[32m"Refresh the venue catalog and submission deadlines"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"...
+      at waitForWrapper (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@testing-library/dom/dist/wait-for.js:163:27)
+      at findByText (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@testing-library/dom/dist/query-helpers.js:86:33)
+      at Context.<anonymous> (test/frontend/features/plugins/submission-deadlines.test.tsx:60:16)
+      at processImmediate (node:internal/timers:504:21)
+
+  7) Manuscript venue recommendations
+       combines independent calendar and recommendation switches without rerunning on view changes:
+     Unable to find an element with the text: 2 venues & rounds. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body[39m
+  [33mclass[39m=[32m""[39m
+  [33mstyle[39m=[32m""[39m
+[36m>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"deadline-panel deadline-panel-workspace"[39m
+    [36m>[39m
+      [36m<button[39m
+        [33mclass[39m=[32m"deadline-back"[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [0m← [0m
+        [0mBack to editor[0m
+      [36m</button>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"deadline-heading"[39m
+      [36m>[39m
+        [36m<h2>[39m
+          [0mVenues[0m
+        [36m</h2>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"deadline-toolbar"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33maria-label[39m=[32m"Planner view"[39m
+          [33mclass[39m=[32m"deadline-view-switch"[39m
+          [33mrole[39m=[32m"group"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"true"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"16"[39m
+                [33mrx[39m=[32m"2"[39m
+                [33mwidth[39m=[32m"18"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"5"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M7 3v4M17 3v4M3 10h18M7 14h2M12 14h2M7 17h2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCalendar[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"14"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M5 8h3M5 12h3M16 8h3M16 12h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCard[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M3 12h18M6 5v4M12 15v4M18 5v4"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"6"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"12"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"18"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mTimeline[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M9 4H5v17h14V4h-4"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"4"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"6"[39m
+                [33mx[39m=[32m"9"[39m
+                [33my[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"m8 11 1 1 2-2M13 11h3m-8 6 1 1 2-2M13 17h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mSubmission Plan[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"Show followed venues only"[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mclass[39m=[32m"venue-tracked-filter"[39m
+            [33mtitle[39m=[32m"Show followed venues only"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"material-symbols"[39m
+              [33mtranslate[39m=[32m"no"[39m
+            [36m>[39m
+              [0mstar_border[0m
+            [36m</span>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mtitle[39m=[32m"Refresh the venue catalog and submission deadlines"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m...
+
+Ignored nodes: comments, script, style
+[36m<body[39m
+  [33mclass[39m=[32m""[39m
+  [33mstyle[39m=[32m""[39m
+[36m>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"deadline-panel deadline-panel-workspace"[39m
+    [36m>[39m
+      [36m<button[39m
+        [33mclass[39m=[32m"deadline-back"[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [0m← [0m
+        [0mBack to editor[0m
+      [36m</button>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"deadline-heading"[39m
+      [36m>[39m
+        [36m<h2>[39m
+          [0mVenues[0m
+        [36m</h2>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"deadline-toolbar"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33maria-label[39m=[32m"Planner view"[39m
+          [33mclass[39m=[32m"deadline-view-switch"[39m
+          [33mrole[39m=[32m"group"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"true"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"16"[39m
+                [33mrx[39m=[32m"2"[39m
+                [33mwidth[39m=[32m"18"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"5"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M7 3v4M17 3v4M3 10h18M7 14h2M12 14h2M7 17h2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCalendar[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"14"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M5 8h3M5 12h3M16 8h3M16 12h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCard[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M3 12h18M6 5v4M12 15v4M18 5v4"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"6"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"12"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"18"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mTimeline[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M9 4H5v17h14V4h-4"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"4"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"6"[39m
+                [33mx[39m=[32m"9"[39m
+                [33my[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"m8 11 1 1 2-2M13 11h3m-8 6 1 1 2-2M13 17h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mSubmission Plan[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"Show followed venues only"[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mclass[39m=[32m"venue-tracked-filter"[39m
+            [33mtitle[39m=[32m"Show followed venues only"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"material-symbols"[39m
+              [33mtranslate[39m=[32m"no"[39m
+            [36m>[39m
+              [0mstar_border[0m
+            [36m</span>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mtitle[39m=[32m"Refresh the venue catalog and submission deadlines"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m...
+  Error: Unable to find an element with the text: 2 venues & rounds. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+  
+  Ignored nodes: comments, script, style
+  [36m<body[39m
+    [33mclass[39m=[32m""[39m
+    [33mstyle[39m=[32m""[39m
+  [36m>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"deadline-panel deadline-panel-workspace"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"deadline-back"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0m← [0m
+          [0mBack to editor[0m
+        [36m</button>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"deadline-heading"[39m
+        [36m>[39m
+          [36m<h2>[39m
+            [0mVenues[0m
+          [36m</h2>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"deadline-toolbar"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33maria-label[39m=[32m"Planner view"[39m
+            [33mclass[39m=[32m"deadline-view-switch"[39m
+            [33mrole[39m=[32m"group"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"true"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"venue-action-icon"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.7"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<rect[39m
+                  [33mheight[39m=[32m"16"[39m
+                  [33mrx[39m=[32m"2"[39m
+                  [33mwidth[39m=[32m"18"[39m
+                  [33mx[39m=[32m"3"[39m
+                  [33my[39m=[32m"5"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M7 3v4M17 3v4M3 10h18M7 14h2M12 14h2M7 17h2"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [0mCalendar[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"false"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"venue-action-icon"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.7"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<rect[39m
+                  [33mheight[39m=[32m"18"[39m
+                  [33mrx[39m=[32m"1"[39m
+                  [33mwidth[39m=[32m"7"[39m
+                  [33mx[39m=[32m"3"[39m
+                  [33my[39m=[32m"3"[39m
+                [36m/>[39m
+                [36m<rect[39m
+                  [33mheight[39m=[32m"18"[39m
+                  [33mrx[39m=[32m"1"[39m
+                  [33mwidth[39m=[32m"7"[39m
+                  [33mx[39m=[32m"14"[39m
+                  [33my[39m=[32m"3"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M5 8h3M5 12h3M16 8h3M16 12h3"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [0mCard[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"false"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"venue-action-icon"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.7"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M3 12h18M6 5v4M12 15v4M18 5v4"[39m
+                [36m/>[39m
+                [36m<circle[39m
+                  [33mcx[39m=[32m"6"[39m
+                  [33mcy[39m=[32m"12"[39m
+                  [33mr[39m=[32m"2"[39m
+                [36m/>[39m
+                [36m<circle[39m
+                  [33mcx[39m=[32m"12"[39m
+                  [33mcy[39m=[32m"12"[39m
+                  [33mr[39m=[32m"2"[39m
+                [36m/>[39m
+                [36m<circle[39m
+                  [33mcx[39m=[32m"18"[39m
+                  [33mcy[39m=[32m"12"[39m
+                  [33mr[39m=[32m"2"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [0mTimeline[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"false"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"venue-action-icon"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.7"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M9 4H5v17h14V4h-4"[39m
+                [36m/>[39m
+                [36m<rect[39m
+                  [33mheight[39m=[32m"4"[39m
+                  [33mrx[39m=[32m"1"[39m
+                  [33mwidth[39m=[32m"6"[39m
+                  [33mx[39m=[32m"9"[39m
+                  [33my[39m=[32m"2"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"m8 11 1 1 2-2M13 11h3m-8 6 1 1 2-2M13 17h3"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [0mSubmission Plan[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-label[39m=[32m"Show followed venues only"[39m
+              [33maria-pressed[39m=[32m"false"[39m
+              [33mclass[39m=[32m"venue-tracked-filter"[39m
+              [33mtitle[39m=[32m"Show followed venues only"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"material-symbols"[39m
+                [33mtranslate[39m=[32m"no"[39m
+              [36m>[39m
+                [0mstar_border[0m
+              [36m</span>[39m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33mtitle[39m=[32m"Refresh the venue catalog and submission deadlines"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m...
+      at waitForWrapper (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@testing-library/dom/dist/wait-for.js:163:27)
+      at findByText (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@testing-library/dom/dist/query-helpers.js:86:33)
+      at Context.<anonymous> (test/frontend/features/plugins/venue-recommendations.test.tsx:18:16)
+      at processImmediate (node:internal/timers:504:21)
+
+  8) Manuscript venue recommendations
+       filters multiple Xidian categories and sorts unknown entries last:
+     Unable to find an element with the text: 3 venues & rounds. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body[39m
+  [33mclass[39m=[32m""[39m
+  [33mstyle[39m=[32m""[39m
+[36m>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"deadline-panel"[39m
+    [36m>[39m
+      [36m<button[39m
+        [33mclass[39m=[32m"deadline-back"[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [0m← [0m
+        [0mPlugin library[0m
+      [36m</button>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"deadline-heading"[39m
+      [36m>[39m
+        [36m<h2>[39m
+          [0mVenues[0m
+        [36m</h2>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"deadline-toolbar"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33maria-label[39m=[32m"Planner view"[39m
+          [33mclass[39m=[32m"deadline-view-switch"[39m
+          [33mrole[39m=[32m"group"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"16"[39m
+                [33mrx[39m=[32m"2"[39m
+                [33mwidth[39m=[32m"18"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"5"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M7 3v4M17 3v4M3 10h18M7 14h2M12 14h2M7 17h2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCalendar[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"true"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"14"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M5 8h3M5 12h3M16 8h3M16 12h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCard[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M3 12h18M6 5v4M12 15v4M18 5v4"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"6"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"12"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"18"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mTimeline[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M9 4H5v17h14V4h-4"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"4"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"6"[39m
+                [33mx[39m=[32m"9"[39m
+                [33my[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"m8 11 1 1 2-2M13 11h3m-8 6 1 1 2-2M13 17h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mSubmission Plan[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"Show followed venues only"[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mclass[39m=[32m"venue-tracked-filter"[39m
+            [33mtitle[39m=[32m"Show followed venues only"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"material-symbols"[39m
+              [33mtranslate[39m=[32m"no"[39m
+            [36m>[39m
+              [0mstar_border[0m
+            [36m</span>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mtitle[39m=[32m"Refresh the venue catalog and submission deadlines"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [36m<span[39...
+
+Ignored nodes: comments, script, style
+[36m<body[39m
+  [33mclass[39m=[32m""[39m
+  [33mstyle[39m=[32m""[39m
+[36m>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"deadline-panel"[39m
+    [36m>[39m
+      [36m<button[39m
+        [33mclass[39m=[32m"deadline-back"[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [0m← [0m
+        [0mPlugin library[0m
+      [36m</button>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"deadline-heading"[39m
+      [36m>[39m
+        [36m<h2>[39m
+          [0mVenues[0m
+        [36m</h2>[39m
+      [36m</header>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"deadline-toolbar"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33maria-label[39m=[32m"Planner view"[39m
+          [33mclass[39m=[32m"deadline-view-switch"[39m
+          [33mrole[39m=[32m"group"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"16"[39m
+                [33mrx[39m=[32m"2"[39m
+                [33mwidth[39m=[32m"18"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"5"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M7 3v4M17 3v4M3 10h18M7 14h2M12 14h2M7 17h2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCalendar[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"true"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"18"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"14"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M5 8h3M5 12h3M16 8h3M16 12h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mCard[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M3 12h18M6 5v4M12 15v4M18 5v4"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"6"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"12"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<circle[39m
+                [33mcx[39m=[32m"18"[39m
+                [33mcy[39m=[32m"12"[39m
+                [33mr[39m=[32m"2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mTimeline[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"venue-action-icon"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"1.7"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M9 4H5v17h14V4h-4"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"4"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"6"[39m
+                [33mx[39m=[32m"9"[39m
+                [33my[39m=[32m"2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"m8 11 1 1 2-2M13 11h3m-8 6 1 1 2-2M13 17h3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mSubmission Plan[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"Show followed venues only"[39m
+            [33maria-pressed[39m=[32m"false"[39m
+            [33mclass[39m=[32m"venue-tracked-filter"[39m
+            [33mtitle[39m=[32m"Show followed venues only"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"material-symbols"[39m
+              [33mtranslate[39m=[32m"no"[39m
+            [36m>[39m
+              [0mstar_border[0m
+            [36m</span>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mtitle[39m=[32m"Refresh the venue catalog and submission deadlines"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [36m<span[39...
+  Error: Unable to find an element with the text: 3 venues & rounds. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+  
+  Ignored nodes: comments, script, style
+  [36m<body[39m
+    [33mclass[39m=[32m""[39m
+    [33mstyle[39m=[32m""[39m
+  [36m>[39m
+    [36m<div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"deadline-panel"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"deadline-back"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0m← [0m
+          [0mPlugin library[0m
+        [36m</button>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"deadline-heading"[39m
+        [36m>[39m
+          [36m<h2>[39m
+            [0mVenues[0m
+          [36m</h2>[39m
+        [36m</header>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"deadline-toolbar"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33maria-label[39m=[32m"Planner view"[39m
+            [33mclass[39m=[32m"deadline-view-switch"[39m
+            [33mrole[39m=[32m"group"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"false"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"venue-action-icon"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.7"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<rect[39m
+                  [33mheight[39m=[32m"16"[39m
+                  [33mrx[39m=[32m"2"[39m
+                  [33mwidth[39m=[32m"18"[39m
+                  [33mx[39m=[32m"3"[39m
+                  [33my[39m=[32m"5"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M7 3v4M17 3v4M3 10h18M7 14h2M12 14h2M7 17h2"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [0mCalendar[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"true"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"venue-action-icon"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.7"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<rect[39m
+                  [33mheight[39m=[32m"18"[39m
+                  [33mrx[39m=[32m"1"[39m
+                  [33mwidth[39m=[32m"7"[39m
+                  [33mx[39m=[32m"3"[39m
+                  [33my[39m=[32m"3"[39m
+                [36m/>[39m
+                [36m<rect[39m
+                  [33mheight[39m=[32m"18"[39m
+                  [33mrx[39m=[32m"1"[39m
+                  [33mwidth[39m=[32m"7"[39m
+                  [33mx[39m=[32m"14"[39m
+                  [33my[39m=[32m"3"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M5 8h3M5 12h3M16 8h3M16 12h3"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [0mCard[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"false"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"venue-action-icon"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.7"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M3 12h18M6 5v4M12 15v4M18 5v4"[39m
+                [36m/>[39m
+                [36m<circle[39m
+                  [33mcx[39m=[32m"6"[39m
+                  [33mcy[39m=[32m"12"[39m
+                  [33mr[39m=[32m"2"[39m
+                [36m/>[39m
+                [36m<circle[39m
+                  [33mcx[39m=[32m"12"[39m
+                  [33mcy[39m=[32m"12"[39m
+                  [33mr[39m=[32m"2"[39m
+                [36m/>[39m
+                [36m<circle[39m
+                  [33mcx[39m=[32m"18"[39m
+                  [33mcy[39m=[32m"12"[39m
+                  [33mr[39m=[32m"2"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [0mTimeline[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-pressed[39m=[32m"false"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"venue-action-icon"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.7"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M9 4H5v17h14V4h-4"[39m
+                [36m/>[39m
+                [36m<rect[39m
+                  [33mheight[39m=[32m"4"[39m
+                  [33mrx[39m=[32m"1"[39m
+                  [33mwidth[39m=[32m"6"[39m
+                  [33mx[39m=[32m"9"[39m
+                  [33my[39m=[32m"2"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"m8 11 1 1 2-2M13 11h3m-8 6 1 1 2-2M13 17h3"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [0mSubmission Plan[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33maria-label[39m=[32m"Show followed venues only"[39m
+              [33maria-pressed[39m=[32m"false"[39m
+              [33mclass[39m=[32m"venue-tracked-filter"[39m
+              [33mtitle[39m=[32m"Show followed venues only"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"material-symbols"[39m
+                [33mtranslate[39m=[32m"no"[39m
+              [36m>[39m
+                [0mstar_border[0m
+              [36m</span>[39m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33mtitle[39m=[32m"Refresh the venue catalog and submission deadlines"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39...
+      at waitForWrapper (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@testing-library/dom/dist/wait-for.js:163:27)
+      at findByText (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@testing-library/dom/dist/query-helpers.js:86:33)
+      at Context.<anonymous> (test/frontend/features/plugins/venue-recommendations.test.tsx:51:162)
+      at processImmediate (node:internal/timers:504:21)
+
+
+

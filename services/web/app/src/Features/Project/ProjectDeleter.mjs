@@ -1,3 +1,4 @@
+import { recoverAcceptedDeletionsForProjectRemoval } from '../WritingAssist/DocumentDeletionTeardownService.mjs'
 import _ from 'lodash'
 import {
   db,
@@ -8,6 +9,10 @@ import Modules from '../../infrastructure/Modules.mjs'
 import { callbackify } from 'node:util'
 import { Project } from '../../models/Project.mjs'
 import { DeletedProject } from '../../models/DeletedProject.mjs'
+import { WritingAssistConversation } from '../../models/WritingAssistConversation.mjs'
+import { DocumentDeletionReservation } from '../../models/DocumentDeletionReservation.mjs'
+import { WritingAssistTask } from '../../models/WritingAssistTask.mjs'
+import { NativeCommentDeletion } from '../../models/NativeCommentDeletion.mjs'
 import { ProjectAuditLogEntry } from '../../models/ProjectAuditLogEntry.mjs'
 import Errors from '../Errors/Errors.js'
 import logger from '@overleaf/logger'
@@ -85,7 +90,7 @@ async function deleteUsersProjects(userId) {
     { userId, projectCount: projects.length },
     'found user projects to delete'
   )
-  await promiseMapWithLimit(5, projects, project =>
+  await promiseMapWithLimit(5, projects, (project) =>
     deleteProject(project._id, {
       deletedReason: DeletedProjectReasons.ACCOUNT_DELETION,
     })
@@ -108,7 +113,7 @@ async function expireDeletedProjectsAfterDuration() {
     .read(READ_PREFERENCE_SECONDARY)
   const projectIds = _.shuffle(
     deletedProjects.map(
-      deletedProject => deletedProject.deleterData.deletedProjectId
+      (deletedProject) => deletedProject.deleterData.deletedProjectId
     )
   )
   logger.info(
@@ -179,9 +184,28 @@ async function untrashProject(projectId, userId) {
 
 async function deleteProject(projectId, options = {}) {
   try {
-    const project = await Project.findOne({ _id: projectId }).exec()
+    let project = await Project.findOne({ _id: projectId },
+      '+deletionReceipts +deletionHistoryPending +documentDeletionAdmissions +documentDeletionTeardown ').exec()
     if (!project) {
       throw new Errors.NotFoundError('project not found')
+    }
+
+    const pendingDeletion = await DocumentDeletionReservation.collection.findOne({
+      projectId: String(projectId), state: { $ne: 'committed' },
+    }, { projection: { _id: 1 }, readPreference: 'primary' })
+    const admissions = project.documentDeletionAdmissions
+    const hasAdmissions = admissions instanceof Map ? admissions.size > 0 : Object.keys(admissions || {}).length > 0
+    if (Settings.documentupdater?.reviewedDeletionEnabled === true || pendingDeletion ||
+        hasAdmissions || project.documentDeletionTeardown) {
+      // Internal account-removal jobs act for the owning user; interactive callers
+      // supply the authenticated deleter. Recovery rechecks project-level authority.
+      const actorId = options.deleterUser?._id || project.owner_ref
+      await recoverAcceptedDeletionsForProjectRemoval(String(projectId), String(actorId))
+      // Drain can remove documents and advance history. Never archive the stale
+      // pre-drain file tree and resurrect those documents on project restoration.
+      project = await Project.findOne({ _id: projectId },
+        '+deletionReceipts +deletionHistoryPending +documentDeletionAdmissions +documentDeletionTeardown ').exec()
+      if (!project) throw new Errors.NotFoundError('project not found after deletion recovery')
     }
 
     try {
@@ -227,7 +251,7 @@ async function deleteProject(projectId, options = {}) {
     for (const memberId of memberIds) {
       TagsHandler.promises
         .removeProjectFromAllTags(memberId, projectId)
-        .catch(err => {
+        .catch((err) => {
           logger.err(
             { err, memberId, projectId },
             'failed to remove project from tags'
@@ -261,7 +285,7 @@ async function deleteProject(projectId, options = {}) {
       deletedProjectLastUpdatedAt: project.lastUpdated,
     }
 
-    Object.keys(deleterData).forEach(key =>
+    Object.keys(deleterData).forEach((key) =>
       deleterData[key] === undefined ? delete deleterData[key] : ''
     )
 
@@ -287,7 +311,7 @@ async function undeleteProject(projectId, options = {}) {
   projectId = new ObjectId(projectId)
   const deletedProject = await DeletedProject.findOne({
     'deleterData.deletedProjectId': projectId,
-  }).exec()
+  }, '+project.deletionReceipts +project.deletionHistoryPending +project.documentDeletionAdmissions +project.documentDeletionTeardown').exec()
 
   if (!deletedProject) {
     throw new Errors.NotFoundError('project_not_found')
@@ -297,7 +321,21 @@ async function undeleteProject(projectId, options = {}) {
     throw new Errors.NotFoundError('project_too_old_to_restore')
   }
 
+  // Never reopen unresolved deletion work or discard its recovery evidence.
+  const admissions = deletedProject.project.documentDeletionAdmissions
+  const pendingAdmission = admissions instanceof Map ? admissions.size > 0 : Object.keys(admissions || {}).length > 0
+  const pendingReservation = await DocumentDeletionReservation.collection.findOne({
+    projectId: String(projectId), state: { $ne: 'committed' },
+  }, { projection: { _id: 1 }, readPreference: 'primary' })
+  if (pendingAdmission || deletedProject.project.deletionHistoryPending || pendingReservation) {
+    throw Object.assign(new Error('Project has unfinished document deletions'), {
+      status: 409, code: 'PENDING_DOCUMENT_DELETION',
+    })
+  }
   const restored = new Project(deletedProject.project)
+  // A drained restored project starts a fresh admission lifecycle.
+  restored.documentDeletionTeardown = undefined
+  restored.documentDeletionAdmissions = undefined
 
   if (options.userId) {
     restored.owner_ref = options.userId
@@ -311,7 +349,7 @@ async function undeleteProject(projectId, options = {}) {
   restored.archived = undefined
 
   if (restored.deletedDocs && restored.deletedDocs.length > 0) {
-    await promiseMapWithLimit(10, restored.deletedDocs, async deletedDoc => {
+    await promiseMapWithLimit(10, restored.deletedDocs, async (deletedDoc) => {
       // back fill context of deleted docs
       const { _id: docId, name, deletedAt } = deletedDoc
       await DocstoreManager.promises.deleteDoc(
@@ -365,6 +403,19 @@ async function expireDeletedProject(projectId) {
       )
       return
     }
+    // Keep the project snapshot and task recovery state until every document
+    // deletion has a terminal receipt. A fence alone cannot recover lost data.
+    const unfinishedDeletion = await DocumentDeletionReservation.collection.findOne(
+      { projectId: projectId.toString(), state: { $ne: 'committed' } },
+      { projection: { _id: 1 }, readPreference: 'primary' }
+    )
+    if (unfinishedDeletion) {
+      throw Object.assign(
+        new Error('Unfinished document deletion must be reconciled before project expiration'),
+        { code: 'PENDING_DOCUMENT_DELETION', status: 409 }
+      )
+    }
+
     const userId = deletedProject.deleterData?.deletedProjectOwnerId?.toString()
     const historyId =
       deletedProject.project.overleaf &&
@@ -381,8 +432,20 @@ async function expireDeletedProject(projectId) {
       ),
       ChatApiHandler.promises.destroyProject(deletedProject.project._id),
       ProjectAuditLogEntry.deleteMany({ projectId }),
+      NativeCommentDeletion.deleteMany({ projectId: projectId.toString() }).exec(),
+      WritingAssistConversation.deleteMany({
+        projectId: projectId.toString(),
+      }).exec(),
+      WritingAssistTask.deleteMany({ projectId: projectId.toString() }).exec(),
       Modules.promises.hooks.fire('projectExpired', deletedProject.project._id),
     ])
+
+    // Remove terminal receipts only after all native project data has expired.
+    // Unresolved reservations still fence delayed operations and must survive.
+    await DocumentDeletionReservation.deleteMany({
+      projectId: projectId.toString(),
+      state: 'committed',
+    }).exec()
 
     logger.info(
       { projectId, userId },

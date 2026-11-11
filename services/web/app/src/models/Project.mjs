@@ -33,6 +33,11 @@ export const ProjectSchema = new Schema(
     pendingReviewer_refs: [{ type: ObjectId, ref: 'User' }],
     rootDoc_id: { type: ObjectId },
     rootFolder: [FolderSchema],
+    // Internal recovery records; excluded from ordinary project queries.
+    deletionReceipts: { type: Map, of: Schema.Types.Mixed, select: false },
+    deletionHistoryPending: { type: String, select: false },
+    documentDeletionAdmissions: { type: Map, of: Schema.Types.Mixed, select: false },
+    documentDeletionTeardown: { type: Schema.Types.Mixed, select: false },
     mainBibliographyDoc_id: { type: ObjectId },
     version: { type: Number }, // incremented for every change in the project structure (folders and filenames)
     publicAccesLevel: { type: String, default: 'private' },

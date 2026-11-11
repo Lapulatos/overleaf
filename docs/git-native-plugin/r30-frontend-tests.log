@@ -1,0 +1,106 @@
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+
+  Native blame presentation
+    ✔ preserves indentation, empty source lines, final line numbers and native commit identity
+    ✔ supports SHA-256 Git object names without treating source lines as metadata
+    ✔ navigates to the exact full commit hash from a displayed line (116ms)
+(node:23774) TimeoutNaNWarning: NaN is not a number.
+Timeout duration was set to 1.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+  Branch picker interaction
+    ✔ searches tag commit metadata and distinguishes detached tag checkout from branches (48ms)
+    ✔ shows the three direct actions and actual commit author, date and subject without duplicate tracking ref
+    ✔ supports searching by author, direct selection and Escape returning focus (44ms)
+
+  Native conflict editor
+    ✔ submits the explicitly edited result without changing the selected side
+    ✔ makes incoming deletion explicit and does not expose a lossy binary text editor
+    ✔ explains native rebase sides and retains the result on a stale-file error
+
+  Native graph history navigation
+    ✔ dismisses a commit hover card when its history rows are replaced
+    ✔ offers provider links for the hovered commit and names multiple remotes
+    ✔ searches native history beyond loaded rows and restores the snapshot when cleared (524ms)
+    ✔ loads older native commits beyond the initial snapshot without dropping existing rows (584ms)
+    ✔ filters by native branch ancestry and ignores a late response after switching back to all
+
+  Ignored native files
+    ✔ filters paths and only stages the explicitly selected file
+
+  Merge branch selection
+    ✔ filters by author and commit subject, excludes target, and requires an explicit selection
+    ✔ keeps the selection on an operation error and offers no phantom empty search result
+
+  Repository credentials settings
+    ✔ removes only the confirmed remote address and leaves normal settings actions separate
+    ✔ keeps a masked configured state after saving without returning or reusing the token
+
+  Native reset chooser
+    ✔ requires a selected preview and explicit hard discard; search clears the selected target (51ms)
+
+  Native Source Control panel
+    ✔ expands commit files and opens a scoped side-by-side editor diff without a modal (115ms)
+    ✔ switches the diff immediately, ignores late responses and caches committed files (153ms)
+    ✔ uses the shared image preview for working files
+    ✔ uses the shared image preview for staged files
+    ✔ opens stash changes in the editor and closes the stash dialog (123ms)
+    ✔ closes merge selection when native Git reports conflicts and reveals conflict controls (144ms)
+    ✔ closes the rebase launch dialog when native conflicts require recovery (157ms)
+    ✔ closes the cherry-pick launch dialog when native conflicts require recovery (153ms)
+    ✔ closes the revert launch dialog when native conflicts require recovery (161ms)
+    ✔ keeps first-parent lane color and distinguishes a merged branch
+    ✔ amends explicitly with full message and captured branch/head (92ms)
+    ✔ connects an HTTPS repository while retaining current project files and renders the returned native state (38ms)
+    ✔ shows native conflict continuation and abort controls for the active operation only (83ms)
+    ✔ renders repository actions outside clipped sections and closes after selecting the last item (46ms)
+    ✔ applies a native stage hunk and refreshes the remaining diff (79ms)
+    ✔ applies a native unstage hunk and refreshes the remaining diff (84ms)
+    ✔ keeps a closed diff closed when pending apply completes (120ms)
+    ✔ keeps a closed diff closed when pending refresh completes (174ms)
+    ✔ shows a stale diff error in the diff and does not retry staging automatically (99ms)
+    ✔ shows whole-file diff without hunk controls for binary or structural changes (55ms)
+    ✔ refreshes Changes after editor save events without issuing a Git mutation (788ms)
+    ✔ does not let a delayed background refresh overwrite the result of staging (888ms)
+    ✔ refreshes status after a lost commit response without submitting the commit again (73ms)
+    ✔ opens line authors from file history and navigates to the native commit diff (133ms)
+    ✔ selects a source branch from the merge list and binds the displayed target (86ms)
+    ✔ separates unmerged files and stages a chosen native conflict version before allowing continuation (131ms)
+    ✔ previews unstaged changes and only discards after explicit confirmation with the preview fingerprint (64ms)
+    ✔ keeps a stale discard preview visible without retrying the destructive operation (104ms)
+    ✔ renames a branch through the native command without creating a replacement branch (83ms)
+    ✔ opens file history with author, date and commit subject from the current repository (86ms)
+    ✔ stages a selected file, commits it and immediately renders the returned graph and remaining files (108ms)
+    ✔ keeps the commit message after failure and refreshes native conflict state (78ms)
+    ✔ renders initialization result instead of remaining stuck on the connect screen (53ms)
+    ✔ generates the message on explicit AI click without committing (48ms)
+
+  Native commit graph layout
+    ✔ keeps merge parents in separate lanes until their actual common ancestor
+
+  Native stash management
+    ✔ restores the selected entry with its exact hash using apply (66ms)
+    ✔ restores the selected entry with its exact hash using pop (66ms)
+    ✔ previews the selected native patch and requires explicit confirmation before deletion (83ms)
+    ✔ allows closing the list while a Git request is pending
+    ✔ does not reopen a preview or reload after closing during a pending request
+    ✔ keeps the list on failed restore and offers refresh without retrying
+
+  Native worktree management
+    ✔ disables cleanup for protected workspaces and confirms the exact clean branch
+    ✔ retains confirmation on failure and allows a fresh inventory without retrying cleanup
+
+  Native Git branch picker
+    ✔ shows one checkout choice for a tracking branch, retaining its different remote tip
+    ✔ does not collapse unrelated local and remote branches just because their commit is identical
+
+  Git editor save barrier
+    ✔ waits for buffered operations before invoking Git and always restores editor access
+    ✔ does not run Git if saving timed out or buffered edits remain
+
+
+  67 passing (7s)
+

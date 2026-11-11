@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "branch": "test/local-commit-1794204862",
+  "commits": [
+    {
+      "commit": "d53983cd6154204f675b5903887c725827492f76",
+      "file": "main.tex",
+      "message": "test: direct local commit 1 test/local-commit-1794204862"
+    },
+    {
+      "commit": "5addc48f8fd4c0df6906420f927826ae0c209e81",
+      "file": "pixel.png",
+      "message": "test: direct local commit 2 test/local-commit-1794204862"
+    }
+  ],
+  "graphUpdatedWithoutReload": true,
+  "selectionRemovedAfterCommit": true,
+  "noReviewPortal": true,
+  "noPush": true,
+  "projectFilesUnchanged": true
+}

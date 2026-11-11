@@ -1,0 +1,62 @@
+✖ Unstage renamed file removes both sides from index and retains renamed worktree (439.820417ms)
+✖ staged rename diff shows native rename instead of a phantom added file (366.632334ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 978.225542
+
+✖ failing tests:
+
+test at services/web/test/agent/native-git-action-audit.test.mjs:16:1
+✖ Unstage renamed file removes both sides from index and retains renamed worktree (439.820417ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'diff --git a/old.tex b/old.tex\n' +
+  +   'deleted file mode 100644\n' +
+  +   'index 4bf5d06..0000000\n' +
+  +   '--- a/old.tex\n' +
+  +   '+++ /dev/null\n' +
+  +   '@@ -1 +0,0 @@\n' +
+  +   '-Paper\n'
+  - ''
+  
+      at TestContext.<anonymous> (file:///Users/sujie/Documents/Codes/Python/overleaf/services/web/test/agent/native-git-action-audit.test.mjs:20:9)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1332:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'diff --git a/old.tex b/old.tex\ndeleted file mode 100644\nindex 4bf5d06..0000000\n--- a/old.tex\n+++ /dev/null\n@@ -1 +0,0 @@\n-Paper\n',
+    expected: '',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at services/web/test/agent/native-git-action-audit.test.mjs:23:1
+✖ staged rename diff shows native rename instead of a phantom added file (366.632334ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /rename from old.tex/. Input:
+  
+  'diff --git a/new.tex b/new.tex\n' +
+    'new file mode 100644\n' +
+    'index 0000000..4bf5d06\n' +
+    '--- /dev/null\n' +
+    '+++ b/new.tex\n' +
+    '@@ -0,0 +1 @@\n' +
+    '+Paper\n'
+  
+      at TestContext.<anonymous> (file:///Users/sujie/Documents/Codes/Python/overleaf/services/web/test/agent/native-git-action-audit.test.mjs:27:9)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1332:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'diff --git a/new.tex b/new.tex\nnew file mode 100644\nindex 0000000..4bf5d06\n--- /dev/null\n+++ b/new.tex\n@@ -0,0 +1 @@\n+Paper\n',
+    expected: /rename from old.tex/,
+    operator: 'match',
+    diff: 'simple'
+  }

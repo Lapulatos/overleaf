@@ -1,0 +1,8 @@
+{
+  "passed": false,
+  "scope": "Isolated fixture only: PDF/image rendering, native shelve and restore with reload.",
+  "imageDecoded": true,
+  "pdfRendered": true,
+  "shelveApplied": true,
+  "error": "Locator.click: Timeout 45000ms exceeded.\nCall log:\n  - waiting for locator(\".git-sync-panel\").get_by_text(\"Save unfinished work\", exact=True)\n    - locator resolved to <summary>Save unfinished work</summary>\n  - attempting click action\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    86 \u00d7 waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n"
+}

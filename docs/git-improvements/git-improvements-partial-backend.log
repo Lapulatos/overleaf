@@ -1,0 +1,18 @@
+✔ real Git lease rejects collaborator updates and reconciliation never replays a lost push response (643.360958ms)
+✔ invalid push requests never invoke Git (0.28575ms)
+✔ selected blocks preserve other old lines, CRLF and missing final newline (1.974375ms)
+✔ binary, absent and oversized files require whole-file selection (0.204209ms)
+✔ pending commits are scoped to project and actor, bounded and omit internal references (1.902042ms)
+✔ concurrent and repeated executions dispatch once; only the approving actor starts the intent (2.116083ms)
+✔ lost response is recorded and reconciled without replay or credential leakage (0.344ms)
+✔ binding, retained commit and last-moment permission changes prevent dispatch (0.340667ms)
+✔ new branch pushes use absent-ref lease while pinning the original bound baseline (0.490083ms)
+✔ preparation retains actual author-attributed commit and stable add/delete/binary diff without moving branch (2344.438375ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2457.276625

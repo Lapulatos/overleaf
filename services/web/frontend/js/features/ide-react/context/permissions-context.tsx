@@ -98,11 +98,15 @@ export const PermissionsProvider: React.FC<React.PropsWithChildren> = ({
   const { permissionsLevel } = useIdeReactContext()
   const hasViewerPermissions = useViewerPermissions()
   const anonymous = getMeta('ol-anonymous')
+  const isInvitedMember = getMeta('ol-isInvitedMember')
   const { features } = useProjectContext()
 
   useEffect(() => {
     let activePermissionsMap
-    if (hasViewerPermissions) {
+    if (
+      hasViewerPermissions &&
+      !(features.nativeComments && isInvitedMember && !anonymous)
+    ) {
       activePermissionsMap = linkSharingWarningPermissionsMap
     } else if (anonymous) {
       activePermissionsMap = anonymousPermissionsMap
@@ -118,6 +122,8 @@ export const PermissionsProvider: React.FC<React.PropsWithChildren> = ({
     setPermissions,
     hasViewerPermissions,
     features.trackChanges,
+    features.nativeComments,
+    isInvitedMember,
   ])
 
   useEffect(() => {

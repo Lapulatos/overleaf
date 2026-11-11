@@ -16,13 +16,18 @@ import type {
 import './config-panel.css'
 
 const PROVIDERS: { value: ProviderType; label: string }[] = [
+  { value: 'agent', label: 'Local Agent (server configured)' },
   { value: 'openai', label: 'OpenAI' },
   { value: 'anthropic', label: 'Anthropic' },
   { value: 'custom', label: 'Custom (OpenAI-compatible)' },
 ]
 
 const CATEGORIES: { key: Category; label: string; color: string }[] = [
-  { key: 'correctness', label: 'Correctness (grammar, spelling)', color: '#e53e3e' },
+  {
+    key: 'correctness',
+    label: 'Correctness (grammar, spelling)',
+    color: '#e53e3e',
+  },
   { key: 'clarity', label: 'Clarity (readability)', color: '#3182ce' },
   { key: 'conciseness', label: 'Conciseness (wordiness)', color: '#d69e2e' },
   { key: 'delivery', label: 'Delivery (tone)', color: '#38a169' },
@@ -40,6 +45,7 @@ const DEFAULT_MODELS: Record<ProviderType, string> = {
   openai: 'gpt-4o',
   anthropic: 'claude-sonnet-4-6',
   custom: '',
+  agent: '',
 }
 
 type CategoryState = Record<Category, boolean>
@@ -87,16 +93,22 @@ export default function WritingAssistSettings() {
       .then(() => {
         // Notify the live editor to reconfigure its theme compartment so the
         // underline effect changes immediately without a page reload.
-        window.dispatchEvent(new CustomEvent('wa-style-change', { detail: style }))
+        window.dispatchEvent(
+          new CustomEvent('wa-style-change', { detail: style })
+        )
       })
       .catch(() => {})
   }, [])
 
   const applyProvider = useCallback(
     (cfg: WritingAssistPublicConfig, p: ProviderType) => {
-      const pc = cfg[p]
+      const pc = p === 'agent' ? undefined : cfg[p]
       setModel(pc?.model || DEFAULT_MODELS[p])
-      setEndpoint((pc && 'endpoint' in pc && pc.endpoint) || '')
+      setEndpoint(
+        pc && 'endpoint' in pc && typeof pc.endpoint === 'string'
+          ? pc.endpoint
+          : ''
+      )
       setHasKey(Boolean(pc?.hasKey))
       setApiKey('')
     },
@@ -106,12 +118,12 @@ export default function WritingAssistSettings() {
   useEffect(() => {
     let cancelled = false
     getConfig()
-      .then(cfg => {
+      .then((cfg) => {
         if (cancelled) return
         setConfig(cfg)
         setEnabled(cfg.enabled)
         setProvider(cfg.provider)
-        setCategories(prev => ({ ...prev, ...cfg.categories }))
+        setCategories((prev) => ({ ...prev, ...cfg.categories }))
         if (typeof cfg.concurrency === 'number') setConcurrency(cfg.concurrency)
         if (typeof cfg.timeoutMs === 'number') {
           setTimeoutSec(Math.round(cfg.timeoutMs / 1000))
@@ -135,6 +147,10 @@ export default function WritingAssistSettings() {
 
   const onProviderChange = (p: ProviderType) => {
     setProvider(p)
+    if (p === 'agent') {
+      setConcurrency(1)
+      setTimeoutSec(60)
+    }
     if (config) {
       applyProvider(config, p)
     } else {
@@ -164,11 +180,11 @@ export default function WritingAssistSettings() {
         enabled,
         provider,
         categories,
-        concurrency,
+        concurrency: provider === 'agent' ? 1 : concurrency,
         timeoutMs: timeoutSec * 1000,
         analysisMode,
         underlineStyle,
-        [provider]: providerConfig,
+        ...(provider === 'agent' ? {} : { [provider]: providerConfig }),
       })
       setStatus('saved')
       if (apiKey) setHasKey(true)
@@ -204,7 +220,7 @@ export default function WritingAssistSettings() {
             onProviderChange(e.target.value as ProviderType)
           }
         >
-          {PROVIDERS.map(p => (
+          {PROVIDERS.map((p) => (
             <option key={p.value} value={p.value}>
               {p.label}
             </option>
@@ -212,30 +228,42 @@ export default function WritingAssistSettings() {
         </OLFormSelect>
       </OLFormGroup>
 
-      <OLFormGroup controlId="wa-api-key">
-        <OLFormLabel>API key</OLFormLabel>
-        <OLFormControl
-          type="password"
-          value={apiKey}
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            setApiKey(e.target.value)
-          }
-          placeholder={hasKey ? '•••••••• (saved — leave blank to keep)' : 'sk-…'}
-        />
-      </OLFormGroup>
+      {provider === 'agent' && (
+        <p>
+          The server's local Agent handles checks and rewrites. No API key is
+          needed here. Checks run one at a time; requests may report busy while
+          a discussion is running.
+        </p>
+      )}
+      {provider !== 'agent' && (
+        <>
+          <OLFormGroup controlId="wa-api-key">
+            <OLFormLabel>API key</OLFormLabel>
+            <OLFormControl
+              type="password"
+              value={apiKey}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setApiKey(e.target.value)
+              }
+              placeholder={
+                hasKey ? '•••••••• (saved — leave blank to keep)' : 'sk-…'
+              }
+            />
+          </OLFormGroup>
 
-      <OLFormGroup controlId="wa-model">
-        <OLFormLabel>Model</OLFormLabel>
-        <OLFormControl
-          type="text"
-          value={model}
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            setModel(e.target.value)
-          }
-          placeholder={DEFAULT_MODELS[provider] || 'model name'}
-        />
-      </OLFormGroup>
-
+          <OLFormGroup controlId="wa-model">
+            <OLFormLabel>Model</OLFormLabel>
+            <OLFormControl
+              type="text"
+              value={model}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setModel(e.target.value)
+              }
+              placeholder={DEFAULT_MODELS[provider] || 'model name'}
+            />
+          </OLFormGroup>
+        </>
+      )}
       {provider === 'custom' && (
         <OLFormGroup controlId="wa-endpoint">
           <OLFormLabel>Endpoint URL</OLFormLabel>
@@ -252,13 +280,13 @@ export default function WritingAssistSettings() {
 
       <OLFormGroup>
         <OLFormLabel>Check categories</OLFormLabel>
-        {CATEGORIES.map(c => (
+        {CATEGORIES.map((c) => (
           <OLFormCheckbox
             key={c.key}
             id={`wa-cat-${c.key}`}
             checked={categories[c.key]}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setCategories(prev => ({ ...prev, [c.key]: e.target.checked }))
+              setCategories((prev) => ({ ...prev, [c.key]: e.target.checked }))
             }
             label={`${c.label}`}
           />
@@ -271,7 +299,8 @@ export default function WritingAssistSettings() {
           type="number"
           min={1}
           max={12}
-          value={String(concurrency)}
+          disabled={provider === 'agent'}
+          value={String(provider === 'agent' ? 1 : concurrency)}
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
             const v = parseInt(e.target.value, 10)
             if (!Number.isNaN(v)) setConcurrency(Math.min(12, Math.max(1, v)))
@@ -309,7 +338,7 @@ export default function WritingAssistSettings() {
       <OLFormGroup controlId="wa-underline-style">
         <OLFormLabel>Underline style</OLFormLabel>
         <div className="wa-underline-style-grid">
-          {UNDERLINE_STYLES.map(s => (
+          {UNDERLINE_STYLES.map((s) => (
             <button
               key={s.value}
               type="button"

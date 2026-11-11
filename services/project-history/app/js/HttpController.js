@@ -435,6 +435,8 @@ export function latestVersion(req, res, next) {
           }
           res.json({
             version,
+            projectStructureVersion: projectStructureAndDocVersions?.project,
+            projectHistoryId: historyId,
             timestamp: lastChange != null ? lastChange.timestamp : undefined,
             v2Authors: lastChange != null ? lastChange.v2Authors : undefined,
           })

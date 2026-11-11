@@ -1,0 +1,88 @@
+{
+  "projectId": "6af1bc2a0a5b55d96038512e",
+  "status": {
+    "connected": true,
+    "switching": false,
+    "status": {
+      "branch": "main",
+      "detached": false,
+      "upstream": null,
+      "operation": null,
+      "ahead": 0,
+      "behind": 0,
+      "conflicted": [],
+      "files": [
+        {
+          "path": "main.tex",
+          "index": " ",
+          "workingTree": "M"
+        }
+      ]
+    },
+    "branches": [
+      {
+        "ref": "refs/heads/B",
+        "name": "B",
+        "commit": "48d87555ead25a9082e03a2635093dca2edebb9c",
+        "upstream": null,
+        "author": "owner-mvuxgsid",
+        "email": "<owner-mvuxgsid@acceptance.invalid>",
+        "date": "2026-11-09T12:37:11+00:00",
+        "subject": "Fixture B title change",
+        "remote": false,
+        "symbolic": ""
+      },
+      {
+        "ref": "refs/heads/main",
+        "name": "main",
+        "commit": "b00292bce181e70e2ae0313abdee57eefbd280e1",
+        "upstream": null,
+        "author": "owner-mvuxgsid",
+        "email": "<owner-mvuxgsid@acceptance.invalid>",
+        "date": "2026-11-09T12:37:07+00:00",
+        "subject": "Fixture initial manuscript",
+        "remote": false,
+        "symbolic": ""
+      }
+    ],
+    "graph": [
+      {
+        "hash": "48d87555ead25a9082e03a2635093dca2edebb9c",
+        "parents": [
+          "b00292bce181e70e2ae0313abdee57eefbd280e1"
+        ],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T12:37:11+00:00",
+        "subject": "Fixture B title change",
+        "refs": "B"
+      },
+      {
+        "hash": "b00292bce181e70e2ae0313abdee57eefbd280e1",
+        "parents": [],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T12:37:07+00:00",
+        "subject": "Fixture initial manuscript",
+        "refs": "HEAD -> main"
+      }
+    ]
+  }
+}
+PASS read initial document
+PASS stage initial manuscript
+PASS commit initial manuscript
+PASS create B
+PASS checkout B
+PASS edit B document
+PASS stage B document
+PASS commit B
+PASS leave B uncommitted edit
+PASS checkout old main
+PASS verify old main contents
+PASS leave main uncommitted edit
+PASS return to B
+PASS verify B unfinished content preserved
+PASS return to main
+PASS verify main unfinished content preserved
+PASS live branch/commit/graph and per-branch document preservation

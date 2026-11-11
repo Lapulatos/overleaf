@@ -1,0 +1,149 @@
+WARNING: The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested
+TAP version 13
+# Subtest: project bridge commits B files, shows old content on repo-test, and restores each dirty branch
+ok 1 - project bridge commits B files, shows old content on repo-test, and restores each dirty branch
+  ---
+  duration_ms: 3565.432043
+  type: 'test'
+  ...
+# Subtest: interrupted project transfer never exports mixed files into the old branch, and resumes idempotently
+ok 2 - interrupted project transfer never exports mixed files into the old branch, and resumes idempotently
+  ---
+  duration_ms: 1983.051251
+  type: 'test'
+  ...
+# Subtest: resuming an interrupted switch refuses to overwrite a newer collaborator value
+ok 3 - resuming an interrupted switch refuses to overwrite a newer collaborator value
+  ---
+  duration_ms: 1247.1465
+  type: 'test'
+  ...
+# Subtest: export preserves staged index, ignored files and binary bytes; supports file/folder transitions
+ok 4 - export preserves staged index, ignored files and binary bytes; supports file/folder transitions
+  ---
+  duration_ms: 1043.593834
+  type: 'test'
+  ...
+# Subtest: invalid paths, nested .git and symlinks are rejected before replacing any file
+ok 5 - invalid paths, nested .git and symlinks are rejected before replacing any file
+  ---
+  duration_ms: 646.82625
+  type: 'test'
+  ...
+# Subtest: canceling an interrupted transfer restores old branch and retains later collaborator edits
+ok 6 - canceling an interrupted transfer restores old branch and retains later collaborator edits
+  ---
+  duration_ms: 1837.382751
+  type: 'test'
+  ...
+# Subtest: native stash and pop update editor files and preserve the native staged index
+ok 7 - native stash and pop update editor files and preserve the native staged index
+  ---
+  duration_ms: 2478.644709
+  type: 'test'
+  ...
+# Subtest: interrupted import after native reset resumes without rerunning Git or exporting stale editor files
+ok 8 - interrupted import after native reset resumes without rerunning Git or exporting stale editor files
+  ---
+  duration_ms: 1784.583917
+  type: 'test'
+  ...
+# Subtest: native merge conflicts are imported into editor and native abort restores editor content
+ok 9 - native merge conflicts are imported into editor and native abort restores editor content
+  ---
+  duration_ms: 3176.964043
+  type: 'test'
+  ...
+# Subtest: a new process can resume a persisted native-operation transfer without invoking the Git command again
+ok 10 - a new process can resume a persisted native-operation transfer without invoking the Git command again
+  ---
+  duration_ms: 1521.707542
+  type: 'test'
+  ...
+# Subtest: command adapter uses the requesting author and native index, refs, diffs and branch checkout
+ok 11 - command adapter uses the requesting author and native index, refs, diffs and branch checkout
+  ---
+  duration_ms: 3281.715002
+  type: 'test'
+  ...
+# Subtest: AI commit message receives staged content and native diff, excluding unstaged and unselected edits
+ok 12 - AI commit message receives staged content and native diff, excluding unstaged and unselected edits
+  ---
+  duration_ms: 1630.943542
+  type: 'test'
+  ...
+# Subtest: AI result is rejected if the staged native tree changes while generating
+ok 13 - AI result is rejected if the staged native tree changes while generating
+  ---
+  duration_ms: 1514.662417
+  type: 'test'
+  ...
+# Subtest: native diff displays untracked additions and the root commit without a fabricated parent
+ok 14 - native diff displays untracked additions and the root commit without a fabricated parent
+  ---
+  duration_ms: 930.593251
+  type: 'test'
+  ...
+# Subtest: resolving native conflict imports chosen file into the editor and keeps merge continuation separate
+ok 15 - resolving native conflict imports chosen file into the editor and keeps merge continuation separate
+  ---
+  duration_ms: 4461.983336
+  type: 'test'
+  ...
+# Subtest: inspection exposes sanitized provider metadata from actual native remote configuration
+ok 16 - inspection exposes sanitized provider metadata from actual native remote configuration
+  ---
+  duration_ms: 1157.051542
+  type: 'test'
+  ...
+# Subtest: historical file reads do not export or alter unsaved editor content
+ok 17 - historical file reads do not export or alter unsaved editor content
+  ---
+  duration_ms: 1306.087251
+  type: 'test'
+  ...
+# Subtest: commit previews preserve binary bytes and the exact parent/new versions
+ok 18 - commit previews preserve binary bytes and the exact parent/new versions
+  ---
+  duration_ms: 2880.402126
+  type: 'test'
+  ...
+# Subtest: working and staged previews distinguish HEAD, index and current bytes, including untracked files
+ok 19 - working and staged previews distinguish HEAD, index and current bytes, including untracked files
+  ---
+  duration_ms: 2726.576001
+  type: 'test'
+  ...
+# Subtest: unsupported clustered Redis keeps ordinary edits working and refuses exclusive Git transfers
+ok 20 - unsupported clustered Redis keeps ordinary edits working and refuses exclusive Git transfers
+  ---
+  duration_ms: 11.335333
+  type: 'test'
+  ...
+# Subtest: exclusive transfer admits only its own internal document requests and rejects new queued edits atomically
+ok 21 - exclusive transfer admits only its own internal document requests and rejects new queued edits atomically
+  ---
+  duration_ms: 70.700625
+  type: 'test'
+  ...
+# Subtest: lease renews while active, releases after errors, and does not erase a replacement owner
+ok 22 - lease renews while active, releases after errors, and does not erase a replacement owner
+  ---
+  duration_ms: 523.747292
+  type: 'test'
+  ...
+# Subtest: deadline expires privileged writes, while disabled integration leaves normal editing unchanged
+ok 23 - deadline expires privileged writes, while disabled integration leaves normal editing unchanged
+  ---
+  duration_ms: 189.961041
+  type: 'test'
+  ...
+1..23
+# tests 23
+# suites 0
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 40191.106478

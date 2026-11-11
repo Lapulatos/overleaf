@@ -1,0 +1,84 @@
+
+
+  UpdatesProcessor
+    processUpdatesForProject
+      when there is no existing error
+Set UV_THREADPOOL_SIZE=16
+        ✔ processes updates
+        ✔ records errors
+    _getHistoryId
+      projectHistoryId is not present
+        ✔ returns null
+      projectHistoryId is not present in updates
+        ✔ returns the id from web
+        ✔ returns errors from web
+      projectHistoryId is present in some updates
+        ✔ returns an error if the id is inconsistent between updates
+{"name":"default","hostname":"sujies-MacBook-Pro-7.local","pid":52076,"level":40,"projectId":"project-id-123","idFromWeb":2345,"idFromUpdates":"1234","updates":[{"p":0,"i":"a"},{"p":1,"i":"s","projectHistoryId":"1234"},{"p":2,"i":"d","projectHistoryId":"1234"}],"msg":"inconsistent project history id between updates and web","time":"2026-11-09T09:16:02.556Z","v":0}
+        ✔ returns an error if the id is inconsistent between updates and web
+        ✔ returns the id if it is consistent between updates and web
+        ✔ returns the id if it is consistent between updates but unavaiable in web
+    _processUpdates
+      happy path
+{"name":"default","hostname":"sujies-MacBook-Pro-7.local","pid":52076,"level":20,"projectId":"project-id-123","projectStructureAndDocVersions":{"project":null,"docs":{}},"updateProjectVersions":[],"msg":"comparing updates with existing project versions","time":"2026-11-09T09:16:02.972Z","v":0}
+        ✔ should get the latest version id
+{"name":"default","hostname":"sujies-MacBook-Pro-7.local","pid":52076,"level":20,"projectId":"project-id-123","projectStructureAndDocVersions":{"project":null,"docs":{}},"updateProjectVersions":[],"msg":"comparing updates with existing project versions","time":"2026-11-09T09:16:03.114Z","v":0}
+        ✔ should skip updates when resyncing
+{"name":"default","hostname":"sujies-MacBook-Pro-7.local","pid":52076,"level":20,"projectId":"project-id-123","projectStructureAndDocVersions":{"project":null,"docs":{}},"updateProjectVersions":[],"msg":"comparing updates with existing project versions","time":"2026-11-09T09:16:03.430Z","v":0}
+        ✔ should expand sync updates
+{"name":"default","hostname":"sujies-MacBook-Pro-7.local","pid":52076,"level":20,"projectId":"project-id-123","projectStructureAndDocVersions":{"project":null,"docs":{}},"updateProjectVersions":[],"msg":"comparing updates with existing project versions","time":"2026-11-09T09:16:03.783Z","v":0}
+        ✔ should compress updates
+{"name":"default","hostname":"sujies-MacBook-Pro-7.local","pid":52076,"level":20,"projectId":"project-id-123","projectStructureAndDocVersions":{"project":null,"docs":{}},"updateProjectVersions":[],"msg":"comparing updates with existing project versions","time":"2026-11-09T09:16:03.981Z","v":0}
+        ✔ should create any blobs for the updates
+{"name":"default","hostname":"sujies-MacBook-Pro-7.local","pid":52076,"level":20,"projectId":"project-id-123","projectStructureAndDocVersions":{"project":null,"docs":{}},"updateProjectVersions":[],"msg":"comparing updates with existing project versions","time":"2026-11-09T09:16:04.099Z","v":0}
+        ✔ should convert the updates into a change requests
+{"name":"default","hostname":"sujies-MacBook-Pro-7.local","pid":52076,"level":20,"projectId":"project-id-123","projectStructureAndDocVersions":{"project":null,"docs":{}},"updateProjectVersions":[],"msg":"comparing updates with existing project versions","time":"2026-11-09T09:16:04.272Z","v":0}
+        ✔ should send the change request to the history store
+{"name":"default","hostname":"sujies-MacBook-Pro-7.local","pid":52076,"level":20,"projectId":"project-id-123","projectStructureAndDocVersions":{"project":null,"docs":{}},"updateProjectVersions":[],"msg":"comparing updates with existing project versions","time":"2026-11-09T09:16:04.471Z","v":0}
+        ✔ should set the sync state
+{"name":"default","hostname":"sujies-MacBook-Pro-7.local","pid":52076,"level":20,"projectId":"project-id-123","projectStructureAndDocVersions":{"project":null,"docs":{}},"updateProjectVersions":[],"msg":"comparing updates with existing project versions","time":"2026-11-09T09:16:04.645Z","v":0}
+        ✔ should call the callback with no error and flush response
+      no updates
+        ✔ should not get the latest version id
+        ✔ should skip updates when resyncing
+        ✔ should not expand sync updates
+        ✔ should not compress updates
+        ✔ should not create any blobs for the updates
+        ✔ should not convert the updates into a change requests
+        ✔ should not send the change request to the history store
+        ✔ should set the sync state
+        ✔ should call the callback with fake flush response
+      with an error converting changes
+{"name":"default","hostname":"sujies-MacBook-Pro-7.local","pid":52076,"level":20,"projectId":"project-id-123","projectStructureAndDocVersions":{"project":null,"docs":{}},"updateProjectVersions":[],"msg":"comparing updates with existing project versions","time":"2026-11-09T09:16:05.424Z","v":0}
+        ✔ should call the callback with the error
+    _skipAlreadyAppliedUpdates
+      reviewed deletion retries
+{"name":"default","hostname":"sujies-MacBook-Pro-7.local","pid":52076,"level":20,"projectId":"project-id-123","projectStructureAndDocVersions":{"docs":{}},"updateProjectVersions":["9.0","10.0"],"msg":"comparing updates with existing project versions","time":"2026-11-09T09:16:05.497Z","v":0}
+        ✔ accepts an exact repeated deletion once before checking ordering
+{"name":"default","hostname":"sujies-MacBook-Pro-7.local","pid":52076,"level":20,"projectId":"project-id-123","projectStructureAndDocVersions":{"project":"9.0","docs":{}},"updateProjectVersions":[],"msg":"comparing updates with existing project versions","time":"2026-11-09T09:16:05.599Z","v":0}
+        ✔ still discards a previously applied deletion by persisted version
+{"name":"default","hostname":"sujies-MacBook-Pro-7.local","pid":52076,"level":20,"projectId":"project-id-123","projectStructureAndDocVersions":{"project":"9.0","docs":{}},"updateProjectVersions":["10.0"],"msg":"comparing updates with existing project versions","time":"2026-11-09T09:16:05.699Z","v":0}
+        ✔ ignores an already applied deletion retried behind a newer operation
+        ✔ rejects an operation id reused with a different payload
+        ✔ rejects malformed tags and non-delete operations
+{"name":"default","hostname":"sujies-MacBook-Pro-7.local","pid":52076,"level":40,"projectId":"project-id-123","update":{"version":"9.0"},"incomingProjectStructureVersion":"9.0","msg":"incoming project structure updates are out of order","time":"2026-11-09T09:16:06.053Z","v":0}
+        ✔ keeps ordinary duplicate-version rejection
+      with all doc ops in order
+{"name":"default","hostname":"sujies-MacBook-Pro-7.local","pid":52076,"level":20,"projectId":"project-id-123","projectStructureAndDocVersions":{"docs":{}},"updateProjectVersions":[],"msg":"comparing updates with existing project versions","time":"2026-11-09T09:16:06.132Z","v":0}
+        ✔ should return the original updates
+      with all project ops in order
+{"name":"default","hostname":"sujies-MacBook-Pro-7.local","pid":52076,"level":20,"projectId":"project-id-123","projectStructureAndDocVersions":{"docs":{}},"updateProjectVersions":[1,2,3,4],"msg":"comparing updates with existing project versions","time":"2026-11-09T09:16:06.267Z","v":0}
+        ✔ should return the original updates
+      with all multiple doc and ops in order
+{"name":"default","hostname":"sujies-MacBook-Pro-7.local","pid":52076,"level":20,"projectId":"project-id-123","projectStructureAndDocVersions":{"docs":{}},"updateProjectVersions":[1,2,3,4],"msg":"comparing updates with existing project versions","time":"2026-11-09T09:16:06.362Z","v":0}
+        ✔ should return the original updates
+      with doc ops out of order
+{"name":"default","hostname":"sujies-MacBook-Pro-7.local","pid":52076,"level":40,"projectId":"project-id-123","update":{"doc":"id","v":3},"incomingDocVersions":{"id":{"v":4}},"msg":"incoming doc updates are out of order","time":"2026-11-09T09:16:06.461Z","v":0}
+        ✔ should throw an exception
+      with project ops out of order
+{"name":"default","hostname":"sujies-MacBook-Pro-7.local","pid":52076,"level":40,"projectId":"project-id-123","update":{"version":3},"incomingProjectStructureVersion":4,"msg":"incoming project structure updates are out of order","time":"2026-11-09T09:16:06.538Z","v":0}
+        ✔ should throw an exception
+
+
+  39 passing (6s)
+

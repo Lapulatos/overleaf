@@ -1,0 +1,13 @@
+npm notice run npx
+npm notice run 'mocha' --timeout 15000 --exit --require test/frontend/bootstrap.js ../../docs/git-review/selection-reproduction.cjs
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+
+  Audit: remote checks and manual file selection
+    ✔ reproduces selection loss after a successful periodic remote check (148ms)
+
+
+  1 passing (151ms)
+

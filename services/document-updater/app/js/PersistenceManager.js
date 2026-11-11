@@ -268,9 +268,22 @@ async function setDocWithRetries(
   })
 }
 
+// Dedicated read-only proof; ordinary getDoc remains blocked by durable deletion fences.
+async function getDeletionRecoverySnapshot(projectId, docId, operationId) {
+  if (![projectId, docId].every(id => typeof id === 'string' && /^[a-f0-9]{24}$/.test(id)) ||
+      typeof operationId !== 'string' || !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(operationId)) {
+    throw new Error('Invalid deletion recovery identity')
+  }
+  return fetchJson(new URL(`/project/${projectId}/doc/${docId}/deletion/${operationId}/recovery-snapshot`, Settings.apis.web.url), {
+    basicAuth: { user: Settings.apis.web.user, password: Settings.apis.web.pass },
+    signal: AbortSignal.timeout(MAX_HTTP_REQUEST_LENGTH),
+  })
+}
+
 module.exports = {
   promises: {
     getDoc: getDocWithRetries,
+    getDeletionRecoverySnapshot,
     setDoc: setDocWithRetries,
   },
 }

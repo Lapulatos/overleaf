@@ -1,3 +1,4 @@
+import { useSubmissionWorkspace } from '@/features/plugins/submission-workspace'
 import {
   ElementType,
   memo,
@@ -44,14 +45,23 @@ const sourceEditorToolbarEndButtons = importOverleafModules(
 ) as { import: { default: ElementType }; path: string }[]
 
 export const CodeMirrorToolbar = () => {
+  const workspace = useSubmissionWorkspace()
   const view = useCodeMirrorViewContext()
   const panel = getPanel(view, createToolbarPanel)
 
+  useEffect(() => {
+    if (!workspace?.active || !workspace.toolbarHost) return
+    const host=workspace.toolbarHost
+    host.className=view.dom.className+' submission-shared-toolbar'
+    const groups=Array.from(host.querySelectorAll('.ol-cm-toolbar > :not(.editor-toggle-switch)'))
+    groups.forEach(group=>group.setAttribute('inert',''))
+    return ()=>groups.forEach(group=>group.removeAttribute('inert'))
+  }, [workspace?.active,workspace?.toolbarHost,view])
   if (!panel) {
     return null
   }
 
-  return createPortal(<Toolbar />, panel.dom)
+  return createPortal(<Toolbar />, workspace?.active && workspace.toolbarHost ? workspace.toolbarHost : panel.dom)
 }
 
 const Toolbar = memo(function Toolbar() {

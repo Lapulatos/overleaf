@@ -46,9 +46,24 @@ const UpdateManager = {
     }
     profile.log('tryLock')
 
+    let processingStarted = false
     try {
-      await UpdateManager.processOutstandingUpdates(projectId, docId)
+      await RedisManager.promises.withDocumentWriteContext(projectId, docId, () => {
+        processingStarted = true
+        return UpdateManager.processOutstandingUpdates(projectId, docId)
+      })
       profile.log('processOutstandingUpdates')
+    } catch (error) {
+      if (!processingStarted) {
+        // The durable deletion guard can reject before applyUpdate emits its
+        // normal error. Notify clients without popping/discarding pending edits.
+        await RealTimeRedisManager.sendData({
+          project_id: projectId,
+          doc_id: docId,
+          error: error instanceof Error ? error.message : error,
+        })
+      }
+      throw error
     } finally {
       await LockManager.promises.releaseLock(docId, lockValue)
       profile.log('releaseLock').end()
@@ -278,11 +293,13 @@ const UpdateManager = {
 
     let result
     try {
-      await UpdateManager.processOutstandingUpdates(projectId, docId)
-      profile.log('processOutstandingUpdates')
-
-      result = await method(projectId, docId, ...args)
-      profile.log('method')
+      result = await RedisManager.promises.withDocumentWriteContext(projectId, docId, async () => {
+        await UpdateManager.processOutstandingUpdates(projectId, docId)
+        profile.log('processOutstandingUpdates')
+        const value = await method(projectId, docId, ...args)
+        profile.log('method')
+        return value
+      })
     } finally {
       await LockManager.promises.releaseLock(docId, lockValue)
       profile.log('releaseLock').end()

@@ -1,0 +1,27 @@
+✔ recovers the existing accepted operation and settles its task (7.925459ms)
+✔ claims uncertain tasks before resuming while terminal receipts need no task (1.576ms)
+✔ never executes unreviewed proposals or mismatched snapshots (2.093959ms)
+✔ missing task and cross-project rows block teardown without recovery (0.784167ms)
+✔ rechecks whole-project deletion authority before resuming (0.95025ms)
+✔ lost resume response preserves applying task and does not settle (0.965916ms)
+✔ requires the original persisted committed binding, not an adapter success response (1.060917ms)
+✔ settles a proven aborted preparing conflict but retains later-stage conflicts (1.509792ms)
+✔ retry settles a task even when the prior commit response was lost (0.47475ms)
+✔ failed retry claim cannot start recovery (0.250625ms)
+✔ accepted committed operation retries settlement without deleting again (0.136709ms)
+✔ failed terminal cleanup blocks teardown and can be retried (0.673167ms)
+✔ revoked project-removal authority prevents terminal cleanup (0.487292ms)
+✔ admitted crash gap uses only the explicitly verified admission recovery adapter (0.87725ms)
+✔ admitted crash gap without a verifier cannot execute or settle (0.433084ms)
+✔ admission closes only after authorization, with a final drain check (0.571334ms)
+✔ remaining admissions block project removal even when receipts are committed (15.530583ms)
+✔ terminal conflict admission is cleaned without executing deletion (4.1265ms)
+✔ retired integration receipts can be retained but unfinished work cannot be resumed (1.951458ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 317.132667

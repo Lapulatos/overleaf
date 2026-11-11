@@ -133,6 +133,7 @@ export interface Meta {
   'ol-footer': FooterMetadata
   'ol-galleryTagName': string
   'ol-gitBridgeEnabled': boolean
+  'ol-nativeGitEnabled': boolean
   'ol-gitBridgePublicBaseUrl': string
   'ol-github': { enabled: boolean; error: boolean }
   'ol-groupAuditLogs': []
@@ -183,6 +184,7 @@ export interface Meta {
   'ol-inviterName': string
   'ol-isCollectionMethodManual': boolean
   'ol-isExternalAuthenticationSystemUsed': boolean
+  'ol-isInvitedMember': boolean
   'ol-isManagedAccount': boolean
   'ol-isManagedGroupAdmin': boolean
   'ol-isProfessional': boolean

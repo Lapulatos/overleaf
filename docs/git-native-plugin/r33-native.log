@@ -1,0 +1,40 @@
+✔ B commit, old branch checkout, and branch-specific unfinished files follow native worktrees (1201.891417ms)
+✔ native index staging and commit include only selected changes, including deletion and unusual filenames (645.7295ms)
+✔ create from older commit and detached checkout do not move branches (817.491083ms)
+✔ stash preserves tracked, staged and untracked work through native Git (650.253708ms)
+✔ publish, fetch and pull use a real bare remote; local commit is visible before push (855.233875ms)
+✔ merge conflict is native unmerged index and abort restores original HEAD (919.095084ms)
+✔ unsafe inputs cannot become options or escape the worktree (252.332458ms)
+✔ resolved merge creates real two-parent commit and graph topology (732.702667ms)
+✔ cherry-pick, revert and reset are native operations, preserving soft-reset staged content (876.735625ms)
+✔ rebase uses native parent rewriting and does not alter the other branch (731.89675ms)
+✔ worktree removal refuses unfinished work and branch deletion refuses an active worktree (685.508041ms)
+✔ unborn repository has empty graph and can unstage before its first commit (257.607791ms)
+✔ branch-filtered graph returns ancestry of requested branch, not a range against current HEAD (736.644125ms)
+✔ file history follows renames and blame uses the selected commit rather than another branch (860.309708ms)
+✔ rebase, cherry-pick and revert conflicts expose native worktree operation and clear after abort (1236.791791ms)
+✔ native apply stages and unstages selected hunks without including other edits and rejects stale diffs (1144.251541ms)
+✔ stash preview includes untracked content and stale list indices cannot apply or delete another stash (522.539334ms)
+✔ conflict versions come from native index; stale resolution refuses edits and incoming choice stages exact bytes (1300.71475ms)
+✔ explicit edited conflict resolution stages only the supplied result (928.663667ms)
+✔ modify-delete conflict permits selecting native deletion and preserves the other branch (818.040875ms)
+✔ managed worktree cleanup protects current, ignored files and detached commits while retaining branch refs (1523.886ms)
+✔ clean-looking worktree with an unfinished merge cannot be removed (815.815541ms)
+✔ discard restores staged bytes while preserving staged changes and refuses a changed binary preview (902.064292ms)
+✔ discard preview becomes stale when the staged version changes (529.6925ms)
+✔ amend replaces the selected tip using staged bytes and refuses stale or switched targets (683.798917ms)
+✔ reset preview protects changed binary bytes and native modes preserve their documented state (1192.36875ms)
+✔ ignored files come from native rules and enter the index only after explicit force staging (449.00375ms)
+✔ remote removal checks the confirmed URL and preserves local commits and worktree (502.496125ms)
+✔ tag checkout exposes commit metadata for lightweight and annotated tags without branch ambiguity (541.66175ms)
+✔ commit file lists and scoped patches cover roots, rename, delete and first-parent merges (1052.546208ms)
+✔ history search finds older commits outside the initial page and paginates matching results (6433.978625ms)
+✔ graph selected refs traverse the native union without unrelated tips (997.6105ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 31969.119958

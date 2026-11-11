@@ -1,0 +1,13 @@
+{
+  "noAutomaticGitPage": true,
+  "oneConferenceCard": true,
+  "cycle2": {
+    "papers": 10,
+    "artifacts": 5
+  },
+  "cycle1": {
+    "papers": 10,
+    "artifacts": 5
+  },
+  "passed": true
+}

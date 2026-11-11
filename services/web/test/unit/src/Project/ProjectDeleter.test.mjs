@@ -127,6 +127,31 @@ describe('ProjectDeleter', function () {
         destroyProject: sinon.stub().resolves(),
       },
     }
+    ctx.WritingAssistConversation = {
+      deleteMany: sinon.stub().returns({ exec: sinon.stub().resolves() }),
+    }
+    ctx.NativeCommentDeletion = {
+      deleteMany: sinon.stub().returns({ exec: sinon.stub().resolves() }),
+    }
+    vi.doMock('../../../../app/src/models/NativeCommentDeletion', () => ({
+      NativeCommentDeletion: ctx.NativeCommentDeletion,
+    }))
+    ctx.DocumentDeletionReservation = {
+      collection: { findOne: sinon.stub().resolves(null) },
+      deleteMany: sinon.stub().returns({ exec: sinon.stub().resolves() }),
+    }
+    vi.doMock('../../../../app/src/models/DocumentDeletionReservation', () => ({
+      DocumentDeletionReservation: ctx.DocumentDeletionReservation,
+    }))
+    ctx.WritingAssistTask = {
+      deleteMany: sinon.stub().returns({ exec: sinon.stub().resolves() }),
+    }
+    vi.doMock('../../../../app/src/models/WritingAssistConversation', () => ({
+      WritingAssistConversation: ctx.WritingAssistConversation,
+    }))
+    vi.doMock('../../../../app/src/models/WritingAssistTask', () => ({
+      WritingAssistTask: ctx.WritingAssistTask,
+    }))
     ctx.ProjectAuditLogEntry = {
       deleteMany: sinon.stub().returns({ exec: sinon.stub().resolves() }),
     }
@@ -210,6 +235,10 @@ describe('ProjectDeleter', function () {
       ProjectAuditLogEntry: ctx.ProjectAuditLogEntry,
     }))
 
+    ctx.recoverAcceptedDeletionsForProjectRemoval = sinon.stub().resolves({ completed: 0, conflicts: 0 })
+    vi.doMock('../../../../app/src/Features/WritingAssist/DocumentDeletionTeardownService', () => ({
+      recoverAcceptedDeletionsForProjectRemoval: ctx.recoverAcceptedDeletionsForProjectRemoval,
+    }))
     ctx.ProjectDeleter = (await import(modulePath)).default
   })
 
@@ -338,6 +367,29 @@ describe('ProjectDeleter', function () {
         .withArgs({ _id: ctx.project._id })
         .chain('exec')
         .resolves(ctx.project)
+    })
+
+    it('stops before flush and archival when deletion recovery fails', async function (ctx) {
+      ctx.project.documentDeletionTeardown = { operationId: 'closed' }
+      ctx.recoverAcceptedDeletionsForProjectRemoval.rejects(new Error('recovery blocked'))
+      await expect(ctx.ProjectDeleter.promises.deleteProject(ctx.project._id, { deleterUser: ctx.user })).to.be.rejectedWith('recovery blocked')
+      expect(ctx.recoverAcceptedDeletionsForProjectRemoval).to.have.been.calledWithExactly(String(ctx.project._id), String(ctx.user._id))
+      expect(ctx.DocumentUpdaterHandler.promises.flushProjectToMongoAndDelete).not.to.have.been.called
+      expect(ctx.DocstoreManager.promises.archiveProject).not.to.have.been.called
+    })
+
+    it('archives the refreshed post-drain project snapshot', async function (ctx) {
+      ctx.project.documentDeletionTeardown = { operationId: 'closed' }
+      const fresh = { ...ctx.project, version: 900, rootFolder: [] }
+      ctx.ProjectMock.expects('findOne').withArgs({ _id: ctx.project._id }).chain('exec').resolves(fresh)
+      ctx.ProjectMock.expects('deleteOne').chain('exec').resolves()
+      ctx.DeletedProjectMock.expects('updateOne').withArgs(
+        { 'deleterData.deletedProjectId': ctx.project._id },
+        { project: fresh, deleterData: ctx.deleterData }, { upsert: true }
+      ).resolves()
+      await ctx.ProjectDeleter.promises.deleteProject(ctx.project._id)
+      expect(ctx.recoverAcceptedDeletionsForProjectRemoval).to.have.been.calledWithExactly(String(ctx.project._id), String(ctx.project.owner_ref))
+      expect(ctx.recoverAcceptedDeletionsForProjectRemoval).to.have.been.calledBefore(ctx.DocumentUpdaterHandler.promises.flushProjectToMongoAndDelete)
     })
 
     it('should save a DeletedProject with additional deleterData', async function (ctx) {
@@ -481,6 +533,62 @@ describe('ProjectDeleter', function () {
   })
 
   describe('expireDeletedProject', function () {
+    it('retains deletion reservations when native storage expiration fails', async function (ctx) {
+      ctx.ProjectMock.expects('findById').chain('exec').resolves(null)
+      ctx.DeletedProjectMock.expects('findOne').chain('exec').resolves(ctx.deletedProjects[0])
+      ctx.DeletedProjectMock.expects('updateOne').never()
+      ctx.DocstoreManager.promises.destroyProject.rejects(new Error('storage unavailable'))
+      await expect(ctx.ProjectDeleter.promises.expireDeletedProject(ctx.deletedProjects[0].project._id))
+        .to.be.rejectedWith('storage unavailable')
+      expect(ctx.DocumentDeletionReservation.deleteMany).not.to.have.been.called
+      ctx.DeletedProjectMock.verify()
+    })
+
+    it('keeps the expiration record retryable when reservation cleanup fails', async function (ctx) {
+      ctx.ProjectMock.expects('findById').chain('exec').resolves(null)
+      ctx.DeletedProjectMock.expects('findOne').chain('exec').resolves(ctx.deletedProjects[0])
+      ctx.DeletedProjectMock.expects('updateOne').never()
+      ctx.DocumentDeletionReservation.deleteMany.returns({
+        exec: sinon.stub().rejects(new Error('reservation cleanup unavailable')),
+      })
+      await expect(ctx.ProjectDeleter.promises.expireDeletedProject(ctx.deletedProjects[0].project._id))
+        .to.be.rejectedWith('reservation cleanup unavailable')
+      ctx.DeletedProjectMock.verify()
+    })
+
+    for (const state of ['preparing', 'fenced', 'committing']) {
+      it(`preserves all recovery data when a deletion is ${state}`, async function (ctx) {
+        ctx.ProjectMock.expects('findById').chain('exec').resolves(null)
+        ctx.DeletedProjectMock.expects('findOne').chain('exec').resolves(ctx.deletedProjects[0])
+        ctx.DeletedProjectMock.expects('updateOne').never()
+        ctx.DocumentDeletionReservation.collection.findOne.resolves({ _id: 'pending', state })
+        await expect(ctx.ProjectDeleter.promises.expireDeletedProject(ctx.deletedProjects[0].project._id))
+          .to.be.rejectedWith('Unfinished document deletion must be reconciled')
+        expect(ctx.DocstoreManager.promises.destroyProject).not.to.have.been.called
+        expect(ctx.HistoryManager.promises.deleteProject).not.to.have.been.called
+        expect(ctx.WritingAssistTask.deleteMany).not.to.have.been.called
+        expect(ctx.WritingAssistConversation.deleteMany).not.to.have.been.called
+        expect(ctx.DocumentDeletionReservation.deleteMany).not.to.have.been.called
+        expect(ctx.DocumentDeletionReservation.collection.findOne).to.have.been.calledWithExactly(
+          { projectId: ctx.deletedProjects[0].project._id.toString(), state: { $ne: 'committed' } },
+          { projection: { _id: 1 }, readPreference: 'primary' }
+        )
+        ctx.DeletedProjectMock.verify()
+      })
+    }
+
+    it('does not expire recovery data when reservation lookup is unavailable', async function (ctx) {
+      ctx.ProjectMock.expects('findById').chain('exec').resolves(null)
+      ctx.DeletedProjectMock.expects('findOne').chain('exec').resolves(ctx.deletedProjects[0])
+      ctx.DeletedProjectMock.expects('updateOne').never()
+      ctx.DocumentDeletionReservation.collection.findOne.rejects(new Error('database unavailable'))
+      await expect(ctx.ProjectDeleter.promises.expireDeletedProject(ctx.deletedProjects[0].project._id))
+        .to.be.rejectedWith('database unavailable')
+      expect(ctx.DocstoreManager.promises.destroyProject).not.to.have.been.called
+      expect(ctx.WritingAssistTask.deleteMany).not.to.have.been.called
+      ctx.DeletedProjectMock.verify()
+    })
+
     describe('on an inactive project', function () {
       beforeEach(async function (ctx) {
         ctx.ProjectMock.expects('findById')
@@ -539,6 +647,25 @@ describe('ProjectDeleter', function () {
         ).to.have.been.calledWith(ctx.deletedProjects[0].project._id)
       })
 
+      it('should remove private assistant transcripts and snapshots only for this expired project', function (ctx) {
+        const query = {
+          projectId: ctx.deletedProjects[0].project._id.toString(),
+        }
+        expect(
+          ctx.WritingAssistConversation.deleteMany
+        ).to.have.been.calledWithExactly(query)
+        expect(ctx.WritingAssistTask.deleteMany).to.have.been.calledWithExactly(
+          query
+        )
+      })
+
+      it('removes only committed deletion reservations for the expired project', function (ctx) {
+        expect(ctx.DocumentDeletionReservation.deleteMany).to.have.been.calledWithExactly({
+          projectId: ctx.deletedProjects[0].project._id.toString(),
+          state: 'committed',
+        })
+      })
+
       it('should delete audit logs', async function (ctx) {
         expect(ctx.ProjectAuditLogEntry.deleteMany).to.have.been.calledWith({
           projectId: ctx.deletedProjects[0].project._id,
@@ -571,6 +698,12 @@ describe('ProjectDeleter', function () {
         await ctx.ProjectDeleter.promises.expireDeletedProject(
           ctx.deletedProjects[0].project._id
         )
+      })
+
+      it('should preserve assistant transcripts for an active project', function (ctx) {
+        expect(ctx.WritingAssistConversation.deleteMany).not.to.have.been.called
+        expect(ctx.WritingAssistTask.deleteMany).not.to.have.been.called
+        expect(ctx.DocumentDeletionReservation.deleteMany).not.to.have.been.called
       })
 
       it('should delete the spurious deleted project record', function (ctx) {
@@ -718,18 +851,50 @@ describe('ProjectDeleter', function () {
       }
 
       ctx.DeletedProjectMock.expects('findOne')
-        .withArgs({ 'deleterData.deletedProjectId': ctx.project._id })
+        .withArgs({ 'deleterData.deletedProjectId': ctx.project._id },
+          '+project.deletionReceipts +project.deletionHistoryPending +project.documentDeletionAdmissions +project.documentDeletionTeardown')
         .chain('exec')
         .resolves(ctx.deletedProject)
       ctx.DeletedProjectMock.expects('findOne')
-        .withArgs({ 'deleterData.deletedProjectId': ctx.purgedProjectId })
+        .withArgs({ 'deleterData.deletedProjectId': ctx.purgedProjectId },
+          '+project.deletionReceipts +project.deletionHistoryPending +project.documentDeletionAdmissions +project.documentDeletionTeardown')
         .chain('exec')
         .resolves(ctx.purgedProject)
       ctx.DeletedProjectMock.expects('findOne')
-        .withArgs({ 'deleterData.deletedProjectId': ctx.unknownProjectId })
+        .withArgs({ 'deleterData.deletedProjectId': ctx.unknownProjectId },
+          '+project.deletionReceipts +project.deletionHistoryPending +project.documentDeletionAdmissions +project.documentDeletionTeardown')
         .chain('exec')
         .resolves(null)
       ctx.DeletedProjectMock.expects('deleteOne').chain('exec').resolves()
+    })
+
+    it('refuses restoration while an accepted admission remains', async function (ctx) {
+      ctx.deletedProject.project.documentDeletionAdmissions = { doc: { operationId: 'pending' } }
+      await expect(ctx.ProjectDeleter.promises.undeleteProject(ctx.project._id)).to.be.rejectedWith('unfinished document deletions')
+      expect(ctx.db.projects.insertOne).not.to.have.been.called
+    })
+
+    it('refuses restoration while a reservation remains', async function (ctx) {
+      ctx.DocumentDeletionReservation.collection.findOne.resolves({ _id: 'pending' })
+      await expect(ctx.ProjectDeleter.promises.undeleteProject(ctx.project._id)).to.be.rejectedWith('unfinished document deletions')
+      expect(ctx.db.projects.insertOne).not.to.have.been.called
+    })
+
+    it('refuses restoration while history confirmation is pending', async function (ctx) {
+      ctx.deletedProject.project.deletionHistoryPending = 'pending-operation'
+      await expect(ctx.ProjectDeleter.promises.undeleteProject(ctx.project._id)).to.be.rejectedWith('unfinished document deletions')
+      expect(ctx.db.projects.insertOne).not.to.have.been.called
+    })
+
+    it('reopens only a drained restored project and preserves terminal receipts', async function (ctx) {
+      ctx.deletedProject.project.documentDeletionTeardown = { operationId: 'closed' }
+      ctx.deletedProject.project.documentDeletionAdmissions = {}
+      ctx.deletedProject.project.deletionReceipts = { completed: { historyConfirmed: true } }
+      await ctx.ProjectDeleter.promises.undeleteProject(ctx.project._id)
+      const restored = ctx.db.projects.insertOne.firstCall.args[0]
+      expect(restored.documentDeletionTeardown).to.equal(undefined)
+      expect(restored.documentDeletionAdmissions).to.equal(undefined)
+      expect(restored.deletionReceipts.get('completed')).to.deep.equal({ historyConfirmed: true })
     })
 
     it('should return not found if the project does not exist', async function (ctx) {

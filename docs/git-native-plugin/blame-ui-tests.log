@@ -1,0 +1,59 @@
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+
+  Native blame presentation
+    ✔ preserves indentation, empty source lines, final line numbers and native commit identity
+    ✔ supports SHA-256 Git object names without treating source lines as metadata
+    ✔ navigates to the exact full commit hash from a displayed line (115ms)
+(node:71211) TimeoutNaNWarning: NaN is not a number.
+Timeout duration was set to 1.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+  Native Git branch picker
+    ✔ shows one checkout choice for a tracking branch, retaining its different remote tip
+    ✔ does not collapse unrelated local and remote branches just because their commit is identical
+
+  Branch picker interaction
+    ✔ shows the three direct actions and actual commit author, date and subject without duplicate tracking ref
+    ✔ supports searching by author, direct selection and Escape returning focus
+
+  Git editor save barrier
+    ✔ waits for buffered operations before invoking Git and always restores editor access
+    ✔ does not run Git if saving timed out or buffered edits remain
+
+  Repository credentials settings
+    ✔ keeps a masked configured state after saving without returning or reusing the token
+
+  Native Source Control panel
+    ✔ connects an HTTPS repository while retaining current project files and renders the returned native state (45ms)
+    ✔ shows native conflict continuation and abort controls for the active operation only (79ms)
+    ✔ renders repository actions outside clipped sections and closes after selecting the last item (45ms)
+    ✔ applies a native stage hunk and refreshes the remaining diff (72ms)
+    ✔ applies a native unstage hunk and refreshes the remaining diff (72ms)
+    ✔ shows a stale diff error in the diff and does not retry staging automatically (88ms)
+    ✔ shows whole-file diff without hunk controls for binary or structural changes (48ms)
+    ✔ refreshes Changes after editor save events without issuing a Git mutation (784ms)
+    ✔ does not let a delayed background refresh overwrite the result of staging (896ms)
+    ✔ refreshes status after a lost commit response without submitting the commit again (70ms)
+    ✔ opens line authors from file history and navigates to the native commit diff (115ms)
+    ✔ renames a branch through the native command without creating a replacement branch (81ms)
+    ✔ opens file history with author, date and commit subject from the current repository (77ms)
+    ✔ stages a selected file, commits it and immediately renders the returned graph and remaining files (91ms)
+    ✔ keeps the commit message after failure and refreshes native conflict state (54ms)
+    ✔ renders initialization result instead of remaining stuck on the connect screen
+    ✔ generates the message on explicit AI click without committing
+
+  Native commit graph layout
+    ✔ keeps merge parents in separate lanes until their actual common ancestor
+
+  Native stash management
+    ✔ restores the selected entry with its exact hash using apply (63ms)
+    ✔ restores the selected entry with its exact hash using pop (64ms)
+    ✔ previews the selected native patch and requires explicit confirmation before deletion
+    ✔ keeps the list on failed restore and offers refresh without retrying
+
+
+  32 passing (3s)
+

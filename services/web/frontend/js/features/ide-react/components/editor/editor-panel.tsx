@@ -12,7 +12,8 @@ export default function EditorPanel() {
   const tabsEnabled = isSplitTestEnabled('editor-tabs')
 
   return (
-    <div className="ide-redesign-editor-container">
+    <div className="ide-redesign-editor-container" style={{ position: 'relative' }}>
+      <div id="native-git-editor-diff-host" />
       {tabsEnabled && <TabsContainer />}
       {selectedEntityCount === 0 && <NoSelectionPane />}
       {selectedEntityCount === 1 && openEntity?.type === 'fileRef' && (

@@ -35,7 +35,7 @@ export interface CheckResponse {
   issues: Issue[];
 }
 
-export type ProviderType = 'openai' | 'anthropic' | 'custom';
+export type ProviderType = 'openai' | 'anthropic' | 'custom' | 'agent';
 
 export interface ProviderConfig {
   apiKey: string;

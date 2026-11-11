@@ -4,6 +4,7 @@ import settings from '@overleaf/settings'
 import WebsocketController from './WebsocketController.js'
 import HttpController from './HttpController.js'
 import HttpApiController from './HttpApiController.js'
+import DocumentUpdaterManager from './DocumentUpdaterManager.js'
 import WebsocketAddressManager from './WebsocketAddressManager.js'
 import bodyParser from 'body-parser'
 import base64id from 'base64id'
@@ -117,6 +118,7 @@ export default Router = {
     )
 
     app.get('/clients', HttpController.getConnectedClients)
+    app.get('/native-git/capabilities', (req, res) => res.json({ projectWriteGate: DocumentUpdaterManager.nativeGitWriteGateEnabled() }))
     app.get('/clients/:client_id', HttpController.getConnectedClient)
 
     app.post(

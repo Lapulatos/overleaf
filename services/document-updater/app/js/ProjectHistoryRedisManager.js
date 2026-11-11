@@ -19,6 +19,45 @@ const OError = require('@overleaf/o-error')
  */
 
 const ProjectHistoryRedisManager = {
+  // Internal retryable enqueue. Only the server's durable project receipt supplies
+  // the event payload; callers cannot replace its version, path or timestamp.
+  async queueReviewedDeletion(projectId, docId, operationId) {
+    if (![projectId, docId].every(id => typeof id === 'string' && /^[a-f0-9]{24}$/.test(id)) ||
+        typeof operationId !== 'string' || !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(operationId)) {
+      throw new OError('Invalid reviewed deletion identity')
+    }
+    const { db, ObjectId } = require('./mongodb')
+    const reservation = await db.documentDeletionReservations.findOne({
+      _id: `${projectId}:${docId}`, projectId, docId, operationId,
+      state: { $in: ['committing', 'committed'] },
+    }, { readPreference: 'primary' })
+    const project = await db.projects.findOne({ _id: new ObjectId(projectId) }, {
+      projection: { [`deletionReceipts.${operationId}`]: 1 }, readPreference: 'primary',
+    })
+    const receipt = project?.deletionReceipts?.[operationId]
+    if (!reservation || !receipt || receipt.operationId !== operationId || receipt.docId !== docId ||
+        receipt.path !== reservation.path || receipt.userId !== reservation.userId ||
+        receipt.expectedVersion !== reservation.expectedVersion || receipt.baseHash !== reservation.baseHash ||
+        !Number.isSafeInteger(receipt.projectVersion) || receipt.projectVersion < 1 ||
+        typeof receipt.projectHistoryId !== 'string' || !receipt.projectHistoryId ||
+        !(receipt.removedAt instanceof Date) || !Number.isFinite(receipt.removedAt.getTime())) {
+      throw new OError('Reviewed deletion history receipt conflicts')
+    }
+    if (reservation.source !== undefined) throw new OError('Unknown deletion history source')
+    return ProjectHistoryRedisManager.queueOps(projectId, JSON.stringify({
+      deletionOperationId: operationId, doc: docId, pathname: receipt.path,
+      new_pathname: '', version: `${receipt.projectVersion}.0`,
+      projectHistoryId: receipt.projectHistoryId,
+      meta: { user_id: receipt.userId, ts: receipt.removedAt, source: 'writing-assist', type: 'external' },
+    }))
+  },
+
+  // Only the durable server outbox supplies creation history bytes. No caller payload.
+
+
+  // The durable outbox, not an HTTP body, supplies the entire ordered group.
+
+
   async queueOps(projectId, ...ops) {
     // Record metric for ops pushed onto queue
     for (const op of ops) {

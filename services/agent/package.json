@@ -1,0 +1,26 @@
+{
+  "name": "overleaf-agent",
+  "version": "0.1.0",
+  "description": "Local agent daemon for Overleaf WritingAssist — executes multi-step AI tasks via CLI backends",
+  "type": "module",
+  "main": "src/index.mjs",
+  "bin": {
+    "overleaf-agent": "./src/cli.mjs"
+  },
+  "scripts": {
+    "start": "node src/cli.mjs",
+    "dev": "node --watch src/cli.mjs",
+    "test": "node --test 'test/**/*.test.mjs'"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "commander": "^13.1.0",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "uuid": "^11.1.0",
+    "yauzl": "^3.3.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

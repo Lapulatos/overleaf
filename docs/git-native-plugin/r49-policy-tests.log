@@ -1,0 +1,14 @@
+✔ policy persists per user, denies read-only writes and drops retired grants even before expiry (25.4825ms)
+✔ approval is single-use and bound to exact owner and directories (0.346709ms)
+✔ review allowlist does not accept shell composition or whitespace normalization (0.818792ms)
+✔ review approvals bind exact command, owner, session, expiry and single use (0.533667ms)
+✔ all modes use only scoped named-volume mounts, isolated network and protected metadata (0.383167ms)
+✔ rejects host paths, cross-project paths, retired grants and traversal (0.120459ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 209.049708

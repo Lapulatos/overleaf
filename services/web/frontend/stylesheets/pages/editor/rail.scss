@@ -217,3 +217,21 @@ body {
   width: 100%;
   transform: translateY(-12px);
 }
+
+// Keep extension icons within the same visual footprint as the native rail.
+.ide-rail-tab-link.ide-rail-tab-link-addon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  > svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  .ide-rail-tab-link-icon {
+    font-size: 18px;
+    line-height: 20px;
+  }
+}

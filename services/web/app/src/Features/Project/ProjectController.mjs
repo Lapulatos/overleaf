@@ -946,6 +946,7 @@ const _ProjectController = {
         privilegeLevel,
         anonymous,
         isTokenMember,
+        isInvitedMember,
         isRestrictedTokenMember: AuthorizationManager.isRestrictedUser(
           userId,
           privilegeLevel,
@@ -966,6 +967,7 @@ const _ProjectController = {
         imageNames,
         gitBridgePublicBaseUrl: Settings.gitBridgePublicBaseUrl,
         gitBridgeEnabled: Features.hasFeature('git-bridge'),
+        nativeGitEnabled: Settings.nativeGit?.enabled === true,
         wsUrl,
         showSupport: Features.hasFeature('support'),
         showTemplatesServerPro,

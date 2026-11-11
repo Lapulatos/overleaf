@@ -4,3 +4,11 @@
 # user defined files
 .env
 docker-compose.override.yml
+
+# Local dependency installations and generated build contexts
+node_modules/
+__pycache__/
+/.yarn/cache/
+/.yarn/install-state.gz
+/plan/*image-context/
+/plan/native-git-context/

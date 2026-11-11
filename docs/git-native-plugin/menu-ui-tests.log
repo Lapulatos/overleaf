@@ -1,0 +1,40 @@
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+
+  Native Git branch picker
+    ✔ shows one checkout choice for a tracking branch, retaining its different remote tip
+    ✔ does not collapse unrelated local and remote branches just because their commit is identical
+
+  Branch picker interaction
+(node:10274) TimeoutNaNWarning: NaN is not a number.
+Timeout duration was set to 1.
+(Use `node --trace-warnings ...` to show where the warning was created)
+    ✔ shows the three direct actions and actual commit author, date and subject without duplicate tracking ref (135ms)
+    ✔ supports searching by author, direct selection and Escape returning focus (42ms)
+
+  Git editor save barrier
+    ✔ waits for buffered operations before invoking Git and always restores editor access
+    ✔ does not run Git if saving timed out or buffered edits remain
+
+  Repository credentials settings
+    ✔ keeps a masked configured state after saving without returning or reusing the token (45ms)
+
+  Native Source Control panel
+    ✔ connects an HTTPS repository while retaining current project files and renders the returned native state (48ms)
+    ✔ shows native conflict continuation and abort controls for the active operation only (89ms)
+    ✔ renders repository actions outside clipped sections and closes after selecting the last item (49ms)
+    ✔ renames a branch through the native command without creating a replacement branch (84ms)
+    ✔ opens file history with author, date and commit subject from the current repository (165ms)
+    ✔ stages a selected file, commits it and immediately renders the returned graph and remaining files (111ms)
+    ✔ keeps the commit message after failure and refreshes native conflict state (64ms)
+    ✔ renders initialization result instead of remaining stuck on the connect screen
+    ✔ generates the message on explicit AI click without committing
+
+  Native commit graph layout
+    ✔ keeps merge parents in separate lanes until their actual common ancestor
+
+
+  17 passing (938ms)
+

@@ -11,6 +11,7 @@ describe('ProjectHistoryRedisManager', function () {
     this.user_id = 'user-id-123'
     this.rclient = {}
     this.source = 'editor'
+    this.db = { projects: { findOne: sinon.stub() }, documentDeletionReservations: { findOne: sinon.stub() } }
     tk.freeze(new Date())
 
     this.Limits = {
@@ -20,6 +21,7 @@ describe('ProjectHistoryRedisManager', function () {
 
     this.ProjectHistoryRedisManager = SandboxedModule.require(modulePath, {
       requires: {
+        './mongodb': { db: this.db, ObjectId: require('mongodb-legacy').ObjectId },
         '@overleaf/settings': (this.settings = {
           max_doc_length: 123,
           redis: {
@@ -47,6 +49,47 @@ describe('ProjectHistoryRedisManager', function () {
   afterEach(function () {
     tk.reset()
   })
+
+  describe('queueReviewedDeletion', function () {
+    beforeEach(function () {
+      this.projectId = 'a'.repeat(24)
+      this.docId = 'b'.repeat(24)
+      this.operationId = '00000000-0000-4000-8000-000000000001'
+      this.receipt = { operationId: this.operationId, docId: this.docId,
+        path: 'tex/chapter.tex', userId: 'c'.repeat(24), expectedVersion: 3,
+        baseHash: 'd'.repeat(64), projectVersion: 9, projectHistoryId: 'history', removedAt: new Date() }
+      this.db.documentDeletionReservations.findOne.resolves({ ...this.receipt })
+      this.db.projects.findOne.resolves({ deletionReceipts: { [this.operationId]: this.receipt } })
+      this.ProjectHistoryRedisManager.promises.queueOps = sinon.stub().resolves(1)
+    })
+    it('retries with a byte-identical payload from the durable receipt', async function () {
+      await this.ProjectHistoryRedisManager.promises.queueReviewedDeletion(this.projectId, this.docId, this.operationId)
+      tk.travel(new Date(Date.now() + 60000))
+      await this.ProjectHistoryRedisManager.promises.queueReviewedDeletion(this.projectId, this.docId, this.operationId)
+      const calls = this.ProjectHistoryRedisManager.promises.queueOps.args
+      expect(calls[0][1]).to.equal(calls[1][1])
+      const event = JSON.parse(calls[0][1])
+      expect(event.deletionOperationId).to.equal(this.operationId)
+      expect(event.version).to.equal('9.0')
+      expect(event.new_pathname).to.equal('')
+      expect(event.meta.ts).to.equal(this.receipt.removedAt.toISOString())
+    })
+
+    it('does not enqueue an unprepared operation', async function () {
+      this.db.documentDeletionReservations.findOne.resolves(null)
+      await expect(this.ProjectHistoryRedisManager.promises.queueReviewedDeletion(this.projectId, this.docId, this.operationId)).to.be.rejected
+      sinon.assert.notCalled(this.ProjectHistoryRedisManager.promises.queueOps)
+    })
+    it('does not enqueue a receipt for a different reviewed snapshot', async function () {
+      this.receipt.baseHash = 'e'.repeat(64)
+      await expect(this.ProjectHistoryRedisManager.promises.queueReviewedDeletion(this.projectId, this.docId, this.operationId)).to.be.rejected
+      sinon.assert.notCalled(this.ProjectHistoryRedisManager.promises.queueOps)
+    })
+  })
+
+
+
+
 
   describe('queueOps', function () {
     beforeEach(async function () {

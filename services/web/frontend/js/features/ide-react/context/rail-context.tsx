@@ -25,6 +25,9 @@ export type RailTabKey =
   | 'full-project-search'
   | 'workbench'
   | 'writing-assist-dismissed'
+  | 'writing-assist-agent'
+  | 'plugins'
+  | 'native-git'
 
 export type RailModalKey = 'keyboard-shortcuts' | 'contact-us' | 'dictionary'
 
@@ -58,14 +61,14 @@ export const RailProvider: FC<React.PropsWithChildren> = ({ children }) => {
     null
   )
   const setActiveModal: Dispatch<SetStateAction<RailModalKey | null>> =
-    useCallback(modalKey => {
+    useCallback((modalKey) => {
       setActiveModalInternal(modalKey)
     }, [])
 
   const panelRef = useRef<ImperativePanelHandle>(null)
 
   const togglePane = useCallback(() => {
-    setIsOpen(value => !value)
+    setIsOpen((value) => !value)
   }, [setIsOpen])
 
   const handlePaneExpand = useCallback(() => {
@@ -78,7 +81,8 @@ export const RailProvider: FC<React.PropsWithChildren> = ({ children }) => {
 
   const [selectedTab, setSelectedTab] = usePersistedState<RailTabKey>(
     `selected-rail-tab-${projectId}`,
-    'file-tree'
+    'file-tree',
+    { converter: { toPersisted: value => value, fromPersisted: value => ['git-sync', 'native-git'].includes(value) ? 'file-tree' : value } }
   )
 
   // Keep the panel collapse/expanded state in sync with isOpen and selectedTab
@@ -88,6 +92,8 @@ export const RailProvider: FC<React.PropsWithChildren> = ({ children }) => {
     if (panelHandle) {
       if (isOpen) {
         panelHandle.expand()
+        const reviewSize = (selectedTab === 'writing-assist-agent' || selectedTab === 'plugins') ? 28 : 0
+        if (panelHandle.getSize() < reviewSize) panelHandle.resize(reviewSize)
       } else {
         panelHandle.collapse()
       }

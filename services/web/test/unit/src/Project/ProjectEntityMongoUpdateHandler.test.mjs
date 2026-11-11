@@ -253,7 +253,7 @@ describe('ProjectEntityMongoUpdateHandler', function () {
       const userId = new ObjectId().toString()
       ctx.ProjectMock.expects('findOneAndUpdate')
         .withArgs(
-          {
+          { deletionHistoryPending: { $exists: false },
             _id: ctx.project._id,
             'rootFolder.0.folders.0': { $exists: true },
           },
@@ -297,7 +297,7 @@ describe('ProjectEntityMongoUpdateHandler', function () {
       ctx.newFile = { _id: new ObjectId(), name: 'picture.jpg' }
       ctx.ProjectMock.expects('findOneAndUpdate')
         .withArgs(
-          {
+          { deletionHistoryPending: { $exists: false },
             _id: ctx.project._id,
             'rootFolder.0.folders.0': { $exists: true },
           },
@@ -371,7 +371,7 @@ describe('ProjectEntityMongoUpdateHandler', function () {
       })
       ctx.ProjectMock.expects('findOneAndUpdate')
         .withArgs(
-          {
+          { deletionHistoryPending: { $exists: false },
             _id: ctx.project._id,
             'rootFolder.0.folders.0': { $exists: true },
           },
@@ -411,7 +411,7 @@ describe('ProjectEntityMongoUpdateHandler', function () {
       // Update the file in place
       ctx.ProjectMock.expects('findOneAndUpdate')
         .withArgs(
-          {
+          { deletionHistoryPending: { $exists: false },
             _id: ctx.project._id,
             'rootFolder.0.fileRefs.0': { $exists: true },
           },
@@ -496,7 +496,7 @@ describe('ProjectEntityMongoUpdateHandler', function () {
         ctx.exactCaseMatch = false
         ctx.ProjectMock.expects('findOneAndUpdate')
           .withArgs(
-            { _id: ctx.project._id, 'rootFolder.0': { $exists: true } },
+            { deletionHistoryPending: { $exists: false }, _id: ctx.project._id, 'rootFolder.0': { $exists: true } },
             {
               $push: { 'rootFolder.0.folders': ctx.newFolder },
               $inc: { version: 1 },
@@ -542,7 +542,7 @@ describe('ProjectEntityMongoUpdateHandler', function () {
         ctx.FolderModel.returns(ctx.newFolder)
         ctx.ProjectMock.expects('findOneAndUpdate')
           .withArgs(
-            {
+            { deletionHistoryPending: { $exists: false },
               _id: ctx.project._id,
               'rootFolder.0.folders.0': { $exists: true },
             },
@@ -620,7 +620,7 @@ describe('ProjectEntityMongoUpdateHandler', function () {
           })
         ctx.ProjectMock.expects('findOneAndUpdate')
           .withArgs(
-            {
+            { deletionHistoryPending: { $exists: false },
               _id: ctx.project._id,
               'rootFolder.0.folders.0': { $exists: true },
             },
@@ -638,7 +638,7 @@ describe('ProjectEntityMongoUpdateHandler', function () {
           .resolves(ctx.project)
         ctx.ProjectMock.expects('findOneAndUpdate')
           .withArgs(
-            {
+            { deletionHistoryPending: { $exists: false },
               _id: ctx.project._id,
               'rootFolder.0.folders.0.folders.0': { $exists: true },
             },
@@ -718,7 +718,7 @@ describe('ProjectEntityMongoUpdateHandler', function () {
 
         ctx.ProjectMock.expects('findOneAndUpdate')
           .withArgs(
-            {
+            { deletionHistoryPending: { $exists: false },
               _id: ctx.project._id,
               'rootFolder.0.folders.0': { $exists: true },
             },
@@ -732,7 +732,7 @@ describe('ProjectEntityMongoUpdateHandler', function () {
           .resolves(ctx.project)
         ctx.ProjectMock.expects('findOneAndUpdate')
           .withArgs(
-            { _id: ctx.project._id },
+            { deletionHistoryPending: { $exists: false }, _id: ctx.project._id },
             {
               $pull: { 'rootFolder.0.docs': { _id: ctx.doc._id } },
               $inc: { version: 1 },
@@ -816,7 +816,7 @@ describe('ProjectEntityMongoUpdateHandler', function () {
       const userId = new ObjectId().toString()
       ctx.ProjectMock.expects('findOneAndUpdate')
         .withArgs(
-          { _id: ctx.project._id },
+          { deletionHistoryPending: { $exists: false }, _id: ctx.project._id },
           {
             $pull: { 'rootFolder.0.docs': { _id: ctx.doc._id } },
             $inc: { version: 1 },
@@ -857,7 +857,7 @@ describe('ProjectEntityMongoUpdateHandler', function () {
 
         ctx.ProjectMock.expects('findOneAndUpdate')
           .withArgs(
-            { _id: ctx.project._id, 'rootFolder.0.docs.0': { $exists: true } },
+            { deletionHistoryPending: { $exists: false }, _id: ctx.project._id, 'rootFolder.0.docs.0': { $exists: true } },
             {
               $set: {
                 'rootFolder.0.docs.0.name': ctx.newName,
@@ -922,7 +922,7 @@ describe('ProjectEntityMongoUpdateHandler', function () {
           ctx.newFile = { _id: new ObjectId(), name: 'new file.png' }
           ctx.ProjectMock.expects('findOneAndUpdate')
             .withArgs(
-              {
+              { deletionHistoryPending: { $exists: false },
                 _id: ctx.project._id,
                 'rootFolder.0.folders.0': { $exists: true },
               },
@@ -1054,7 +1054,7 @@ describe('ProjectEntityMongoUpdateHandler', function () {
         ctx.newFile = { _id: new ObjectId(), name: 'new file.png' }
         ctx.ProjectMock.expects('findOneAndUpdate')
           .withArgs(
-            { _id: ctx.project._id, 'rootFolder.0': { $exists: true } },
+            { deletionHistoryPending: { $exists: false }, _id: ctx.project._id, 'rootFolder.0': { $exists: true } },
             {
               $push: { 'rootFolder.0.fileRefs': ctx.newFile },
               $inc: { version: 1 },
@@ -1084,7 +1084,7 @@ describe('ProjectEntityMongoUpdateHandler', function () {
         .returns(ctx.mockRootFolder)
       ctx.updateExpectation = ctx.ProjectMock.expects('findOneAndUpdate')
         .withArgs(
-          {
+          { deletionHistoryPending: { $exists: false },
             _id: ctx.project._id,
             'rootFolder.0.folders.0': { $exists: false },
             'rootFolder.0.docs.0': { $exists: false },
@@ -1133,7 +1133,7 @@ describe('ProjectEntityMongoUpdateHandler', function () {
       const userId = new ObjectId().toString()
       ctx.ProjectMock.expects('findOneAndUpdate')
         .withArgs(
-          { _id: ctx.project._id, 'rootFolder.0': { $exists: true } },
+          { deletionHistoryPending: { $exists: false }, _id: ctx.project._id, 'rootFolder.0': { $exists: true } },
           {
             $pull: { 'rootFolder.0.docs': { _id: ctx.doc._id } },
             $push: { 'rootFolder.0.fileRefs': ctx.file },
@@ -1159,7 +1159,7 @@ describe('ProjectEntityMongoUpdateHandler', function () {
       const userId = new ObjectId().toString()
       ctx.ProjectMock.expects('findOneAndUpdate')
         .withArgs(
-          { _id: ctx.project._id, 'rootFolder.0': { $exists: true } },
+          { deletionHistoryPending: { $exists: false }, _id: ctx.project._id, 'rootFolder.0': { $exists: true } },
           {
             $pull: { 'rootFolder.0.fileRefs': { _id: ctx.file._id } },
             $push: { 'rootFolder.0.docs': ctx.doc },

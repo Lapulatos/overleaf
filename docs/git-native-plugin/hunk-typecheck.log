@@ -1,0 +1,138 @@
+frontend/js/features/settings/hooks/use-project-notification-preferences.ts(8,8): error TS2307: Cannot find module '../../../../../modules/notifications/app/src/types.js' or its corresponding type declarations.
+frontend/js/features/source-editor/hooks/use-codemirror-scope.ts(342,22): error TS18047: 'project' is possibly 'null'.
+frontend/js/shared/context/editor-context.tsx(21,37): error TS2307: Cannot find module '../../../../modules/symbol-palette/frontend/js/data/symbols' or its corresponding type declarations.
+frontend/js/utils/meta.ts(40,36): error TS2307: Cannot find module '../../../modules/group-settings/frontend/js/utils/types' or its corresponding type declarations.
+frontend/js/utils/meta.ts(64,36): error TS2307: Cannot find module '../../../modules/admin-panel/frontend/js/features/script-logs/script-log' or its corresponding type declarations.
+frontend/js/utils/meta.ts(67,31): error TS2307: Cannot find module '../../../modules/algolia-search/frontend/js/types' or its corresponding type declarations.
+frontend/js/utils/meta.ts(68,36): error TS2307: Cannot find module '@wf/domain/writefull-public-env' or its corresponding type declarations.
+frontend/js/utils/meta.ts(70,36): error TS2307: Cannot find module '../../../modules/sharing-permissions/app/src/types' or its corresponding type declarations.
+frontend/stories/contact-us-modal.stories.tsx(3,28): error TS2307: Cannot find module '../../modules/support/frontend/js/components/contact-us-modal' or its corresponding type declarations.
+frontend/stories/contact-us-modal.stories.tsx(4,39): error TS2307: Cannot find module '../../modules/support/test/frontend/util/fixed-help-suggestion-search' or its corresponding type declarations.
+test/frontend/components/shared/language-picker.spec.tsx(4,29): error TS2307: Cannot find module '../../../../modules/admin-panel/test/frontend/js/features/user/data/exposedSettings' or its corresponding type declarations.
+test/frontend/features/group-management/components/domain-capture.spec.tsx(1,27): error TS2307: Cannot find module '../../../../../modules/group-settings/frontend/js/components/domain-capture' or its corresponding type declarations.
+test/frontend/features/plugins/calendar-export.test.tsx(8,20): error TS2352: Conversion of type '{ id: string; title: string; year: number; description: string; kind: string; events: DeadlineEvent[]; milestones: never[]; sourceUrl: string; }' to type 'Venue' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ id: string; title: string; year: number; description: string; kind: string; events: DeadlineEvent[]; milestones: never[]; sourceUrl: string; }' is missing the following properties from type 'Venue': area, rank, round, website
+test/frontend/features/plugins/planner-ai-recommendations.test.tsx(6,14): error TS2352: Conversion of type '{ id: string; title: string; description: string; kind: string; area: string; rank: string; events: never[]; }[]' to type 'Venue[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ id: string; title: string; description: string; kind: string; area: string; rank: string; events: never[]; }' is missing the following properties from type 'Venue': year, round, website, sourceUrl
+test/frontend/features/plugins/planner-ai-recommendations.test.tsx(25,10): error TS2532: Object is possibly 'undefined'.
+test/frontend/features/plugins/planner-ai-recommendations.test.tsx(36,69): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+test/frontend/features/plugins/planner-ai-recommendations.test.tsx(39,58): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+test/frontend/features/plugins/planner-ai-recommendations.test.tsx(39,138): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+test/frontend/features/plugins/planner-ai-recommendations.test.tsx(54,58): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+test/frontend/features/plugins/planner-ai-recommendations.test.tsx(54,138): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+test/frontend/features/plugins/planner-ai-recommendations.test.tsx(60,58): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+test/frontend/features/plugins/planner-ai-recommendations.test.tsx(62,69): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+test/frontend/features/plugins/planner-ai-recommendations.test.tsx(63,189): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+test/frontend/features/plugins/planner-ai-recommendations.test.tsx(63,269): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+test/frontend/features/plugins/requirement-advice.test.tsx(10,683): error TS2532: Object is possibly 'undefined'.
+test/frontend/features/plugins/submission-sequence-planner.test.tsx(156,14): error TS2352: Conversion of type '{ id: string; title: string; description: string; kind: string; year: number; events: never[]; }' to type 'Venue' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ id: string; title: string; description: string; kind: string; year: number; events: never[]; }' is missing the following properties from type 'Venue': area, rank, round, website, sourceUrl
+test/frontend/features/plugins/submission-sequence.test.ts(76,17): error TS2352: Conversion of type '{ id: string; kind: string; events: never[]; }' to type 'Venue' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ id: string; kind: string; events: never[]; }' is missing the following properties from type 'Venue': title, description, year, area, and 4 more.
+test/frontend/features/plugins/venue-recommendations.test.tsx(18,255): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+test/frontend/features/plugins/venue-recommendations.test.tsx(19,63): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+test/frontend/features/plugins/venue-recommendations.test.tsx(19,144): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+test/frontend/features/plugins/venue-recommendations.test.tsx(19,273): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+test/frontend/features/plugins/venue-recommendations.test.tsx(20,62): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+test/frontend/features/plugins/venue-recommendations.test.tsx(22,62): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+test/frontend/features/plugins/venue-recommendations.test.tsx(22,127): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+test/frontend/features/plugins/venue-recommendations.test.tsx(23,63): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+test/frontend/features/plugins/venue-recommendations.test.tsx(23,127): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+test/frontend/features/plugins/venue-recommendations.test.tsx(26,63): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+test/frontend/features/plugins/venue-recommendations.test.tsx(27,63): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+test/frontend/features/plugins/venue-recommendations.test.tsx(31,138): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+test/frontend/features/plugins/venue-recommendations.test.tsx(61,486): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+test/frontend/features/plugins/venue-recommendations.test.tsx(61,831): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+  Overload 2 of 2, '(role: ByRoleMatcher, options?: ByRoleOptions | undefined): HTMLElement', gave the following error.
+    Object literal may only specify known properties, and 'exact' does not exist in type 'ByRoleOptions'.
+test/frontend/features/workbench/chat.spec.tsx(2,23): error TS2307: Cannot find module '@modules/workbench/frontend/js/components/workbench' or its corresponding type declarations.

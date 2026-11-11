@@ -1,0 +1,32 @@
+✔ multiple files are journaled in order before reporting files-applied (3.210084ms)
+✔ unsupported operations and mismatched content fail before any claim (0.27575ms)
+✔ ambiguous second write stops; reconciliation does not replay or continue (0.482167ms)
+✔ native document adapter requires matching identity, version and actual hash (0.3765ms)
+✔ resume uses the same attempt and writes only the remaining step (0.485084ms)
+✔ progress validation runs between files and stops before a later write (0.194084ms)
+✔ adapters receive exact operation and attempt identity during apply and recovery (0.240167ms)
+✔ mixed delete and modification executes only after deletion-specific confirmation (0.28575ms)
+✔ lost deletion response reconciles without repeating deletion or starting remaining writes (1.5405ms)
+✔ incomplete deletion receipts remain uncertain on apply and recovery (0.730791ms)
+✔ explicit deletion continuation retains attempt and write identity and stops before remaining files (0.463875ms)
+✔ continuation requires opt-in coordination and rejects collaborator edits or access loss before mutation (0.285333ms)
+✔ continuation rechecks durable plan and attempt after acquiring coordination (0.796125ms)
+✔ failed continuation or incomplete receipt retains the uncertain step (0.554542ms)
+✔ deletion recovery checks project permission before capability availability (0.093875ms)
+✔ creation continuation retains the attempt and content and does not start remaining files (0.335791ms)
+✔ creation continuation fails closed on content, permission, coordination, or durable identity changes (0.487667ms)
+✔ asset recovery retains original identities for create, replace and delete and stops before remaining files (0.6625ms)
+✔ asset continuation rejects stale content, permissions, coordination, identity and missing history proof (0.532833ms)
+✔ unsupported deletion paths fail before project admission or any earlier file write (2.4765ms)
+✔ native proof becomes deletion receipt only after history, storage and cache confirmation (0.637125ms)
+✔ partial deletion, mismatched identity and unconfirmed history cannot be acknowledged (0.617459ms)
+✔ revocation after proof read prevents acknowledgement and notification (0.289958ms)
+✔ lost execution response leaves recovery read-only and replacement bytes never dispatch (0.280625ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 111.055

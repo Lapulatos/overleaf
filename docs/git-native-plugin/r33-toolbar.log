@@ -1,0 +1,20 @@
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+
+  Native graph history navigation
+(node:82628) TimeoutNaNWarning: NaN is not a number.
+Timeout duration was set to 1.
+(Use `node --trace-warnings ...` to show where the warning was created)
+    ✔ dismisses a commit hover card when its history rows are replaced (147ms)
+    ✔ offers provider links for the hovered commit and names multiple remotes
+    ✔ searches native history beyond loaded rows and restores the snapshot when cleared (525ms)
+    ✔ loads older native commits beyond the initial snapshot without dropping existing rows (536ms)
+    ✔ filters by native branch ancestry and ignores a late response after switching back to all (55ms)
+    ✔ offers tree/list views and calls the existing remote and refresh actions
+    ✔ locates the current native tip even when it is absent from displayed history
+
+
+  7 passing (1s)
+

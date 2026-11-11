@@ -1,0 +1,402 @@
+[
+  {
+    "path": "services/web/app/src/Features/GitSync/GitApplyPlan.mjs",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/app/src/Features/GitSync/GitAtomicPushLifecycle.mjs",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/app/src/Features/GitSync/GitBindingSettlement.mjs",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/app/src/Features/GitSync/GitConflictResolution.mjs",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/app/src/Features/GitSync/GitDocumentDeletionAdapter.mjs",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/app/src/Features/GitSync/GitFileReview.mjs",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/app/src/Features/GitSync/GitIgnoreRules.mjs",
+    "status": "new-or-not-in-baseline"
+  },
+  {
+    "path": "services/web/app/src/Features/GitSync/GitPartialCommit.mjs",
+    "status": "new-or-not-in-baseline"
+  },
+  {
+    "path": "services/web/app/src/Features/GitSync/GitProjectPath.mjs",
+    "status": "new-or-not-in-baseline"
+  },
+  {
+    "path": "services/web/app/src/Features/GitSync/GitPushJournal.mjs",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/app/src/Features/GitSync/GitPushPreparation.mjs",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/app/src/Features/GitSync/GitPushResponse.mjs",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/app/src/Features/GitSync/GitRepositoryReader.mjs",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/app/src/Features/GitSync/GitSavedWork.mjs",
+    "status": "new-or-not-in-baseline"
+  },
+  {
+    "path": "services/web/app/src/Features/GitSync/GitSyncController.mjs",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/app/src/Features/GitSync/GitSyncPreviewService.mjs",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/app/src/Features/GitSync/GitSyncRouter.mjs",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/app/src/Features/GitSync/GitSyncRuntime.mjs",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/frontend/js/features/git-sync/application-controls.tsx",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/frontend/js/features/git-sync/automatic-sync.ts",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/frontend/js/features/git-sync/commit-details.tsx",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/frontend/js/features/git-sync/conflict-blocks.ts",
+    "status": "new-or-not-in-baseline"
+  },
+  {
+    "path": "services/web/frontend/js/features/git-sync/conflict-controls.tsx",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/frontend/js/features/git-sync/git-sync-panel.tsx",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/frontend/js/features/git-sync/git-sync.css",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/frontend/js/features/git-sync/history-browser.tsx",
+    "status": "new-or-not-in-baseline"
+  },
+  {
+    "path": "services/web/frontend/js/features/git-sync/ignore-settings.tsx",
+    "status": "new-or-not-in-baseline"
+  },
+  {
+    "path": "services/web/frontend/js/features/git-sync/local-changes.tsx",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/frontend/js/features/git-sync/media-preview.tsx",
+    "status": "new-or-not-in-baseline"
+  },
+  {
+    "path": "services/web/frontend/js/features/git-sync/pending-commits.tsx",
+    "status": "new-or-not-in-baseline"
+  },
+  {
+    "path": "services/web/frontend/js/features/git-sync/push-controls.tsx",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/frontend/js/features/git-sync/repository-header.tsx",
+    "status": "new-or-not-in-baseline"
+  },
+  {
+    "path": "services/web/frontend/js/features/git-sync/review-pointer.ts",
+    "status": "new-or-not-in-baseline"
+  },
+  {
+    "path": "services/web/frontend/js/features/git-sync/saved-work.tsx",
+    "status": "new-or-not-in-baseline"
+  },
+  {
+    "path": "services/web/test/agent/git-application-response.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-apply-executor.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-apply-plan.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-apply-progress.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-asset-authorization.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-asset-history.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-asset-notification.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-asset-progress.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-asset-retention.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-asset-storage-stage.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-branch-identity.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-branch-merge.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-branch-switch.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-commit-writer.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-conflict-resolution.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-creation-authorization.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-creation-journal.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-creation-notification.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-credential-store.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-delayed-push-admission.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-deletion-adapter.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-deletion-authorization.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-deletion-continuation-service.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-deletion-execution.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-deletion-proof.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-deletion-start.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-deletion-teardown-proof.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-document-creation-adapter.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-document-history-confirmation.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-document-history-outbox.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-document-history-payload.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-document-history-reader.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-document-storage-stage.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-file-restore.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-file-review.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-guarded-push.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-https-transport.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-ignore-rules.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-merge-preview.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-partial-commit.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-pending-commits.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-preview-availability.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-project-snapshot.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-push-cache.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-push-executor.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-push-preparation.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-recovery-store.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-remote-transport.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-repository-provisioner.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-repository-reader.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-saved-work.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-sync-preview-service.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/agent/git-tree-preview.test.mjs",
+    "status": "verification-input-not-in-scoped-baseline; modification not inferred"
+  },
+  {
+    "path": "services/web/test/frontend/features/git-sync/application-controls.test.tsx",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/test/frontend/features/git-sync/automatic-sync.test.tsx",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/test/frontend/features/git-sync/commit-details.test.tsx",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/test/frontend/features/git-sync/conflict-blocks.test.tsx",
+    "status": "new-or-not-in-baseline"
+  },
+  {
+    "path": "services/web/test/frontend/features/git-sync/git-sync-panel.test.tsx",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/test/frontend/features/git-sync/history-browser.test.tsx",
+    "status": "new-or-not-in-baseline"
+  },
+  {
+    "path": "services/web/test/frontend/features/git-sync/ignore-settings.test.tsx",
+    "status": "new-or-not-in-baseline"
+  },
+  {
+    "path": "services/web/test/frontend/features/git-sync/local-changes.test.tsx",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/test/frontend/features/git-sync/media-preview.test.tsx",
+    "status": "new-or-not-in-baseline"
+  },
+  {
+    "path": "services/web/test/frontend/features/git-sync/pending-commits.test.tsx",
+    "status": "new-or-not-in-baseline"
+  },
+  {
+    "path": "services/web/test/frontend/features/git-sync/push-controls.test.tsx",
+    "status": "modified"
+  },
+  {
+    "path": "services/web/test/frontend/features/git-sync/saved-work.test.tsx",
+    "status": "new-or-not-in-baseline"
+  },
+  {
+    "path": "services/web/app/src/Features/WritingAssist/DocumentDeletionReservations.mjs",
+    "status": "Git-only path validation import and conditional; prior changes preserved"
+  }
+]

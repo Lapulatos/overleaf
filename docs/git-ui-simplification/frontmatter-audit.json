@@ -1,0 +1,141 @@
+{
+  "currentBranch": "refs/remotes/origin/test/ui-20261109-a",
+  "baseCommit": "76d37985b8681d63e1322f939d24e1ab1d8cf4fd",
+  "file": "tex/frontmatter.tex",
+  "liveHash": "e404678548bb37068ac7c88727b1656e0be2b400b112acc100fa42a19f303194",
+  "liveBytes": 3351,
+  "refs": [
+    {
+      "ref": "refs/heads/test/ui-20261109-b",
+      "commit": "edd75ff0466e3fc947ee3e18082b43b822aff8f0",
+      "subject": "Remove manual line breaks from the abstract",
+      "hash": "a3f8140cd21f6716a4997cca961bbe000e1edc961e0e5589fd9b3d1f2bc77334",
+      "bytes": 3351
+    },
+    {
+      "ref": "refs/remotes/origin/repo-test",
+      "commit": "76d37985b8681d63e1322f939d24e1ab1d8cf4fd",
+      "subject": "Auto-sync web edits \u00b7 2026-11-01T18:01:00.330Z",
+      "hash": "e404678548bb37068ac7c88727b1656e0be2b400b112acc100fa42a19f303194",
+      "bytes": 3351
+    },
+    {
+      "ref": "refs/remotes/origin/test/ui-20261109-a",
+      "commit": "76d37985b8681d63e1322f939d24e1ab1d8cf4fd",
+      "subject": "Auto-sync web edits \u00b7 2026-11-01T18:01:00.330Z",
+      "hash": "e404678548bb37068ac7c88727b1656e0be2b400b112acc100fa42a19f303194",
+      "bytes": 3351
+    },
+    {
+      "ref": "refs/remotes/origin/test/ui-20261109-b",
+      "commit": "76d37985b8681d63e1322f939d24e1ab1d8cf4fd",
+      "subject": "Auto-sync web edits \u00b7 2026-11-01T18:01:00.330Z",
+      "hash": "e404678548bb37068ac7c88727b1656e0be2b400b112acc100fa42a19f303194",
+      "bytes": 3351
+    },
+    {
+      "ref": "refs/remotes/origin/test/ui-20261109-c",
+      "commit": "76d37985b8681d63e1322f939d24e1ab1d8cf4fd",
+      "subject": "Auto-sync web edits \u00b7 2026-11-01T18:01:00.330Z",
+      "hash": "e404678548bb37068ac7c88727b1656e0be2b400b112acc100fa42a19f303194",
+      "bytes": 3351
+    }
+  ],
+  "operations": [
+    {
+      "_id": "09c94466-be43-4daf-9184-57cc3e7aaa4f",
+      "binding": {
+        "branch": "refs/heads/test/ui-20261109-b"
+      },
+      "targetBranch": "refs/remotes/origin/test/ui-20261109-a",
+      "checkoutHasLocalChanges": true,
+      "baseCommit": "edd75ff0466e3fc947ee3e18082b43b822aff8f0",
+      "remoteCommit": "76d37985b8681d63e1322f939d24e1ab1d8cf4fd",
+      "status": "files-applied",
+      "createdAt": "2026-11-09T08:36:37.620Z"
+    },
+    {
+      "_id": "22a21932-8ea3-49d1-a29c-d6e50c382383",
+      "binding": {
+        "branch": "refs/remotes/origin/repo-test"
+      },
+      "targetBranch": "refs/heads/test/ui-20261109-b",
+      "checkoutHasLocalChanges": true,
+      "baseCommit": "76d37985b8681d63e1322f939d24e1ab1d8cf4fd",
+      "remoteCommit": "edd75ff0466e3fc947ee3e18082b43b822aff8f0",
+      "status": "files-applied",
+      "createdAt": "2026-11-09T08:36:09.858Z"
+    },
+    {
+      "_id": "a0438ddd-d6df-4392-aee8-f47a9d52d873",
+      "binding": {
+        "branch": "refs/heads/test/ui-20261109-b"
+      },
+      "targetBranch": "refs/remotes/origin/repo-test",
+      "checkoutHasLocalChanges": true,
+      "baseCommit": "edd75ff0466e3fc947ee3e18082b43b822aff8f0",
+      "remoteCommit": "76d37985b8681d63e1322f939d24e1ab1d8cf4fd",
+      "status": "files-applied",
+      "createdAt": "2026-11-09T08:35:07.193Z"
+    },
+    {
+      "_id": "7a886628-27c2-419b-9709-fa587654344b",
+      "binding": {
+        "branch": "refs/remotes/origin/repo-test"
+      },
+      "targetBranch": "refs/heads/test/ui-20261109-b",
+      "checkoutHasLocalChanges": true,
+      "baseCommit": "76d37985b8681d63e1322f939d24e1ab1d8cf4fd",
+      "remoteCommit": "edd75ff0466e3fc947ee3e18082b43b822aff8f0",
+      "status": "files-applied",
+      "createdAt": "2026-11-09T08:34:10.770Z"
+    },
+    {
+      "_id": "4490bc0d-529a-4aae-b6e7-163a5d169b40",
+      "binding": {
+        "branch": "refs/heads/test/ui-20261109-b"
+      },
+      "targetBranch": "refs/remotes/origin/repo-test",
+      "checkoutHasLocalChanges": true,
+      "baseCommit": "edd75ff0466e3fc947ee3e18082b43b822aff8f0",
+      "remoteCommit": "76d37985b8681d63e1322f939d24e1ab1d8cf4fd",
+      "status": "files-applied",
+      "createdAt": "2026-11-09T08:33:18.248Z"
+    },
+    {
+      "_id": "d8651938-b16b-4c65-9753-1d82fa0478dd",
+      "binding": {
+        "branch": "refs/remotes/origin/repo-test"
+      },
+      "targetBranch": "refs/heads/test/ui-20261109-b",
+      "checkoutHasLocalChanges": true,
+      "baseCommit": "76d37985b8681d63e1322f939d24e1ab1d8cf4fd",
+      "remoteCommit": "cca7d1b36999847c4a4d17448161184b78134921",
+      "status": "files-applied",
+      "createdAt": "2026-11-09T08:31:59.527Z"
+    },
+    {
+      "_id": "d4bc154e-08f0-4ae0-b4b4-0c5225f04101",
+      "binding": {
+        "branch": "refs/remotes/origin/test/ui-20261109-b"
+      },
+      "targetBranch": "refs/remotes/origin/repo-test",
+      "checkoutHasLocalChanges": true,
+      "baseCommit": "76d37985b8681d63e1322f939d24e1ab1d8cf4fd",
+      "remoteCommit": "76d37985b8681d63e1322f939d24e1ab1d8cf4fd",
+      "status": "files-applied",
+      "createdAt": "2026-11-09T08:31:34.289Z"
+    },
+    {
+      "_id": "1cbeffdb-6ec3-4bed-9108-841fc47e12db",
+      "binding": {
+        "branch": "refs/remotes/origin/repo-test"
+      },
+      "targetBranch": "refs/remotes/origin/test/ui-20261109-b",
+      "baseCommit": "76d37985b8681d63e1322f939d24e1ab1d8cf4fd",
+      "remoteCommit": "76d37985b8681d63e1322f939d24e1ab1d8cf4fd",
+      "status": "files-applied",
+      "createdAt": "2026-11-09T08:01:25.532Z"
+    }
+  ]
+}

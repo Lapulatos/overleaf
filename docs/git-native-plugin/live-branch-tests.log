@@ -1,0 +1,42 @@
+{
+  "projectId": "6af1bc2a0a5b55d96038512e",
+  "status": {
+    "connected": true,
+    "switching": false,
+    "status": {
+      "branch": "main",
+      "detached": false,
+      "upstream": null,
+      "operation": null,
+      "ahead": 0,
+      "behind": 0,
+      "conflicted": [],
+      "files": [
+        {
+          "path": "main.tex",
+          "index": "?",
+          "workingTree": "?"
+        }
+      ]
+    },
+    "branches": [],
+    "graph": []
+  }
+}
+PASS read initial document
+PASS stage initial manuscript
+PASS commit initial manuscript
+PASS create B
+PASS checkout B
+PASS edit B document
+PASS stage B document
+PASS commit B
+PASS leave B uncommitted edit
+PASS checkout old main
+PASS verify old main contents
+PASS leave main uncommitted edit
+PASS return to B
+PASS verify B unfinished content preserved
+PASS return to main
+PASS verify main unfinished content preserved
+PASS live branch/commit/graph and per-branch document preservation

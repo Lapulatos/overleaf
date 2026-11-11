@@ -1,0 +1,9 @@
+{
+  "noAutomaticGitPage": true,
+  "searchAndBranchReviewRouting": true,
+  "createBranchRouting": true,
+  "pushSavedCommitsRouting": true,
+  "settingsMenuRouting": true,
+  "keyboardDismissal": true,
+  "passed": true
+}

@@ -4,12 +4,112 @@ const SandboxedModule = require('sandboxed-module')
 const Errors = require('../../../../app/js/Errors.js')
 
 describe('HttpController', function () {
+  describe('prepareDocumentDeletion', function () {
+    it('is disabled by default without touching documents', async function () {
+      await this.HttpController.prepareDocumentDeletion({ params: {} }, this.res, this.next)
+      sinon.assert.calledWith(this.res.sendStatus, 404)
+      sinon.assert.notCalled(this.deletionManager.promises.prepare)
+    })
+    it('returns only the bound operation and state', async function () {
+      this.settings.documentupdater = { reviewedDeletionEnabled: true }
+      this.deletionManager.promises.prepare.resolves({ operationId: 'operation', state: 'committing', baseHash: 'private' })
+      await this.HttpController.prepareDocumentDeletion({ params: { project_id: 'project', doc_id: 'doc' }, body: { operationId: 'operation' } }, this.res, this.next)
+      sinon.assert.calledWith(this.deletionManager.promises.prepare, 'project', 'doc', 'operation')
+      sinon.assert.calledWith(this.res.json, { projectId: 'project', docId: 'doc', operationId: 'operation', state: 'committing' })
+    })
+    it('returns explicit conflict without internal details', async function () {
+      this.settings.documentupdater = { reviewedDeletionEnabled: true }
+      this.deletionManager.promises.prepare.rejects(Object.assign(new Error('private details'), { status: 409 }))
+      await this.HttpController.prepareDocumentDeletion({ params: {}, body: {} }, this.res, this.next)
+      sinon.assert.calledWith(this.res.status, 409)
+      sinon.assert.calledWith(this.res.json, { code: 'DOCUMENT_DELETION_PREPARATION_REJECTED' })
+    })
+    it('propagates storage failure rather than acknowledging preparation', async function () {
+      this.settings.documentupdater = { reviewedDeletionEnabled: true }
+      const error = new Error('storage unavailable')
+      this.deletionManager.promises.prepare.rejects(error)
+      await this.HttpController.prepareDocumentDeletion({ params: {}, body: {} }, this.res, this.next)
+      sinon.assert.calledWith(this.next, error)
+      sinon.assert.notCalled(this.res.json)
+    })
+  })
+
+
+
+
+
+  describe('queueReviewedDeletionHistory', function () {
+    it('is disabled without enqueueing', async function () {
+      await this.HttpController.queueReviewedDeletionHistory({ params: {} }, this.res, this.next)
+      sinon.assert.calledWith(this.res.sendStatus, 404)
+      sinon.assert.notCalled(this.ProjectHistoryRedisManager.promises.queueReviewedDeletion)
+    })
+    it('acknowledges only the requested operation after enqueue', async function () {
+      this.settings.documentupdater = { reviewedDeletionEnabled: true }
+      await this.HttpController.queueReviewedDeletionHistory({ params: { project_id: 'project', doc_id: 'doc' }, body: { operationId: 'operation' } }, this.res, this.next)
+      sinon.assert.calledWith(this.ProjectHistoryRedisManager.promises.queueReviewedDeletion, 'project', 'doc', 'operation')
+      sinon.assert.calledWith(this.res.json, { projectId: 'project', docId: 'doc', operationId: 'operation', queued: true })
+    })
+    it('does not acknowledge a failed enqueue', async function () {
+      this.settings.documentupdater = { reviewedDeletionEnabled: true }
+      const error = new Error('queue unavailable')
+      this.ProjectHistoryRedisManager.promises.queueReviewedDeletion.rejects(error)
+      await this.HttpController.queueReviewedDeletionHistory({ params: {}, body: {} }, this.res, this.next)
+      sinon.assert.calledWith(this.next, error)
+      sinon.assert.notCalled(this.res.json)
+    })
+  })
+
+
+
+  describe('inspectDocumentDeletion', function () {
+    it('is disabled by default', async function () {
+      await this.HttpController.inspectDocumentDeletion({ params: {} }, this.res, this.next)
+      sinon.assert.calledWith(this.res.sendStatus, 404)
+      sinon.assert.notCalled(this.deletionManager.promises.inspect)
+    })
+    it('uses URL identity and returns only the read-only status', async function () {
+      this.settings.documentupdater = { reviewedDeletionEnabled: true }
+      this.res.set = sinon.stub()
+      this.deletionManager.promises.inspect.resolves({ cacheCleared: false, private: 'hidden' })
+      await this.HttpController.inspectDocumentDeletion({ params: { project_id: 'project', doc_id: 'doc', operation_id: 'operation' }, body: { operationId: 'wrong' } }, this.res, this.next)
+      sinon.assert.calledWithExactly(this.deletionManager.promises.inspect, 'project', 'doc', 'operation')
+      sinon.assert.calledWith(this.res.json, { projectId: 'project', docId: 'doc', operationId: 'operation', cacheCleared: false })
+      sinon.assert.notCalled(this.deletionManager.promises.cleanup)
+      sinon.assert.calledWith(this.res.set, 'Cache-Control', 'no-store')
+    })
+  })
+  describe('cleanupDocumentDeletion', function () {
+    it('is disabled without touching the cache', async function () {
+      await this.HttpController.cleanupDocumentDeletion({ params: {} }, this.res, this.next)
+      sinon.assert.calledWith(this.res.sendStatus, 404)
+      sinon.assert.notCalled(this.deletionManager.promises.cleanup)
+    })
+    it('returns the native scoped cleanup acknowledgement', async function () {
+      this.settings.documentupdater = { reviewedDeletionEnabled: true }
+      const receipt = { projectId: 'project', docId: 'doc', operationId: 'operation', cacheCleared: true }
+      this.deletionManager.promises.cleanup.resolves(receipt)
+      await this.HttpController.cleanupDocumentDeletion({ params: { project_id: 'project', doc_id: 'doc' }, body: { operationId: 'operation' } }, this.res, this.next)
+      sinon.assert.calledWith(this.deletionManager.promises.cleanup, 'project', 'doc', 'operation')
+      sinon.assert.calledWith(this.res.json, receipt)
+    })
+    it('rejects prerequisites without returning a cleanup acknowledgement', async function () {
+      this.settings.documentupdater = { reviewedDeletionEnabled: true }
+      this.deletionManager.promises.cleanup.rejects(Object.assign(new Error('private'), { status: 409 }))
+      await this.HttpController.cleanupDocumentDeletion({ params: {}, body: {} }, this.res, this.next)
+      sinon.assert.calledWith(this.res.status, 409)
+      sinon.assert.calledWith(this.res.json, { code: 'DOCUMENT_DELETION_CLEANUP_REJECTED' })
+    })
+  })
+
   beforeEach(function () {
     this.project_id = 'project-id-123'
     this.projectHistoryId = '123'
     this.doc_id = 'doc-id-123'
     this.source = 'editor'
     this.next = sinon.stub()
+    this.settings = { max_doc_length: 2 * 1024 * 1024 }
+    this.deletionManager = { promises: { prepare: sinon.stub(), cleanup: sinon.stub(), inspect: sinon.stub(), readSnapshot: sinon.stub() } }
     this.res = {
       send: sinon.stub(),
       sendStatus: sinon.stub(),
@@ -41,6 +141,7 @@ describe('HttpController', function () {
     this.ProjectHistoryRedisManager = {
       promises: {
         queueOps: sinon.stub().resolves(),
+        queueReviewedCreation: sinon.stub().resolves(), queueReviewedAsset: sinon.stub().resolves(), queueReviewedDeletion: sinon.stub().resolves(1),
       },
     }
 
@@ -76,6 +177,7 @@ describe('HttpController', function () {
     this.HttpController = SandboxedModule.require(modulePath, {
       requires: {
         './DocumentManager': this.DocumentManager,
+        './DocumentDeletionManager': this.deletionManager,
         './HistoryManager': this.HistoryManager,
         './ProjectHistoryRedisManager': this.ProjectHistoryRedisManager,
         './ProjectManager': this.ProjectManager,
@@ -85,7 +187,7 @@ describe('HttpController', function () {
         './Errors': Errors,
         './Utils': this.Utils,
         './HistoryConversions': this.HistoryConversions,
-        '@overleaf/settings': { max_doc_length: 2 * 1024 * 1024 },
+        '@overleaf/settings': this.settings,
       },
     })
   })
@@ -388,6 +490,40 @@ describe('HttpController', function () {
         },
       }
     })
+
+    it('returns 409 when a conditional write has a stale version', async function () {
+      this.req.body.expectedVersion = 7
+      this.DocumentManager.promises.setDocWithLock.resolves({ conflict: true, version: 8 })
+      await this.HttpController.setDoc(this.req, this.res, this.next)
+      this.res.status.should.have.been.calledWith(409)
+      this.res.json.should.have.been.calledWith({ conflict: true, version: 8 })
+      this.DocumentManager.promises.setDocWithLock.should.have.been.calledWith(
+        this.project_id, this.doc_id, this.lines, this.source, this.user_id, this.undoing, true, 7
+      )
+    })
+
+    it('rejects malformed expected versions before writing', async function () {
+      this.req.body.expectedVersion = -1
+      await this.HttpController.setDoc(this.req, this.res, this.next)
+      this.res.sendStatus.should.have.been.calledWith(400)
+      this.DocumentManager.promises.setDocWithLock.should.not.have.been.called
+    })
+
+    for (const { source, version, userId, external } of [
+      { source: 'writing-assist', version: 7, userId: 'user-id-123', external: false },
+      { source: 'writing-assist', version: undefined, userId: 'user-id-123', external: true },
+      { source: 'dropbox', version: 7, userId: 'user-id-123', external: true },
+      { source: 'writing-assist', version: 7, userId: undefined, external: true },
+    ]) {
+      it(`marks source=${source}, version=${version}, user=${userId} external=${external}`, async function () {
+        Object.assign(this.req.body, { source, expectedVersion: version, user_id: userId })
+        this.DocumentManager.promises.setDocWithLock.resolves({ rev: '123' })
+        await this.HttpController.setDoc(this.req, this.res, this.next)
+        this.DocumentManager.promises.setDocWithLock.should.have.been.calledWith(
+          this.project_id, this.doc_id, this.lines, source, userId, this.undoing, external, version
+        )
+      })
+    }
 
     describe('successfully', function () {
       beforeEach(async function () {

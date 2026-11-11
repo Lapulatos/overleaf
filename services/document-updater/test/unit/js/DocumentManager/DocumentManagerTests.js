@@ -4,6 +4,7 @@ const modulePath = '../../../../app/js/DocumentManager.js'
 const SandboxedModule = require('sandboxed-module')
 const Errors = require('../../../../app/js/Errors')
 const tk = require('timekeeper')
+const { createHash, randomUUID } = require('node:crypto')
 
 describe('DocumentManager', function () {
   beforeEach(function () {
@@ -417,6 +418,22 @@ describe('DocumentManager', function () {
   })
 
   describe('setDoc', function () {
+    for (const type of ['sharejs-text-ot', 'history-ot']) {
+
+    }
+
+    it('rejects stale versions before calculating or applying an update', async function () {
+      this.DocumentManager.promises.getDoc = sinon.stub().resolves({
+        lines: ['collaborator edit'], version: 8, alreadyLoaded: true,
+      })
+      const result = await this.DocumentManager.promises.setDoc(
+        this.project_id, this.doc_id, ['AI suggestion'], 'writing-assist', this.user_id,
+        false, true, 7
+      )
+      expect(result).to.deep.equal({ conflict: true, version: 8 })
+      sinon.assert.notCalled(this.DiffCodec.diffAsShareJsOp)
+    })
+
     describe('with plain tex lines', function () {
       beforeEach(function () {
         this.beforeLines = ['before', 'lines']

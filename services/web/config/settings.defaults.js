@@ -89,7 +89,6 @@ const httpPermissionsPolicy = {
     'display-capture',
     'encrypted-media',
     'gamepad',
-    'geolocation',
     'gyroscope',
     'hid',
     'identity-credentials-get',
@@ -110,11 +109,24 @@ const httpPermissionsPolicy = {
   allowed: {
     autoplay: 'self "https://videos.ctfassets.net"',
     fullscreen: 'self',
+    // Browser permission and the default-off Venues setting still gate access.
+    geolocation: 'self',
     'on-device-speech-recognition': 'self',
   },
 }
 
 module.exports = {
+  nativeGit: {
+    enabled: process.env.OVERLEAF_NATIVE_GIT_ENABLED === 'true',
+    storagePath: process.env.OVERLEAF_NATIVE_GIT_STORAGE_PATH || '/var/lib/overleaf/native-git',
+    credentialKey: process.env.OVERLEAF_NATIVE_GIT_CREDENTIAL_KEY,
+  },
+  // Native history restoration and range-preserving snapshots for self-hosted projects.
+  splitTestOverrides: {
+    'history-ranges-support': 'enabled',
+    'revert-file': 'enabled',
+    'revert-project': 'enabled',
+  },
   env: 'server-ce',
 
   limits: {
@@ -1089,6 +1101,10 @@ module.exports = {
     railEntries: [
       Path.resolve(
         __dirname,
+        '../frontend/js/features/source-editor/extensions/writing-assist/agent-rail-entry.tsx'
+      ),
+      Path.resolve(
+        __dirname,
         '../frontend/js/features/source-editor/extensions/writing-assist/rail-entry.tsx'
       ),
     ],
@@ -1110,7 +1126,7 @@ module.exports = {
     reportUri: process.env.CSP_REPORT_URI,
     exclude: [],
     viewDirectives: {
-      'app/views/project/ide-react': [`img-src 'self' data: blob:`],
+      'app/views/project/ide-react': [`img-src 'self' data: blob: https://tile.openstreetmap.org https://ars.els-cdn.com https://media.springernature.com https://secure-ecsd.elsevier.com`],
     },
   },
 
@@ -1129,7 +1145,12 @@ module.exports = {
 
   enablePandocConversions: process.env.ENABLE_PANDOC_CONVERSIONS === 'true',
 
+  // Git sync remains disabled until private repository/recovery volumes are configured.
+
   writingAssist: {
+    agentEndpoint:
+      process.env.OVERLEAF_AGENT_ENDPOINT || 'http://127.0.0.1:47291',
+    agentToken: process.env.OVERLEAF_AGENT_TOKEN || '',
     enabled: false,
     defaultProvider: 'openai',
     defaultModel: {
@@ -1145,6 +1166,7 @@ module.exports = {
     concurrency: 4,
     cacheSize: 200,
     encryptionKey: process.env.WRITING_ASSIST_ENCRYPTION_KEY || 'dev-key-change-me',
+    zoteroEncryptionKey: process.env.WRITING_ASSIST_ZOTERO_ENCRYPTION_KEY || '',
   },
 }
 

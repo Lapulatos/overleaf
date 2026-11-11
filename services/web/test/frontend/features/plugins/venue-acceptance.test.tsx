@@ -1,0 +1,9 @@
+import {expect} from 'chai'
+import sinon from 'sinon'
+import {render,screen,fireEvent} from '@testing-library/react'
+import * as request from '@/infrastructure/fetch-json'
+import VenueAcceptanceDialog from '@/features/plugins/venue-acceptance-dialog'
+import type {Venue} from '@/features/plugins/submission-deadlines'
+const venue={id:'SE%2Ffse~fse26~0',title:'FSE',description:'Software Engineering',kind:'conference',year:2026} as Venue
+const history={throughYear:2026,source:'https://ccfddl.com/conference/allacc.json',fetched:Date.now(),stale:false,records:[{year:2025,submitted:515,accepted:135,rate:135/515,source:'https://fse2025.hotcrp.com/',note:null},{year:2027,submitted:900,accepted:300,rate:1/3,source:null,note:null}]}
+describe('Conference history dialog',()=>{afterEach(()=>sinon.restore());it('plots counts/rates and excludes future years even if returned by a source',async()=>{sinon.stub(request,'getJSON').resolves(history);render(<VenueAcceptanceDialog venue={venue} onHide={()=>{}}/>);await screen.findByRole('img',{name:'Submissions and acceptance rate by year'});expect(screen.getAllByRole('img')).to.have.length(1);fireEvent.mouseEnter(screen.getByRole('button',{name:/2025: 515 submissions/}));expect(document.querySelector('.acceptance-point-detail')?.textContent).to.include('Submitted: 515');expect(document.querySelector('.venue-acceptance-modal')?.textContent).not.to.include('2027');fireEvent.click(screen.getByText('Annual data & sources'));expect(screen.getByRole('link',{name:'Annual source ↗'}).getAttribute('href')).to.equal('https://fse2025.hotcrp.com/');expect(screen.getAllByText('515').length).to.be.greaterThan(0)});it('shows missing statistics instead of zero values',async()=>{sinon.stub(request,'getJSON').resolves({...history,records:[]});render(<VenueAcceptanceDialog venue={venue} onHide={()=>{}}/>);await screen.findByText(/No historical statistics reported/);expect(screen.queryByRole('img')).to.equal(null)})})

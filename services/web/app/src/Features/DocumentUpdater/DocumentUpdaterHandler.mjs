@@ -1,9 +1,10 @@
+import { createHash } from 'node:crypto'
 import OError from '@overleaf/o-error'
 import settings from '@overleaf/settings'
 import {
-  fetchJson,
-  fetchNothing,
-  fetchString,
+  fetchJson as rawFetchJson,
+  fetchNothing as rawFetchNothing,
+  fetchString as rawFetchString,
   RequestFailedError,
 } from '@overleaf/fetch-utils'
 import _ from 'lodash'
@@ -11,6 +12,16 @@ import logger from '@overleaf/logger'
 import { callbackifyAll } from '@overleaf/promise-utils'
 import ProjectGetter from '../Project/ProjectGetter.mjs'
 import Modules from '../../infrastructure/Modules.mjs'
+import ProjectWriteGate from '@overleaf/redis-wrapper/ProjectWriteGate.js'
+
+function writeContextOptions(url, options = {}) {
+  const projectId = String(url).match(/\/project\/([a-f0-9]{24})(?:\/|\?|$)/i)?.[1]
+  const headers = projectId && ProjectWriteGate.requestHeaders(projectId)
+  return headers && Object.keys(headers).length ? { ...options, headers: { ...options.headers, ...headers } } : options
+}
+const fetchJson = (url, options) => rawFetchJson(url, writeContextOptions(url, options))
+const fetchNothing = (url, options) => rawFetchNothing(url, writeContextOptions(url, options))
+const fetchString = (url, options) => rawFetchString(url, writeContextOptions(url, options))
 
 const REQUEST_TIMEOUT_MS = 30 * 1000
 const RESYNC_TIMEOUT_MS = 6 * 60 * 1000
@@ -114,15 +125,91 @@ async function getDocumentWithHistoryRanges(projectId, docId) {
   return doc
 }
 
-async function setDocument(projectId, docId, userId, docLines, source) {
+// Internal only. The caller must authorize acceptance and persist its reservation.
+// Timeout/transport failure is uncertain: retry the same operation, never a new one.
+async function prepareDocumentDeletion(projectId, docId, operationId) {
+  if (![projectId, docId].every(id => typeof id === 'string' && /^[a-f0-9]{24}$/.test(id)) ||
+      typeof operationId !== 'string' || !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(operationId)) {
+    throw new OError('Invalid deletion identity')
+  }
+  const receipt = await fetchJson(
+    `${BASE_URL}/project/${projectId}/doc/${docId}/deletion/prepare`,
+    { method: 'POST', json: { operationId }, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) }
+  )
+  if (receipt?.projectId !== projectId || receipt?.docId !== docId ||
+      receipt?.operationId !== operationId || !['committing', 'committed'].includes(receipt?.state)) {
+    throw new OError('Invalid deletion preparation acknowledgement')
+  }
+  return { projectId, docId, operationId, state: receipt.state }
+}
+
+
+
+
+
+async function queueReviewedDeletionHistory(projectId, docId, operationId) {
+  if (![projectId, docId].every(id => typeof id === 'string' && /^[a-f0-9]{24}$/.test(id)) ||
+      typeof operationId !== 'string' || !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(operationId)) {
+    throw new OError('Invalid deletion identity')
+  }
+  const receipt = await fetchJson(
+    `${BASE_URL}/project/${projectId}/doc/${docId}/deletion/history`,
+    { method: 'POST', json: { operationId }, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) }
+  )
+  if (receipt?.projectId !== projectId || receipt?.docId !== docId ||
+      receipt?.operationId !== operationId || receipt?.queued !== true) {
+    throw new OError('Invalid deletion history enqueue acknowledgement')
+  }
+}
+
+
+
+async function inspectDocumentDeletion(projectId, docId, operationId) {
+  if (![projectId, docId].every(id => typeof id === 'string' && /^[a-f0-9]{24}$/.test(id)) ||
+      typeof operationId !== 'string' || !/^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/i.test(operationId)) {
+    throw new OError('Invalid deletion identity')
+  }
+  const receipt = await fetchJson(
+    `${BASE_URL}/project/${projectId}/doc/${docId}/deletion/${operationId}`,
+    { method: 'GET', signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) }
+  )
+  if (receipt?.projectId !== projectId || receipt?.docId !== docId || receipt?.operationId !== operationId ||
+      typeof receipt.cacheCleared !== 'boolean') throw new OError('Invalid deletion inspection acknowledgement')
+  return { projectId, docId, operationId, cacheCleared: receipt.cacheCleared }
+}
+
+async function cleanupDocumentDeletion(projectId, docId, operationId) {
+  if (![projectId, docId].every(id => typeof id === 'string' && /^[a-f0-9]{24}$/.test(id)) ||
+      typeof operationId !== 'string' || !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(operationId)) {
+    throw new OError('Invalid deletion identity')
+  }
+  const receipt = await fetchJson(
+    `${BASE_URL}/project/${projectId}/doc/${docId}/deletion/cleanup`,
+    { method: 'POST', json: { operationId }, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) }
+  )
+  if (receipt?.projectId !== projectId || receipt?.docId !== docId ||
+      receipt?.operationId !== operationId || receipt?.cacheCleared !== true) {
+    throw new OError('Invalid deletion cleanup acknowledgement')
+  }
+  return receipt
+}
+
+
+
+
+
+
+
+async function setDocument(projectId, docId, userId, docLines, source, expectedVersion) {
   const maybeJson = await fetchString(
-    `${BASE_URL}/project/${projectId}/doc/${docId}`,
+    `${BASE_URL}/project/${projectId}/doc/${docId}${expectedVersion === undefined ? '' : '/conditional'}`,
     {
       method: 'POST',
       json: {
         lines: docLines,
         source,
         user_id: userId,
+        expectedVersion,
       },
       signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     }
@@ -534,6 +621,16 @@ const DocumentUpdaterHandler = {
   getProjectLastUpdatedAt,
   getProjectRanges,
   setDocument,
+
+
+
+  prepareDocumentDeletion,
+  queueReviewedDeletionHistory,
+
+
+  cleanupDocumentDeletion,
+  inspectDocumentDeletion,
+
   appendToDocument,
   getProjectDocsIfMatch,
   clearProjectState,

@@ -1,0 +1,251 @@
+WARNING: The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested
+TAP version 13
+# Subtest: disabled, anonymous and unauthorized requests cannot access native repository storage
+ok 1 - disabled, anonymous and unauthorized requests cannot access native repository storage
+  ---
+  duration_ms: 4.105666
+  type: 'test'
+  ...
+# Subtest: HTTP command rejects traversal project IDs, unknown commands and supplied filesystem/config fields
+ok 2 - HTTP command rejects traversal project IDs, unknown commands and supplied filesystem/config fields
+  ---
+  duration_ms: 9.64625
+  type: 'test'
+  ...
+# Subtest: authenticated request is bound to the session user and authorized project, with no-store responses
+ok 3 - authenticated request is bound to the session user and authorized project, with no-store responses
+  ---
+  duration_ms: 1.206833
+  type: 'test'
+  ...
+# Subtest: pending editor integration reports unavailable without pretending a command succeeded
+ok 4 - pending editor integration reports unavailable without pretending a command succeeded
+  ---
+  duration_ms: 1.908583
+  type: 'test'
+  ...
+# Subtest: Overleaf adapter reads native document lines and binary asset bytes without normalizing them
+ok 5 - Overleaf adapter reads native document lines and binary asset bytes without normalizing them
+  ---
+  duration_ms: 18.930541
+  type: 'test'
+  ...
+# Subtest: applies through existing document-version CAS and native create/delete APIs inside exclusive write scope
+ok 6 - applies through existing document-version CAS and native create/delete APIs inside exclusive write scope
+  ---
+  duration_ms: 24.834875
+  type: 'test'
+  ...
+# Subtest: whole transfer preflight prevents any mutation if a collaborator changed one source file
+ok 7 - whole transfer preflight prevents any mutation if a collaborator changed one source file
+  ---
+  duration_ms: 6.237291
+  type: 'test'
+  ...
+# Subtest: same bytes with a different document identity are not accepted as the original file
+ok 8 - same bytes with a different document identity are not accepted as the original file
+  ---
+  duration_ms: 3.194875
+  type: 'test'
+  ...
+# Subtest: adapter cannot mutate a project until production exclusive-access integration is supplied
+ok 9 - adapter cannot mutate a project until production exclusive-access integration is supplied
+  ---
+  duration_ms: 1.827167
+  type: 'test'
+  ...
+# Subtest: B commit, old branch checkout, and branch-specific unfinished files follow native worktrees
+ok 10 - B commit, old branch checkout, and branch-specific unfinished files follow native worktrees
+  ---
+  duration_ms: 2420.109835
+  type: 'test'
+  ...
+# Subtest: native index staging and commit include only selected changes, including deletion and unusual filenames
+ok 11 - native index staging and commit include only selected changes, including deletion and unusual filenames
+  ---
+  duration_ms: 1356.963917
+  type: 'test'
+  ...
+# Subtest: create from older commit and detached checkout do not move branches
+ok 12 - create from older commit and detached checkout do not move branches
+  ---
+  duration_ms: 1620.283
+  type: 'test'
+  ...
+# Subtest: stash preserves tracked, staged and untracked work through native Git
+ok 13 - stash preserves tracked, staged and untracked work through native Git
+  ---
+  duration_ms: 1412.906876
+  type: 'test'
+  ...
+# Subtest: publish, fetch and pull use a real bare remote; local commit is visible before push
+ok 14 - publish, fetch and pull use a real bare remote; local commit is visible before push
+  ---
+  duration_ms: 2416.819751
+  type: 'test'
+  ...
+# Subtest: merge conflict is native unmerged index and abort restores original HEAD
+ok 15 - merge conflict is native unmerged index and abort restores original HEAD
+  ---
+  duration_ms: 1807.954625
+  type: 'test'
+  ...
+# Subtest: unsafe inputs cannot become options or escape the worktree
+ok 16 - unsafe inputs cannot become options or escape the worktree
+  ---
+  duration_ms: 470.723084
+  type: 'test'
+  ...
+# Subtest: resolved merge creates real two-parent commit and graph topology
+ok 17 - resolved merge creates real two-parent commit and graph topology
+  ---
+  duration_ms: 1859.996876
+  type: 'test'
+  ...
+# Subtest: cherry-pick, revert and reset are native operations, preserving soft-reset staged content
+ok 18 - cherry-pick, revert and reset are native operations, preserving soft-reset staged content
+  ---
+  duration_ms: 2028.41371
+  type: 'test'
+  ...
+# Subtest: rebase uses native parent rewriting and does not alter the other branch
+ok 19 - rebase uses native parent rewriting and does not alter the other branch
+  ---
+  duration_ms: 1556.000251
+  type: 'test'
+  ...
+# Subtest: worktree removal refuses unfinished work and branch deletion refuses an active worktree
+ok 20 - worktree removal refuses unfinished work and branch deletion refuses an active worktree
+  ---
+  duration_ms: 1484.621959
+  type: 'test'
+  ...
+# Subtest: unborn repository has empty graph and can unstage before its first commit
+ok 21 - unborn repository has empty graph and can unstage before its first commit
+  ---
+  duration_ms: 405.760042
+  type: 'test'
+  ...
+# Subtest: branch-filtered graph returns ancestry of requested branch, not a range against current HEAD
+ok 22 - branch-filtered graph returns ancestry of requested branch, not a range against current HEAD
+  ---
+  duration_ms: 1297.323542
+  type: 'test'
+  ...
+# Subtest: project bridge commits B files, shows old content on repo-test, and restores each dirty branch
+ok 23 - project bridge commits B files, shows old content on repo-test, and restores each dirty branch
+  ---
+  duration_ms: 2336.598793
+  type: 'test'
+  ...
+# Subtest: interrupted project transfer never exports mixed files into the old branch, and resumes idempotently
+ok 24 - interrupted project transfer never exports mixed files into the old branch, and resumes idempotently
+  ---
+  duration_ms: 1492.165709
+  type: 'test'
+  ...
+# Subtest: resuming an interrupted switch refuses to overwrite a newer collaborator value
+ok 25 - resuming an interrupted switch refuses to overwrite a newer collaborator value
+  ---
+  duration_ms: 1084.163042
+  type: 'test'
+  ...
+# Subtest: export preserves staged index, ignored files and binary bytes; supports file/folder transitions
+ok 26 - export preserves staged index, ignored files and binary bytes; supports file/folder transitions
+  ---
+  duration_ms: 865.186293
+  type: 'test'
+  ...
+# Subtest: invalid paths, nested .git and symlinks are rejected before replacing any file
+ok 27 - invalid paths, nested .git and symlinks are rejected before replacing any file
+  ---
+  duration_ms: 585.617334
+  type: 'test'
+  ...
+# Subtest: canceling an interrupted transfer restores old branch and retains later collaborator edits
+ok 28 - canceling an interrupted transfer restores old branch and retains later collaborator edits
+  ---
+  duration_ms: 1320.3485
+  type: 'test'
+  ...
+# Subtest: native stash and pop update editor files and preserve the native staged index
+ok 29 - native stash and pop update editor files and preserve the native staged index
+  ---
+  duration_ms: 1887.621334
+  type: 'test'
+  ...
+# Subtest: interrupted import after native reset resumes without rerunning Git or exporting stale editor files
+ok 30 - interrupted import after native reset resumes without rerunning Git or exporting stale editor files
+  ---
+  duration_ms: 1387.480917
+  type: 'test'
+  ...
+# Subtest: native merge conflicts are imported into editor and native abort restores editor content
+ok 31 - native merge conflicts are imported into editor and native abort restores editor content
+  ---
+  duration_ms: 2296.31625
+  type: 'test'
+  ...
+# Subtest: a new process can resume a persisted native-operation transfer without invoking the Git command again
+ok 32 - a new process can resume a persisted native-operation transfer without invoking the Git command again
+  ---
+  duration_ms: 1494.229667
+  type: 'test'
+  ...
+# Subtest: command adapter uses the requesting author and native index, refs, diffs and branch checkout
+ok 33 - command adapter uses the requesting author and native index, refs, diffs and branch checkout
+  ---
+  duration_ms: 2930.275543
+  type: 'test'
+  ...
+# Subtest: AI commit message receives staged content and native diff, excluding unstaged and unselected edits
+ok 34 - AI commit message receives staged content and native diff, excluding unstaged and unselected edits
+  ---
+  duration_ms: 1330.089792
+  type: 'test'
+  ...
+# Subtest: AI result is rejected if the staged native tree changes while generating
+ok 35 - AI result is rejected if the staged native tree changes while generating
+  ---
+  duration_ms: 1402.567292
+  type: 'test'
+  ...
+# Subtest: native diff displays untracked additions and the root commit without a fabricated parent
+ok 36 - native diff displays untracked additions and the root commit without a fabricated parent
+  ---
+  duration_ms: 881.784542
+  type: 'test'
+  ...
+# Subtest: unsupported clustered Redis keeps ordinary edits working and refuses exclusive Git transfers
+ok 37 - unsupported clustered Redis keeps ordinary edits working and refuses exclusive Git transfers
+  ---
+  duration_ms: 5.58475
+  type: 'test'
+  ...
+# Subtest: exclusive transfer admits only its own internal document requests and rejects new queued edits atomically
+ok 38 - exclusive transfer admits only its own internal document requests and rejects new queued edits atomically
+  ---
+  duration_ms: 34.072291
+  type: 'test'
+  ...
+# Subtest: lease renews while active, releases after errors, and does not erase a replacement owner
+ok 39 - lease renews while active, releases after errors, and does not erase a replacement owner
+  ---
+  duration_ms: 520.376501
+  type: 'test'
+  ...
+# Subtest: deadline expires privileged writes, while disabled integration leaves normal editing unchanged
+ok 40 - deadline expires privileged writes, while disabled integration leaves normal editing unchanged
+  ---
+  duration_ms: 197.048292
+  type: 'test'
+  ...
+1..40
+# tests 40
+# suites 0
+# pass 40
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 45186.966811

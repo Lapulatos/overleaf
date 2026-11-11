@@ -246,6 +246,39 @@ describe('DocumentUpdaterManager', function () {
       ctx.rclient.rpush = sinon.stub().resolves()
     })
 
+    it('does not enqueue or notify an edit rejected by the active project write gate', async function (ctx) {
+      const previous = process.env.OVERLEAF_NATIVE_GIT_ENABLED
+      process.env.OVERLEAF_NATIVE_GIT_ENABLED = 'true'
+      ctx.rclient.eval = sinon.stub().resolves(0)
+      try {
+        let rejected = false
+        try { await ctx.DocumentUpdaterManager.promises.queueChange(ctx.project_id, ctx.doc_id, ctx.change) }
+        catch { rejected = true }
+        expect(rejected).to.equal(true)
+        expect(ctx.rclient.eval.calledOnce).to.equal(true)
+        expect(ctx.rclient.rpush.called).to.equal(false)
+      } finally {
+        if (previous === undefined) delete process.env.OVERLEAF_NATIVE_GIT_ENABLED
+        else process.env.OVERLEAF_NATIVE_GIT_ENABLED = previous
+      }
+    })
+
+    it('notifies the dispatcher only after an edit is atomically admitted', async function (ctx) {
+      const previous = process.env.OVERLEAF_NATIVE_GIT_ENABLED
+      process.env.OVERLEAF_NATIVE_GIT_ENABLED = 'true'
+      ctx.rclient.eval = sinon.stub().resolves(1)
+      try {
+        await ctx.DocumentUpdaterManager.promises.queueChange(ctx.project_id, ctx.doc_id, ctx.change)
+        expect(ctx.rclient.eval.calledOnce).to.equal(true)
+        expect(ctx.rclient.rpush.calledOnce).to.equal(true)
+        expect(ctx.rclient.rpush.firstCall.args[0]).toMatch(/^pending-updates-list/)
+        sinon.assert.callOrder(ctx.rclient.eval, ctx.rclient.rpush)
+      } finally {
+        if (previous === undefined) delete process.env.OVERLEAF_NATIVE_GIT_ENABLED
+        else process.env.OVERLEAF_NATIVE_GIT_ENABLED = previous
+      }
+    })
+
     describe('successfully', function () {
       beforeEach(async function (ctx) {
         await ctx.DocumentUpdaterManager.promises.queueChange(

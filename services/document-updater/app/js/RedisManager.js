@@ -6,7 +6,10 @@ const { callbackifyAll } = require('@overleaf/promise-utils')
 const metrics = require('./Metrics')
 const Errors = require('./Errors')
 const crypto = require('node:crypto')
+const { StringFileData } = require('overleaf-editor-core')
 const { docIsTooLarge } = require('./Limits')
+const { createDocumentDeletionFence } = require('./DocumentDeletionFence')
+const { db } = require('./mongodb')
 
 const rclient = RedisWrapper.createClient(Settings.redis.documentupdater)
 
@@ -26,8 +29,21 @@ const MEGABYTES = 1024 * 1024
 const MAX_RANGES_SIZE = 3 * MEGABYTES
 
 const keys = Settings.redis.documentupdater.key_schema
+const deletionFence = createDocumentDeletionFence(rclient, keys)
+const { createProjectWriteGate } = require('@overleaf/redis-wrapper/ProjectWriteGate')
+const projectWriteGate = createProjectWriteGate(rclient)
 
 const RedisManager = {
+  async withDocumentWriteContext(projectId, docId, action) {
+    return projectWriteGate.withWriter(projectId, () => deletionFence.withOperation(docId, async () => {
+      return Boolean(await db.documentDeletionReservations.findOne({
+        _id: `${projectId}:${docId}`,
+        projectId,
+        docId,
+        state: { $in: ['fenced', 'committing', 'committed'] },
+      }, { projection: { _id: 1 }, readPreference: 'primary' }))
+    }, action))
+  },
   async putDocInMemory(
     projectId,
     docId,
@@ -100,7 +116,7 @@ const RedisManager = {
     // The curly braces identify a hash key for Redis and ensures that
     // the MULTI's operations are all done on the same node in a
     // cluster environment.
-    const multi = rclient.multi()
+    const multi = deletionFence.batch(docId)
     multi.mset({
       [keys.docLines({ doc_id: docId })]: docLines,
       [keys.projectKey({ doc_id: docId })]: projectId,
@@ -124,7 +140,7 @@ const RedisManager = {
       await multi.exec()
     } catch (err) {
       throw OError.tag(err, 'failed to write doc to Redis in MULTI', {
-        previousErrors: err.previousErrors.map(e => ({
+        previousErrors: (err.previousErrors || []).map(e => ({
           name: e.name,
           message: e.message,
           command: e.command,
@@ -441,7 +457,8 @@ const RedisManager = {
     // The curly braces identify a hash key for Redis and ensures that
     // the MULTI's operations are all done on the same node in a
     // cluster environment.
-    const multi = rclient.multi()
+    // Reject a stale writer even if its update-lock lease expired after the read.
+    const multi = deletionFence.batch(docId, currentVersion)
     multi.mset({
       [keys.docLines({ doc_id: docId })]: newDocLines,
       [keys.docVersion({ doc_id: docId })]: newVersion,
@@ -466,6 +483,9 @@ const RedisManager = {
     await multi.exec()
   },
 
+  // This proves a Redis mutation, not durable docstore/history completion.
+
+
   async renameDoc(projectId, docId, userId, update, projectHistoryId) {
     const { lines, version } = await RedisManager.getDoc(projectId, docId)
     if (lines != null && version != null) {
@@ -479,7 +499,9 @@ const RedisManager = {
           status: update.newPathname === '' ? 'zero-length' : 'undefined',
         })
       }
-      await rclient.set(keys.pathname({ doc_id: docId }), update.newPathname)
+      const multi = deletionFence.batch(docId)
+      multi.set(keys.pathname({ doc_id: docId }), update.newPathname)
+      await multi.exec()
     }
   },
 
@@ -488,11 +510,13 @@ const RedisManager = {
   },
 
   async updateCommentState(docId, commentId, resolved) {
+    const multi = deletionFence.batch(docId)
     if (resolved) {
-      await rclient.sadd(keys.resolvedCommentIds({ doc_id: docId }), commentId)
+      multi.sadd(keys.resolvedCommentIds({ doc_id: docId }), commentId)
     } else {
-      await rclient.srem(keys.resolvedCommentIds({ doc_id: docId }), commentId)
+      multi.srem(keys.resolvedCommentIds({ doc_id: docId }), commentId)
     }
+    await multi.exec()
   },
 
   async getDocIdsInProject(projectId) {

@@ -1,0 +1,27 @@
+import {useEffect,useMemo,useState} from 'react'
+import {OLModal,OLModalHeader,OLModalTitle,OLModalBody} from '@/shared/components/ol/ol-modal'
+import {getJSON} from '@/infrastructure/fetch-json'
+import type {Venue} from './submission-deadlines'
+import {requestCurrentLocation,useLocationEnabled,type LocationPoint} from './venue-location-preferences'
+import VenueLocationGlobe,{type Destination} from './venue-location-globe'
+import './venue-location.css'
+type SiteResult={areaFallback?:boolean;matchedQuery?:string;place:string;candidates:Destination[];error?:string}
+type LocationResult=SiteResult&{locations?:SiteResult[];attribution:string;checked:string}
+export default function VenueLocationDialog({venue,onHide}:{venue:Venue;onHide:()=>void}){
+ const enabled=useLocationEnabled();const [data,setData]=useState<LocationResult|null>(null);const [error,setError]=useState('');const [retry,setRetry]=useState(0);const [choices,setChoices]=useState<Record<string,number>>({});const [origin,setOrigin]=useState<LocationPoint|null>(null);const [originStatus,setOriginStatus]=useState('')
+ useEffect(()=>{const controller=new AbortController();setData(null);setError('');setChoices({});getJSON<LocationResult>('/writing-assist/submission-deadlines/location?id='+encodeURIComponent(venue.id),{signal:controller.signal}).then(result=>{if(!controller.signal.aborted)setData(result)}).catch(error=>{if(!controller.signal.aborted)setError(error instanceof Error?error.message:'Location lookup failed.')});return()=>controller.abort()},[venue.id,retry])
+ useEffect(()=>{let active=true;setOrigin(null);if(!enabled){setOriginStatus('Current location is off.');return}setOriginStatus('Finding your current location…');requestCurrentLocation().then(point=>{if(active){setOrigin(point);setOriginStatus('Your location stays in this browser.')}}).catch(error=>{if(active)setOriginStatus(error instanceof Error?error.message:'Current location is unavailable.')});return()=>{active=false}},[enabled,retry])
+ const sites=useMemo(()=>data?(data.locations||[data]):[],[data])
+ const destinations=useMemo(()=>sites.flatMap(site=>{const point=site.candidates[choices[site.place]||0];return point?[{...point,site:site.place}]:[]}),[sites,choices])
+ const destination=destinations[0]
+ function openSettings(){onHide();window.dispatchEvent(new CustomEvent('ui.toggle-left-menu',{detail:true}));window.dispatchEvent(new CustomEvent('ui.focus-setting',{detail:'venue-location-settings'}))}
+ return <OLModal show onHide={onHide} size="lg" className="venue-location-modal" aria-labelledby="venue-location-title"><OLModalHeader closeButton><OLModalTitle id="venue-location-title">{venue.title} {venue.year||''} · Location</OLModalTitle></OLModalHeader><OLModalBody>
+  <div className="venue-location-layout"><aside className="venue-location-info"><span className="venue-location-eyebrow">Conference destination</span><h3>{venue.place}</h3>{venue.date&&!/\b(tbd|tba|tbc|unknown|tentative|provisional|not confirmed|to be announced)\b/i.test(venue.date)&&<p>{venue.date}</p>}
+   {sites.map((site,i)=>{const point=site.candidates[choices[site.place]||0];return <section className="venue-location-site" key={site.place} aria-label={`Location ${i+1}: ${site.place}`}>
+    {sites.length>1&&<h4>{i+1}. {site.place}</h4>}{point?<><p className="venue-location-precision">City / area location</p>{site.areaFallback&&<p className="deadline-footnote">Showing the surrounding city / area. The exact venue address is not confirmed.</p>}<p className="venue-location-address">{point.label}</p>{site.candidates.length>1&&<label className="venue-location-choice">Matched area for {site.place}<select value={choices[site.place]||0} onChange={event=>setChoices(current=>({...current,[site.place]:Number(event.target.value)}))}>{site.candidates.map((item,index)=><option value={index} key={`${item.latitude},${item.longitude}`}>{item.label}</option>)}</select></label>}<a href={point.source} target="_blank" rel="noopener noreferrer">Location source ↗</a></>:<><p role="status">{site.error||'No matching physical location was found for this site.'}</p><a href={'https://www.openstreetmap.org/search?query='+encodeURIComponent(site.place)} target="_blank" rel="noopener noreferrer">Search this site on OpenStreetMap ↗</a></>}</section>})}
+   {sites.some(site=>!site.candidates.length)&&<button type="button" onClick={()=>setRetry(n=>n+1)}>Retry locations</button>}
+   <div className="venue-location-origin"><strong>Your starting point</strong><p role="status">{originStatus}</p><button type="button" onClick={openSettings}>Location settings</button></div>
+   {venue.website&&<a href={venue.website} target="_blank" rel="noopener noreferrer">Conference Link ↗</a>}
+  </aside><div className="venue-location-visual">{error?<div className="venue-location-empty"><p role="alert">{error}</p><button type="button" onClick={()=>setRetry(n=>n+1)}>Retry location</button></div>:!data?<p className="venue-location-empty" role="status">Finding the conference area…</p>:destination?<VenueLocationGlobe destination={destination} destinations={destinations} origin={origin}/>:<div className="venue-location-empty"><p>No matching physical location was found.</p><button type="button" onClick={()=>setRetry(n=>n+1)}>Retry location</button><a href={'https://www.openstreetmap.org/search?query='+encodeURIComponent(venue.place||'')} target="_blank" rel="noopener noreferrer">Search this location on OpenStreetMap ↗</a></div>}</div></div>
+ </OLModalBody></OLModal>
+}

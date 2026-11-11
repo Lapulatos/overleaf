@@ -1,0 +1,16 @@
+✔ disabled, anonymous and unauthorized requests cannot access native repository storage (2.326167ms)
+✔ HTTP command rejects traversal project IDs, unknown commands and supplied filesystem/config fields (1.935417ms)
+✔ authenticated request is bound to the session user and authorized project, with no-store responses (0.344417ms)
+✔ pending editor integration reports unavailable without pretending a command succeeded (0.2955ms)
+✔ project lock contention returns JSON 503 with Retry-After instead of a generic 500 page (0.121875ms)
+✔ lock acquisition timeout is retryable without running the Git operation (1.213709ms)
+✔ a timeout after acquisition remains the original operation error and is not retried (0.220125ms)
+✔ successful operation and non-timeout lock errors retain original results (0.220541ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 314.672

@@ -16,7 +16,7 @@ const ENCRYPTION_KEY = settings.writingAssist?.encryptionKey ?? 'dev-key-change-
 /**
  * Run a text transform.
  *
- * @param {{ text: string, action: string, targetLanguage?: string, customInstruction?: string, lengthRatio?: number, provider: string, providerConfig: { apiKey: string, model: string, endpoint?: string, timeout?: number } }} params
+ * @param {{ text: string, action: string, targetLanguage?: string, customInstruction?: string, lengthRatio?: number, provider: string, providerConfig: { apiKey: string, model: string, endpoint?: string, timeout?: number, signal?: AbortSignal } }} params
  * @returns {Promise<{ result: string }>}
  */
 async function transform(params) {
@@ -26,7 +26,7 @@ async function transform(params) {
     throw Object.assign(new Error('Empty text'), { statusCode: 400 })
   }
 
-  if (!providerConfig.apiKey) {
+  if (provider !== 'agent' && !providerConfig.apiKey) {
     throw Object.assign(new Error('API key not configured'), { statusCode: 400 })
   }
 
@@ -51,7 +51,7 @@ async function transform(params) {
   // Mask LaTeX — keep tokens so we can unmask the LLM response
   const { maskedText, tokens } = WritingAssistLaTeXMasker.mask(truncated)
 
-  const apiKey = providerConfig.apiKey.startsWith('enc:')
+  const apiKey = providerConfig.apiKey?.startsWith('enc:')
     ? WritingAssistEncryption.decrypt(providerConfig.apiKey.slice(4), ENCRYPTION_KEY)
     : providerConfig.apiKey
 
@@ -64,7 +64,7 @@ async function transform(params) {
   for (let attempt = 0; attempt <= RETRY_ATTEMPTS; attempt++) {
     try {
       const rawResponse = await WritingAssistLLMProvider.check(
-        { provider, apiKey, model: providerConfig.model, endpoint: providerConfig.endpoint, timeout: providerConfig.timeout ?? DEFAULT_TIMEOUT },
+        { provider, apiKey, model: providerConfig.model, endpoint: providerConfig.endpoint, timeout: providerConfig.timeout ?? DEFAULT_TIMEOUT, signal: providerConfig.signal },
         truncated,
         systemPrompt,
         [], // enabledCategories not needed for transform

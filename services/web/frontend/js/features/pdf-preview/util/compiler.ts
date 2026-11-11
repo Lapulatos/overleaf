@@ -1,3 +1,4 @@
+import { compileWithRetry } from './compile-with-retry'
 import { isMainFile } from './editor-files'
 import getMeta from '../../../utils/meta'
 import { deleteJSON, postJSON } from '../../../infrastructure/fetch-json'
@@ -152,9 +153,10 @@ export default class DocumentCompiler {
         editorId: EDITOR_SESSION_ID,
       }
 
-      const data: CompileResponseData = await postJSON(
-        `/project/${this.projectId}/compile?${params}`,
-        { body, signal: this.signal }
+      const data = await compileWithRetry<CompileResponseData>(
+        () => postJSON(`/project/${this.projectId}/compile?${params}`, { body, signal: this.signal }),
+        !!options.isAutoCompileOnLoad,
+        this.signal
       )
 
       const compileTimeClientE2E = Math.ceil(performance.now() - t0)

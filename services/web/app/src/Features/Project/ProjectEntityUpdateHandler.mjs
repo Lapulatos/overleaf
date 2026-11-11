@@ -23,8 +23,17 @@ import FileWriter from '../../infrastructure/FileWriter.mjs'
 import EditorRealTimeController from '../Editor/EditorRealTimeController.mjs'
 import { callbackifyMultiResult, callbackify } from '@overleaf/promise-utils'
 import { iterablePaths } from './IterablePath.mjs'
+import ProjectWriteGate from '@overleaf/redis-wrapper/ProjectWriteGate.js'
 
 const LOCK_NAMESPACE = 'sequentialProjectStructureUpdateLock'
+async function withinProjectStructureWrite(projectId, action, lockManager) {
+  const scope = ProjectWriteGate.current(projectId)
+  if (scope?.structureLocked && scope.assertWrite) {
+    await scope.assertWrite()
+    return action()
+  }
+  return lockManager.promises.runWithLock(LOCK_NAMESPACE, projectId, action)
+}
 const VALID_ROOT_DOC_EXTENSIONS = Settings.validRootDocExtensions
 const VALID_ROOT_DOC_REGEXP = new RegExp(
   `^\\.(${VALID_ROOT_DOC_EXTENSIONS.join('|')})$`,
@@ -37,9 +46,7 @@ function wrapWithLock(methodWithoutLock, lockManager = LockManager) {
   // the doc-updater in the same order.
   if (typeof methodWithoutLock === 'function') {
     const methodWithLock = async (projectId, ...rest) => {
-      return lockManager.promises.runWithLock(LOCK_NAMESPACE, projectId, () =>
-        methodWithoutLock(projectId, ...rest)
-      )
+      return withinProjectStructureWrite(projectId, () => methodWithoutLock(projectId, ...rest), lockManager)
     }
     methodWithLock.withoutLock = methodWithoutLock
     return methodWithLock
@@ -48,9 +55,7 @@ function wrapWithLock(methodWithoutLock, lockManager = LockManager) {
     const mainTask = methodWithoutLock.withLock
     const methodWithLock = async (projectId, ...rest) => {
       const arg = await methodWithoutLock.beforeLock(projectId, ...rest)
-      return lockManager.promises.runWithLock(LOCK_NAMESPACE, projectId, () =>
-        mainTask(arg)
-      )
+      return withinProjectStructureWrite(projectId, () => mainTask(arg), lockManager)
     }
     methodWithLock.withoutLock = async (...args) => {
       return await mainTask(await methodWithoutLock.beforeLock(...args))

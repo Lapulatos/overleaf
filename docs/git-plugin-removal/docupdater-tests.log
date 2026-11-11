@@ -1,0 +1,925 @@
+Using default settings from /Users/sujie/Documents/Codes/Python/overleaf/services/document-updater/config/settings.defaults.js
+
+
+  Deletion recovery transport
+Set UV_THREADPOOL_SIZE=16
+    ✔ uses the exact operation private route and bounded authenticated request
+    ✔ rejects untrusted path identities without a request
+    ✔ propagates failure without automatically retrying the operation
+
+  DiffCodec
+    diffAsShareJsOps
+      ✔ should insert new text correctly
+      ✔ should shift later inserts by previous inserts
+      ✔ should delete text correctly
+      ✔ should shift later deletes by the first deletes
+
+  DispatchManager
+    each worker
+      ✔ should create a new redis client
+      _waitForUpdateThenDispatchWorker
+        in the normal case
+          ✔ should call redis with BLPOP
+          ✔ should call processOutstandingUpdatesWithLock
+          ✔ should not log any errors
+          ✔ should call the callback
+        with an error
+          ✔ should log an error
+          ✔ should call the callback
+        with a 'Delete component' error
+          ✔ should log a debug message
+          ✔ should call the callback
+        pending updates list with shard key
+          ✔ should call redis with BLPOP with the correct key
+      run
+        ✔ should call _waitForUpdateThenDispatchWorker until shutting down (102ms)
+
+  DocumentDeletionManager
+    ✔ drains, flushes, persists denial, fences exact snapshot then acknowledges committing
+    ✔ rejects a newer queued edit and releases only its preparing record
+    ✔ retains durable denial after a fence failure
+    ✔ recovers fenced cached snapshots without processing edits or loading persistence
+    ✔ does not reopen a fenced document when its recovery proof is unavailable
+    ✔ recovers native missing-cache representation with version zero without loading content
+    ✔ rejects a proof from another operation or changed snapshot
+    ✔ does not use missing-cache recovery for a partial cache
+    ✔ keeps the durable fence when atomic missing-cache reservation fails
+    ✔ returns committing receipts without replaying preparation
+    ✔ rejects other operations and releases the document lock
+    ✔ matches native leading-slash paths but reserves the exact cached pathname
+    ✔ hashes history-OT text but fences its original serialized representation
+    ✔ rejects malformed identities before acquiring locks or reading storage
+    ✔ recovers a lost durable acknowledgement using the same operation
+    ✔ does not advance the durable state when flushing fails
+    cleanup
+      ✔ inspects complete prerequisites without eviction, reload or marker writes
+      ✔ refuses inspection when durable cleanup prerequisites are absent
+      ✔ retains protection then evicts without loading or flushing deleted content
+      ✔ rejects storage that is not soft-deleted
+      ✔ rejects a document restored into the filetree
+      ✔ rejects missing history confirmation and wrong snapshot binding
+      ✔ does not acknowledge incomplete cache eviction
+
+  DocumentManager
+    flushAndDeleteDoc
+      successfully
+        ✔ should flush the doc
+        ✔ should remove the doc from redis
+      when a flush error occurs
+        ✔ should not remove the doc from redis
+        when ignoring flush errors
+          ✔ should remove the doc from redis
+    flushDocIfLoaded
+      when the doc is in Redis
+        ✔ should get the doc from redis
+        ✔ should write the doc lines to the persistence layer
+      when the document is not in Redis
+        ✔ should get the doc from redis
+        ✔ should not write anything to the persistence layer
+    getDocAndRecentOps
+      with a previous version specified
+        ✔ should get the doc
+        ✔ should get the doc ops
+        ✔ should return the doc info
+      with no previous version specified
+        ✔ should get the doc
+        ✔ should not need to get the doc ops
+        ✔ should return the doc info
+    getDoc
+      when the doc exists in Redis
+        ✔ should get the doc from Redis
+        ✔ should return the doc info
+      when the doc does not exist in Redis
+        ✔ should try to get the doc from Redis
+        ✔ should get the doc from the PersistenceManager
+        ✔ should set the doc in Redis
+        ✔ should return doc info
+    setDoc
+      ✔ rejects stale versions before calculating or applying an update
+      with plain tex lines
+        when not loaded but with the same content
+          ✔ should not apply the diff as a ShareJS op
+          ✔ should increment the external update metric
+          ✔ should flush and delete the doc from redis
+        when already loaded with the same content
+          ✔ should not apply the diff as a ShareJS op
+          ✔ should increment the external update metric
+          ✔ should flush the doc to Mongo
+        when already loaded
+          ✔ should get the current doc lines
+          ✔ should return a diff of the old and new lines
+          ✔ should apply the diff as a ShareJS op
+          ✔ should increment the external update metric
+          ✔ should flush the doc to Mongo
+          ✔ should not flush the project history
+        when not already loaded
+          ✔ should flush and delete the doc from the doc updater
+          ✔ should increment the external update metric
+          ✔ should not flush the project history
+        without new lines
+          ✔ should not try to get the doc lines
+        with the undoing flag
+          ✔ should set the undo flag on each op
+        with the external flag
+          ✔ should add the external type to update metadata
+        without the external flag
+          ✔ should not add the external type to update metadata
+    acceptChanges
+      successfully with a single change
+        ✔ should get the document's current ranges
+        ✔ should apply the accept change to the ranges
+        ✔ should save the updated ranges
+        ✔ should return the change contributors
+      successfully with multiple changes
+        ✔ should apply the accept change to the ranges
+        ✔ should return the change contributors
+      when the doc is not found
+        ✔ should not save anything
+    getComment
+      when comment exists
+        ✔ should get the document's current ranges
+      when comment doesnt exists
+        ✔ should get the document's current ranges
+    deleteComment
+      successfully
+        ✔ should get the document's current ranges
+        ✔ should delete the comment from the ranges
+        ✔ should save the updated ranges
+        ✔ should unset the comment resolved state
+        ✔ should queue the delete comment operation
+      when the doc is not found
+        ✔ should not save anything
+    getDocAndFlushIfOld
+      when the doc is in Redis
+        and has changes to be flushed
+          ✔ should get the doc
+          ✔ should flush the doc
+          ✔ should return the lines and versions
+        and has only changes that don't need to be flushed
+          ✔ should get the doc
+          ✔ should not flush the doc
+          ✔ should return the lines and versions
+      when the doc is not in Redis
+        ✔ should get the doc
+        ✔ should not flush the doc
+        ✔ should return the lines and versions
+    renameDoc
+      successfully
+        ✔ should rename the document
+    resyncDocContents
+      when doc is loaded in redis
+        ✔ gets the doc contents from redis
+        ✔ queues a resync doc content update
+      when doc is not loaded in redis
+        ✔ tries to get the doc contents from redis
+        ✔ gets the doc contents from web
+        ✔ queues a resync doc content update
+      when a doc has no ranges in docstore
+        ✔ gets the doc contents from web
+        ✔ queues a resync doc content update with an empty ranges object
+    appendToDoc
+      sucessfully
+        ✔ should call setDoc with concatenated lines
+        ✔ should return output from setDoc
+      when doc would become too big
+        ✔ should fail with FileTooLarge error
+
+  HistoryConversions
+    toHistoryRanges
+      ✔ handles empty ranges
+      ✔ doesn't modify comments when there are no tracked changes
+      ✔ adjusts comments and tracked changes to account for tracked deletes
+
+  HistoryManager
+    flushProjectChangesAsync
+      ✔ should send a request to the project history api
+    flushProjectChanges
+      in the normal case
+        ✔ should send a request to the project history api
+      with the skip_history_flush option
+        ✔ should not send a request to the project history api
+    recordAndFlushHistoryOps
+      with no ops
+        ✔ should not flush project changes
+      with enough ops to flush project changes
+        ✔ should flush project changes
+      shouldFlushHistoryOps
+        ✔ should return false if the number of ops is not known
+        ✔ should return false if the updates didn't take us past the threshold
+        ✔ should return true if the updates took past the threshold
+        ✔ should return true if the project has a short queue
+    resyncProjectHistory
+      error
+        ✔ should throw directly
+      full sync
+        ✔ should queue a project structure reync
+        ✔ should queue doc content reyncs
+      resyncProjectStructureOnly=true
+        ✔ should queue a project structure reync
+        ✔ should not queue doc content reyncs
+
+  HttpController
+    prepareDocumentDeletion
+      ✔ is disabled by default without touching documents
+      ✔ returns only the bound operation and state
+      ✔ returns explicit conflict without internal details
+      ✔ propagates storage failure rather than acknowledging preparation
+    queueReviewedDeletionHistory
+      ✔ is disabled without enqueueing
+      ✔ acknowledges only the requested operation after enqueue
+      ✔ does not acknowledge a failed enqueue
+    inspectDocumentDeletion
+      ✔ is disabled by default
+      ✔ uses URL identity and returns only the read-only status
+    cleanupDocumentDeletion
+      ✔ is disabled without touching the cache
+      ✔ returns the native scoped cleanup acknowledgement
+      ✔ rejects prerequisites without returning a cleanup acknowledgement
+    getDoc
+      when the document exists and no recent ops are requested
+        ✔ should get the doc
+        ✔ should return the doc as JSON
+        ✔ should log the request
+        ✔ should time the request
+      when recent ops are requested
+        ✔ should get the doc
+        ✔ should return the doc as JSON
+        ✔ should log the request
+        ✔ should time the request
+      when historyRanges query param is true
+        ✔ should get the doc
+        ✔ should return the doc as JSON with history ranges processing
+        ✔ should call addTrackedDeletesToContent for history ranges processing
+        ✔ should call toHistoryRanges for range conversion
+        ✔ should log the request with historyRanges: true
+        ✔ should time the request
+      when the document does not exist
+        ✔ should call next with NotFoundError
+      when an errors occurs
+        ✔ should call next with the error
+    getComment
+      ✔ should get the comment
+      ✔ should return the comment as JSON
+      ✔ should log the request
+    setDoc
+      ✔ returns 409 when a conditional write has a stale version
+      ✔ rejects malformed expected versions before writing
+      ✔ marks source=writing-assist, version=7, user=user-id-123 external=false
+      ✔ marks source=writing-assist, version=undefined, user=user-id-123 external=true
+      ✔ marks source=dropbox, version=7, user=user-id-123 external=true
+      ✔ marks source=writing-assist, version=7, user=undefined external=true
+      successfully
+        ✔ should set the doc
+        ✔ should return a json response with the document rev from web
+        ✔ should log the request
+        ✔ should time the request
+      when an errors occurs
+        ✔ should call next with the error
+      when the payload is too large
+        ✔ should send back a 406 response
+        ✔ should not call setDocWithLock
+    flushProject
+      successfully
+        ✔ should flush the project
+        ✔ should return a successful No Content response
+        ✔ should log the request
+        ✔ should time the request
+      when an errors occurs
+        ✔ should call next with the error
+    flushDocIfLoaded
+      successfully
+        ✔ should flush the doc
+        ✔ should return a successful No Content response
+        ✔ should log the request
+        ✔ should time the request
+      when an errors occurs
+        ✔ should call next with the error
+    deleteDoc
+      successfully
+        ✔ should flush and delete the doc
+        ✔ should flush project history
+        ✔ should return a successful No Content response
+        ✔ should log the request
+        ✔ should time the request
+      ignoring errors
+        ✔ should delete the doc
+        ✔ should return a successful No Content response
+      when an errors occurs
+        ✔ should flush project history
+        ✔ should call next with the error
+    deleteProject
+      successfully
+        ✔ should delete the project
+        ✔ should return a successful No Content response
+        ✔ should log the request
+        ✔ should time the request
+      with the background=true option from realtime
+        ✔ should queue the flush and delete
+      when an errors occurs
+        ✔ should call next with the error
+    acceptChanges
+      successfully with a single change
+        ✔ should accept the change
+        ✔ should return a successful 200 with a list of the change contributors
+        ✔ should log the request
+        ✔ should time the request
+      succesfully with with multiple changes
+        ✔ should accept the changes in the body payload
+        ✔ should log the request with the correct number of changes
+      when an errors occurs
+        ✔ should call next with the error
+    resolveComment
+      successfully
+        ✔ should accept the change
+        ✔ should return a successful No Content response
+        ✔ should log the request
+      when an errors occurs
+        ✔ should call next with the error
+    reopenComment
+      successfully
+        ✔ should accept the change
+        ✔ should return a successful No Content response
+        ✔ should log the request
+      when an errors occurs
+        ✔ should call next with the error
+    deleteComment
+      successfully
+        ✔ should accept the change
+        ✔ should return a successful No Content response
+        ✔ should log the request
+        ✔ should time the request
+      when an errors occurs
+        ✔ should call next with the error
+    getProjectDocsAndFlushIfOld
+      successfully
+        ✔ should get docs from the project manager
+        ✔ should return a successful response
+        ✔ should log the request
+        ✔ should log the response
+        ✔ should time the request
+      when there is a conflict
+        ✔ should return an HTTP 409 Conflict response
+      when an error occurs
+        ✔ should call next with the error
+    updateProject
+      successfully
+        ✔ should accept the change
+        ✔ should return a successful No Content response
+        ✔ should time the request
+      when an errors occurs
+        ✔ should call next with the error
+    resyncProjectHistory
+      successfully
+        ✔ should accept the change
+        ✔ should return a successful No Content response
+      when an errors occurs
+        ✔ should call next with the error
+    appendToDoc
+      successfully
+        ✔ should append to the doc
+        ✔ should return a json response with the document rev from web
+        ✔ should log the request
+        ✔ should time the request
+      when an errors occurs
+        ✔ should call next with the error
+      when the payload is too large
+        ✔ should send back a 422 response
+
+  Limits
+    getTotalSizeOfLines
+      ✔ should compute the character count for a document with multiple lines
+      ✔ should compute the character count for a document with a single line
+      ✔ should compute the character count for an empty document
+    docIsTooLarge
+      when the estimated size is below the limit
+        ✔ should return false when the estimated size is below the limit
+      when the estimated size is at the limit
+        ✔ should return false when the estimated size is at the limit
+      when the estimated size is above the limit
+        ✔ should return false when the actual character count is below the limit
+        ✔ should return false when the actual character count is at the limit
+        ✔ should return true when the actual character count is above the limit by 1
+        ✔ should return true when the actual character count is above the limit
+      when the document has many lines
+        ✔ should return false when the actual character count is below the limit 
+        ✔ should return true when the actual character count is above the limit
+    stringFileDataContentIsTooLarge
+      ✔ should handle small docs
+      ✔ should handle docs at the limit
+      ✔ should handle docs above the limit
+      ✔ should handle docs above the limit and below with tracked-deletes removed
+      ✔ should handle docs above the limit and above with tracked-deletes removed
+      ✔ should handle docs above the limit and with tracked-inserts
+
+  LockManager - checking the lock
+    ✔ should return true if the key does not exists
+    ✔ should return false if the key does exists
+
+  LockManager - releasing the lock
+    when the lock is current
+      ✔ should clear the data from redis
+      ✔ should call the callback
+    when the lock has expired
+      ✔ should return an error if the lock has expired
+
+  LockManager - getting the lock
+    when the lock is not set
+Using default settings from /Users/sujie/Documents/Codes/Python/overleaf/services/document-updater/config/settings.defaults.js
+      ✔ should try to get the lock
+Using default settings from /Users/sujie/Documents/Codes/Python/overleaf/services/document-updater/config/settings.defaults.js
+      ✔ should only need to try once
+Using default settings from /Users/sujie/Documents/Codes/Python/overleaf/services/document-updater/config/settings.defaults.js
+      ✔ should return the callback with the lock value
+    when the lock is initially set
+Using default settings from /Users/sujie/Documents/Codes/Python/overleaf/services/document-updater/config/settings.defaults.js
+      ✔ should call tryLock multiple times until free
+Using default settings from /Users/sujie/Documents/Codes/Python/overleaf/services/document-updater/config/settings.defaults.js
+      ✔ should return the callback with the lock value
+    when the lock times out
+Using default settings from /Users/sujie/Documents/Codes/Python/overleaf/services/document-updater/config/settings.defaults.js
+      ✔ should return the callback with an error
+
+  LockManager - trying the lock
+    when the lock is not set
+      ✔ should set the lock key with an expiry if it is not set
+      ✔ should return the callback with true and the lock value
+    when the lock is already set
+      ✔ should return the callback with false
+    when it takes a long time for redis to set the lock
+      in all cases
+        ✔ should set the lock key with an expiry if it is not set
+        ✔ should try to release the lock
+      if the lock is released successfully
+        ✔ should return the callback with false
+      if the lock has already timed out
+        ✔ should return the callback with an error
+
+  ProjectHistoryRedisManager
+    queueReviewedDeletion
+      ✔ retries with a byte-identical payload from the durable receipt
+      ✔ does not enqueue an unprepared operation
+      ✔ does not enqueue a receipt for a different reviewed snapshot
+    queueOps
+      ✔ should queue an update
+      ✔ should set the queue timestamp if not present
+    queueRenameEntity
+      ✔ should queue an update
+    queueAddEntity
+      ✔ should queue an update
+      ✔ should queue an update with file metadata
+      ✔ should forward history compatible ranges if history ranges support is enabled
+      ✔ should not forward ranges if history ranges support is disabled
+      ✔ should not forward ranges if history ranges support is undefined
+      ✔ should pass "false" as the createdBlob field if not provided
+      ✔ should pass through the value of the createdBlob field
+    queueResyncProjectStructure
+      ✔ should queue an update
+    queueResyncDocContent
+      with a good doc
+        ✔ should check if the doc is too large
+        ✔ should queue an update
+      with a doc that is too large
+        ✔ should not queue an update if the doc is too large
+      when history ranges support is enabled
+        ✔ should include tracked deletes in the update
+        ✔ should check the doc length without tracked deletes
+        ✔ should queue an update
+      history-ot
+        ✔ should include tracked deletes in the update
+        ✔ should check the doc length without tracked deletes
+        ✔ should queue an update
+
+  ProjectManager - flushAndDeleteProject
+    successfully
+      ✔ should get the doc ids in the project
+      ✔ should delete each doc in the project
+      ✔ should flush project history
+      ✔ should time the execution
+    when a doc errors
+      ✔ should still flush each doc in the project
+      ✔ should still flush project history
+      ✔ should time the execution
+
+  ProjectManager - flushProject
+    successfully
+      ✔ should get the doc ids in the project
+      ✔ should flush each doc in the project
+      ✔ should time the execution
+    when a doc errors
+      ✔ should still flush each doc in the project
+      ✔ should time the execution
+
+  ProjectManager - getProjectDocsAndFlushIfOld
+    successfully
+      ✔ should check the project state
+      ✔ should get the doc ids in the project
+      ✔ should return docs
+      ✔ should time the execution
+    when the state does not match
+      ✔ should check the project state
+      ✔ should time the execution
+    when a doc errors
+      ✔ should call the callback with an error
+    clearing the project state with clearProjectState
+      ✔ should clear the project state
+
+  ProjectManager
+    updateProjectWithLocks
+      rename operations
+        successfully
+          ✔ should rename the docs in the updates
+          ✔ should rename the files in the updates
+          ✔ should not flush the history
+        when renaming a doc fails
+          ✔ throws an error
+        when renaming a file fails
+          ✔ throws an error
+        with enough ops to flush
+          ✔ should flush the history
+      add operations
+        successfully
+          ✔ should add the docs in the updates
+          ✔ should add the files in the updates
+          ✔ should not flush the history
+        when adding a doc fails
+          ✔ it should throw an error
+        with enough ops to flush
+          ✔ should flush the history
+      when given an unknown operation type
+        ✔ throws an error
+
+  RangesManager
+    applyUpdate
+      successfully
+        ✔ should return the modified the comments and changes
+        ✔ should return unmodified updates for the history
+      with empty comments
+        ✔ should return an object with no comments
+        ✔ should return unmodified updates for the history
+      with empty changes
+        ✔ should return an object with no changes
+        ✔ should return unmodified updates for the history
+      with too many comments
+        ✔ should throw an error
+      with too many changes
+        ✔ should throw an error
+      inconsistent changes
+        ✔ should throw an error
+      with an update that collapses a range
+        ✔ should return ranges_were_collapsed == true
+      with an update that deletes ranges
+        ✔ should increment the range-delta histogram
+        ✔ should return ranges_were_collapsed == true
+      with comment updates
+        ✔ should not send comments to the history
+      removedChangeIds
+        ✔ should be empty when no tracked changes are removed
+        ✔ should report the ids of tracked changes that were removed by the update
+      with history ranges support
+        inserts among tracked deletes
+          ✔ should offset the hpos by the length of tracked deletes before the insert
+        tracked delete rejections
+          ✔ should mark the insert as a tracked delete rejection where appropriate
+        tracked delete rejections with multiple tracked deletes at the same position
+          ✔ should insert the text at the right history position
+        deletes over tracked changes
+          ✔ should split and offset deletes appropriately
+        deletes that overlap tracked inserts
+          ✔ should split and offset deletes appropriately
+        comments among tracked deletes
+          ✔ should offset the hpos by the length of tracked deletes before the insert
+        inserts inside comments
+          ✔ should add the proper commentIds properties to ops
+        tracked delete that overlaps the start of a comment
+          ✔ should crop the beginning of the comment
+        tracked delete that overlaps a whole comment
+          ✔ should crop the beginning of the comment
+        tracked delete that overlaps the end of a comment
+          ✔ should crop the end of the comment
+        tracked delete that overlaps the inside of a comment
+          ✔ should not crop the comment
+    acceptChanges
+      successfully with a single change
+        ✔ should log the call with the correct number of changes
+        ✔ should delegate the change removal to the ranges tracker
+        ✔ should remove the change
+        ✔ should return the original number of changes minus 1
+        ✔ should not touch other changes
+      successfully with multiple changes
+        ✔ should log the call with the correct number of changes
+        ✔ should delegate the change removal to the ranges tracker
+        ✔ should remove the changes
+        ✔ should return the original number of changes minus the number of accepted changes
+        ✔ should not touch other changes
+    getHistoryUpdatesForAcceptedChanges
+      ✔ should create history updates for accepted track inserts
+      ✔ should create history updates for accepted track deletes
+      ✔ should create history updates with unaccepted deletes
+      ✔ should create history updates with mixed track changes
+
+  RateLimitManager
+    for a single task
+      ✔ should execute the task in the background
+      ✔ should call the callback
+      ✔ should finish with a worker count of one
+    for multiple tasks
+      ✔ should execute the first three tasks
+      ✔ should execute the final task
+      ✔ should call the callback
+      ✔ should finish with worker count of zero
+    for a mixture of long-running tasks
+      ✔ should execute the first three tasks
+      ✔ should execute the final task
+      ✔ should call the callback
+      ✔ should finish with worker count of three
+
+  RealTimeRedisManager
+    getPendingUpdatesForDoc
+      successfully
+        ✔ should get the pending updates
+        ✔ should delete the pending updates
+        ✔ should call the callback with the updates
+      when the JSON doesn't parse
+        ✔ should return an error to the callback
+    getUpdatesLength
+      ✔ should look up the length
+      ✔ should return the length
+    sendData
+      ✔ should send the op with a message id
+      ✔ should track the payload size
+
+  RedisManager
+    getDoc
+      successfully
+        ✔ should get all the details in one call to redis
+        ✔ should return the document
+        ✔ should not log any errors
+      with a corrupted document
+        ✔ should log a hash error
+        ✔ should return the document
+      with a slow request to redis
+        ✔ should return an error
+      getDoc with an invalid project id
+        ✔ should throw an error
+      with history ranges support
+        ✔ should return the document with the history ranges flag set
+    getPreviousDocOpsTests
+      with a start and an end value
+        ✔ should get the length of the existing doc ops
+        ✔ should get the current version of the doc
+        ✔ should get the appropriate docs ops
+        ✔ should return the docs with the doc ops deserialized
+      with an end value of -1
+        ✔ should get the appropriate docs ops to the end of list
+        ✔ should return the docs with the doc ops deserialized
+      when the requested range is not in Redis
+        ✔ should throw an error
+        ✔ should send details for metrics
+      with a slow request to redis
+        ✔ should return an error
+    updateDocument
+      with a consistent version
+        ✔ should get the current doc version to check for consistency
+        ✔ should set most details in a single MSET call
+        ✔ should set the unflushed time
+        ✔ should push the doc op into the doc ops list
+        ✔ should renew the expiry ttl on the doc ops array
+        ✔ should truncate the list to 100 members
+        ✔ should not log any errors
+        with a doc using project history only
+          ✔ should succeed
+      with an inconsistent version
+        ✔ should not call multi.exec
+      with no updates
+        ✔ should set the unflushed time (potential ranges changes)
+        ✔ should not try to enqueue doc updates
+        ✔ should still set the doclines
+      with empty ranges
+        ✔ should set empty ranges
+      with null bytes in the serialized doc lines
+        ✔ should throw an error
+      with ranges that are too big
+        ✔ should throw an error
+      without user id from meta
+        ✔ should unset last updater
+    putDocInMemory
+      with non-empty ranges
+        ✔ should set all the details in a single MSET call
+        ✔ should add the docId to the project set
+        ✔ should not log any errors
+        ✔ should remove the document from the HistoryRangesSupport set in Redis
+        ✔ should not store the resolved comments in Redis
+      with empty ranges
+        ✔ should unset ranges
+      with null bytes in the serialized doc lines
+        ✔ should throw an error
+      with ranges that are too big
+        ✔ should throw an error
+      with history ranges support
+        ✔ should add the document to the HistoryRangesSupport set in Redis
+        ✔ should store the resolved comments in Redis
+      when the project is blocked
+        ✔ should not store the doc
+    removeDocFromMemory
+      ✔ should check the length of the current doclines
+      ✔ should delete the details in a singe call
+      ✔ should remove the docId from the project set
+      ✔ should remove the docId from the HistoryRangesSupport set
+    clearProjectState
+      ✔ should delete the project state
+    renameDoc
+      the document is cached in redis
+        ✔ update the cached pathname
+      the document is not cached in redis
+        ✔ does not update the cached pathname
+      getDocVersion
+        ✔ should return the document version
+
+  ShareJS text type
+    transform
+      insert / insert
+        ✔ with an insert before
+        ✔ with an insert after
+        ✔ with an insert at the same place with side == 'right'
+        ✔ with an insert at the same place with side == 'left'
+      insert / delete
+        ✔ with a delete before
+        ✔ with a delete after
+        ✔ with a delete at the same place with side == 'right'
+        ✔ with a delete at the same place with side == 'left'
+      delete / insert
+        ✔ with an insert before
+        ✔ with an insert after
+        ✔ with an insert at the same place with side == 'right'
+        ✔ with an insert at the same place with side == 'left'
+        ✔ with a delete that overlaps the insert location
+      delete / delete
+        ✔ with a delete before
+        ✔ with a delete after
+        ✔ with deleting the same content
+        ✔ with the delete overlapping before
+        ✔ with the delete overlapping after
+        ✔ with the delete overlapping the whole delete
+        ✔ with the delete inside the whole delete
+      comment / insert
+        ✔ with an insert before
+        ✔ with an insert after
+        ✔ with an insert at the left edge
+        ✔ with an insert at the right edge
+        ✔ with an insert in the middle
+      comment / delete
+        ✔ with a delete before
+        ✔ with a delete after
+        ✔ with a delete overlapping the comment content before
+        ✔ with a delete overlapping the comment content after
+        ✔ with a delete overlapping the comment content in the middle
+        ✔ with a delete overlapping the whole comment
+      comment / insert
+        ✔ should not do anything
+      comment / delete
+        ✔ should not do anything
+      comment / comment
+        ✔ should not do anything
+    apply
+      ✔ should apply an insert
+      ✔ should apply a delete
+      ✔ should do nothing with a comment
+      ✔ should throw an error when deleted content does not match
+      ✔ should throw an error when comment content does not match
+    applying ops and comments in different orders
+      ✔ should not matter which op or comment is applied first
+
+  ShareJsDB
+    getSnapshot
+      successfully
+        ✔ should return the doc lines
+        ✔ should return the doc version
+        ✔ should return the type as text
+      when the key does not match
+        ✔ should return the callback with a NotFoundError
+    getOps
+      with start == end
+        ✔ should not talk to redis
+        ✔ should return an empty array
+      with start == redis-version and end unset
+        ✔ should not talk to redis
+        ✔ should return an empty array
+      with a non empty range
+        ✔ should get the range from redis
+        ✔ should return the ops
+      with no specified end
+        ✔ should get until the end of the list
+    writeOps
+      writing an op
+        ✔ should write into appliedOps
+        ✔ should call the callback without an error
+
+  ShareJsUpdateManager
+    applyUpdate
+      successfully
+Using default settings from /Users/sujie/Documents/Codes/Python/overleaf/services/document-updater/config/settings.defaults.js
+        ✔ should create a new ShareJs model
+Using default settings from /Users/sujie/Documents/Codes/Python/overleaf/services/document-updater/config/settings.defaults.js
+        ✔ should listen for ops on the model
+Using default settings from /Users/sujie/Documents/Codes/Python/overleaf/services/document-updater/config/settings.defaults.js
+        ✔ should send the update to ShareJs
+Using default settings from /Users/sujie/Documents/Codes/Python/overleaf/services/document-updater/config/settings.defaults.js
+        ✔ should get the updated doc lines
+Using default settings from /Users/sujie/Documents/Codes/Python/overleaf/services/document-updater/config/settings.defaults.js
+        ✔ should return the updated doc lines, version and ops
+      when applyOp fails
+Using default settings from /Users/sujie/Documents/Codes/Python/overleaf/services/document-updater/config/settings.defaults.js
+        ✔ should call the callback with the error
+      when getSnapshot fails
+Using default settings from /Users/sujie/Documents/Codes/Python/overleaf/services/document-updater/config/settings.defaults.js
+        ✔ should call the callback with the error
+      with an invalid hash
+Using default settings from /Users/sujie/Documents/Codes/Python/overleaf/services/document-updater/config/settings.defaults.js
+        ✔ should call the callback with the error
+    _listenForOps
+Using default settings from /Users/sujie/Documents/Codes/Python/overleaf/services/document-updater/config/settings.defaults.js
+      ✔ should listen to the model for updates
+      the callback
+Using default settings from /Users/sujie/Documents/Codes/Python/overleaf/services/document-updater/config/settings.defaults.js
+        ✔ should publish the op to redis
+
+  UpdateManager
+    processOutstandingUpdates
+      ✔ should apply the updates
+      ✔ should time the execution
+    processOutstandingUpdatesWithLock
+      ✔ notifies clients when a durable guard rejects without consuming queued edits
+      ✔ does not duplicate errors already handled by the update application path
+      ✔ releases the lock even when guard error publication fails
+      when the lock is free
+        successfully
+          ✔ should acquire the lock
+          ✔ should free the lock
+          ✔ should process the outstanding updates
+          ✔ should do everything with the lock acquired
+          ✔ should continue processing new updates that may have come in
+        when processOutstandingUpdates returns an error
+          ✔ should free the lock
+      when the lock is taken
+        ✔ should not process the updates
+    continueProcessingUpdatesWithLock
+      when there are outstanding updates
+        ✔ should process the outstanding updates
+      when there are no outstanding updates
+        ✔ should not try to process the outstanding updates
+    fetchAndApplyUpdates
+      with updates
+        ✔ should get the pending updates
+        ✔ should apply the updates
+      when there are no updates
+        ✔ should not call applyUpdate
+    applyUpdate
+      normally
+        ✔ should apply the updates via ShareJS
+        ✔ should update the ranges
+        ✔ should save the document
+        ✔ should add metadata to the ops
+        ✔ should push the applied ops into the history queue
+      with UTF-16 surrogate pairs in the update
+        ✔ should apply the update but with surrogate pairs removed
+      with an error
+        ✔ should call RealTimeRedisManager.sendData with the error
+      when ranges get collapsed
+        ✔ should increment the doc-snapshot metric
+        ✔ should call SnapshotManager.recordSnapshot
+      when history ranges are supported
+        ✔ should push the history updates into the history queue
+      when tracked changes are rejected
+        ✔ should notify web of the rejected tracked changes
+      when no tracked changes are rejected
+        ✔ should not notify web
+    _adjustHistoryUpdatesMetadata
+      ✔ should add projectHistoryId, pathname and doc_length metadata to the ops
+      ✔ should add additional metadata when ranges support is enabled
+      ✔ should calculate the right doc length for an empty document
+    lockUpdatesAndDo
+      ✔ releases the lock without reading or writing when the durable guard rejects
+      successfully
+        ✔ should lock the doc
+        ✔ should process any outstanding updates
+        ✔ should call the method
+        ✔ should return the method response arguments
+        ✔ should release the lock
+        ✔ should continue processing updates
+      when processOutstandingUpdates returns an error
+        ✔ should free the lock
+      when the method returns an error
+        ✔ should free the lock
+
+  Utils
+    addTrackedDeletesToContent
+      ✔ doesn't modify text without tracked deletes
+      ✔ adds tracked deletes to text but skips tracked inserts
+    computeDocHash
+      ✔ computes the hash for an empty doc
+      ✔ computes the hash for a single-line doc
+      ✔ computes the hash for a multiline doc
+
+
+  552 passing (7s)
+

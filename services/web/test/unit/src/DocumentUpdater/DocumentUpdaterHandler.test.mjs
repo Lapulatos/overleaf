@@ -1,4 +1,6 @@
+import { createHash } from 'node:crypto'
 import { vi, expect } from 'vitest'
+import assert from 'node:assert/strict'
 import sinon from 'sinon'
 import path from 'node:path'
 import mongodb from 'mongodb-legacy'
@@ -12,6 +14,113 @@ const modulePath = path.join(
 )
 
 describe('DocumentUpdaterHandler', function () {
+  describe('prepareDocumentDeletion', function () {
+    const projectId = 'a'.repeat(24)
+    const docId = 'b'.repeat(24)
+    const operationId = '00000000-0000-4000-8000-000000000001'
+    const endpoint = `/project/${projectId}/doc/${docId}/deletion/prepare`
+    it('sends and validates the exact operation receipt', async function (ctx) {
+      const receipt = { projectId, docId, operationId, state: 'committing' }
+      const scope = ctx.docUpdaterMock.post(endpoint, { operationId }).reply(200, receipt)
+      expect(await ctx.handler.promises.prepareDocumentDeletion(projectId, docId, operationId)).toEqual(receipt)
+      scope.done()
+    })
+    it('rejects wrong identities and incomplete acknowledgements', async function (ctx) {
+      for (const changed of [{ projectId: 'c'.repeat(24) }, { docId: 'c'.repeat(24) }, { operationId: 'wrong' }, { state: 'fenced' }]) {
+        const scope = ctx.docUpdaterMock.post(endpoint).reply(200, { projectId, docId, operationId, state: 'committing', ...changed })
+        await assert.rejects(ctx.handler.promises.prepareDocumentDeletion(projectId, docId, operationId), /Invalid deletion preparation acknowledgement/)
+        scope.done()
+      }
+    })
+    it('does not convert an uncertain service failure into a completed preparation', async function (ctx) {
+      const scope = ctx.docUpdaterMock.post(endpoint).reply(503)
+      await assert.rejects(ctx.handler.promises.prepareDocumentDeletion(projectId, docId, operationId))
+      scope.done()
+    })
+  })
+
+  describe('queueReviewedDeletionHistory', function () {
+    const projectId = 'a'.repeat(24)
+    const docId = 'b'.repeat(24)
+    const operationId = '00000000-0000-4000-8000-000000000001'
+    const endpoint = `/project/${projectId}/doc/${docId}/deletion/history`
+    it('sends the exact operation and accepts its enqueue acknowledgement', async function (ctx) {
+      const scope = ctx.docUpdaterMock.post(endpoint, { operationId }).reply(200, { projectId, docId, operationId, queued: true })
+      await ctx.handler.promises.queueReviewedDeletionHistory(projectId, docId, operationId)
+      scope.done()
+    })
+    it('rejects missing or mismatched enqueue acknowledgements', async function (ctx) {
+      for (const change of [{ queued: false }, { operationId: 'wrong' }, { docId: 'wrong' }, { projectId: 'wrong' }]) {
+        const scope = ctx.docUpdaterMock.post(endpoint).reply(200, { projectId, docId, operationId, queued: true, ...change })
+        await assert.rejects(ctx.handler.promises.queueReviewedDeletionHistory(projectId, docId, operationId), /Invalid deletion history enqueue acknowledgement/)
+        scope.done()
+      }
+    })
+  })
+
+  describe('readDocumentDeletionSnapshot', function () {
+    const projectId = 'a'.repeat(24); const docId = 'b'.repeat(24)
+    const operationId = '00000000-0000-4000-8000-000000000001'
+    const endpoint = `/project/${projectId}/doc/${docId}/deletion/${operationId}/snapshot`
+    const result = { projectId, docId, operationId, lines: ['original'], version: 3,
+      path: 'main.tex', baseHash: createHash('sha256').update('original').digest('hex') }
+    it('reads exact reserved snapshot and strips internal data', async function (ctx) {
+      const scope = ctx.docUpdaterMock.get(endpoint).reply(200, { ...result, private: 'hidden' })
+      assert.deepEqual(await ctx.handler.promises.readDocumentDeletionSnapshot(projectId, docId, operationId), result)
+      scope.done()
+    })
+    it('rejects wrong identity, content and version without retrying', async function (ctx) {
+      for (const change of [{ projectId: 'wrong' }, { docId: 'wrong' }, { operationId: 'wrong' },
+        { version: -1 }, { lines: [123] }, { lines: ['changed'] }, { baseHash: 'wrong' }, { path: '' }]) {
+        const scope = ctx.docUpdaterMock.get(endpoint).reply(200, { ...result, ...change })
+        await assert.rejects(ctx.handler.promises.readDocumentDeletionSnapshot(projectId, docId, operationId), /Invalid deletion snapshot acknowledgement/)
+        scope.done()
+      }
+    })
+  })
+
+  describe('inspectDocumentDeletion', function () {
+    const projectId = 'a'.repeat(24)
+    const docId = 'b'.repeat(24)
+    const operationId = '00000000-0000-4000-8000-000000000001'
+    const endpoint = `/project/${projectId}/doc/${docId}/deletion/${operationId}`
+    it('reads true and false status without mutation and strips extra data', async function (ctx) {
+      for (const cacheCleared of [true, false]) {
+        const receipt = { projectId, docId, operationId, cacheCleared }
+        const scope = ctx.docUpdaterMock.get(endpoint).reply(200, { ...receipt, private: 'hidden' })
+        assert.deepEqual(await ctx.handler.promises.inspectDocumentDeletion(projectId, docId, operationId), receipt)
+        scope.done()
+      }
+    })
+    it('rejects wrong identity and non-boolean status', async function (ctx) {
+      for (const change of [{ operationId: 'wrong' }, { docId: 'wrong' }, { projectId: 'wrong' }, { cacheCleared: 'true' }]) {
+        const scope = ctx.docUpdaterMock.get(endpoint).reply(200, { projectId, docId, operationId, cacheCleared: true, ...change })
+        await assert.rejects(ctx.handler.promises.inspectDocumentDeletion(projectId, docId, operationId), /Invalid deletion inspection acknowledgement/)
+        scope.done()
+      }
+    })
+  })
+
+  describe('cleanupDocumentDeletion', function () {
+    const projectId = 'a'.repeat(24)
+    const docId = 'b'.repeat(24)
+    const operationId = '00000000-0000-4000-8000-000000000001'
+    const endpoint = `/project/${projectId}/doc/${docId}/deletion/cleanup`
+    it('validates the scoped cleanup acknowledgement', async function (ctx) {
+      const receipt = { projectId, docId, operationId, cacheCleared: true }
+      const scope = ctx.docUpdaterMock.post(endpoint, { operationId }).reply(200, receipt)
+      assert.deepEqual(await ctx.handler.promises.cleanupDocumentDeletion(projectId, docId, operationId), receipt)
+      scope.done()
+    })
+    it('rejects wrong or incomplete cleanup acknowledgements', async function (ctx) {
+      for (const change of [{ cacheCleared: false }, { operationId: 'wrong' }, { projectId: 'wrong' }, { docId: 'wrong' }]) {
+        const scope = ctx.docUpdaterMock.post(endpoint).reply(200, { projectId, docId, operationId, cacheCleared: true, ...change })
+        await assert.rejects(ctx.handler.promises.cleanupDocumentDeletion(projectId, docId, operationId), /Invalid deletion cleanup acknowledgement/)
+        scope.done()
+      }
+    })
+  })
+
   beforeEach(async function (ctx) {
     ctx.project_id = 'project-id-923'
     ctx.projectHistoryId = 'ol-project-id-1'
@@ -275,6 +384,56 @@ describe('DocumentUpdaterHandler', function () {
   })
 
   describe('setDocument', function () {
+    it('forwards the internal write lease only for the bound project', async function (ctx) {
+      const { default: ProjectWriteGate } = await import('@overleaf/redis-wrapper/ProjectWriteGate.js')
+      const projectId = 'a'.repeat(24)
+      const token = '00000000-0000-4000-8000-000000000001'
+      const scope = ctx.docUpdaterMock
+        .post(`/project/${projectId}/doc/${ctx.doc_id}/conditional`)
+        .matchHeader('x-project-write-token', token)
+        .reply(200, { modified: true })
+      await ProjectWriteGate.runWithToken(projectId, token, () => ctx.handler.promises.setDocument(
+        projectId, ctx.doc_id, ctx.user_id, ctx.lines, 'git', 42
+      ))
+      scope.done()
+      const otherProject = 'b'.repeat(24)
+      let headers
+      const other = ctx.docUpdaterMock.post(`/project/${otherProject}/doc/${ctx.doc_id}/conditional`)
+        .reply(function () { headers = this.req.headers; return [200, { modified: true }] })
+      await ProjectWriteGate.runWithToken(projectId, token, () => ctx.handler.promises.setDocument(
+        otherProject, ctx.doc_id, ctx.user_id, ctx.lines, 'git', 42
+      ))
+      other.done()
+      expect(headers['x-project-write-token']).to.equal(undefined)
+    })
+    it('uses the conditional endpoint and sends the reviewed version', async function (ctx) {
+      ctx.docUpdaterMock
+        .post(`/project/${ctx.project_id}/doc/${ctx.doc_id}/conditional`, {
+          lines: ctx.lines, source: ctx.source, user_id: ctx.user_id, expectedVersion: 42,
+        })
+        .reply(200, { modified: true })
+      const result = await ctx.handler.promises.setDocument(
+        ctx.project_id, ctx.doc_id, ctx.user_id, ctx.lines, ctx.source, 42
+      )
+      expect(result.modified).to.equal(true)
+      expect(ctx.docUpdaterMock.isDone()).to.equal(true)
+    })
+
+    it('propagates conditional conflicts without retrying an unconditional write', async function (ctx) {
+      ctx.docUpdaterMock
+        .post(`/project/${ctx.project_id}/doc/${ctx.doc_id}/conditional`)
+        .reply(409, { conflict: true, version: 43 })
+      try {
+        await ctx.handler.promises.setDocument(
+          ctx.project_id, ctx.doc_id, ctx.user_id, ctx.lines, ctx.source, 42
+        )
+        expect.fail('expected a conflict')
+      } catch (error) {
+        expect(error.response.status).to.equal(409)
+      }
+      expect(ctx.docUpdaterMock.isDone()).to.equal(true)
+    })
+
     describe('successfully', function () {
       beforeEach(function (ctx) {
         ctx.docUpdaterMock

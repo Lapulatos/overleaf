@@ -1,0 +1,2192 @@
+{
+  "version": 1,
+  "entries": {
+    "journal:acmtransactionsoncomputersystems": {
+      "name": "ACM Transactions on Computer Systems",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=ACM%20Transactions%20on%20Computer%20Systems",
+      "checked": "2026-11-03T16:05:51.314Z"
+    },
+    "journal:acmtransactionsonstorage": {
+      "name": "ACM Transactions on Storage",
+      "status": "source-error",
+      "checked": "2026-11-03T16:05:53.912Z",
+      "error": "Journal identity does not match"
+    },
+    "journal:ieeetransactionsoncomputeraideddesignofintegratedcircuitsandsystems": {
+      "name": "IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems",
+      "status": "source-error",
+      "checked": "2026-11-03T16:05:56.529Z",
+      "error": "Journal identity does not match"
+    },
+    "journal:ieeetransactionsoncomputers": {
+      "name": "IEEE Transactions on Computers",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=IEEE%20Transactions%20on%20Computers",
+      "checked": "2026-11-03T16:05:59.128Z"
+    },
+    "journal:ieeetransactionsonparallelanddistributedsystems": {
+      "name": "IEEE Transactions on Parallel and Distributed Systems",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=IEEE%20Transactions%20on%20Parallel%20and%20Distributed%20Systems",
+      "checked": "2026-11-03T16:06:01.732Z"
+    },
+    "journal:acmtransactionsonarchitectureandcodeoptimization": {
+      "name": "ACM Transactions on Architecture and Code Optimization",
+      "status": "source-error",
+      "checked": "2026-11-03T16:06:04.327Z",
+      "error": "Journal identity does not match"
+    },
+    "journal:acmtransactionsonautonomousandadaptivesystems": {
+      "name": "ACM Transactions on Autonomous and Adaptive Systems",
+      "status": "source-error",
+      "checked": "2026-11-03T16:06:06.927Z",
+      "error": "Journal identity does not match"
+    },
+    "journal:acmtransactionsondesignautomationofelectronicsystems": {
+      "name": "ACM Transactions on Design Automation of Electronic Systems",
+      "status": "source-error",
+      "checked": "2026-11-03T16:06:09.714Z",
+      "error": "Journal identity does not match"
+    },
+    "journal:acmtransactionsonembeddedcomputingsystems": {
+      "name": "ACM Transactions on Embedded Computing Systems",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=ACM%20Transactions%20on%20Embedded%20Computing%20Systems",
+      "checked": "2026-11-03T16:06:12.327Z"
+    },
+    "journal:acmtransactionsonreconfigurabletechnologyandsystems": {
+      "name": "ACM Transactions on Reconfigurable Technology and Systems",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=ACM%20Transactions%20on%20Reconfigurable%20Technology%20and%20Systems",
+      "checked": "2026-11-03T16:06:14.944Z"
+    },
+    "journal:ieeetransactionsonverylargescaleintegrationvlsisystems": {
+      "name": "IEEE Transactions on Very Large Scale Integration (VLSI) Systems",
+      "status": "source-error",
+      "checked": "2026-11-03T16:06:17.564Z",
+      "error": "HTTP 404"
+    },
+    "journal:journalofparallelanddistributedcomputing": {
+      "name": "Journal of Parallel and Distributed Computing",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Journal%20of%20Parallel%20and%20Distributed%20Computing",
+      "checked": "2026-11-03T16:06:20.183Z"
+    },
+    "journal:journalofsystemsarchitectureembeddedsoftwaredesign": {
+      "name": "Journal of Systems Architecture: Embedded Software Design",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Journal%20of%20Systems%20Architecture%3A%20Embedded%20Software%20Design",
+      "checked": "2026-11-03T16:06:22.833Z"
+    },
+    "journal:parallelcomputing": {
+      "name": "Parallel Computing",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Parallel%20Computing",
+      "checked": "2026-11-03T16:06:25.449Z"
+    },
+    "journal:performanceevaluationaninternationaljournal": {
+      "name": "Performance Evaluation: An International Journal",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Performance%20Evaluation%3A%20An%20International%20Journal",
+      "checked": "2026-11-03T16:06:28.078Z"
+    },
+    "journal:ieeetransactionsoncloudcomputing": {
+      "name": "IEEE Transactions on Cloud Computing",
+      "status": "source-error",
+      "checked": "2026-11-03T16:06:30.697Z",
+      "error": "Journal identity does not match"
+    },
+    "journal:acmjournalonemergingtechnologiesincomputingsystems": {
+      "name": "ACM Journal on Emerging Technologies in Computing Systems",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=ACM%20Journal%20on%20Emerging%20Technologies%20in%20Computing%20Systems",
+      "checked": "2026-11-03T16:06:33.295Z"
+    },
+    "journal:concurrencyandcomputationpracticeandexperience": {
+      "name": "Concurrency and Computation: Practice and Experience",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Concurrency%20and%20Computation%3A%20Practice%20and%20Experience",
+      "checked": "2026-11-03T16:06:35.899Z"
+    },
+    "journal:distributedcomputing": {
+      "name": "Distributed Computing",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Distributed%20Computing",
+      "checked": "2026-11-03T16:06:38.511Z"
+    },
+    "journal:futuregenerationcomputersystems": {
+      "name": "Future Generation Computer Systems",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Future%20Generation%20Computer%20Systems",
+      "checked": "2026-11-03T16:06:41.114Z"
+    },
+    "journal:integrationthevlsijournal": {
+      "name": "Integration, the VLSI Journal",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Integration%2C%20the%20VLSI%20Journal",
+      "checked": "2026-11-03T16:06:43.732Z"
+    },
+    "journal:journalofelectronictestingtheoryandapplications": {
+      "name": "Journal of Electronic Testing-Theory and Applications",
+      "status": "source-error",
+      "checked": "2026-11-03T16:06:46.361Z",
+      "error": "Journal identity does not match"
+    },
+    "journal:journalofgridcomputing": {
+      "name": "Journal of Grid computing",
+      "status": "source-error",
+      "checked": "2026-11-03T16:06:48.967Z",
+      "error": "Journal identity does not match"
+    },
+    "journal:realtimesystems": {
+      "name": "Real-Time Systems",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Real-Time%20Systems",
+      "checked": "2026-11-03T16:06:51.578Z"
+    },
+    "journal:thejournalofsupercomputing": {
+      "name": "The Journal of Supercomputing",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=The%20Journal%20of%20Supercomputing",
+      "checked": "2026-11-03T16:06:54.182Z"
+    },
+    "journal:ieeetransactionsoncircuitsandsystemsiregularpapers": {
+      "name": "IEEE Transactions on Circuits and Systems I: Regular Papers",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=IEEE%20Transactions%20on%20Circuits%20and%20Systems%20I%3A%20Regular%20Papers",
+      "checked": "2026-11-03T16:06:56.794Z"
+    },
+    "journal:ccftransactionsonhighperformancecomputing": {
+      "name": "CCF Transactions on High Performance Computing",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=CCF%20Transactions%20on%20High%20Performance%20Computing",
+      "checked": "2026-11-03T16:06:59.411Z"
+    },
+    "journal:ieeetransactionsonsustainablecomputing": {
+      "name": "IEEE Transactions on Sustainable Computing",
+      "status": "source-error",
+      "checked": "2026-11-03T16:07:02.012Z",
+      "error": "Journal identity does not match"
+    },
+    "conference:acmsigplansymposiumonprinciplesandpracticeofparallelprogramming": {
+      "name": "ACM SIGPLAN Symposium on Principles & Practice of Parallel Programming",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.189Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:usenixconferenceonfileandstoragetechnologies": {
+      "name": "USENIX Conference on File and Storage Technologies",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.189Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:designautomationconference": {
+      "name": "Design Automation Conference",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.190Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalsymposiumonhighperformancecomputerarchitecture": {
+      "name": "IEEE International Symposium on High Performance Computer Architecture",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.190Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeacminternationalsymposiumonmicroarchitecture": {
+      "name": "IEEE/ACM International Symposium on Microarchitecture",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.190Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceforhighperformancecomputingnetworkingstorageandanalysis": {
+      "name": "International Conference for High Performance Computing, Networking, Storage, and Analysis",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.191Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonarchitecturalsupportforprogramminglanguagesandoperatingsystems": {
+      "name": "International Conference on Architectural Support for Programming Languages and Operating Systems",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.191Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalsymposiumoncomputerarchitecture": {
+      "name": "International Symposium on Computer Architecture",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.191Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acmsigopsannualtechnicalconference": {
+      "name": "ACM SIGOPS Annual Technical Conference",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.191Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:europeanconferenceoncomputersystems": {
+      "name": "European Conference on Computer Systems",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.191Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:theinternationalacmsymposiumonhighperformanceparallelanddistributedcomputing": {
+      "name": "The International ACM Symposium on High-Performance Parallel and Distributed Computing",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.191Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acmsymposiumoncloudcomputing": {
+      "name": "ACM Symposium on Cloud Computing",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.192Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acmsymposiumonparallelisminalgorithmsandarchitectures": {
+      "name": "ACM Symposium on Parallelism in Algorithms and Architectures",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.192Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acmsymposiumonprinciplesofdistributedcomputing": {
+      "name": "ACM Symposium on Principles of Distributed Computing",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.192Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acmsigdainternationalsymposiumonfieldprogrammablegatearrays": {
+      "name": "ACM/SIGDA International Symposium on Field-Programmable Gate Arrays",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.192Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:theinternationalsymposiumoncodegenerationandoptimization": {
+      "name": "The International Symposium on Code Generation and Optimization",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.192Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:designautomationandtestineurope": {
+      "name": "Design, Automation & Test in Europe",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.193Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:hotchipsasymposiumonhighperformancechips": {
+      "name": "Hot Chips: A Symposium on High Performance Chips",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.193Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalconferenceonclustercomputing": {
+      "name": "IEEE International Conference on Cluster Computing",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.193Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceoncomputerdesign": {
+      "name": "International Conference on Computer Design",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.194Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceoncomputeraideddesign": {
+      "name": "International Conference on Computer-Aided Design",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.194Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalconferenceondistributedcomputingsystems": {
+      "name": "IEEE International Conference on Distributed Computing Systems",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.195Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonhardwaresoftwarecodesignandsystemsynthesis": {
+      "name": "International Conference on Hardware/Software Co-design and System Synthesis",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.195Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonhighperformanceandembeddedarchitecturesandcompilers": {
+      "name": "International Conference on High Performance and Embedded Architectures and Compilers",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.195Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonmeasurementandmodelingofcomputersystems": {
+      "name": "International Conference on Measurement and Modeling of Computer Systems",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.196Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonparallelarchitecturesandcompilationtechniques": {
+      "name": "International Conference on Parallel Architectures and Compilation Techniques",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.196Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonparallelprocessing": {
+      "name": "International Conference on Parallel Processing",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.196Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonsupercomputing": {
+      "name": "International Conference on Supercomputing",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.197Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonvirtualexecutionenvironments": {
+      "name": "International Conference on Virtual Execution Environments",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.197Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalparallelanddistributedprocessingsymposium": {
+      "name": "IEEE International Parallel & Distributed Processing Symposium",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.197Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalsymposiumoncomputerperformancemodelingmeasurementsandevaluation": {
+      "name": "International Symposium on Computer Performance, Modeling, Measurements and Evaluation",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.197Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationaltestconference": {
+      "name": "International Test Conference",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.197Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:largeinstallationsystemadministrationconference": {
+      "name": "Large Installation System Administration Conference",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.197Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:massstoragesystemsandtechnologies": {
+      "name": "Mass Storage Systems and Technologies",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.198Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeerealtimeandembeddedtechnologyandapplicationssymposium": {
+      "name": "IEEE Real-Time and Embedded Technology and Applications Symposium",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.198Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:europeanconferenceonparallelanddistributedcomputingspringer": {
+      "name": "European Conference on Parallel and Distributed Computing Springer",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.198Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalsymposiumoncircuitsandsystems": {
+      "name": "IEEE International Symposium on Circuits and Systems",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.198Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acminternationalconferenceoncomputingfrontiers": {
+      "name": "ACM International Conference on Computing Frontiers",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.199Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acminternationalsystemsandstorageconference": {
+      "name": "ACM International Systems and Storage Conference",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.199Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acmieeeinternationalsymposiumonnetworksonchip": {
+      "name": "ACM/IEEE International Symposium on Networks-on-Chip",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.199Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalconferenceonapplicationspecificsystemsarchitecturesandprocessors": {
+      "name": "IEEE International Conference on Application-Specific Systems, Architectures, and Processors",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.199Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:asiaandsouthpacificdesignautomationconference": {
+      "name": "Asia and South Pacific Design Automation Conference",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.200Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeeuropeantestsymposium": {
+      "name": "IEEE European Test Symposium",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.200Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonfieldprogrammablelogicandapplications": {
+      "name": "International Conference on Field-Programmable Logic and Applications",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.200Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeesymposiumonfieldprogrammablecustomcomputingmachines": {
+      "name": "IEEE Symposium on Field-Programmable Custom Computing Machines",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.200Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:greatlakessymposiumonvlsi": {
+      "name": "Great Lakes Symposium on VLSI",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.201Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeasiantestsymposium": {
+      "name": "IEEE Asian Test Symposium",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.201Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalconferenceonhighperformancecomputingandcommunications": {
+      "name": "IEEE International Conference on High Performance Computing and Communications",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.201Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalconferenceonhighperformancecomputingdataandanalytics": {
+      "name": "IEEE International Conference on High Performance Computing, Data and Analytics",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.201Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalsymposiumonmodelinganalysisandsimulationofcomputerandtelecommunicationsystems": {
+      "name": "International Symposium on Modeling, Analysis, and Simulation of Computer and Telecommunication Systems",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.201Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalsymposiumonparallelanddistributedprocessingwithapplications": {
+      "name": "IEEE International Symposium on Parallel and Distributed Processing with Applications",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.201Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeacminternationalsymposiumonclustercloudandgridcomputing": {
+      "name": "IEEE/ACM International Symposium on Cluster, Cloud and Grid Computing",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.202Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ifipinternationalconferenceonnetworkandparallelcomputing": {
+      "name": "IFIP International Conference on Network and Parallel Computing",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.202Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonalgorithmsandarchitecturesforparallelprocessing": {
+      "name": "International Conference on Algorithms and Architectures for Parallel Processing",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.202Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceoncompilersarchitecturesandsynthesisforembeddedsystems": {
+      "name": "International Conference on Compilers, Architectures, and Synthesis for Embedded Systems",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.202Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonfieldprogrammabletechnology": {
+      "name": "International Conference on Field-Programmable Technology",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.202Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonparallelanddistributedsystems": {
+      "name": "International Conference on Parallel and Distributed Systems",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.203Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalsymposiumonlowpowerelectronicsanddesign": {
+      "name": "International Symposium on Low Power Electronics and Design",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.204Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalsymposiumonphysicaldesign": {
+      "name": "International Symposium on Physical Design",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.204Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeesymposiumonhighperformanceinterconnects": {
+      "name": "IEEE Symposium on High-Performance Interconnects",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.204Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeevlsitestsymposium": {
+      "name": "IEEE VLSI Test Symposium",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.204Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationaltestconferenceinasia": {
+      "name": "International Test Conference in Asia",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.204Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acmieeesymposiumonedgecomputing": {
+      "name": "ACM/IEEE Symposium on Edge Computing",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.205Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonnetworkingarchitectureandstorages": {
+      "name": "International Conference on Networking, Architecture and Storages",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.205Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:hotstorage": {
+      "name": "HotStorage",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.205Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalsymposiumonadvancedparallelprocessingtechnology": {
+      "name": "International Symposium on Advanced Parallel Processing Technology",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.205Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonjointcloudcomputing": {
+      "name": "International Conference on JointCloud Computing",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:55:30.205Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "journal:ieeejournalonselectedareasincommunications": {
+      "name": "IEEE Journal on Selected Areas in Communications",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=IEEE%20Journal%20on%20Selected%20Areas%20in%20Communications",
+      "checked": "2026-11-03T16:07:04.615Z"
+    },
+    "journal:ieeetransactionsonmobilecomputing": {
+      "name": "IEEE Transactions on Mobile Computing",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=IEEE%20Transactions%20on%20Mobile%20Computing",
+      "checked": "2026-11-03T16:07:07.228Z"
+    },
+    "journal:ieeetransactionsonnetworking原ieeeacmtransactionsonnetworking": {
+      "name": "IEEE Transactions on Networking (原 IEEE/ACM Transactions on Networking)",
+      "status": "source-error",
+      "checked": "2026-11-03T16:07:09.899Z",
+      "error": "HTTP 404"
+    },
+    "journal:acmtransactionsoninternettechnology": {
+      "name": "ACM Transactions on Internet Technology",
+      "status": "source-error",
+      "checked": "2026-11-03T16:07:14.432Z",
+      "error": "Journal identity does not match"
+    },
+    "journal:acmtransactionsonmultimediacomputingcommunicationsandapplications": {
+      "name": "ACM Transactions on Multimedia Computing, Communications and Applications",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=ACM%20Transactions%20on%20Multimedia%20Computing%2C%20Communications%20and%20Applications",
+      "checked": "2026-11-03T16:07:17.049Z"
+    },
+    "journal:acmtransactionsonsensornetworks": {
+      "name": "ACM Transactions on Sensor Networks",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=ACM%20Transactions%20on%20Sensor%20Networks",
+      "checked": "2026-11-03T16:07:19.650Z"
+    },
+    "journal:computernetworks": {
+      "name": "Computer Networks",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Computer%20Networks",
+      "checked": "2026-11-03T16:07:22.282Z"
+    },
+    "journal:ieeetransactionsoncommunications": {
+      "name": "IEEE Transactions on Communications",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=IEEE%20Transactions%20on%20Communications",
+      "checked": "2026-11-03T16:07:24.880Z"
+    },
+    "journal:ieeetransactionsonwirelesscommunications": {
+      "name": "IEEE Transactions on Wireless Communications",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=IEEE%20Transactions%20on%20Wireless%20Communications",
+      "checked": "2026-11-03T16:07:27.533Z"
+    },
+    "journal:adhocnetworks": {
+      "name": "Ad Hoc Networks",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Ad%20Hoc%20Networks",
+      "checked": "2026-11-03T16:07:30.132Z"
+    },
+    "journal:computercommunications": {
+      "name": "Computer Communications",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Computer%20Communications",
+      "checked": "2026-11-03T16:07:32.749Z"
+    },
+    "journal:ieeetransactionsonnetworkandservicemanagement": {
+      "name": "IEEE Transactions on Network and Service Management",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=IEEE%20Transactions%20on%20Network%20and%20Service%20Management",
+      "checked": "2026-11-03T16:07:35.362Z"
+    },
+    "journal:ietcommunications": {
+      "name": "IET Communications",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=IET%20Communications",
+      "checked": "2026-11-03T16:07:37.978Z"
+    },
+    "journal:journalofnetworkandcomputerapplications": {
+      "name": "Journal of Network and Computer Applications",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Journal%20of%20Network%20and%20Computer%20Applications",
+      "checked": "2026-11-03T16:07:40.616Z"
+    },
+    "journal:mobilenetworksandapplications": {
+      "name": "Mobile Networks and Applications",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Mobile%20Networks%20and%20Applications",
+      "checked": "2026-11-03T16:07:43.250Z"
+    },
+    "journal:networks": {
+      "name": "Networks",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Networks",
+      "checked": "2026-11-03T16:07:45.850Z"
+    },
+    "journal:peertopeernetworkingandapplications": {
+      "name": "Peer-to-Peer Networking and Applications",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Peer-to-Peer%20Networking%20and%20Applications",
+      "checked": "2026-11-03T16:07:48.501Z"
+    },
+    "journal:wirelesscommunicationsandmobilecomputing": {
+      "name": "Wireless Communications and Mobile Computing",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Wireless%20Communications%20and%20Mobile%20Computing",
+      "checked": "2026-11-03T16:07:51.098Z"
+    },
+    "journal:wirelessnetworks": {
+      "name": "Wireless Networks",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Wireless%20Networks",
+      "checked": "2026-11-03T16:07:53.712Z"
+    },
+    "journal:ieeeinternetofthingsjournal": {
+      "name": "IEEE Internet of Things Journal",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=IEEE%20Internet%20of%20Things%20Journal",
+      "checked": "2026-11-03T16:07:56.329Z"
+    },
+    "journal:acmtransactionsoninternetofthings": {
+      "name": "ACM Transactions on Internet of Things",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=ACM%20Transactions%20on%20Internet%20of%20Things",
+      "checked": "2026-11-03T16:07:58.928Z"
+    },
+    "conference:acminternationalconferenceonapplicationstechnologiesarchitecturesandprotocolsforcomputercommunication": {
+      "name": "ACM International Conference on Applications, Technologies, Architectures, and Protocols for Computer Communication",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.255Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acminternationalconferenceonmobilecomputingandnetworking": {
+      "name": "ACM International Conference on Mobile Computing and Networking",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.255Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalconferenceoncomputercommunications": {
+      "name": "IEEE International Conference on Computer Communications",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.256Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:symposiumonnetworksystemdesignandimplementation": {
+      "name": "Symposium on Network System Design and Implementation",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.256Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acmconferenceonembeddednetworkedsensorsystems": {
+      "name": "ACM Conference on Embedded Networked Sensor Systems",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.256Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acminternationalconferenceonemergingnetworkingexperimentsandtechnologies": {
+      "name": "ACM International Conference on Emerging Networking Experiments and Technologies",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.256Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalconferenceonsensingcommunicationandnetworking": {
+      "name": "IEEE International Conference on Sensing, Communication, and Networking",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.257Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceoninformationprocessinginsensornetworks": {
+      "name": "International Conference on Information Processing in Sensor Networks",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.257Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acminternationalconferenceonmobilesystemsapplicationsandservices": {
+      "name": "ACM International Conference on Mobile Systems, Applications, and Services",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.257Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalconferenceonnetworkprotocols": {
+      "name": "IEEE International Conference on Network Protocols",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.257Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalsymposiumontheoryalgorithmicfoundationsandprotocoldesignformobilenetworksandmobilecomputing": {
+      "name": "International Symposium on Theory, Algorithmic Foundations, and Protocol Design for Mobile Networks and Mobile Computing",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.258Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalworkshoponnetworkandoperatingsystemsupportfordigitalaudioandvideo": {
+      "name": "International Workshop on Network and Operating System Support for Digital Audio and Video",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.258Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeacminternationalworkshoponqualityofservice": {
+      "name": "IEEE/ACM International Workshop on Quality of Service",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.258Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acminternetmeasurementconference": {
+      "name": "ACM Internet Measurement Conference",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.259Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acmieeesymposiumonarchitecturesfornetworkingandcommunicationsystems": {
+      "name": "ACM/IEEE Symposium on Architectures for Networking and Communication Systems",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.259Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:asiapacificnetworkoperationsandmanagementsymposium": {
+      "name": "Asia-Pacific Network Operations and Management Symposium",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.260Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonformaltechniquesfordistributedobjectscomponentsandsystems": {
+      "name": "International Conference on Formal Techniques for Distributed Objects, Components, and Systems",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.260Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeconferenceonlocalcomputernetworks": {
+      "name": "IEEE Conference on Local Computer Networks",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.260Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeglobalcommunicationsconference": {
+      "name": "IEEE Global Communications Conference",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.261Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalconferenceoncommunications": {
+      "name": "IEEE International Conference on Communications",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.261Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalconferenceoncomputercommunicationsandnetworks": {
+      "name": "IEEE International Conference on Computer Communications and Networks",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.262Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalconferenceonmobileadhocandsensorsystems": {
+      "name": "IEEE International Conference on Mobile Adhoc and Sensor Systems",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.262Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalconferenceonpeertopeercomputing": {
+      "name": "IEEE International Conference on Peer-to-Peer Computing",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.263Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalperformancecomputingandcommunicationsconference": {
+      "name": "IEEE International Performance Computing and Communications Conference",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.263Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalsymposiumonaworldofwirelessmobileandmultimedianetworks": {
+      "name": "IEEE International Symposium on a World of Wireless, Mobile and Multimedia Networks",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.264Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeesymposiumoncomputersandcommunications": {
+      "name": "IEEE Symposium on Computers and Communications",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.264Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeewirelesscommunicationsandnetworkingconference": {
+      "name": "IEEE Wireless Communications and Networking Conference",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.266Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ifipinternationalconferencesonnetworking": {
+      "name": "IFIP International Conferences on Networking",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.266Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ifipieeeinternationalsymposiumonintegratednetworkmanagement": {
+      "name": "IFIP/IEEE International Symposium on Integrated Network Management",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.267Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonmobilitysensingandnetworking": {
+      "name": "International Conference on Mobility, Sensing and Networking",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.267Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonmodelinganalysisandsimulationofwirelessandmobilesystems": {
+      "name": "International Conference on Modeling, Analysis and Simulation of Wireless and Mobile Systems",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.268Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:theinternationalconferenceonwirelessartificialintelligentcomputingsystemsandapplications": {
+      "name": "The International Conference on Wireless Artificial Intelligent Computing Systems and Applications",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.268Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acmtheworkshoponhottopicsinnetworks": {
+      "name": "ACM The Workshop on Hot Topics in Networks",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.268Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:asiapacificworkshoponnetworking": {
+      "name": "Asia-Pacific Workshop on Networking",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T15:57:59.268Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "journal:ieeetransactionsondependableandsecurecomputing": {
+      "name": "IEEE Transactions on Dependable and Secure Computing",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=IEEE%20Transactions%20on%20Dependable%20and%20Secure%20Computing",
+      "checked": "2026-11-03T16:08:01.566Z"
+    },
+    "journal:ieeetransactionsoninformationforensicsandsecurity": {
+      "name": "IEEE Transactions on Information Forensics and Security",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=IEEE%20Transactions%20on%20Information%20Forensics%20and%20Security",
+      "checked": "2026-11-03T16:08:04.182Z"
+    },
+    "journal:journalofcryptology": {
+      "name": "Journal of Cryptology",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Journal%20of%20Cryptology",
+      "checked": "2026-11-03T16:08:06.796Z"
+    },
+    "journal:acmtransactionsonprivacyandsecurity": {
+      "name": "ACM Transactions on Privacy and Security",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=ACM%20Transactions%20on%20Privacy%20and%20Security",
+      "checked": "2026-11-03T16:08:09.466Z"
+    },
+    "journal:computersandsecurity": {
+      "name": "Computers & Security",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Computers%20%26%20Security",
+      "checked": "2026-11-03T16:08:12.078Z"
+    },
+    "journal:designscodesandcryptography": {
+      "name": "Designs, Codes and Cryptography",
+      "status": "source-error",
+      "checked": "2026-11-03T16:01:56.544Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Designs%2C%20Codes%20and%20Cryptography\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:journalofcomputersecurity": {
+      "name": "Journal of Computer Security",
+      "status": "source-error",
+      "checked": "2026-11-03T16:01:57.440Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Journal%20of%20Computer%20Security\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:cybersecurity": {
+      "name": "Cybersecurity",
+      "status": "source-error",
+      "checked": "2026-11-03T16:01:58.464Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Cybersecurity\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:computerlawandsecurityreview": {
+      "name": "Computer Law & Security Review",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:00.065Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Computer%20Law%20%26%20Security%20Review\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:eurasipjournaloninformationsecurity": {
+      "name": "EURASIP Journal on Information Security",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:01.062Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=EURASIP%20Journal%20on%20Information%20Security\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:ietinformationsecurity": {
+      "name": "IET Information Security",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:02.067Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=IET%20Information%20Security\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:informationandcomputersecurity": {
+      "name": "Information and Computer Security",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:03.097Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Information%20and%20Computer%20Security\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:internationaljournalofinformationandcomputersecurity": {
+      "name": "International Journal of Information and Computer Security",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:04.259Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=International%20Journal%20of%20Information%20and%20Computer%20Security\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:internationaljournalofinformationsecurityandprivacy": {
+      "name": "International Journal of Information Security and Privacy",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:05.141Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=International%20Journal%20of%20Information%20Security%20and%20Privacy\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:journalofinformationsecurityandapplications": {
+      "name": "Journal of Information Security and Applications",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:06.447Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Journal%20of%20Information%20Security%20and%20Applications\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:securityandcommunicationnetworks": {
+      "name": "Security and Communication Networks",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:07.633Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Security%20and%20Communication%20Networks\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:highconfidencecomputing": {
+      "name": "High-Confidence Computing",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:08.516Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=High-Confidence%20Computing\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "conference:acmconferenceoncomputerandcommunicationssecurity": {
+      "name": "ACM Conference on Computer and Communications Security",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.219Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonthetheoryandapplicationsofcryptographictechniques": {
+      "name": "International Conference on the Theory and Applications of Cryptographic Techniques",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.220Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeesymposiumonsecurityandprivacy": {
+      "name": "IEEE Symposium on Security and Privacy",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.221Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalcryptologyconference": {
+      "name": "International Cryptology Conference",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.222Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:usenixsecuritysymposium": {
+      "name": "USENIX Security Symposium",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.223Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:networkanddistributedsystemsecuritysymposium": {
+      "name": "Network and Distributed System Security Symposium",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.224Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:annualcomputersecurityapplicationsconference": {
+      "name": "Annual Computer Security Applications Conference",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.225Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:annualinternationalconferenceonthetheoryandapplicationofcryptologyandinformationsecurity": {
+      "name": "Annual International Conference on the Theory and Application of Cryptology and Information Security",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.225Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:europeansymposiumonresearchincomputersecurity": {
+      "name": "European Symposium on Research in Computer Security",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.226Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:fastsoftwareencryption": {
+      "name": "Fast Software Encryption",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.227Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeecomputersecurityfoundationsworkshop": {
+      "name": "IEEE Computer Security Foundations Workshop",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.227Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalsymposiumonreliabledistributedsystems": {
+      "name": "IEEE International Symposium on Reliable Distributed Systems",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.228Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceoncryptographichardwareandembeddedsystems": {
+      "name": "International Conference on Cryptographic Hardware and Embedded Systems",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.229Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceondependablesystemsandnetworks": {
+      "name": "International Conference on Dependable Systems and Networks",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.229Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalsymposiumonrecentadvancesinintrusiondetection": {
+      "name": "International Symposium on Recent Advances in Intrusion Detection",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.230Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalworkshoponpracticeandtheoryinpublickeycryptography": {
+      "name": "International Workshop on Practice and Theory in Public Key Cryptography",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.230Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:theoryofcryptographyconference": {
+      "name": "Theory of Cryptography Conference",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.231Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acmconferenceonsecurityandprivacyinwirelessandmobilenetworks": {
+      "name": "ACM Conference on Security and Privacy in Wireless and Mobile Networks",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.232Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acmsymposiumonaccesscontrolmodelsandtechnologies": {
+      "name": "ACM Symposium on Access Control Models and Technologies",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.232Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acmworkshopondigitalrightsmanagement": {
+      "name": "ACM Workshop on Digital Rights Management",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.233Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acmworkshoponinformationhidingandmultimediasecurity": {
+      "name": "ACM Workshop on Information Hiding and Multimedia Security",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.233Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonappliedcryptographyandnetworksecurity": {
+      "name": "International Conference on Applied Cryptography and Network Security",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.234Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acmasiaconferenceoncomputerandcommunicationssecurity": {
+      "name": "ACM Asia Conference on Computer and Communications Security",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.234Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:australasiaconferenceoninformationsecurityandprivacy": {
+      "name": "Australasia Conference on Information Security and Privacy",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.235Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:thecryptographerstrackatrsaconference": {
+      "name": "The Cryptographer's Track at RSA Conference",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.236Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:conferenceondetectionofintrusionsandmalwareandvulnerabilityassessment": {
+      "name": "Conference on Detection of Intrusions and Malware & Vulnerability Assessment",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.237Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:digitalforensicresearchworkshop": {
+      "name": "Digital Forensic Research Workshop",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.237Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:financialcryptographyanddatasecurity": {
+      "name": "Financial Cryptography and Data Security",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.238Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalconferenceontrustsecurityandprivacyincomputingandcommunications": {
+      "name": "IEEE International Conference on Trust, Security and Privacy in Computing and Communications",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.239Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ifipinternationalinformationsecurityconference": {
+      "name": "IFIP International Information Security Conference",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.239Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ifipworkinggroup119internationalconferenceondigitalforensics": {
+      "name": "IFIP Working Group 11.9 International Conference on Digital Forensics",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.241Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:informationsecurityconference": {
+      "name": "Information Security Conference",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.243Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceondigitalforensicsandcybercrime": {
+      "name": "International Conference on Digital Forensics & Cyber Crime",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.244Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceoninformationandcommunicationssecurity": {
+      "name": "International Conference on Information and Communications Security",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.245Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonsecurityandprivacyincommunicationnetworks": {
+      "name": "International Conference on Security and Privacy in Communication Networks",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.246Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:newsecurityparadigmsworkshop": {
+      "name": "New Security Paradigms Workshop",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.247Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:passiveandactivemeasurementconference": {
+      "name": "Passive and Active Measurement Conference",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.248Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:privacyenhancingtechnologiessymposium": {
+      "name": "Privacy Enhancing Technologies Symposium",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.248Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:selectedareasincryptography": {
+      "name": "Selected Areas in Cryptography",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.249Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:symposiumonusableprivacyandsecurity": {
+      "name": "Symposium On Usable Privacy and Security",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.249Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:usenixworkshoponhottopicsinsecurity": {
+      "name": "USENIX Workshop on Hot Topics in Security",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.251Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeeuropeansymposiumonsecurityandprivacy": {
+      "name": "IEEE European Symposium on Security and Privacy",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.252Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceoninformationsecurityandcryptology": {
+      "name": "International Conference on Information Security and Cryptology",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.253Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:conferenceondataandapplicationsecurityandprivacy": {
+      "name": "Conference on Data and Application Security and Privacy",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.253Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonblockchainartificialintelligenceandtrustworthysystems": {
+      "name": "International Conference on Blockchain, Artificial Intelligence, and Trustworthy Systems",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.254Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceoncybersecurityandcloudcomputing": {
+      "name": "International Conference on Cyber Security and Cloud Computing",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:02:09.255Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "journal:acmtransactionsonprogramminglanguagesandsystems": {
+      "name": "ACM Transactions on Programming Languages and Systems",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:09.664Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=ACM%20Transactions%20on%20Programming%20Languages%20and%20Systems\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:acmtransactionsonsoftwareengineeringandmethodology": {
+      "name": "ACM Transactions on Software Engineering and Methodology",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:12.739Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=ACM%20Transactions%20on%20Software%20Engineering%20and%20Methodology\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:ieeetransactionsonsoftwareengineering": {
+      "name": "IEEE Transactions on Software Engineering",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:13.560Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=IEEE%20Transactions%20on%20Software%20Engineering\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:ieeetransactionsonservicescomputing": {
+      "name": "IEEE Transactions on Services Computing",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:14.326Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=IEEE%20Transactions%20on%20Services%20Computing\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:automatedsoftwareengineering": {
+      "name": "Automated Software Engineering",
+      "source": "https://www.letpub.com.cn/index.php?journalid=1008&page=journalapp&view=detail",
+      "checked": "2026-11-03T16:08:42.940Z",
+      "issn": "0928-8910",
+      "sci": "SCIE",
+      "ei": "Not verified",
+      "jif": {
+        "value": 3.902,
+        "edition": "2025-2026"
+      },
+      "jcr": [
+        {
+          "category": "COMPUTER SCIENCE, SOFTWARE ENGINEERING",
+          "quartile": "Q2",
+          "rank": "37/130"
+        }
+      ],
+      "jcrEdition": "2025-2026",
+      "cas": {
+        "edition": "2025",
+        "division": 4,
+        "category": "计算机科学"
+      },
+      "xinrui": {
+        "edition": "2026",
+        "division": 3,
+        "category": "计算机科学"
+      },
+      "access": "authenticated",
+      "status": "matched"
+    },
+    "journal:empiricalsoftwareengineering": {
+      "name": "Empirical Software Engineering",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:16.066Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Empirical%20Software%20Engineering\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:ietsoftware": {
+      "name": "IET Software",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:16.908Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=IET%20Software\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:informationandsoftwaretechnology": {
+      "name": "Information and Software Technology",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:18.682Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Information%20and%20Software%20Technology\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:journaloffunctionalprogramming": {
+      "name": "Journal of Functional Programming",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:19.652Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Journal%20of%20Functional%20Programming\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:journalofsoftwareevolutionandprocess": {
+      "name": "Journal of Software: Evolution and Process",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:20.572Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Journal%20of%20Software%3A%20Evolution%20and%20Process\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:journalofsystemsandsoftware": {
+      "name": "Journal of Systems and Software",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:21.429Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Journal%20of%20Systems%20and%20Software\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:requirementsengineering": {
+      "name": "Requirements Engineering",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:22.196Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Requirements%20Engineering\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:scienceofcomputerprogramming": {
+      "name": "Science of Computer Programming",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:23.000Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Science%20of%20Computer%20Programming\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:softwareandsystemsmodeling": {
+      "name": "Software and Systems Modeling",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:23.770Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Software%20and%20Systems%20Modeling\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:softwaretestingverificationandreliability": {
+      "name": "Software Testing, Verification and Reliability",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:24.563Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Software%20Testing%2C%20Verification%20and%20Reliability\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:softwarepracticeandexperience": {
+      "name": "Software: Practice and Experience",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:25.584Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Software%3A%20Practice%20and%20Experience\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:computerlanguagessystemsandstructures": {
+      "name": "Computer Languages, Systems and Structures",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:26.509Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Computer%20Languages%2C%20Systems%20and%20Structures\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:internationaljournalofsoftwareengineeringandknowledgeengineering": {
+      "name": "International Journal of Software Engineering and Knowledge Engineering",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:27.282Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=International%20Journal%20of%20Software%20Engineering%20and%20Knowledge%20Engineering\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:internationaljournalofsoftwaretoolsfortechnologytransfer": {
+      "name": "International Journal of Software Tools for Technology Transfer",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:28.552Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=International%20Journal%20of%20Software%20Tools%20for%20Technology%20Transfer\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:journaloflogicalandalgebraicmethodsinprogramming": {
+      "name": "Journal of Logical and Algebraic Methods in Programming",
+      "status": "source-error",
+      "checked": "2026-11-03T16:02:29.482Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Journal%20of%20Logical%20and%20Algebraic%20Methods%20in%20Programming\ncurl: (60) SSL certificate problem: self signed certificate\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+    },
+    "journal:journalofwebengineering": {
+      "name": "Journal of Web Engineering",
+      "status": "source-error",
+      "checked": "2026-11-03T16:04:01.836Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Journal%20of%20Web%20Engineering\ncurl: (28) Connection timed out after 91642 milliseconds\n"
+    },
+    "journal:serviceorientedcomputingandapplications": {
+      "name": "Service Oriented Computing and Applications",
+      "status": "source-error",
+      "checked": "2026-11-03T16:04:04.989Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Service%20Oriented%20Computing%20and%20Applications\ncurl: (35) LibreSSL SSL_connect: SSL_ERROR_SYSCALL in connection to www.letpub.com.cn:443 \n"
+    },
+    "journal:softwarequalityjournal": {
+      "name": "Software Quality Journal",
+      "status": "source-error",
+      "checked": "2026-11-03T16:04:09.304Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Software%20Quality%20Journal\ncurl: (35) LibreSSL SSL_connect: SSL_ERROR_SYSCALL in connection to www.letpub.com.cn:443 \n"
+    },
+    "journal:theoryandpracticeoflogicprogramming": {
+      "name": "Theory and Practice of Logic Programming",
+      "status": "source-error",
+      "checked": "2026-11-03T16:04:13.711Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Theory%20and%20Practice%20of%20Logic%20Programming\ncurl: (35) LibreSSL SSL_connect: SSL_ERROR_SYSCALL in connection to www.letpub.com.cn:443 \n"
+    },
+    "journal:proceedingsoftheacmonprogramminglanguages": {
+      "name": "Proceedings of the ACM on Programming Languages",
+      "status": "source-error",
+      "checked": "2026-11-03T16:04:24.345Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?journalid=27329&page=journalapp&view=detail\ncurl: (35) LibreSSL SSL_connect: SSL_ERROR_SYSCALL in connection to www.letpub.com.cn:443 \n"
+    },
+    "conference:acmsigplanconferenceonprogramminglanguagedesignandimplementation": {
+      "name": "ACM SIGPLAN Conference on Programming Language Design and Implementation",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.056Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acmsigplansigactsymposiumonprinciplesofprogramminglanguages": {
+      "name": "ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.061Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acminternationalconferenceonthefoundationsofsoftwareengineering": {
+      "name": "ACM International Conference on the Foundations of Software Engineering",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.067Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acmsymposiumonoperatingsystemsprinciples": {
+      "name": "ACM Symposium on Operating Systems Principles",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.069Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:conferenceonobjectorientedprogrammingsystemslanguagesandapplications": {
+      "name": "Conference on Object-Oriented Programming Systems, Languages, and Applications",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.071Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonautomatedsoftwareengineering": {
+      "name": "International Conference on Automated Software Engineering",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.072Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonsoftwareengineering": {
+      "name": "International Conference on Software Engineering",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.076Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalsymposiumonsoftwaretestingandanalysis": {
+      "name": "International Symposium on Software Testing and Analysis",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.078Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:usenixsymposiumonoperatingsystemsdesignandimplementation": {
+      "name": "USENIX Symposium on Operating Systems Design and Implementation",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.079Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalsymposiumonformalmethods": {
+      "name": "International Symposium on Formal Methods",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.081Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:europeanconferenceonobjectorientedprogramming": {
+      "name": "European Conference on Object-Oriented Programming",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.083Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:europeanjointconferencesontheoryandpracticeofsoftware": {
+      "name": "European Joint Conferences on Theory and Practice of Software",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.085Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalconferenceonprogramcomprehension": {
+      "name": "IEEE International Conference on Program Comprehension",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.086Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalrequirementsengineeringconference": {
+      "name": "IEEE International Requirements Engineering Conference",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.088Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonadvancedinformationsystemsengineering": {
+      "name": "International Conference on Advanced Information Systems Engineering",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.094Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acmsigplaninternationalconferenceonfunctionprogramming": {
+      "name": "ACM SIGPLAN International Conference on Function Programming",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.096Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acmsigplansigbedinternationalconferenceonlanguagescompilersandtoolsforembeddedsystems": {
+      "name": "ACM SIGPLAN/SIGBED International Conference on Languages, Compilers and Tools for Embedded Systems",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.098Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acmieeeinternationalconferenceonmodeldrivenengineeringlanguagesandsystems": {
+      "name": "ACM/IEEE International Conference on Model Driven EngineeringLanguages and Systems",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.099Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonprinciplesandpracticeofconstraintprogramming": {
+      "name": "International Conference on Principles and Practice of Constraint Programming",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.100Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonserviceorientedcomputing": {
+      "name": "International Conference on Service Oriented Computing",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.102Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalconferenceonsoftwareanalysisevolutionandreengineering": {
+      "name": "IEEE International Conference on Software Analysis, Evolution, and Reengineering",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.105Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonsoftwaremaintenanceandevolution": {
+      "name": "International Conference on Software Maintenance and Evolution",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.107Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonverificationmodelcheckingandabstractinterpretation": {
+      "name": "International Conference on Verification, Model Checking and Abstract Interpretation",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.108Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalconferenceonwebservices": {
+      "name": "IEEE International Conference on Web Services",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.110Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalmiddlewareconference": {
+      "name": "International Middleware Conference",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.112Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalstaticanalysissymposium": {
+      "name": "International Static Analysis Symposium",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.113Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalsymposiumonempiricalsoftwareengineeringandmeasurement": {
+      "name": "International Symposium on Empirical Software Engineering and Measurement",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.114Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalsymposiumonsoftwarereliabilityengineering": {
+      "name": "IEEE International Symposium on Software Reliability Engineering",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.116Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:usenixworkshoponhottopicsinoperatingsystems": {
+      "name": "USENIX Workshop on Hot Topics in Operating Systems",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.118Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceoncompilerconstruction": {
+      "name": "International Conference on Compiler Construction",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.119Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acmsigplanworkshoponpartialevaluationandprogrammanipulation": {
+      "name": "ACM SIGPLAN Workshop on Partial Evaluation and Program Manipulation",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.121Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:acmsigplansigsoftworkshoponprogramanalysisforsoftwaretoolsandengineering": {
+      "name": "ACMSIGPLAN-SIGSOFT Workshop on Program Analysis for Software Tools and Engineering",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.122Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:asiansymposiumonprogramminglanguagesandsystems": {
+      "name": "Asian Symposium on Programming Languages and Systems",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.129Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:asiapacificsoftwareengineeringconference": {
+      "name": "Asia-Pacific Software Engineering Conference",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.131Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonevaluationandassessmentinsoftwareengineering": {
+      "name": "International Conference on Evaluation and Assessment in Software Engineering",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.133Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonengineeringofcomplexcomputersystems": {
+      "name": "International Conference on Engineering of Complex Computer Systems",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.135Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalconferenceonsoftwaretestingverificationandvalidation": {
+      "name": "IEEE International Conference on Software Testing, Verification and Validation",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.137Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalsymposiumonperformanceanalysisofsystemsandsoftware": {
+      "name": "IEEE International Symposium on Performance Analysis of Systems and Software",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.138Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalworkingconferenceonsourcecodeanalysisandmanipulation": {
+      "name": "IEEE International Working Conference on Source Code Analysis and Manipulation",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.272Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalcomputersoftwareandapplicationsconference": {
+      "name": "International Computer Software and Applications Conference",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.274Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonformalengineeringmethods": {
+      "name": "International Conference on Formal Engineering Methods",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.277Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:ieeeinternationalconferenceonsoftwareservicesengineering": {
+      "name": "IEEE International Conference on Software Services Engineering",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.278Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonsoftwareandsystemprocess": {
+      "name": "International Conference on Software and System Process",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.280Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonsoftwareengineeringandknowledgeengineering": {
+      "name": "International Conference on Software Engineering and Knowledge Engineering",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.281Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonsoftwarequalityreliabilityandsecurity": {
+      "name": "International Conference on Software Quality, Reliability and Security",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.283Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonsoftwarereuse": {
+      "name": "International Conference on Software Reuse",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.285Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonwebengineering": {
+      "name": "International Conference on Web Engineering",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.287Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalsymposiumonmodelcheckingofsoftware": {
+      "name": "International Symposium on Model Checking of Software",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.289Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalsymposiumonautomatedtechnologyforverificationandanalysis": {
+      "name": "International Symposium on Automated Technology for Verification and Analysis",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.291Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalsymposiumonlogicbasedprogramsynthesisandtransformation": {
+      "name": "International Symposium on Logic-based Program Synthesis and Transformation",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.293Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:theoreticalaspectsofsoftwareengineeringconference": {
+      "name": "Theoretical Aspects of Software Engineering Conference",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.296Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:miningsoftwarerepositories": {
+      "name": "Mining Software Repositories",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.299Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:requirementsengineeringfoundationforsoftwarequality": {
+      "name": "Requirements Engineering: Foundation for Software Quality",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.303Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:workingieeeifipconferenceonsoftwarearchitecture": {
+      "name": "Working IEEE/IFIP Conference on Software Architecture",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.306Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:asiapacificsymposiumoninternetware": {
+      "name": "Asia-Pacific Symposium on Internetware",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.308Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonruntimeverification": {
+      "name": "International Conference on Runtime Verification",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.312Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "conference:internationalconferenceonformalmethodsandmodelsforcodesign": {
+      "name": "International Conference on Formal Methods and Models for Co-Design",
+      "status": "edition-evidence-required",
+      "checked": "2026-11-03T16:04:25.316Z",
+      "eiProceedings": "Not verified",
+      "eiPaper": "Not verified"
+    },
+    "journal:acmtransactionsondatabasesystems": {
+      "name": "ACM TRANSACTIONS ON DATABASE SYSTEMS",
+      "source": "https://www.letpub.com.cn/index.php?journalid=29&page=journalapp&view=detail",
+      "checked": "2026-11-03T16:04:28.043Z",
+      "issn": "0362-5915",
+      "sci": "SCIE",
+      "ei": "Not verified",
+      "jif": null,
+      "jcr": [],
+      "jcrEdition": "2025-2026",
+      "cas": {
+        "edition": "2025",
+        "division": 2,
+        "category": "计算机科学"
+      },
+      "xinrui": {
+        "edition": "2026",
+        "division": 3,
+        "category": "计算机科学"
+      },
+      "access": "login-required",
+      "status": "matched"
+    },
+    "journal:acmtransactionsoninformationsystems": {
+      "name": "ACM Transactions on Information Systems",
+      "status": "source-error",
+      "checked": "2026-11-03T16:04:35.493Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?journalid=34&page=journalapp&view=detail\ncurl: (35) LibreSSL SSL_connect: SSL_ERROR_SYSCALL in connection to www.letpub.com.cn:443 \n"
+    },
+    "journal:ieeetransactionsonknowledgeanddataengineering": {
+      "name": "IEEE TRANSACTIONS ON KNOWLEDGE AND DATA ENGINEERING",
+      "source": "https://www.letpub.com.cn/index.php?journalid=3399&page=journalapp&view=detail",
+      "checked": "2026-11-03T16:04:38.429Z",
+      "issn": "1041-4347",
+      "sci": "SCIE",
+      "ei": "Not verified",
+      "jif": null,
+      "jcr": [],
+      "jcrEdition": "2025-2026",
+      "cas": {
+        "edition": "2025",
+        "division": 1,
+        "category": "计算机科学"
+      },
+      "xinrui": {
+        "edition": "2026",
+        "division": 2,
+        "category": "计算机科学"
+      },
+      "access": "login-required",
+      "status": "matched"
+    },
+    "journal:thevldbjournal": {
+      "name": "The VLDB Journal",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=The%20VLDB%20Journal",
+      "checked": "2026-11-03T16:04:40.262Z"
+    },
+    "journal:acmtransactionsonknowledgediscoveryfromdata": {
+      "name": "ACM Transactions on Knowledge Discovery from Data",
+      "status": "source-error",
+      "checked": "2026-11-03T16:04:47.204Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?journalid=8412&page=journalapp&view=detail\ncurl: (35) LibreSSL SSL_connect: SSL_ERROR_SYSCALL in connection to www.letpub.com.cn:443 \n"
+    },
+    "journal:acmtransactionsontheweb": {
+      "name": "ACM Transactions on the Web",
+      "status": "source-error",
+      "checked": "2026-11-03T16:05:12.937Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=ACM%20Transactions%20on%20the%20Web\ncurl: (28) Operation timed out after 25002 milliseconds with 0 bytes received\n"
+    },
+    "journal:advancedengineeringinformatics": {
+      "name": "ADVANCED ENGINEERING INFORMATICS",
+      "source": "https://www.letpub.com.cn/index.php?journalid=206&page=journalapp&view=detail",
+      "checked": "2026-11-03T16:05:16.662Z",
+      "issn": "1474-0346",
+      "sci": "SCIE",
+      "ei": "Not verified",
+      "jif": null,
+      "jcr": [],
+      "jcrEdition": "2025-2026",
+      "cas": {
+        "edition": "2025",
+        "division": 1,
+        "category": "工程技术"
+      },
+      "xinrui": {
+        "edition": "2026",
+        "division": 1,
+        "category": "工程技术"
+      },
+      "access": "login-required",
+      "status": "matched"
+    },
+    "journal:dataandknowledgeengineering": {
+      "name": "Data & Knowledge Engineering",
+      "status": "source-error",
+      "checked": "2026-11-03T16:05:22.758Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Data%20%26%20Knowledge%20Engineering\ncurl: (35) LibreSSL SSL_connect: SSL_ERROR_SYSCALL in connection to www.letpub.com.cn:443 \n"
+    },
+    "journal:dataminingandknowledgediscovery": {
+      "name": "Data Mining and Knowledge Discovery",
+      "status": "source-error",
+      "checked": "2026-11-03T16:05:28.560Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Data%20Mining%20and%20Knowledge%20Discovery\ncurl: (35) LibreSSL SSL_connect: SSL_ERROR_SYSCALL in connection to www.letpub.com.cn:443 \n"
+    },
+    "journal:europeanjournalofinformationsystems": {
+      "name": "EUROPEAN JOURNAL OF INFORMATION SYSTEMS",
+      "source": "https://www.letpub.com.cn/index.php?journalid=2666&page=journalapp&view=detail",
+      "checked": "2026-11-03T16:05:31.264Z",
+      "issn": "0960-085X",
+      "sci": "SCIE",
+      "ei": "Not verified",
+      "jif": null,
+      "jcr": [],
+      "jcrEdition": "2025-2026",
+      "cas": {
+        "edition": "2025",
+        "division": 2,
+        "category": "管理学"
+      },
+      "xinrui": {
+        "edition": "2026",
+        "division": 2,
+        "category": "管理学"
+      },
+      "access": "login-required",
+      "status": "matched"
+    },
+    "journal:geoinformatica": {
+      "name": "GEOINFORMATICA",
+      "source": "https://www.letpub.com.cn/index.php?journalid=3056&page=journalapp&view=detail",
+      "checked": "2026-11-03T16:05:33.914Z",
+      "issn": "1384-6175",
+      "sci": "SCIE",
+      "ei": "Not verified",
+      "jif": null,
+      "jcr": [],
+      "jcrEdition": "2025-2026",
+      "cas": {
+        "edition": "2025",
+        "division": 3,
+        "category": "计算机科学"
+      },
+      "xinrui": {
+        "edition": "2026",
+        "division": 3,
+        "category": "计算机科学"
+      },
+      "access": "login-required",
+      "status": "matched"
+    },
+    "journal:informationprocessingandmanagement": {
+      "name": "INFORMATION PROCESSING & MANAGEMENT",
+      "source": "https://www.letpub.com.cn/index.php?journalid=3564&page=journalapp&view=detail",
+      "checked": "2026-11-03T16:05:37.579Z",
+      "issn": "0306-4573",
+      "sci": "SCIE",
+      "ei": "Not verified",
+      "jif": null,
+      "jcr": [],
+      "jcrEdition": "2025-2026",
+      "cas": {
+        "edition": "2025",
+        "division": 1,
+        "category": "计算机科学"
+      },
+      "xinrui": {
+        "edition": "2026",
+        "division": 1,
+        "category": "计算机科学"
+      },
+      "access": "login-required",
+      "status": "matched"
+    },
+    "journal:informationsciences": {
+      "name": "Information Sciences",
+      "status": "source-error",
+      "checked": "2026-11-03T16:05:44.403Z",
+      "error": "Command failed: curl --fail --silent --show-error --max-time 25 https://www.letpub.com.cn/index.php?journalid=3567&page=journalapp&view=detail\ncurl: (35) LibreSSL SSL_connect: SSL_ERROR_SYSCALL in connection to www.letpub.com.cn:443 \n"
+    },
+    "journal:informationsystems": {
+      "name": "Information Systems",
+      "status": "not-found",
+      "source": "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Information%20Systems",
+      "checked": "2026-11-03T16:05:46.130Z"
+    }
+  },
+  "checked": "2026-11-03T16:08:12.078Z"
+}

@@ -169,7 +169,8 @@ const DocumentManager = {
     originOrSource,
     userId,
     undoing,
-    external
+    external,
+    expectedVersion
   ) {
     if (newLines == null) {
       throw new Error('No lines were provided to setDoc')
@@ -185,6 +186,11 @@ const DocumentManager = {
       alreadyLoaded,
       type,
     } = await DocumentManager.getDoc(projectId, docId)
+
+    // Checked while holding the update lock, not in a separate read request.
+    if (expectedVersion !== undefined && version !== expectedVersion) {
+      return { conflict: true, version }
+    }
 
     logger.debug(
       { docId, projectId, oldLines, newLines },
@@ -666,7 +672,8 @@ const DocumentManager = {
     source,
     userId,
     undoing,
-    external
+    external,
+    expectedVersion
   ) {
     const UpdateManager = require('./UpdateManager')
     return await UpdateManager.promises.lockUpdatesAndDo(
@@ -677,7 +684,8 @@ const DocumentManager = {
       source,
       userId,
       undoing,
-      external
+      external,
+      expectedVersion
     )
   },
 

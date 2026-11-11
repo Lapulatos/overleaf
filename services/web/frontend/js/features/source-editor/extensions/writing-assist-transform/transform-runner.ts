@@ -21,9 +21,16 @@ export function transformRunner(projectId: string) {
 
   return ViewPlugin.fromClass(
     class {
-      constructor(readonly view: EditorView) {}
+      readonly view: EditorView
+
+      constructor(view: EditorView) {
+        this.view = view
+      }
 
       update(update: ViewUpdate) {
+        // Offsets and input belong to the submitted document. Any edit makes
+        // this response stale, including collaborator edits while it runs.
+        if (update.docChanged) token++
         for (const tr of update.transactions) {
           for (const e of tr.effects) {
             if (e.is(requestTransformEffect)) {
@@ -43,6 +50,7 @@ export function transformRunner(projectId: string) {
           targetLanguage?: SupportedLanguage
           customInstruction?: string
           lengthRatio?: number
+          rewriteFidelity?: number
         },
         myToken: number
       ) {
@@ -65,7 +73,7 @@ export function transformRunner(projectId: string) {
             action,
             projectId,
             {
-              targetLanguage: targetLanguage,
+              targetLanguage,
               customInstruction,
               lengthRatio,
               rewriteFidelity,

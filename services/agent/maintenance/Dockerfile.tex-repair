@@ -1,0 +1,7 @@
+# Immutable repair layer; keep the installed TeX Live major version.
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+USER root
+RUN tlmgr --repository https://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2025/tlnet-final install acmart xkeyval xstring iftex microtype etoolbox booktabs refcount totpages environ trimspaces setspace framed zref natbib hyperref hyperxmp ifmtarg kvoptions kvsetkeys kvdefinekeys auxhook bitset bigintcalc intcalc infwarerr letltxmacro gettitlestring pdfescape pdftexcmds ltxcmds hycolor hopatch stringenc graphics xcolor draftwatermark everypage geometry ncctools cmap libertine inconsolata newtx caption float comment fancyhdr pbalance preprint xpatch fontaxes mweights textcase everyshi algorithms algorithmicx pgf pgfplots multirow colortbl placeins \
+ && kpsewhich xkeyval.sty \
+ && kpsewhich acmart.cls

@@ -2,6 +2,7 @@ import { callbackify } from 'node:util'
 import logger from '@overleaf/logger'
 import Settings from '@overleaf/settings'
 import { User } from '../../models/User.mjs'
+import { WritingAssistLibrary } from '../../models/WritingAssistLibrary.mjs'
 import { DeletedUser } from '../../models/DeletedUser.mjs'
 import { UserAuditLogEntry } from '../../models/UserAuditLogEntry.mjs'
 import ProjectDeleter from '../Project/ProjectDeleter.mjs'
@@ -80,13 +81,14 @@ async function deleteUser(userId, options) {
 }
 
 /**
- * delete a user document only
+ * Delete the user's private library credential before removing the user record.
  */
 async function deleteMongoUser(userId) {
   if (!userId) {
     throw new Error('no user_id')
   }
 
+  await WritingAssistLibrary.deleteOne({ _id: userId.toString() }).exec()
   await User.deleteOne({ _id: userId }).exec()
 }
 

@@ -1,0 +1,50 @@
+{
+  "rebase-skip": {
+    "before": "fb4863747a8c14d554e9a9a83a0aa6f4c195df82",
+    "after": "dfa5a5fec6abf4801da24096b87ae1f69f3b7818",
+    "editorExact": true,
+    "launchDialogStayedOpen": true
+  },
+  "cherry-continue": {
+    "before": "fb4863747a8c14d554e9a9a83a0aa6f4c195df82",
+    "after": "a8ae184ee05e6554262b6baef7304d09eaf11a47",
+    "editorExact": true,
+    "launchDialogStayedOpen": true
+  },
+  "cherry-skip": {
+    "before": "fb4863747a8c14d554e9a9a83a0aa6f4c195df82",
+    "after": "fb4863747a8c14d554e9a9a83a0aa6f4c195df82",
+    "editorExact": true,
+    "launchDialogStayedOpen": true
+  },
+  "revert-continue": {
+    "before": "ea20463184dbee7b7d4d38cebd04978ff66a327e",
+    "after": "8b29c28920b75b1e914ddc3e7bd6e0be21628a41",
+    "editorExact": true,
+    "launchDialogStayedOpen": true
+  },
+  "revert-skip": {
+    "before": "ea20463184dbee7b7d4d38cebd04978ff66a327e",
+    "after": "ea20463184dbee7b7d4d38cebd04978ff66a327e",
+    "editorExact": true,
+    "launchDialogStayedOpen": true
+  },
+  "rebase-abort": {
+    "before": "fb4863747a8c14d554e9a9a83a0aa6f4c195df82",
+    "after": "fb4863747a8c14d554e9a9a83a0aa6f4c195df82",
+    "editorExact": true,
+    "launchDialogStayedOpen": false
+  },
+  "cherry-abort": {
+    "before": "fb4863747a8c14d554e9a9a83a0aa6f4c195df82",
+    "after": "fb4863747a8c14d554e9a9a83a0aa6f4c195df82",
+    "editorExact": true,
+    "launchDialogStayedOpen": false
+  },
+  "revert-abort": {
+    "before": "ea20463184dbee7b7d4d38cebd04978ff66a327e",
+    "after": "ea20463184dbee7b7d4d38cebd04978ff66a327e",
+    "editorExact": true,
+    "launchDialogStayedOpen": false
+  }
+}

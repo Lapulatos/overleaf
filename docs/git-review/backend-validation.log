@@ -1,0 +1,13 @@
+✔ branch merge retains both histories and web edits through incoming updates and produces two parents (1354.938667ms)
+✔ real branch switch preserves uncommitted web changes and pins target before final settlement (400.938625ms)
+✔ real Git lease rejects collaborator updates and reconciliation never replays a lost push response (806.76575ms)
+✔ invalid push requests never invoke Git (0.325666ms)
+✔ preparation retains actual author-attributed commit and stable add/delete/binary diff without moving branch (2288.5275ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2406.484584

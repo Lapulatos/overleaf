@@ -1,0 +1,50 @@
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+
+  Native Git branch picker
+    ✔ shows one checkout choice for a tracking branch, retaining its different remote tip
+    ✔ does not collapse unrelated local and remote branches just because their commit is identical
+
+  Branch picker interaction
+(node:29930) TimeoutNaNWarning: NaN is not a number.
+Timeout duration was set to 1.
+(Use `node --trace-warnings ...` to show where the warning was created)
+    ✔ shows the three direct actions and actual commit author, date and subject without duplicate tracking ref (289ms)
+    ✔ supports searching by author, direct selection and Escape returning focus (65ms)
+
+  Git editor save barrier
+    ✔ waits for buffered operations before invoking Git and always restores editor access
+    ✔ does not run Git if saving timed out or buffered edits remain
+
+  Repository credentials settings
+    ✔ keeps a masked configured state after saving without returning or reusing the token (54ms)
+
+  Native Source Control panel
+    ✔ connects an HTTPS repository while retaining current project files and renders the returned native state (59ms)
+    ✔ shows native conflict continuation and abort controls for the active operation only (87ms)
+    ✔ renders repository actions outside clipped sections and closes after selecting the last item (51ms)
+    ✔ applies a native stage hunk and refreshes the remaining diff (80ms)
+    ✔ applies a native unstage hunk and refreshes the remaining diff (79ms)
+    ✔ shows a stale diff error in the diff and does not retry staging automatically (104ms)
+    ✔ shows whole-file diff without hunk controls for binary or structural changes (46ms)
+    ✔ renames a branch through the native command without creating a replacement branch (74ms)
+    ✔ opens file history with author, date and commit subject from the current repository (86ms)
+    ✔ stages a selected file, commits it and immediately renders the returned graph and remaining files (118ms)
+    ✔ keeps the commit message after failure and refreshes native conflict state (59ms)
+    ✔ renders initialization result instead of remaining stuck on the connect screen (39ms)
+    ✔ generates the message on explicit AI click without committing (40ms)
+
+  Native commit graph layout
+    ✔ keeps merge parents in separate lanes until their actual common ancestor
+
+  Native stash management
+    ✔ restores the selected entry with its exact hash using apply (65ms)
+    ✔ restores the selected entry with its exact hash using pop (66ms)
+    ✔ previews the selected native patch and requires explicit confirmation before deletion
+    ✔ keeps the list on failed restore and offers refresh without retrying
+
+
+  25 passing (2s)
+

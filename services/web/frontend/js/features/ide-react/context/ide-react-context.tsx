@@ -48,6 +48,8 @@ export const IdeReactProvider: FC<React.PropsWithChildren> = ({ children }) => {
   const [permissionsLevel, setPermissionsLevel] =
     useState<PermissionsLevel>('readOnly')
   const [outOfSync, setOutOfSync] = useState(false)
+  const [gitLocalBusy, setGitLocalBusy] = useState(false)
+  const [gitRemoteBusy, setGitRemoteBusy] = useState(false)
   const [scopeEventEmitter] = useState(
     () => new ReactScopeEventEmitter(eventEmitter)
   )
@@ -66,6 +68,25 @@ export const IdeReactProvider: FC<React.PropsWithChildren> = ({ children }) => {
   const [projectJoined, setProjectJoined] = useState(false)
 
   const { socket, getSocketDebuggingInfo } = useConnectionContext()
+  useEffect(() => {
+    let expiry: ReturnType<typeof setTimeout> | undefined
+    const local = (event: Event) => setGitLocalBusy((event as CustomEvent<{ busy: boolean }>).detail.busy)
+    const remote = (value: { busy: boolean; ttlMs?: number }) => {
+      clearTimeout(expiry)
+      setGitRemoteBusy(value.busy === true)
+      if (value.busy) expiry = setTimeout(() => setGitRemoteBusy(false), Math.min(300000, value.ttlMs || 300000))
+    }
+    const disconnected = () => { clearTimeout(expiry); setGitRemoteBusy(false) }
+    window.addEventListener('native-git-local-write-state', local)
+    socket.on('nativeGitWriteState', remote)
+    socket.on('disconnect', disconnected)
+    return () => {
+      clearTimeout(expiry)
+      window.removeEventListener('native-git-local-write-state', local)
+      socket.removeListener('nativeGitWriteState', remote)
+      socket.removeListener('disconnect', disconnected)
+    }
+  }, [socket])
   const { joinProject, project } = useProjectContext()
   const spellCheckLanguage = project?.spellCheckLanguage
 
@@ -145,7 +166,7 @@ export const IdeReactProvider: FC<React.PropsWithChildren> = ({ children }) => {
       eventEmitter,
       startedFreeTrial,
       setStartedFreeTrial,
-      permissionsLevel: outOfSync ? 'readOnly' : permissionsLevel,
+      permissionsLevel: outOfSync || gitLocalBusy || gitRemoteBusy ? 'readOnly' : permissionsLevel,
       setPermissionsLevel,
       setOutOfSync,
       projectId,
@@ -155,6 +176,8 @@ export const IdeReactProvider: FC<React.PropsWithChildren> = ({ children }) => {
     [
       eventEmitter,
       outOfSync,
+      gitLocalBusy,
+      gitRemoteBusy,
       permissionsLevel,
       projectId,
       projectJoined,

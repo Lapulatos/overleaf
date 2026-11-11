@@ -1,0 +1,25 @@
+✔ B commit, old branch checkout, and branch-specific unfinished files follow native worktrees (3011.669166ms)
+✔ native index staging and commit include only selected changes, including deletion and unusual filenames (725.586291ms)
+✔ create from older commit and detached checkout do not move branches (899.276834ms)
+✔ stash preserves tracked, staged and untracked work through native Git (706.094833ms)
+✔ publish, fetch and pull use a real bare remote; local commit is visible before push (906.040708ms)
+✔ merge conflict is native unmerged index and abort restores original HEAD (848.488958ms)
+✔ unsafe inputs cannot become options or escape the worktree (264.135208ms)
+✔ resolved merge creates real two-parent commit and graph topology (756.507709ms)
+✔ cherry-pick, revert and reset are native operations, preserving soft-reset staged content (839.076667ms)
+✔ rebase uses native parent rewriting and does not alter the other branch (648.132666ms)
+✔ worktree removal refuses unfinished work and branch deletion refuses an active worktree (559.270041ms)
+✔ unborn repository has empty graph and can unstage before its first commit (244.132333ms)
+✔ branch-filtered graph returns ancestry of requested branch, not a range against current HEAD (533.920417ms)
+✔ file history follows renames and blame uses the selected commit rather than another branch (854.135709ms)
+✔ rebase, cherry-pick and revert conflicts expose native worktree operation and clear after abort (1241.258667ms)
+✔ native apply stages and unstages selected hunks without including other edits and rejects stale diffs (1185.6445ms)
+✔ stash preview includes untracked content and stale list indices cannot apply or delete another stash (511.852792ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14971.519833

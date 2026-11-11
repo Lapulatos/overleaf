@@ -1,0 +1,112 @@
+TAP version 13
+# Subtest: B commit, old branch checkout, and branch-specific unfinished files follow native worktrees
+ok 1 - B commit, old branch checkout, and branch-specific unfinished files follow native worktrees
+  ---
+  duration_ms: 4187.821294
+  type: 'test'
+  ...
+# Subtest: native index staging and commit include only selected changes, including deletion and unusual filenames
+ok 2 - native index staging and commit include only selected changes, including deletion and unusual filenames
+  ---
+  duration_ms: 1479.07525
+  type: 'test'
+  ...
+# Subtest: create from older commit and detached checkout do not move branches
+ok 3 - create from older commit and detached checkout do not move branches
+  ---
+  duration_ms: 1681.048
+  type: 'test'
+  ...
+# Subtest: stash preserves tracked, staged and untracked work through native Git
+ok 4 - stash preserves tracked, staged and untracked work through native Git
+  ---
+  duration_ms: 1808.30571
+  type: 'test'
+  ...
+# Subtest: publish, fetch and pull use a real bare remote; local commit is visible before push
+ok 5 - publish, fetch and pull use a real bare remote; local commit is visible before push
+  ---
+  duration_ms: 2868.470293
+  type: 'test'
+  ...
+# Subtest: merge conflict is native unmerged index and abort restores original HEAD
+ok 6 - merge conflict is native unmerged index and abort restores original HEAD
+  ---
+  duration_ms: 2465.655335
+  type: 'test'
+  ...
+# Subtest: unsafe inputs cannot become options or escape the worktree
+ok 7 - unsafe inputs cannot become options or escape the worktree
+  ---
+  duration_ms: 558.838792
+  type: 'test'
+  ...
+# Subtest: resolved merge creates real two-parent commit and graph topology
+ok 8 - resolved merge creates real two-parent commit and graph topology
+  ---
+  duration_ms: 2107.042376
+  type: 'test'
+  ...
+# Subtest: cherry-pick, revert and reset are native operations, preserving soft-reset staged content
+ok 9 - cherry-pick, revert and reset are native operations, preserving soft-reset staged content
+  ---
+  duration_ms: 2435.510168
+  type: 'test'
+  ...
+# Subtest: rebase uses native parent rewriting and does not alter the other branch
+ok 10 - rebase uses native parent rewriting and does not alter the other branch
+  ---
+  duration_ms: 1708.400876
+  type: 'test'
+  ...
+# Subtest: worktree removal refuses unfinished work and branch deletion refuses an active worktree
+ok 11 - worktree removal refuses unfinished work and branch deletion refuses an active worktree
+  ---
+  duration_ms: 1715.292543
+  type: 'test'
+  ...
+# Subtest: unborn repository has empty graph and can unstage before its first commit
+ok 12 - unborn repository has empty graph and can unstage before its first commit
+  ---
+  duration_ms: 540.311458
+  type: 'test'
+  ...
+# Subtest: branch-filtered graph returns ancestry of requested branch, not a range against current HEAD
+ok 13 - branch-filtered graph returns ancestry of requested branch, not a range against current HEAD
+  ---
+  duration_ms: 1445.690293
+  type: 'test'
+  ...
+# Subtest: file history follows renames and blame uses the selected commit rather than another branch
+ok 14 - file history follows renames and blame uses the selected commit rather than another branch
+  ---
+  duration_ms: 2540.245835
+  type: 'test'
+  ...
+# Subtest: rebase, cherry-pick and revert conflicts expose native worktree operation and clear after abort
+ok 15 - rebase, cherry-pick and revert conflicts expose native worktree operation and clear after abort
+  ---
+  duration_ms: 3264.01596
+  type: 'test'
+  ...
+# Subtest: native apply stages and unstages selected hunks without including other edits and rejects stale diffs
+ok 16 - native apply stages and unstages selected hunks without including other edits and rejects stale diffs
+  ---
+  duration_ms: 3444.882002
+  type: 'test'
+  ...
+# Subtest: stash preview includes untracked content and stale list indices cannot apply or delete another stash
+ok 17 - stash preview includes untracked content and stale list indices cannot apply or delete another stash
+  ---
+  duration_ms: 1818.806501
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 37180.040893

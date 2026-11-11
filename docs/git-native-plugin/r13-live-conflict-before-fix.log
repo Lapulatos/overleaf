@@ -1,0 +1,191 @@
+{
+  "projectId": "6af1bc2a0a5b55d96038512e",
+  "status": {
+    "connected": true,
+    "switching": false,
+    "status": {
+      "branch": "acceptance-r13-reset",
+      "detached": false,
+      "upstream": null,
+      "operation": null,
+      "ahead": 0,
+      "behind": 0,
+      "conflicted": [],
+      "files": []
+    },
+    "branches": [
+      {
+        "ref": "refs/heads/acceptance-r12-amend",
+        "name": "acceptance-r12-amend",
+        "commit": "4d96a6ca65b4fea20dafbc93c081a518975a28c9",
+        "upstream": null,
+        "author": "owner-mvuxgsid",
+        "email": "<owner-mvuxgsid@acceptance.invalid>",
+        "date": "2026-11-09T16:50:16+00:00",
+        "subject": "Fixture amended commit",
+        "remote": false,
+        "symbolic": ""
+      },
+      {
+        "ref": "refs/heads/acceptance-r13-reset",
+        "name": "acceptance-r13-reset",
+        "commit": "4d96a6ca65b4fea20dafbc93c081a518975a28c9",
+        "upstream": null,
+        "author": "owner-mvuxgsid",
+        "email": "<owner-mvuxgsid@acceptance.invalid>",
+        "date": "2026-11-09T16:50:16+00:00",
+        "subject": "Fixture amended commit",
+        "remote": false,
+        "symbolic": ""
+      },
+      {
+        "ref": "refs/heads/acceptance-r11-merge",
+        "name": "acceptance-r11-merge",
+        "commit": "360316b54bf23cec1140e7ee43c235af8f164515",
+        "upstream": null,
+        "author": "owner-mvuxgsid",
+        "email": "<owner-mvuxgsid@acceptance.invalid>",
+        "date": "2026-11-09T16:40:25+00:00",
+        "subject": "Fixture merge source content",
+        "remote": false,
+        "symbolic": ""
+      },
+      {
+        "ref": "refs/heads/main",
+        "name": "main",
+        "commit": "360316b54bf23cec1140e7ee43c235af8f164515",
+        "upstream": null,
+        "author": "owner-mvuxgsid",
+        "email": "<owner-mvuxgsid@acceptance.invalid>",
+        "date": "2026-11-09T16:40:25+00:00",
+        "subject": "Fixture merge source content",
+        "remote": false,
+        "symbolic": ""
+      },
+      {
+        "ref": "refs/heads/acceptance-r11-b",
+        "name": "acceptance-r11-b",
+        "commit": "bf23a66fc28df05746031318495119b85fdc7969",
+        "upstream": null,
+        "author": "owner-mvuxgsid",
+        "email": "<owner-mvuxgsid@acceptance.invalid>",
+        "date": "2026-11-09T16:39:18+00:00",
+        "subject": "Fixture B title change",
+        "remote": false,
+        "symbolic": ""
+      },
+      {
+        "ref": "refs/heads/B",
+        "name": "B",
+        "commit": "48d87555ead25a9082e03a2635093dca2edebb9c",
+        "upstream": null,
+        "author": "owner-mvuxgsid",
+        "email": "<owner-mvuxgsid@acceptance.invalid>",
+        "date": "2026-11-09T12:37:11+00:00",
+        "subject": "Fixture B title change",
+        "remote": false,
+        "symbolic": ""
+      }
+    ],
+    "graph": [
+      {
+        "hash": "4d96a6ca65b4fea20dafbc93c081a518975a28c9",
+        "parents": [
+          "360316b54bf23cec1140e7ee43c235af8f164515"
+        ],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T16:50:16+00:00",
+        "subject": "Fixture amended commit",
+        "refs": "HEAD -> acceptance-r13-reset, acceptance-r12-amend"
+      },
+      {
+        "hash": "360316b54bf23cec1140e7ee43c235af8f164515",
+        "parents": [
+          "75c31f634bb9ee916750ae985351d75002c89452"
+        ],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T16:40:25+00:00",
+        "subject": "Fixture merge source content",
+        "refs": "main, acceptance-r11-merge"
+      },
+      {
+        "hash": "75c31f634bb9ee916750ae985351d75002c89452",
+        "parents": [
+          "2417d27c909cec5a7e3f220ee182c35d66f37db0"
+        ],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T16:40:20+00:00",
+        "subject": "Fixture main unfinished changes retained",
+        "refs": ""
+      },
+      {
+        "hash": "bf23a66fc28df05746031318495119b85fdc7969",
+        "parents": [
+          "2417d27c909cec5a7e3f220ee182c35d66f37db0"
+        ],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T16:39:18+00:00",
+        "subject": "Fixture B title change",
+        "refs": "acceptance-r11-b"
+      },
+      {
+        "hash": "2417d27c909cec5a7e3f220ee182c35d66f37db0",
+        "parents": [
+          "b00292bce181e70e2ae0313abdee57eefbd280e1"
+        ],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T16:39:14+00:00",
+        "subject": "Fixture initial manuscript",
+        "refs": ""
+      },
+      {
+        "hash": "48d87555ead25a9082e03a2635093dca2edebb9c",
+        "parents": [
+          "b00292bce181e70e2ae0313abdee57eefbd280e1"
+        ],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T12:37:11+00:00",
+        "subject": "Fixture B title change",
+        "refs": "B"
+      },
+      {
+        "hash": "b00292bce181e70e2ae0313abdee57eefbd280e1",
+        "parents": [],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T12:37:07+00:00",
+        "subject": "Fixture initial manuscript",
+        "refs": ""
+      }
+    ]
+  }
+}
+PASS read conflict base
+PASS read original content
+PASS create conflict target
+PASS checkout conflict target
+PASS edit target
+PASS stage target
+PASS commit target
+PASS create conflict source
+PASS checkout conflict source
+PASS edit source
+PASS stage source
+PASS commit source
+PASS return to conflict target
+EXPECTED_CONFLICT_RESPONSE 500 <!DOCTYPE html><html lang="en"><head><title>Something went wrong</title><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/stylesheets/main-style-21006bdae7605f15112e.css"></head><
+PASS merge conflicting branches
+PASS inspect conflict
+PASS read editor conflict markers
+PASS read native conflict versions
+PASS choose incoming version
+PASS verify resolved editor content
+PASS continue merge
+PASS verify final editor content
+PASS native conflict markers, exact index versions, incoming resolution and two-parent merge

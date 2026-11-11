@@ -1,0 +1,2 @@
+FROM overleaf-agent-acceptance:20261110-native-git-candidate-r21
+COPY services/web/app/src/Features/NativeGit/GitRepository.mjs /overleaf/services/web/app/src/Features/NativeGit/GitRepository.mjs

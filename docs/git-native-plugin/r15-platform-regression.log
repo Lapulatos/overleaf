@@ -1,0 +1,39 @@
+
+ RUN  v4.1.5 /Users/sujie/Documents/Codes/Python/overleaf/services/web
+
+ ❯ |Parallel| test/unit/src/DocumentUpdater/DocumentUpdaterHandler.test.mjs (72 tests | 2 failed) 410ms
+       × reads exact reserved snapshot and strips internal data 10ms
+       × rejects wrong identity, content and version without retrying 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |Parallel| test/unit/src/DocumentUpdater/DocumentUpdaterHandler.test.mjs > DocumentUpdaterHandler > readDocumentDeletionSnapshot > reads exact reserved snapshot and strips internal data
+TypeError: ctx.handler.promises.readDocumentDeletionSnapshot is not a function
+ ❯ test/unit/src/DocumentUpdater/DocumentUpdaterHandler.test.mjs:69:51
+     67|     it('reads exact reserved snapshot and strips internal data', async…
+     68|       const scope = ctx.docUpdaterMock.get(endpoint).reply(200, { ...r…
+     69|       assert.deepEqual(await ctx.handler.promises.readDocumentDeletion…
+       |                                                   ^
+     70|       scope.done()
+     71|     })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |Parallel| test/unit/src/DocumentUpdater/DocumentUpdaterHandler.test.mjs > DocumentUpdaterHandler > readDocumentDeletionSnapshot > rejects wrong identity, content and version without retrying
+TypeError: ctx.handler.promises.readDocumentDeletionSnapshot is not a function
+ ❯ test/unit/src/DocumentUpdater/DocumentUpdaterHandler.test.mjs:76:51
+     74|         { version: -1 }, { lines: [123] }, { lines: ['changed'] }, { b…
+     75|         const scope = ctx.docUpdaterMock.get(endpoint).reply(200, { ..…
+     76|         await assert.rejects(ctx.handler.promises.readDocumentDeletion…
+       |                                                   ^
+     77|         scope.done()
+     78|       }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  2 failed | 94 passed (96)
+   Start at  01:31:45
+   Duration  1.01s (transform 218ms, setup 784ms, import 134ms, tests 475ms, environment 0ms)
+

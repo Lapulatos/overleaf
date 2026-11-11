@@ -1,0 +1,28 @@
+{
+  "archive": "/Users/sujie/.local/share/overleaf-acceptance/archives/git-plugin-old-build-copies.tar.gz",
+  "sha256": "80f105ce9ce798b0ede5fb42dbd707fa243e3798cec0933c391b8013e4f65eef",
+  "removedDirectories": [
+    "plan/git-workspace-context/services/web/app/src/Features/GitSync",
+    "plan/git-workspace-context/services/web/frontend/js/features/git-sync",
+    "plan/git-changes-context/services/web/app/src/Features/GitSync",
+    "plan/git-changes-context/services/web/frontend/js/features/git-sync",
+    "plan/git-workspace-final-context/services/web/frontend/js/features/git-sync",
+    "plan/git-ui-context/services/web/app/src/Features/GitSync",
+    "plan/git-ui-context/services/web/frontend/js/features/git-sync",
+    "plan/prism-v48-context/services/web/frontend/js/features/git-sync",
+    "plan/auto-sync-recovery-context/services/web/frontend/js/features/git-sync",
+    "plan/prism-v49-context/services/web/app/src/Features/GitSync",
+    "plan/prism-v49-context/services/web/frontend/js/features/git-sync",
+    "plan/git-workspace-layout-context/services/web/frontend/js/features/git-sync",
+    "plan/git-improvements-context/services/web/app/src/Features/GitSync",
+    "plan/git-improvements-context/services/web/frontend/js/features/git-sync",
+    "plan/git-candidate-v44-context/services/web/app/src/Features/GitSync",
+    "plan/git-candidate-v44-context/services/web/frontend/js/features/git-sync",
+    "plan/auto-sync-copy-context/services/web/frontend/js/features/git-sync",
+    "plan/git-local-diff-context/services/web/frontend/js/features/git-sync",
+    "plan/git-push-diagnostics-context/services/web/app/src/Features/GitSync",
+    "plan/git-push-diagnostics-context/services/web/frontend/js/features/git-sync",
+    "plan/prism-v47-context/services/web/app/src/Features/GitSync",
+    "plan/git-literature-context/services/web/frontend/js/features/git-sync"
+  ]
+}

@@ -1,0 +1,716 @@
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+
+  Native blame presentation
+    ✔ preserves indentation, empty source lines, final line numbers and native commit identity
+    ✔ supports SHA-256 Git object names without treating source lines as metadata
+    ✔ navigates to the exact full commit hash from a displayed line (164ms)
+(node:35329) TimeoutNaNWarning: NaN is not a number.
+Timeout duration was set to 1.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+  Native Git branch picker
+    ✔ shows one checkout choice for a tracking branch, retaining its different remote tip
+    ✔ does not collapse unrelated local and remote branches just because their commit is identical
+
+  Branch picker interaction
+    ✔ searches tag commit metadata and distinguishes detached tag checkout from branches (64ms)
+    ✔ shows the three direct actions and actual commit author, date and subject without duplicate tracking ref
+    ✔ supports searching by author, direct selection and Escape returning focus (50ms)
+
+  Native conflict editor
+    ✔ submits the explicitly edited result without changing the selected side
+    ✔ makes incoming deletion explicit and does not expose a lossy binary text editor
+    ✔ explains native rebase sides and retains the result on a stale-file error
+
+  Git comparison navigation
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout._onTimeout (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout._onTimeout (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+    ✔ labels versions and path, marks changed lines and words, and exposes overview targets (134ms)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout._onTimeout (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+TypeError: textRange(...).getClientRects is not a function
+    at clientRectsFor (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:69:56)
+    at LineView.measureTextSize (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1572:25)
+    at DocView.measureTextSize (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3220:37)
+    at ViewState.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:6112:74)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7859:46)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout.<anonymous> (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+    ✔ has a real read-only caret, supports keyboard movement and clears its overview on a new patch (61ms)
+
+  Git editor save barrier
+    ✔ waits for buffered operations before invoking Git and always restores editor access
+    ✔ does not run Git if saving timed out or buffered edits remain
+
+  Native graph history navigation
+    ✔ dismisses a commit hover card when its history rows are replaced (68ms)
+    ✔ offers provider links for the hovered commit and names multiple remotes (65ms)
+    ✔ searches native history beyond loaded rows and restores the snapshot when cleared (543ms)
+    ✔ loads older native commits beyond the initial snapshot without dropping existing rows (1894ms)
+    ✔ filters by native branch ancestry and ignores a late response after switching back to all (146ms)
+    ✔ offers tree/list views and calls the existing remote and refresh actions (136ms)
+    ✔ locates the current native tip even when it is absent from displayed history (47ms)
+
+  Ignored native files
+    ✔ filters paths and only stages the explicitly selected file
+
+  Merge branch selection
+    ✔ filters by author and commit subject, excludes target, and requires an explicit selection (104ms)
+    ✔ keeps the selection on an operation error and offers no phantom empty search result (52ms)
+
+  Repository credentials settings
+    ✔ removes only the confirmed remote address and leaves normal settings actions separate (78ms)
+    ✔ keeps a masked configured state after saving without returning or reusing the token (89ms)
+
+  Native reset chooser
+    ✔ requires a selected preview and explicit hard discard; search clears the selected target (131ms)
+
+  Native Source Control panel
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout._onTimeout (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout.<anonymous> (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+    ✔ expands commit files and opens a scoped side-by-side editor diff without a modal (586ms)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout._onTimeout (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout.<anonymous> (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout._onTimeout (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout.<anonymous> (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+    ✔ switches the diff immediately, ignores late responses and caches committed files (849ms)
+    ✔ uses the shared image preview for working files (138ms)
+    ✔ uses the shared image preview for staged files (135ms)
+    ✔ opens the current project file through a separate graph action (353ms)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout._onTimeout (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout.<anonymous> (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+    ✔ opens stash changes in the editor and closes the stash dialog (558ms)
+    ✔ closes merge selection when native Git reports conflicts and reveals conflict controls (961ms)
+    ✔ closes the rebase launch dialog when native conflicts require recovery (806ms)
+    ✔ closes the cherry-pick launch dialog when native conflicts require recovery (1114ms)
+    ✔ closes the revert launch dialog when native conflicts require recovery (765ms)
+    ✔ keeps first-parent lane color and distinguishes a merged branch
+    ✔ amends explicitly with full message and captured branch/head (324ms)
+    ✔ connects an HTTPS repository while retaining current project files and renders the returned native state (217ms)
+    ✔ shows native conflict continuation and abort controls for the active operation only (416ms)
+    ✔ renders repository actions outside clipped sections and closes after selecting the last item (183ms)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout._onTimeout (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout._onTimeout (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout._onTimeout (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout.<anonymous> (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+    ✔ applies a native stage hunk and refreshes the remaining diff (530ms)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout._onTimeout (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout._onTimeout (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout._onTimeout (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout.<anonymous> (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+    ✔ applies a native unstage hunk and refreshes the remaining diff (531ms)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout._onTimeout (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout._onTimeout (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+    ✔ keeps a closed diff closed when pending apply completes (755ms)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout._onTimeout (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout.<anonymous> (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+    ✔ keeps a closed diff closed when pending refresh completes (851ms)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout._onTimeout (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout.<anonymous> (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+    ✔ shows a stale diff error in the diff and does not retry staging automatically (686ms)
+    ✔ shows whole-file diff without hunk controls for binary or structural changes (386ms)
+    ✔ refreshes Changes after editor save events without issuing a Git mutation (1015ms)
+    ✔ does not let a delayed background refresh overwrite the result of staging (1806ms)
+    ✔ refreshes status after a lost commit response without submitting the commit again (456ms)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout._onTimeout (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout.<anonymous> (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+    ✔ opens line authors from file history and navigates to the native commit diff (1004ms)
+    ✔ selects a source branch from the merge list and binds the displayed target (489ms)
+    ✔ separates unmerged files and stages a chosen native conflict version before allowing continuation (1163ms)
+    ✔ previews unstaged changes and only discards after explicit confirmation with the preview fingerprint (470ms)
+    ✔ keeps a stale discard preview visible without retrying the destructive operation (603ms)
+    ✔ renames a branch through the native command without creating a replacement branch (421ms)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout._onTimeout (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout.<anonymous> (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+    ✔ opens file history with author, date and commit subject from the current repository (691ms)
+    ✔ stages a selected file, commits it and immediately renders the returned graph and remaining files (679ms)
+    ✔ keeps the commit message after failure and refreshes native conflict state (364ms)
+    ✔ renders initialization result instead of remaining stuck on the connect screen (214ms)
+    ✔ generates the message on explicit AI click without committing (315ms)
+
+  Native commit graph layout
+    ✔ keeps merge parents in separate lanes until their actual common ancestor
+    ✔ shows Changes tools/count and confirms batch discard against the preview (321ms)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout._onTimeout (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+TypeError: textRange(...).getClientRects is not a function
+    at textCoords (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:902:43)
+    at TextView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:808:16)
+    at coordsInChildren (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1096:23)
+    at LineView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:1585:20)
+    at DocView.coordsAt (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:3153:28)
+    at EditorView.coordsAtPos (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8203:33)
+    at RectangleMarker.forRange (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8947:28)
+    at Object.markers (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9213:51)
+    at LayerView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:9104:27)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7874:34
+    at Array.map (<anonymous>)
+    at EditorView.measure (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:7872:42)
+    at /Users/sujie/Documents/Codes/Python/overleaf/node_modules/@codemirror/view/dist/index.cjs:8010:79
+    at invokeTheCallbackFunction (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+    at runAnimationFrameCallbacks (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:688:13)
+    at Timeout.<anonymous> (/Users/sujie/Documents/Codes/Python/overleaf/node_modules/jsdom/lib/jsdom/browser/Window.js:666:11)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7)
+    ✔ opens the changed-file navigator and switches scoped diffs without staging (309ms)
+
+  Native stash management
+    ✔ restores the selected entry with its exact hash using apply (108ms)
+    ✔ restores the selected entry with its exact hash using pop (111ms)
+    ✔ previews the selected native patch and requires explicit confirmation before deletion (130ms)
+    ✔ allows closing the list while a Git request is pending
+    ✔ does not reopen a preview or reload after closing during a pending request (65ms)
+    ✔ keeps the list on failed restore and offers refresh without retrying (48ms)
+
+  Native worktree management
+    ✔ disables cleanup for protected workspaces and confirms the exact clean branch (55ms)
+    ✔ retains confirmation on failure and allows a fresh inventory without retrying cleanup (50ms)
+
+
+  74 passing (26s)
+

@@ -488,6 +488,53 @@ describe('UpdatesProcessor', function () {
       this.UpdateTranslator.isTextUpdate.callsFake(update => update.v != null)
     })
 
+    describe('reviewed deletion retries', function () {
+      beforeEach(function () {
+        this.deletion = {
+          deletionOperationId: '00000000-0000-4000-8000-000000000001',
+          doc: 'a'.repeat(24), pathname: 'tex/chapter.tex', new_pathname: '',
+          version: '9.0', meta: { user_id: 'b'.repeat(24), ts: '2026-10-31T00:00:00Z' },
+        }
+      })
+      it('accepts an exact repeated deletion once before checking ordering', function () {
+        const later = { version: '10.0' }
+        const result = this.UpdatesProcessor._skipAlreadyAppliedUpdates(this.project_id,
+          [this.deletion, later, JSON.parse(JSON.stringify(this.deletion))], { docs: {} })
+        expect(result).to.eql([this.deletion, later])
+      })
+      it('still discards a previously applied deletion by persisted version', function () {
+        expect(this.UpdatesProcessor._skipAlreadyAppliedUpdates(this.project_id,
+          [this.deletion, { ...this.deletion }], { project: '9.0', docs: {} })).to.eql([])
+      })
+      it('ignores an already applied deletion retried behind a newer operation', function () {
+        const later = { version: '10.0' }
+        expect(this.UpdatesProcessor._skipAlreadyAppliedUpdates(this.project_id,
+          [later, this.deletion], { project: '9.0', docs: {} })).to.eql([later])
+      })
+      it('rejects an operation id reused with a different payload', function () {
+        for (const change of [{ pathname: 'other.tex' }, { version: '10.0' }, { meta: {} }, { doc: 'c'.repeat(24) }]) {
+          expect(() => this.UpdatesProcessor._skipAlreadyAppliedUpdates(this.project_id,
+            [this.deletion, { ...this.deletion, ...change }], { docs: {} }))
+            .to.throw('conflicting reviewed deletion history operation')
+        }
+      })
+      it('rejects malformed tags and non-delete operations', function () {
+        for (const change of [{ deletionOperationId: 'bad' }, { new_pathname: 'renamed.tex' }, { version: 9 }, { doc: 'bad' }]) {
+          expect(() => this.UpdatesProcessor._skipAlreadyAppliedUpdates(this.project_id,
+            [{ ...this.deletion, ...change }], { docs: {} }))
+            .to.throw('invalid reviewed deletion history operation')
+        }
+      })
+      it('keeps ordinary duplicate-version rejection', function () {
+        expect(() => this.UpdatesProcessor._skipAlreadyAppliedUpdates(this.project_id,
+          [{ version: '9.0' }, { version: '9.0' }], { docs: {} })).to.throw('project structure version out of order')
+      })
+    })
+
+
+
+
+
     describe('with all doc ops in order', function () {
       beforeEach(function () {
         this.updates = [

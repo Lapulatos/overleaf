@@ -1,5 +1,6 @@
 // @ts-check
 
+import { withResponseCancellation, withWritingErrors } from './WritingAssistCancellation.mjs'
 import { expressify } from '@overleaf/promise-utils'
 import SessionManager from '../Authentication/SessionManager.mjs'
 import WritingAssistManager from './WritingAssistManager.mjs'
@@ -28,7 +29,7 @@ const checkSchema = z.object({
 const configSchema = z.object({
   body: z.object({
     enabled: z.boolean().optional(),
-    provider: z.enum(['openai', 'anthropic', 'custom']).optional(),
+    provider: z.enum(['openai', 'anthropic', 'custom', 'agent']).optional(),
     openai: z.object({
       apiKey: z.string(), model: z.string(), endpoint: z.string().optional(),
     }).optional(),
@@ -93,6 +94,9 @@ const transformSchema = z.object({
 async function resolveProviderConfig(userId) {
   const cfg = (await WritingAssistConfigManager.promises.get(userId)) || getDefaultConfig()
   const provider = cfg.provider || 'openai'
+  if (provider === 'agent') {
+    return { provider, providerConfig: { apiKey: '', model: '', timeout: cfg.timeoutMs ?? 60000 } }
+  }
   const providerCfgRaw = cfg[provider]
   if (!providerCfgRaw) {
     throw Object.assign(new Error('Provider not configured'), { statusCode: 400 })
@@ -167,7 +171,7 @@ async function check(req, res) {
   }
 
   const { provider, providerConfig } = await resolveProviderConfig(userId)
-  const issues = await WritingAssistManager.promises.check({ text: body.text, enabledCategories: body.enabledCategories, provider, providerConfig })
+  const issues = await withResponseCancellation(res, signal => WritingAssistManager.promises.check({ text: body.text, enabledCategories: body.enabledCategories, provider, providerConfig: { ...providerConfig, signal } }))
   res.json({ issues })
 }
 
@@ -177,6 +181,7 @@ async function getConfig(req, res) {
   const cfg = (await WritingAssistConfigManager.promises.get(userId)) || getDefaultConfig()
   /** @type {any} */
   const result = { enabled: cfg.enabled, provider: cfg.provider, categories: cfg.categories, debounceMs: cfg.debounceMs, concurrency: cfg.concurrency ?? 4, timeoutMs: cfg.timeoutMs ?? 20000, analysisMode: cfg.analysisMode ?? 'lazy', underlineStyle: cfg.underlineStyle ?? 'solid' }
+  if (cfg.provider === 'agent') result.concurrency = 1
   for (const p of ['openai', 'anthropic', 'custom']) {
     if (cfg[p]) {
       result[p] = { model: cfg[p].model, hasKey: !!cfg[p].apiKey }
@@ -220,6 +225,7 @@ async function putConfig(req, res) {
       }
     }
   }
+  if (merged.provider === 'agent') merged.concurrency = 1
   await WritingAssistConfigManager.promises.set(userId, merged)
   logger.info({ userId }, 'WritingAssist: config updated')
   res.sendStatus(204)
@@ -278,7 +284,7 @@ async function transform(req, res) {
   const { body } = parseReq(req, transformSchema)
   const userId = SessionManager.getLoggedInUserId(req.session)
   const { provider, providerConfig } = await resolveProviderConfig(userId)
-  const result = await WritingAssistTransformManager.promises.transform({
+  const result = await withResponseCancellation(res, signal => WritingAssistTransformManager.promises.transform({
     text: body.text,
     action: body.action,
     targetLanguage: body.targetLanguage,
@@ -286,18 +292,18 @@ async function transform(req, res) {
     lengthRatio: body.lengthRatio,
     rewriteFidelity: body.rewriteFidelity,
     provider,
-    providerConfig,
-  })
+    providerConfig: { ...providerConfig, signal },
+  }))
   res.json(result)
 }
 
 export default {
-  check: expressify(check),
+  check: expressify(withWritingErrors(check)),
   getConfig: expressify(getConfig),
   putConfig: expressify(putConfig),
   listDismissals: expressify(listDismissals),
   addDismissal: expressify(addDismissal),
   updateDismissal: expressify(updateDismissal),
   deleteDismissal: expressify(deleteDismissal),
-  transform: expressify(transform),
+  transform: expressify(withWritingErrors(transform)),
 }

@@ -1,0 +1,14 @@
+✔ distinguishes deleted, empty, text and binary files (1.738417ms)
+✔ limits browser preview without cutting a surrogate pair (0.461375ms)
+✔ identifies bounded image and PDF bytes without trusting a filename (0.633958ms)
+✔ patterns hide only matching untracked files, never tracked changes or source by default (3.067334ms)
+✔ ignore settings persist per user and project and enforce authorization (0.435083ms)
+✔ preparation retains actual author-attributed commit and stable add/delete/binary diff without moving branch (2737.223291ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2840.697333

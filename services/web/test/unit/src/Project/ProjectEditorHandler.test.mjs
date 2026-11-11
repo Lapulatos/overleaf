@@ -1,10 +1,16 @@
 import _ from 'lodash'
-import { expect } from 'vitest'
+import { expect, vi } from 'vitest'
 
 const modulePath = '../../../../app/src/Features/Project/ProjectEditorHandler'
 
 describe('ProjectEditorHandler', function () {
   beforeEach(async function (ctx) {
+    const Features = (
+      await import('../../../../app/src/infrastructure/Features.mjs')
+    ).default
+    ctx.featureStub = vi
+      .spyOn(Features, 'hasFeature')
+      .mockImplementation((name) => name === 'chat')
     ctx.project = {
       _id: 'project-id',
       owner_ref: 'owner-id',
@@ -136,7 +142,7 @@ describe('ProjectEditorHandler', function () {
       })
 
       it('should gather readOnly_refs and collaberators_refs into a list of members', function (ctx) {
-        const findMember = id => {
+        const findMember = (id) => {
           for (const member of ctx.result.members) {
             if (member._id === id) {
               return member
@@ -200,7 +206,7 @@ describe('ProjectEditorHandler', function () {
       it('should include invites', function (ctx) {
         expect(ctx.result.invites).to.exist
         ctx.result.invites.should.deep.equal(
-          ctx.invites.map(invite =>
+          ctx.invites.map((invite) =>
             _.pick(invite, ['_id', 'email', 'privileges'])
           )
         )
@@ -370,6 +376,23 @@ describe('ProjectEditorHandler', function () {
       })
     })
 
+    it('exposes native comments without mutating owner features or enabling absent tracked editing', function (ctx) {
+      ctx.owner.features = { trackChanges: true }
+      ctx.project.track_changes = true
+      const result = ctx.handler.buildProjectModelView(
+        ctx.project,
+        ctx.ownerMember,
+        ctx.members,
+        [],
+        false
+      )
+      expect(result.features.nativeComments).to.equal(true)
+      expect(result.features.trackChangesVisible).to.equal(true)
+      expect(result.features.trackChanges).to.equal(false)
+      expect(result.trackChangesState).to.equal(undefined)
+      expect(ctx.owner.features).to.deep.equal({ trackChanges: true })
+    })
+
     describe('trackChangesState', function () {
       describe('when the owner does not have the trackChanges feature', function () {
         beforeEach(function (ctx) {
@@ -391,6 +414,9 @@ describe('ProjectEditorHandler', function () {
 
       describe('when the owner has got the trackChanges feature', function () {
         beforeEach(function (ctx) {
+          ctx.featureStub.mockImplementation(
+            (name) => name === 'chat' || name === 'track-changes'
+          )
           ctx.owner.features = {
             trackChanges: true,
           }

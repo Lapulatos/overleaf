@@ -1,0 +1,23 @@
+✔ project bridge commits B files, shows old content on repo-test, and restores each dirty branch (1036.1875ms)
+✔ interrupted project transfer never exports mixed files into the old branch, and resumes idempotently (730.870541ms)
+✔ resuming an interrupted switch refuses to overwrite a newer collaborator value (626.162084ms)
+✔ export preserves staged index, ignored files and binary bytes; supports file/folder transitions (683.897875ms)
+✔ invalid paths, nested .git and symlinks are rejected before replacing any file (454.93975ms)
+✔ canceling an interrupted transfer restores old branch and retains later collaborator edits (1384.068ms)
+✔ native stash and pop update editor files and preserve the native staged index (1007.568208ms)
+✔ interrupted import after native reset resumes without rerunning Git or exporting stale editor files (1090.049959ms)
+✔ native merge conflicts are imported into editor and native abort restores editor content (1660.922375ms)
+✔ a new process can resume a persisted native-operation transfer without invoking the Git command again (824.209667ms)
+✔ command adapter uses the requesting author and native index, refs, diffs and branch checkout (1881.006625ms)
+✔ AI commit message receives staged content and native diff, excluding unstaged and unselected edits (708.427125ms)
+✔ AI result is rejected if the staged native tree changes while generating (748.97325ms)
+✔ native diff displays untracked additions and the root commit without a fabricated parent (475.690667ms)
+✔ resolving native conflict imports chosen file into the editor and keeps merge continuation separate (2231.280625ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15877.826416

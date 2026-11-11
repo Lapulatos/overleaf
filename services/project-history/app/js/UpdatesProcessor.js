@@ -1,4 +1,4 @@
-import { promisify } from 'node:util'
+import { promisify, isDeepStrictEqual } from 'node:util'
 import logger from '@overleaf/logger'
 import async from 'async'
 import metrics from '@overleaf/metrics'
@@ -711,11 +711,38 @@ export function _processUpdates(
   )
 }
 
+// Reviewed deletions use a stable operation id and stable payload from the
+// durable project receipt. Suppress only exact repeats inside this batch; all
+// ordinary history ordering checks still apply to the remaining operations.
+function deduplicateReviewedDeletions(updates) {
+  const seen = new Map()
+  return updates.filter(update => {
+    if (update?.deletionOperationId === undefined) return true
+    const id = update.deletionOperationId
+    if (typeof id !== 'string' || !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(id) ||
+        typeof update.doc !== 'string' || !/^[a-f0-9]{24}$/.test(update.doc) ||
+        typeof update.pathname !== 'string' || update.pathname.length === 0 ||
+        update.new_pathname !== '' || typeof update.version !== 'string' ||
+        !/^(0|[1-9][0-9]*)\.0$/.test(update.version)) {
+      throw new Errors.OpsOutOfOrderError('invalid reviewed deletion history operation')
+    }
+    if (seen.has(id)) {
+      if (!isDeepStrictEqual(seen.get(id), update)) {
+        throw new Errors.OpsOutOfOrderError('conflicting reviewed deletion history operation')
+      }
+      return false
+    }
+    seen.set(id, update)
+    return true
+  })
+}
+
 _mocks._skipAlreadyAppliedUpdates = (
   projectId,
   updates,
   projectStructureAndDocVersions
 ) => {
+  updates = deduplicateReviewedDeletions(updates)
   function alreadySeenProjectVersion(previousProjectStructureVersion, update) {
     return (
       UpdateTranslator.isProjectStructureUpdate(update) &&
@@ -737,6 +764,12 @@ _mocks._skipAlreadyAppliedUpdates = (
       return false
     }
   }
+
+  // A retry may arrive after a newer operation was queued. A tagged deletion
+  // already covered by persisted history must not make that newer batch fail.
+  // Untagged operations retain the existing ordering checks below.
+  updates = updates.filter(update => update?.deletionOperationId === undefined ||
+    !alreadySeenProjectVersion(projectStructureAndDocVersions.project, update))
 
   // check that the incoming updates are in the correct order (we do not
   // want to send out of order updates to the history service)

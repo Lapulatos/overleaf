@@ -8,6 +8,25 @@ import _ from 'lodash'
 import { plainTextResponse } from '../../infrastructure/Response.mjs'
 import { expressify } from '@overleaf/promise-utils'
 import Modules from '../../infrastructure/Modules.mjs'
+import { DocumentDeletionReservation } from '../../models/DocumentDeletionReservation.mjs'
+
+// A durable fence must also block cache reload after Redis loses its keys.
+// Preparing records do not block: DU still needs to load/check the snapshot.
+async function deletionBlocksReload(projectId, docId) {
+  return Boolean(await DocumentDeletionReservation.exists({
+    _id: `${projectId}:${docId}`,
+    projectId,
+    docId,
+    state: { $in: ['fenced', 'committing', 'committed'] },
+  }))
+}
+
+function deletionPending(res) {
+  return res.status(409).json({
+    error: 'Document deletion is in progress',
+    code: 'DOCUMENT_DELETION_PENDING',
+  })
+}
 
 async function getDocument(req, res) {
   const { Project_id: projectId, doc_id: docId } = req.params
@@ -27,11 +46,16 @@ async function getDocument(req, res) {
     type: 'doc',
   })
 
+  if (await deletionBlocksReload(projectId, docId)) return deletionPending(res)
+
   const { lines, version, ranges } = await ProjectEntityHandler.promises.getDoc(
     projectId,
     docId,
     { peek }
   )
+
+  // The reservation may have advanced while the document store was loading.
+  if (await deletionBlocksReload(projectId, docId)) return deletionPending(res)
 
   const resolvedCommentIdsInProject =
     await ChatApiHandler.promises.getResolvedThreadIds(projectId)

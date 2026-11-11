@@ -4,6 +4,7 @@ const SandboxedModule = require('sandboxed-module')
 const Errors = require('../../../../app/js/Errors')
 const crypto = require('node:crypto')
 const tk = require('timekeeper')
+const ProjectWriteGate = require('@overleaf/redis-wrapper/ProjectWriteGate')
 
 const MODULE_PATH = '../../../../app/js/RedisManager.js'
 
@@ -14,6 +15,13 @@ describe('RedisManager', function () {
     tk.freeze(new Date())
     this.RedisManager = SandboxedModule.require(MODULE_PATH, {
       requires: {
+        '@overleaf/redis-wrapper/ProjectWriteGate': ProjectWriteGate,
+        './mongodb': { db: { documentDeletionReservations: { findOne: sinon.stub().resolves(null) } } },
+        './DocumentDeletionFence': {
+          createDocumentDeletionFence: () => ({ batch: () => this.multi,
+            withOperation: async (doc, check, action) => { await check(); return action() },
+          }),
+        },
         '@overleaf/settings': (this.settings = {
           documentupdater: { logHashErrors: { write: true, read: true } },
           redis: {
@@ -106,6 +114,41 @@ describe('RedisManager', function () {
 
   afterEach(function () {
     tk.reset()
+  })
+
+  describe('project write lease', function () {
+    it('rejects ordinary document work before touching the document while Git holds the lease', async function () {
+      const previous = process.env.OVERLEAF_NATIVE_GIT_ENABLED
+      process.env.OVERLEAF_NATIVE_GIT_ENABLED = 'true'
+      this.rclient.get = sinon.stub().resolves('active-lease')
+      const action = sinon.stub().resolves()
+      try {
+        let rejected = false
+        try { await this.RedisManager.promises.withDocumentWriteContext('project', 'doc', action) }
+        catch { rejected = true }
+        expect(rejected).to.equal(true)
+        expect(action.called).to.equal(false)
+      } finally {
+        if (previous === undefined) delete process.env.OVERLEAF_NATIVE_GIT_ENABLED
+        else process.env.OVERLEAF_NATIVE_GIT_ENABLED = previous
+      }
+    })
+    it('admits a matching internal lease without removing the existing deletion guard', async function () {
+      const previous = process.env.OVERLEAF_NATIVE_GIT_ENABLED
+      process.env.OVERLEAF_NATIVE_GIT_ENABLED = 'true'
+      const token = '00000000-0000-4000-8000-000000000001'
+      this.rclient.get = sinon.stub().resolves(token)
+      const action = sinon.stub().resolves('updated')
+      try {
+        const value = await ProjectWriteGate.runWithToken('project', token,
+          () => this.RedisManager.promises.withDocumentWriteContext('project', 'doc', action))
+        expect(value).to.equal('updated')
+        expect(action.calledOnce).to.equal(true)
+      } finally {
+        if (previous === undefined) delete process.env.OVERLEAF_NATIVE_GIT_ENABLED
+        else process.env.OVERLEAF_NATIVE_GIT_ENABLED = previous
+      }
+    })
   })
 
   describe('getDoc', function () {
@@ -1025,7 +1068,7 @@ describe('RedisManager', function () {
   describe('renameDoc', function () {
     beforeEach(function () {
       this.rclient.rpush = sinon.stub().resolves()
-      this.rclient.set = sinon.stub().resolves()
+      this.multi.set = sinon.stub().resolves()
       this.update = {
         id: this.docId,
         pathname: (this.pathname = 'pathname'),
@@ -1048,7 +1091,7 @@ describe('RedisManager', function () {
       })
 
       it('update the cached pathname', function () {
-        this.rclient.set
+        this.multi.set
           .calledWith(`Pathname:${this.docId}`, this.newPathname)
           .should.equal(true)
       })
@@ -1069,7 +1112,7 @@ describe('RedisManager', function () {
       })
 
       it('does not update the cached pathname', function () {
-        this.rclient.set.called.should.equal(false)
+        this.multi.set.called.should.equal(false)
       })
     })
 

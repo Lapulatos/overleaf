@@ -14,6 +14,7 @@ const mongoDb = mongoClient.db()
 
 const db = {
   docs: mongoDb.collection('docs'),
+  documentDeletionReservations: mongoDb.collection('documentdeletionreservations'),
   docSnapshots: mongoDb.collection('docSnapshots'),
   projects: mongoDb.collection('projects'),
 }

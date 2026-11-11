@@ -1,5 +1,6 @@
 import { StateField } from '@codemirror/state'
-import { showTooltip, type Tooltip } from '@codemirror/view'
+import { Decoration, EditorView, showTooltip, type Tooltip } from '@codemirror/view'
+import { InlineTransformPreview } from './inline-preview'
 import type { TransformState } from './types'
 import {
   requestTransformEffect,
@@ -10,18 +11,17 @@ import {
 } from './effects'
 
 const IDLE: TransformState = { status: 'idle' }
+type TransformTooltip = Tooltip & { __waTransformState: TransformState }
 
-export const transformPreviewField = StateField.define<Tooltip | null>({
-  create(): Tooltip | null {
+export const transformPreviewField = StateField.define<TransformTooltip | null>({
+  create(): TransformTooltip | null {
     return null
   },
 
   update(value, tr) {
     let state: TransformState = IDLE
 
-    if (value && (value as any).__waTransformState) {
-      state = (value as any).__waTransformState as TransformState
-    }
+    if (value) state = value.__waTransformState
 
     for (const e of tr.effects) {
       if (e.is(requestTransformEffect)) {
@@ -48,13 +48,9 @@ export const transformPreviewField = StateField.define<Tooltip | null>({
     }
 
     if (tr.docChanged && state.status !== 'idle') {
-      if (state.status === 'loading' || state.status === 'error') {
-        state = { ...state, from: tr.changes.mapPos(state.from), to: tr.changes.mapPos(state.to) }
-      }
-      if (state.status === 'preview') {
-        const p = state.preview
-        state = { ...state, preview: { ...p, from: tr.changes.mapPos(p.from), to: tr.changes.mapPos(p.to) } }
-      }
+      // A reviewed replacement is tied to its original text. Mapping positions
+      // alone would allow a stale suggestion to overwrite newer manuscript edits.
+      state = IDLE
     }
 
     if (state.status === 'idle') return null
@@ -63,7 +59,8 @@ export const transformPreviewField = StateField.define<Tooltip | null>({
       : state.status === 'loading' ? state.from
       : state.from
 
-    const tooltip: Tooltip = {
+    const tooltip: TransformTooltip = {
+      __waTransformState: state,
       pos,
       above: true,
       create() {
@@ -85,9 +82,23 @@ export const transformPreviewField = StateField.define<Tooltip | null>({
         return { dom }
       },
     }
-    ;(tooltip as any).__waTransformState = state
     return tooltip
   },
 
-  provide: f => showTooltip.from(f),
+  provide: f => [
+    showTooltip.computeN([f], state => {
+      const value = state.field(f)
+      return value && value.__waTransformState.status !== 'preview' ? [value] : []
+    }),
+    EditorView.decorations.compute([f], state => {
+      const value = state.field(f)?.__waTransformState
+      if (value?.status !== 'preview') return Decoration.none
+      const { from, to, original } = value.preview
+      if (from < 0 || to > state.doc.length || from > to || state.sliceDoc(from, to) !== original) return Decoration.none
+      const decorations = []
+      if (from < to) decorations.push(Decoration.mark({ class: 'wa-transform-source-under-review' }).range(from, to))
+      decorations.push(Decoration.widget({ widget: new InlineTransformPreview(value), block: true, side: 1 }).range(state.doc.lineAt(to).to))
+      return Decoration.set(decorations, true)
+    }),
+  ],
 })

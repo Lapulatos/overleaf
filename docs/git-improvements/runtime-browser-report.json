@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "projectId": "6aee30c179c897758e370d23",
+  "scope": "Real candidate APIs and isolated native project. No remote network fetch or push.",
+  "commitOnly": true,
+  "retainedReopenAndArchive": true,
+  "ignoreRules": true,
+  "savedWork": true,
+  "savedWorkPreview": true,
+  "historyPagination": true,
+  "pageErrors": []
+}

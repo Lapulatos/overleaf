@@ -1,0 +1,12 @@
+{
+  "projectId": "6aee30c179c897758e370d23",
+  "name": "Git UX isolated acceptance 1cf56215-920a-4dac-8b85-ba1060293587",
+  "userId": "6ae57d2fa2564a345a7efb9f",
+  "repositoryKey": "3a460489-00e4-4d6e-8305-ebf1a3d23150",
+  "bindingId": "67c73afc-63e5-457c-8be5-d31a73418634",
+  "baseText": "\\documentclass{article}\n\\begin{document}\nOriginal introduction.\nUnchanged separator one.\nUnchanged separator two.\nOriginal conclusion.\n\\end{document}\n",
+  "webText": "\\documentclass{article}\n\\begin{document}\nRevised introduction.\nUnchanged separator one.\nUnchanged separator two.\nRevised conclusion.\n\\end{document}\n",
+  "baseCommit": "ade955648d9fdc953dc6b9d0caba7533178f4929",
+  "mediaCommit": "cea1710bc03a203b35b38b8735f87a69bef458e2",
+  "seeded": true
+}

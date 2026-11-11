@@ -1,0 +1,7 @@
+{
+  "previousImage": "overleaf-agent-acceptance:20261111-native-git-candidate-r48",
+  "image": "overleaf-agent-acceptance:20261111-native-git-candidate-r49",
+  "url": "http://127.0.0.1:18081",
+  "browserUntouched": true,
+  "volumesPreserved": true
+}

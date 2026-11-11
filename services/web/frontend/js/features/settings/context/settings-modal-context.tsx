@@ -1,3 +1,5 @@
+import VenueLocationSettings from '../components/venue-location-settings'
+import SourceNetworkSettings from '../components/source-network-settings'
 import { createContext, FC, useContext, useMemo, useState } from 'react'
 import { useLayoutContext } from '@/shared/context/layout-context'
 import AutoCloseBracketsSetting from '@/features/settings/components/editor-settings/auto-close-brackets-setting'
@@ -9,6 +11,7 @@ import PDFViewerSetting from '@/features/settings/components/editor-settings/pdf
 import importOverleafModules from '../../../../macros/import-overleaf-module.macro'
 import SpellCheckSetting from '@/features/settings/components/editor-settings/spell-check-setting'
 import DictionarySetting from '@/features/settings/components/editor-settings/dictionary-setting'
+import EnvironmentMaintenance from '@/features/source-editor/extensions/writing-assist/environment-maintenance'
 import WritingAssistSettings from '@/features/source-editor/extensions/writing-assist/config-panel'
 import { useTranslation } from 'react-i18next'
 import BreadcrumbsSetting from '@/features/settings/components/editor-settings/breadcrumbs-setting'
@@ -158,6 +161,24 @@ export const SettingsModalProvider: FC<React.PropsWithChildren> = ({
             ],
           },
         ],
+      },
+      {
+        key: 'venue-locations',
+        title: 'Venues',
+        icon: 'settings',
+        sections: [{key: 'general',settings: [{key: 'venue-location-settings',component: <VenueLocationSettings />}]}],
+      },
+      {
+        key: 'ai-maintenance',
+        title: 'AI Maintenance',
+        icon: 'settings',
+        sections: [{ key: 'general', settings: [{ key: 'environment-maintenance', component: <EnvironmentMaintenance /> }] }],
+      },
+      {
+        key: 'source-network',
+        title: 'Network',
+        icon: 'settings',
+        sections: [{ key: 'general', settings: [{ key: 'source-network-settings', component: <SourceNetworkSettings /> }] }],
       },
       {
         key: 'compiler',

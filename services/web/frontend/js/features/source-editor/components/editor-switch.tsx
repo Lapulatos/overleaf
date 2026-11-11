@@ -1,3 +1,4 @@
+import { SubmissionWorkspaceButton, useSubmissionWorkspace } from '@/features/plugins/submission-workspace'
 import { ChangeEvent, FC, memo, useCallback, useId } from 'react'
 import OLTooltip from '@/shared/components/ol/ol-tooltip'
 import { sendMB } from '../../../infrastructure/event-tracking'
@@ -8,6 +9,7 @@ import { getFileExtension } from '../utils/file'
 import { isVisualEditorAvailable } from '../utils/visual-editor'
 
 function EditorSwitch() {
+  const workspace = useSubmissionWorkspace()
   const { t } = useTranslation()
   const { showVisual: visual, setShowVisual: setVisual } =
     useEditorPropertiesContext()
@@ -21,6 +23,7 @@ function EditorSwitch() {
 
   const handleChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
+      workspace?.close()
       const editorType = event.target.value
 
       switch (editorType) {
@@ -35,7 +38,7 @@ function EditorSwitch() {
 
       sendMB('editor-switch-change', { editorType, extension })
     },
-    [extension, setVisual]
+    [extension, setVisual, workspace]
   )
 
   return (
@@ -53,7 +56,7 @@ function EditorSwitch() {
             value="cm6"
             id={inputId}
             className="toggle-switch-input"
-            checked={!richTextAvailable || !visual}
+            checked={!workspace?.active && (!richTextAvailable || !visual)}
             onChange={handleChange}
           />
           <label htmlFor={inputId} className="toggle-switch-label">
@@ -61,10 +64,11 @@ function EditorSwitch() {
           </label>
 
           <RichTextToggle
-            checked={richTextAvailable && visual}
+            checked={!workspace?.active && richTextAvailable && visual}
             disabled={!richTextAvailable}
             handleChange={handleChange}
           />
+          <SubmissionWorkspaceButton/>
         </fieldset>
       </form>
     </div>

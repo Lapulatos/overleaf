@@ -1,0 +1,22 @@
+{
+  "project": "6af1bc2a0a5b55d96038512e",
+  "image": "r15",
+  "initial_file_tree": true,
+  "edit_auto_changes": true,
+  "stage_commit_graph_clean": true,
+  "commit_dialog_count": 0,
+  "old_branch_excludes_new_commit_and_unfinished_marker": true,
+  "return_exact_unfinished_bytes": true,
+  "merge_search_source_title_results": 3,
+  "checkout_external_update_modal_bug": true,
+  "validated_image": "r17",
+  "checkout_external_modal_fixed": true,
+  "session_survived_container_replacement": true,
+  "unfinished_survived_container_replacement": true,
+  "persisted_git_selection_resets_to_file_tree": true,
+  "git_rail_accessible_name": true,
+  "browserPartialStageAndUnstage": true,
+  "browserTokenMaskedPersistence": true,
+  "browserTokenAndRemoteRemoval": true,
+  "closedDiffRace": "reproduced-r17-source-fixed-deploy-pending"
+}

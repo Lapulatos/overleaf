@@ -1,0 +1,76 @@
+--- yarn.lock before native Git
++++ yarn.lock after native Git
+@@ -3994,6 +3994,22 @@
+   version: 1.1.1
+   resolution: "@keyv/serialize@npm:1.1.1"
+   checksum: 10c0/b0008cae4a54400c3abf587b8cc2474c6f528ee58969ce6cf9cb07a04006f80c73c85971d6be6544408318a2bc40108236a19a82aea0a6de95aae49533317374
++  languageName: node
++  linkType: hard
++
++"@kwsites/file-exists@npm:^1.1.1":
++  version: 1.1.1
++  resolution: "@kwsites/file-exists@npm:1.1.1"
++  dependencies:
++    debug: "npm:^4.1.1"
++  checksum: 10c0/39e693239a72ccd8408bb618a0200e4a8d61682057ca7ae2c87668d7e69196e8d7e2c9cde73db6b23b3b0230169a15e5f1bfe086539f4be43e767b2db68e8ee4
++  languageName: node
++  linkType: hard
++
++"@kwsites/promise-deferred@npm:^1.1.1":
++  version: 1.1.1
++  resolution: "@kwsites/promise-deferred@npm:1.1.1"
++  checksum: 10c0/ef1ad3f1f50991e3bed352b175986d8b4bc684521698514a2ed63c1d1fc9848843da4f2bc2df961c9b148c94e1c34bf33f0da8a90ba2234e452481f2cc9937b1
+   languageName: node
+   linkType: hard
+ 
+@@ -6553,6 +6569,7 @@
+     sass: "npm:^1.77.1"
+     sass-loader: "npm:^14.2.1"
+     scroll-into-view-if-needed: "npm:^2.2.25"
++    simple-git: "npm:4.0.2"
+     sinon: "npm:^7.5.0"
+     sinon-chai: "npm:^3.7.0"
+     sinon-mongoose: "npm:^2.3.0"
+@@ -7516,6 +7533,22 @@
+   version: 2.0.0
+   resolution: "@sideway/pinpoint@npm:2.0.0"
+   checksum: 10c0/d2ca75dacaf69b8fc0bb8916a204e01def3105ee44d8be16c355e5f58189eb94039e15ce831f3d544f229889ccfa35562a0ce2516179f3a7ee1bbe0b71e55b36
++  languageName: node
++  linkType: hard
++
++"@simple-git/args-pathspec@npm:1.0.4, @simple-git/args-pathspec@npm:^1.0.4":
++  version: 1.0.4
++  resolution: "@simple-git/args-pathspec@npm:1.0.4"
++  checksum: 10c0/f62c09daf6a17734b2a13a186421bf0fdbdbd48782d1ca6d751027b2a9f515f11505da672489609f95335a0541d2fcf6d6fd6c2754919245109e92335e437b1b
++  languageName: node
++  linkType: hard
++
++"@simple-git/argv-parser@npm:2.0.1":
++  version: 2.0.1
++  resolution: "@simple-git/argv-parser@npm:2.0.1"
++  dependencies:
++    "@simple-git/args-pathspec": "npm:^1.0.4"
++  checksum: 10c0/7d2cd9852139ca3b524dcd91f6a887fa505cfb68c8813d7b849005566147365bb1e34f5450411c494fbd714a80c123058e65dc2ffc0b41d059e30bdc98e12223
+   languageName: node
+   linkType: hard
+ 
+@@ -27124,6 +27157,19 @@
+   languageName: node
+   linkType: hard
+ 
++"simple-git@npm:4.0.2":
++  version: 4.0.2
++  resolution: "simple-git@npm:4.0.2"
++  dependencies:
++    "@kwsites/file-exists": "npm:^1.1.1"
++    "@kwsites/promise-deferred": "npm:^1.1.1"
++    "@simple-git/args-pathspec": "npm:1.0.4"
++    "@simple-git/argv-parser": "npm:2.0.1"
++    debug: "npm:^4.4.0"
++  checksum: 10c0/d028927258fa286d9d8e462f29ec6a37a32398acd7e53cef7fc81e70636c149d7359a542d1a4f8490b342d40d98e341c35c718734aec448fc24fdee88566e981
++  languageName: node
++  linkType: hard
++
+ "sinon-chai@npm:3.7.0":
+   version: 3.7.0
+   resolution: "sinon-chai@npm:3.7.0"

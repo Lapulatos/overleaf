@@ -1,4 +1,4 @@
-import { findInTreeOrThrow } from './find-in-tree'
+import { findInTree, findInTreeOrThrow } from './find-in-tree'
 
 export function renameInTree(tree, id, { newName }) {
   return mutateInTree(tree, id, (parent, entity, index) => {
@@ -34,6 +34,8 @@ export function moveInTree(tree, entityId, toFolderId) {
 export function createEntityInTree(tree, parentFolderId, newEntityData) {
   const { type, ...newEntity } = newEntityData
   if (!type) throw new Error('Entity has no type')
+  // A retried creation notification must not duplicate or rewind a renamed/moved entity.
+  if (newEntity._id && findInTree(tree, newEntity._id)) return tree
   const entityType = `${type}s`
 
   return mutateInTree(tree, parentFolderId, (parent, folder, index) => {

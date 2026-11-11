@@ -23,6 +23,7 @@ export interface ProjectMetadata extends ProjectSettings {
     compileGroup?: 'alpha' | 'standard' | 'priority'
     trackChanges?: boolean
     trackChangesVisible?: boolean
+    nativeComments?: boolean
     references?: boolean
     mendeley?: boolean
     zotero?: boolean

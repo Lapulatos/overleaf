@@ -1,0 +1,11 @@
+✔ connect clones real history and retains all current project bytes as uncommitted changes (510.633125ms)
+✔ connect resumes after clone installation acknowledgement failure without discarding the repository (499.001625ms)
+✔ failed clone leaves editor unbound and allows retry (402.66875ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1557.326292

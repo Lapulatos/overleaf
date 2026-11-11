@@ -1,6 +1,6 @@
 import { EditorView, ViewPlugin, ViewUpdate } from '@codemirror/view'
 import type { Extension } from '@codemirror/state'
-import { Compartment } from '@codemirror/state'
+import { Compartment, EditorState } from '@codemirror/state'
 import { Checker } from './checker'
 import { segmentWithOffsets } from './segment'
 import { decorationField, setIssuesEffect, removeRangeEffect } from './decorations'
@@ -73,7 +73,6 @@ export function writingAssist(options: WritingAssistOptions): Extension {
   console.log('[WA] init projectId:', projectId, 'enabled:', config?.enabled)
 
   if (!projectId) {
-    console.warn('[WA] missing projectId')
     return []
   }
   if (!config?.enabled) {
@@ -89,7 +88,8 @@ export function writingAssist(options: WritingAssistOptions): Extension {
   // overwritten once the user's saved config is fetched (see below). Kept in
   // closure vars so check() reads the latest without reconstructing anything.
   let analysisMode: 'lazy' | 'eager' = config.analysisMode ?? 'lazy'
-  let enabled: boolean = config.enabled
+  // Do not start work with default settings while the saved configuration loads.
+  let enabled = false
   // When a selection check is in flight, the checker only sees the selected
   // sentences. To avoid wiping the other visible underlines, we preserve the
   // issues OUTSIDE the selection here and merge them with the fresh results.
@@ -194,7 +194,7 @@ export function writingAssist(options: WritingAssistOptions): Extension {
       const corrected =
         original.slice(0, relFrom) + issue.suggestion + original.slice(relTo)
       const pattern = buildDismissPattern(original.trim(), corrected.trim())
-      if (pattern) void dismissStore.add(pattern)
+      if (pattern) dismissStore.add(pattern)
     }
   })
 
@@ -216,7 +216,7 @@ export function writingAssist(options: WritingAssistOptions): Extension {
   // mode (lazy/eager) drives the checked range, and `enabled:false` turns
   // checking off. On success we trigger a re-check so the saved settings take
   // effect without needing an edit/scroll. On failure we keep the defaults.
-  void getConfig()
+  getConfig()
     .then(saved => {
       analysisMode =
         saved.analysisMode === 'eager' || saved.analysisMode === 'lazy'
@@ -239,12 +239,14 @@ export function writingAssist(options: WritingAssistOptions): Extension {
       if (enabled) {
         triggerRecheck?.()
       } else {
+        checker.cancel()
         store.setIssues([])
         activeView?.dispatch({ effects: setIssuesEffect.of([]) })
       }
     })
     .catch(() => {
-      // Keep defaults; the feature still works with the passed-in config.
+      // Keep checking disabled until the saved configuration can be loaded.
+      checker.cancel()
     })
 
   const viewPlugin = ViewPlugin.fromClass(
@@ -271,6 +273,10 @@ export function writingAssist(options: WritingAssistOptions): Extension {
       }
 
       update(update: ViewUpdate) {
+        if (update.state.facet(EditorState.readOnly)) {
+          checker.cancel()
+          return
+        }
         // While a non-empty selection exists, checking is RESTRICTED to that
         // selection (driven only by the manual button), so suppress the
         // automatic viewport check on scroll/edit. When there is no selection,
@@ -298,7 +304,7 @@ export function writingAssist(options: WritingAssistOptions): Extension {
       }
 
       check(immediate = false) {
-        if (!enabled) return
+        if (!enabled || this.view.state.facet(EditorState.readOnly)) return
 
         const sel = this.view.state.selection.main
         if (!sel.empty) {

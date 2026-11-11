@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "scope": "Isolated fixture only: PDF/image rendering, native shelve and restore with reload.",
+  "imageDecoded": true,
+  "pdfRendered": true,
+  "shelveApplied": true,
+  "restoreApplied": true,
+  "reloadVerified": true,
+  "pageErrors": []
+}

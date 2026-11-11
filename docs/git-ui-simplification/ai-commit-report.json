@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "selectedFile": "main.tex",
+  "generatedMessage": "Revise introduction and conclusion in main.tex",
+  "branchMetadata": {
+    "ref": "refs/heads/conflict-review",
+    "id": "481c32acf24e05b4b38ea7567cd16064a32db887",
+    "author": "Git UX Fixture",
+    "date": "2026-11-06T20:36:12+00:00",
+    "subject": "Alternative manuscript with two conflicts"
+  },
+  "onlyGenerationRequested": true,
+  "projectFilesUnchanged": true
+}

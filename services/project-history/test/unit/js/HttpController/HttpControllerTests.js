@@ -247,6 +247,8 @@ describe('HttpController', function () {
       }
       this.versionInfo = {
         version: this.version,
+        projectStructureVersion: '14.0',
+        projectHistoryId: this.historyId,
         v2Authors: ['1234'],
         timestamp: '2016-08-16T10:44:40.227Z',
       }
@@ -254,7 +256,7 @@ describe('HttpController', function () {
       this.HistoryStoreManager.getMostRecentVersion.yields(
         null,
         this.version,
-        {},
+        { project: '14.0', docs: {} },
         this.lastChange
       )
       this.HttpController.latestVersion(this.req, this.res, this.next)
@@ -276,6 +278,11 @@ describe('HttpController', function () {
       this.HistoryStoreManager.getMostRecentVersion
         .calledWith(this.projectId, this.historyId)
         .should.equal(true)
+    })
+
+    it('returns the persisted structure version separately from history revision', function () {
+      this.res.json.firstCall.args[0].projectStructureVersion.should.equal('14.0')
+      this.res.json.firstCall.args[0].version.should.equal(99)
     })
 
     it('should return version number', function () {

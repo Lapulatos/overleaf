@@ -125,6 +125,11 @@ describe('DocumentController', function () {
       default: ctx.Modules,
     }))
 
+    ctx.DocumentDeletionReservation = { exists: sinon.stub().resolves(null) }
+    vi.doMock('../../../../app/src/models/DocumentDeletionReservation.mjs', () => ({
+      DocumentDeletionReservation: ctx.DocumentDeletionReservation,
+    }))
+
     ctx.DocumentController = (await import(MODULE_PATH)).default
   })
 
@@ -159,6 +164,53 @@ describe('DocumentController', function () {
           historyRangesSupport: false,
           otMigrationStage: 0,
         })
+      })
+    })
+
+    describe('when deletion blocks cache reload', function () {
+      for (const plain of [false, true]) {
+        it(`returns 409 without loading contents (plain=${plain})`, async function (ctx) {
+          ctx.req.query.plain = String(plain)
+          ctx.DocumentDeletionReservation.exists.resolves({ _id: 'reservation' })
+          await new Promise((resolve, reject) => {
+            ctx.res.callback = resolve
+            ctx.DocumentController.getDocument(ctx.req, ctx.res, reject)
+          })
+          ctx.res.statusCode.should.equal(409)
+          JSON.parse(ctx.res.body).code.should.equal('DOCUMENT_DELETION_PENDING')
+          sinon.assert.notCalled(ctx.ProjectEntityHandler.promises.getDoc)
+          sinon.assert.notCalled(ctx.ChatApiHandler.promises.getResolvedThreadIds)
+          sinon.assert.calledWith(ctx.DocumentDeletionReservation.exists, {
+            _id: `${ctx.project._id}:${ctx.doc._id}`,
+            projectId: ctx.project._id,
+            docId: ctx.doc._id,
+            state: { $in: ['fenced', 'committing', 'committed'] },
+          })
+        })
+      }
+
+      it('does not return text if fencing completes during the storage read', async function (ctx) {
+        ctx.DocumentDeletionReservation.exists.onFirstCall().resolves(null)
+        ctx.DocumentDeletionReservation.exists.onSecondCall().resolves({ _id: 'reservation' })
+        await new Promise((resolve, reject) => {
+          ctx.res.callback = resolve
+          ctx.DocumentController.getDocument(ctx.req, ctx.res, reject)
+        })
+        ctx.res.statusCode.should.equal(409)
+        sinon.assert.calledOnce(ctx.ProjectEntityHandler.promises.getDoc)
+        sinon.assert.notCalled(ctx.ChatApiHandler.promises.getResolvedThreadIds)
+        ctx.res.body.includes('one').should.equal(false)
+      })
+
+      it('fails closed when reservation storage is unavailable', async function (ctx) {
+        const failure = new Error('reservation storage unavailable')
+        ctx.DocumentDeletionReservation.exists.rejects(failure)
+        const error = await new Promise(resolve => {
+          ctx.DocumentController.getDocument(ctx.req, ctx.res, resolve)
+        })
+        error.should.equal(failure)
+        sinon.assert.notCalled(ctx.ProjectEntityHandler.promises.getDoc)
+        ctx.res.returned.should.equal(false)
       })
     })
 

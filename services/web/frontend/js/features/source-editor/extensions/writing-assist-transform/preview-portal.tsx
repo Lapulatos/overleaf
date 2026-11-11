@@ -12,7 +12,7 @@ export function TransformPreviewPortalWrapper(): React.ReactElement | null {
   if (!tooltip) return null
 
   const state: TransformState | undefined = tooltip.__waTransformState
-  if (!state || state.status === 'idle') return null
+  if (!state || state.status === 'idle' || state.status === 'preview') return null
 
   const tooltipView = getTooltip(view, tooltip)
   if (!tooltipView) return null

@@ -1,0 +1,362 @@
+{
+  "projectId": "6af1bc2a0a5b55d96038512e",
+  "status": {
+    "connected": true,
+    "switching": false,
+    "status": {
+      "branch": "acceptance-r14b-conflict-target",
+      "detached": false,
+      "upstream": null,
+      "operation": null,
+      "ahead": 0,
+      "behind": 0,
+      "conflicted": [],
+      "files": []
+    },
+    "branches": [
+      {
+        "ref": "refs/heads/acceptance-r14b-conflict-target",
+        "name": "acceptance-r14b-conflict-target",
+        "commit": "03ded546f615d98f3b0c25481f241febc430b776",
+        "upstream": null,
+        "author": "owner-mvuxgsid",
+        "email": "<owner-mvuxgsid@acceptance.invalid>",
+        "date": "2026-11-09T17:11:16+00:00",
+        "subject": "Merge commit 'a2dd8c10e806edd543a7a20735023f9665515104' into acceptance-r14b-conflict-target",
+        "remote": false,
+        "symbolic": ""
+      },
+      {
+        "ref": "refs/heads/acceptance-r14b-conflict-source",
+        "name": "acceptance-r14b-conflict-source",
+        "commit": "a2dd8c10e806edd543a7a20735023f9665515104",
+        "upstream": null,
+        "author": "owner-mvuxgsid",
+        "email": "<owner-mvuxgsid@acceptance.invalid>",
+        "date": "2026-11-09T17:11:09+00:00",
+        "subject": "Fixture source title",
+        "remote": false,
+        "symbolic": ""
+      },
+      {
+        "ref": "refs/heads/acceptance-r14-conflict-target",
+        "name": "acceptance-r14-conflict-target",
+        "commit": "10013e49dd3a7994b024e1d1f1d60a02a8169204",
+        "upstream": null,
+        "author": "owner-mvuxgsid",
+        "email": "<owner-mvuxgsid@acceptance.invalid>",
+        "date": "2026-11-09T17:10:23+00:00",
+        "subject": "Merge commit '19fd5c01436cd1bcf8f91b52c913eb8ffe111e84' into acceptance-r14-conflict-target",
+        "remote": false,
+        "symbolic": ""
+      },
+      {
+        "ref": "refs/heads/acceptance-r14-conflict-source",
+        "name": "acceptance-r14-conflict-source",
+        "commit": "19fd5c01436cd1bcf8f91b52c913eb8ffe111e84",
+        "upstream": null,
+        "author": "owner-mvuxgsid",
+        "email": "<owner-mvuxgsid@acceptance.invalid>",
+        "date": "2026-11-09T17:10:22+00:00",
+        "subject": "Fixture source title",
+        "remote": false,
+        "symbolic": ""
+      },
+      {
+        "ref": "refs/heads/acceptance-conflict-target",
+        "name": "acceptance-conflict-target",
+        "commit": "efb3a85a06d00c95194210ea57b4ea5bb3d08391",
+        "upstream": null,
+        "author": "owner-mvuxgsid",
+        "email": "<owner-mvuxgsid@acceptance.invalid>",
+        "date": "2026-11-09T17:07:40+00:00",
+        "subject": "Merge commit '8faa07f18ceea4d8a509661fccf7debb70f9f7e3' into acceptance-conflict-target",
+        "remote": false,
+        "symbolic": ""
+      },
+      {
+        "ref": "refs/heads/acceptance-conflict-source",
+        "name": "acceptance-conflict-source",
+        "commit": "8faa07f18ceea4d8a509661fccf7debb70f9f7e3",
+        "upstream": null,
+        "author": "owner-mvuxgsid",
+        "email": "<owner-mvuxgsid@acceptance.invalid>",
+        "date": "2026-11-09T17:07:33+00:00",
+        "subject": "Fixture source title",
+        "remote": false,
+        "symbolic": ""
+      },
+      {
+        "ref": "refs/heads/acceptance-r12-amend",
+        "name": "acceptance-r12-amend",
+        "commit": "4d96a6ca65b4fea20dafbc93c081a518975a28c9",
+        "upstream": null,
+        "author": "owner-mvuxgsid",
+        "email": "<owner-mvuxgsid@acceptance.invalid>",
+        "date": "2026-11-09T16:50:16+00:00",
+        "subject": "Fixture amended commit",
+        "remote": false,
+        "symbolic": ""
+      },
+      {
+        "ref": "refs/heads/acceptance-r13-reset",
+        "name": "acceptance-r13-reset",
+        "commit": "4d96a6ca65b4fea20dafbc93c081a518975a28c9",
+        "upstream": null,
+        "author": "owner-mvuxgsid",
+        "email": "<owner-mvuxgsid@acceptance.invalid>",
+        "date": "2026-11-09T16:50:16+00:00",
+        "subject": "Fixture amended commit",
+        "remote": false,
+        "symbolic": ""
+      },
+      {
+        "ref": "refs/heads/acceptance-r11-merge",
+        "name": "acceptance-r11-merge",
+        "commit": "360316b54bf23cec1140e7ee43c235af8f164515",
+        "upstream": null,
+        "author": "owner-mvuxgsid",
+        "email": "<owner-mvuxgsid@acceptance.invalid>",
+        "date": "2026-11-09T16:40:25+00:00",
+        "subject": "Fixture merge source content",
+        "remote": false,
+        "symbolic": ""
+      },
+      {
+        "ref": "refs/heads/main",
+        "name": "main",
+        "commit": "360316b54bf23cec1140e7ee43c235af8f164515",
+        "upstream": null,
+        "author": "owner-mvuxgsid",
+        "email": "<owner-mvuxgsid@acceptance.invalid>",
+        "date": "2026-11-09T16:40:25+00:00",
+        "subject": "Fixture merge source content",
+        "remote": false,
+        "symbolic": ""
+      },
+      {
+        "ref": "refs/heads/acceptance-r11-b",
+        "name": "acceptance-r11-b",
+        "commit": "bf23a66fc28df05746031318495119b85fdc7969",
+        "upstream": null,
+        "author": "owner-mvuxgsid",
+        "email": "<owner-mvuxgsid@acceptance.invalid>",
+        "date": "2026-11-09T16:39:18+00:00",
+        "subject": "Fixture B title change",
+        "remote": false,
+        "symbolic": ""
+      },
+      {
+        "ref": "refs/heads/B",
+        "name": "B",
+        "commit": "48d87555ead25a9082e03a2635093dca2edebb9c",
+        "upstream": null,
+        "author": "owner-mvuxgsid",
+        "email": "<owner-mvuxgsid@acceptance.invalid>",
+        "date": "2026-11-09T12:37:11+00:00",
+        "subject": "Fixture B title change",
+        "remote": false,
+        "symbolic": ""
+      }
+    ],
+    "tags": [],
+    "graph": [
+      {
+        "hash": "03ded546f615d98f3b0c25481f241febc430b776",
+        "parents": [
+          "6eebc25859ea4f08458e1f9443f341867ff9c37b",
+          "a2dd8c10e806edd543a7a20735023f9665515104"
+        ],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T17:11:16+00:00",
+        "subject": "Merge commit 'a2dd8c10e806edd543a7a20735023f9665515104' into acceptance-r14b-conflict-target",
+        "refs": "HEAD -> acceptance-r14b-conflict-target"
+      },
+      {
+        "hash": "a2dd8c10e806edd543a7a20735023f9665515104",
+        "parents": [
+          "10013e49dd3a7994b024e1d1f1d60a02a8169204"
+        ],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T17:11:09+00:00",
+        "subject": "Fixture source title",
+        "refs": "acceptance-r14b-conflict-source"
+      },
+      {
+        "hash": "6eebc25859ea4f08458e1f9443f341867ff9c37b",
+        "parents": [
+          "10013e49dd3a7994b024e1d1f1d60a02a8169204"
+        ],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T17:11:06+00:00",
+        "subject": "Fixture target title",
+        "refs": ""
+      },
+      {
+        "hash": "10013e49dd3a7994b024e1d1f1d60a02a8169204",
+        "parents": [
+          "fc1d16c98a0eeea0862ecd7e0a10cf187fe99b1d",
+          "19fd5c01436cd1bcf8f91b52c913eb8ffe111e84"
+        ],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T17:10:23+00:00",
+        "subject": "Merge commit '19fd5c01436cd1bcf8f91b52c913eb8ffe111e84' into acceptance-r14-conflict-target",
+        "refs": "acceptance-r14-conflict-target"
+      },
+      {
+        "hash": "19fd5c01436cd1bcf8f91b52c913eb8ffe111e84",
+        "parents": [
+          "efb3a85a06d00c95194210ea57b4ea5bb3d08391"
+        ],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T17:10:22+00:00",
+        "subject": "Fixture source title",
+        "refs": "acceptance-r14-conflict-source"
+      },
+      {
+        "hash": "fc1d16c98a0eeea0862ecd7e0a10cf187fe99b1d",
+        "parents": [
+          "efb3a85a06d00c95194210ea57b4ea5bb3d08391"
+        ],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T17:10:18+00:00",
+        "subject": "Fixture target title",
+        "refs": ""
+      },
+      {
+        "hash": "efb3a85a06d00c95194210ea57b4ea5bb3d08391",
+        "parents": [
+          "e3a38c07ab0dab9011b8693015cd71a6ca31c1fb",
+          "8faa07f18ceea4d8a509661fccf7debb70f9f7e3"
+        ],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T17:07:40+00:00",
+        "subject": "Merge commit '8faa07f18ceea4d8a509661fccf7debb70f9f7e3' into acceptance-conflict-target",
+        "refs": "acceptance-conflict-target"
+      },
+      {
+        "hash": "8faa07f18ceea4d8a509661fccf7debb70f9f7e3",
+        "parents": [
+          "4d96a6ca65b4fea20dafbc93c081a518975a28c9"
+        ],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T17:07:33+00:00",
+        "subject": "Fixture source title",
+        "refs": "acceptance-conflict-source"
+      },
+      {
+        "hash": "e3a38c07ab0dab9011b8693015cd71a6ca31c1fb",
+        "parents": [
+          "4d96a6ca65b4fea20dafbc93c081a518975a28c9"
+        ],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T17:07:30+00:00",
+        "subject": "Fixture target title",
+        "refs": ""
+      },
+      {
+        "hash": "4d96a6ca65b4fea20dafbc93c081a518975a28c9",
+        "parents": [
+          "360316b54bf23cec1140e7ee43c235af8f164515"
+        ],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T16:50:16+00:00",
+        "subject": "Fixture amended commit",
+        "refs": "acceptance-r13-reset, acceptance-r12-amend"
+      },
+      {
+        "hash": "360316b54bf23cec1140e7ee43c235af8f164515",
+        "parents": [
+          "75c31f634bb9ee916750ae985351d75002c89452"
+        ],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T16:40:25+00:00",
+        "subject": "Fixture merge source content",
+        "refs": "main, acceptance-r11-merge"
+      },
+      {
+        "hash": "75c31f634bb9ee916750ae985351d75002c89452",
+        "parents": [
+          "2417d27c909cec5a7e3f220ee182c35d66f37db0"
+        ],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T16:40:20+00:00",
+        "subject": "Fixture main unfinished changes retained",
+        "refs": ""
+      },
+      {
+        "hash": "bf23a66fc28df05746031318495119b85fdc7969",
+        "parents": [
+          "2417d27c909cec5a7e3f220ee182c35d66f37db0"
+        ],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T16:39:18+00:00",
+        "subject": "Fixture B title change",
+        "refs": "acceptance-r11-b"
+      },
+      {
+        "hash": "2417d27c909cec5a7e3f220ee182c35d66f37db0",
+        "parents": [
+          "b00292bce181e70e2ae0313abdee57eefbd280e1"
+        ],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T16:39:14+00:00",
+        "subject": "Fixture initial manuscript",
+        "refs": ""
+      },
+      {
+        "hash": "48d87555ead25a9082e03a2635093dca2edebb9c",
+        "parents": [
+          "b00292bce181e70e2ae0313abdee57eefbd280e1"
+        ],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T12:37:11+00:00",
+        "subject": "Fixture B title change",
+        "refs": "B"
+      },
+      {
+        "hash": "b00292bce181e70e2ae0313abdee57eefbd280e1",
+        "parents": [],
+        "author": "owner-mvuxgsid",
+        "email": "owner-mvuxgsid@acceptance.invalid",
+        "date": "2026-11-09T12:37:07+00:00",
+        "subject": "Fixture initial manuscript",
+        "refs": ""
+      }
+    ]
+  }
+}
+PASS capture starting state
+PASS capture starting head
+PASS capture original document
+PASS read tagged version
+PASS create old version tag
+PASS create same-name branch at new head
+PASS inspect tag metadata
+PASS checkout qualified tag
+PASS verify tagged document bytes
+PASS return to starting branch
+PASS verify branch document bytes
+PASS add configuration-only test remote
+PASS remove confirmed test remote
+PASS verify removed remote
+PASS verify local head after removal
+PASS verify local document after removal
+PASS delete fixture tag
+PASS delete unused same-name branch
+PASS qualified tag checkout and remote removal preserve local branch and editor contents; no network requests or pushes

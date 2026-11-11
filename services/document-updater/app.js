@@ -24,6 +24,15 @@ Metrics.open_sockets.monitor()
 
 const app = express()
 app.use(bodyParser.json({ limit: Settings.maxJsonRequestSize }))
+const ProjectWriteGate = require('@overleaf/redis-wrapper/ProjectWriteGate')
+app.use('/project/:projectId', (req, res, next) => {
+  const token = req.get('X-Project-Write-Token')
+  if (!token) return next()
+  if (!ProjectWriteGate.enabled()) return res.sendStatus(503)
+  try { return ProjectWriteGate.runWithToken(req.params.projectId, token, next) }
+  catch (error) { return next(error) }
+})
+app.get('/native-git/capabilities', (req, res) => res.json({ projectWriteGate: ProjectWriteGate.supported(docUpdaterRedisClient) }))
 Metrics.injectMetricsRoute(app)
 
 DispatchManager.createAndStartDispatchers(Settings.dispatcherCount)
@@ -155,6 +164,17 @@ app.get(
 )
 app.post('/project/:project_id/clearState', HttpController.clearProjectState)
 app.post('/project/:project_id/doc/:doc_id', HttpController.setDoc)
+app.post('/project/:project_id/doc/:doc_id/conditional', (req, res, next) => {
+  if (!Number.isSafeInteger(req.body.expectedVersion) || req.body.expectedVersion < 0) {
+    return res.sendStatus(400)
+  }
+  return HttpController.setDoc(req, res, next)
+})
+// Internal only and opt-in; the web caller must enforce project permissions.
+app.post('/project/:project_id/doc/:doc_id/deletion/prepare', HttpController.prepareDocumentDeletion)
+app.post('/project/:project_id/doc/:doc_id/deletion/history', HttpController.queueReviewedDeletionHistory)
+app.post('/project/:project_id/doc/:doc_id/deletion/cleanup', HttpController.cleanupDocumentDeletion)
+app.get('/project/:project_id/doc/:doc_id/deletion/:operation_id', HttpController.inspectDocumentDeletion)
 app.post('/project/:project_id/doc/:doc_id/append', HttpController.appendToDoc)
 app.post(
   '/project/:project_id/doc/:doc_id/flush',
@@ -212,6 +232,9 @@ app.get('/total', (req, res, next) => {
 })
 
 app.use((error, req, res, next) => {
+  if (error.code === 'PROJECT_WRITE_BUSY' && error.status === 409) {
+    return res.status(409).json({ code: error.code, message: error.message })
+  }
   if (error instanceof Errors.NotFoundError) {
     return res.sendStatus(404)
   } else if (error instanceof Errors.OpRangeNotAvailableError) {

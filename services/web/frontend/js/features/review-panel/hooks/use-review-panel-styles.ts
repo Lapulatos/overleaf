@@ -7,11 +7,12 @@ export const useReviewPanelStyles = () => {
   const [styles, setStyles] = useState<CSSProperties>({} as CSSProperties)
 
   const updateScrollDomVariables = useCallback((element: HTMLDivElement) => {
-    const { top } = element.getBoundingClientRect()
+    const { top, bottom } = element.getBoundingClientRect()
 
     setStyles(value => ({
       ...value,
       '--review-panel-top': `${top}px`,
+      '--review-panel-bottom': `${Math.max(0, window.innerHeight - bottom)}px`,
     }))
   }, [])
 
