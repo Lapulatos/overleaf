@@ -23,6 +23,9 @@ const logger = require('@overleaf/logger')
 const os = require('node:os')
 const crypto = require('node:crypto')
 const metrics = require('./Metrics')
+const ProjectWriteGate = require('@overleaf/redis-wrapper/ProjectWriteGate')
+const { createWorkspaceEpochGate } = require('@overleaf/redis-wrapper/WorkspaceEpochGate')
+const workspaceEpochGate = createWorkspaceEpochGate(rclient)
 
 const HOST = os.hostname()
 const RND = crypto.randomBytes(4).toString('hex') // generate a random key for this process
@@ -31,6 +34,23 @@ let COUNT = 0
 const MAX_OPS_PER_ITERATION = 8 // process a limited number of ops for safety
 
 const RealTimeRedisManager = {
+  getPendingUpdatesForWorkspace(projectId, docId, callback) {
+    if (!ProjectWriteGate.enabled() || typeof rclient.nodes === 'function') {
+      return RealTimeRedisManager.getPendingUpdatesForDoc(docId, callback)
+    }
+    workspaceEpochGate.takePending(projectId, docId, Keys.pendingUpdates({ doc_id: docId }), MAX_OPS_PER_ITERATION)
+      .then(async result => {
+        if (result.rejected) {
+          try {
+            await RealTimeRedisManager.sendData({ project_id: projectId, doc_id: docId,
+              error: 'This editor belongs to an older workspace version; pending edits were retained for recovery',
+              code: 'WORKSPACE_EPOCH_STALE' })
+          } catch (error) { logger.error({ error, projectId, docId }, 'failed to announce retained workspace edits') }
+        }
+        callback(null, result.updates)
+      }, callback)
+  },
+
   getPendingUpdatesForDoc(docId, callback) {
     // Make sure that this MULTI operation only operates on doc
     // specific keys, i.e. keys that have the doc id in curly braces.

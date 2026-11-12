@@ -5,6 +5,7 @@ const schema = new mongoose.Schema(
     _id: String,
     userId: { type: String, required: true },
     projectId: { type: String, required: true },
+    workspaceIdentity: mongoose.Schema.Types.Mixed,
     plugin: mongoose.Schema.Types.Mixed,
     plugins: [mongoose.Schema.Types.Mixed],
     scope: [mongoose.Schema.Types.Mixed],
@@ -27,6 +28,8 @@ const schema = new mongoose.Schema(
     createdAt: { type: Date, default: Date.now },
     expiresAt: { type: Date, default: () => new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) },
     deletionRetention: Boolean,
+    applicationRetention: Boolean,
+    applicationOutcome: mongoose.Schema.Types.Mixed,
   },
   { minimize: false }
 )

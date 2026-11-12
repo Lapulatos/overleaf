@@ -8,6 +8,9 @@
     "Errors.js",
     "RedisLocker.js",
     "ProjectWriteGate.js",
+    "WorkspaceEpochGate.js",
+    "WorkspacePrepareGate.js",
+    "GitPresenceStore.js",
     "RedisWebLocker.js"
   ],
   "author": "Overleaf (https://www.overleaf.com)",

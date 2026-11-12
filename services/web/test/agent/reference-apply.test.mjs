@@ -56,3 +56,38 @@ test('rebasing refuses a changed reference identity even if selected field is un
  const f=fixture();f.state.doc.content=f.state.doc.content.replace('title={Wrong}','title={Different paper}')
  await assert.rejects(f.run({taskId:'audit',fields:[{key:'a',field:'publisher'}]}),{status:409});assert.equal(f.state.writes,0)
 })
+
+const workspaceIdentity={projectId:'root',workspaceId:'p',branch:'draft',epoch:3}
+test('derived reference application inherits review identity across partial batches',async()=>{
+ const f=fixture();f.map.get('audit').workspaceIdentity={...workspaceIdentity}
+ f.deps.readWorkspaceIdentity=async()=>({...workspaceIdentity})
+ const first=await f.run({taskId:'audit',fields:[{key:'a',field:'year'}]})
+ assert.deepEqual(first.workspaceIdentity,workspaceIdentity)
+ const next=await f.run({taskId:first.id,fields:[{key:'a',field:'title'}]})
+ assert.deepEqual(next.workspaceIdentity,workspaceIdentity)
+})
+for(const timing of ['before-snapshot','during-snapshot'])test(`reference review epoch change ${timing} cannot be rebased into new workspace`,async()=>{
+ const f=fixture();f.map.get('audit').workspaceIdentity={...workspaceIdentity}
+ let current={...workspaceIdentity,epoch:timing==='before-snapshot'?4:3}
+ f.deps.readWorkspaceIdentity=async()=>({...current})
+ const snapshot=f.deps.snapshot
+ f.deps.snapshot=async()=>{current.epoch=4;return snapshot()}
+ await assert.rejects(f.run({taskId:'audit',fields:[{key:'a',field:'year'}]}),{code:'AI_WORKSPACE_CHANGED'})
+ assert.equal(f.state.writes,0);assert.equal(f.map.size,1)
+})
+
+test('reference continuation is persisted before writer dispatch and survives interrupted response',async()=>{
+ const f=fixture()
+ f.deps.tasks.decide=async(u,p,id)=>{
+  const task=f.map.get(id),proposal=task.proposals[0]
+  assert.equal(task.referenceReview,undefined)
+  assert.equal(task.applicationOutcome.proposalId,proposal.id)
+  assert.equal(task.applicationOutcome.afterHash,hash(proposal.after))
+  assert.equal(task.applicationOutcome.fields.referenceReview.appliedCount,1)
+  assert.equal(task.applicationOutcome.fields.referenceReview.entries[0].actions.some(a=>a.field==='year'),false)
+  throw Error('interrupted response')
+ }
+ await assert.rejects(f.run({taskId:'audit',fields:[{key:'a',field:'year'}]}),/interrupted response/)
+ assert.equal(f.map.size,2)
+ assert.equal(f.map.get('audit').referenceReview.appliedCount,undefined)
+})

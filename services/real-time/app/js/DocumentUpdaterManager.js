@@ -12,6 +12,8 @@ import {
 } from '@overleaf/fetch-utils'
 import { callbackify } from 'node:util'
 import ProjectWriteGate from '@overleaf/redis-wrapper/ProjectWriteGate.js'
+import WorkspacePrepareGate from '@overleaf/redis-wrapper/WorkspacePrepareGate.js'
+import WorkspaceEpochGate from '@overleaf/redis-wrapper/WorkspaceEpochGate.js'
 
 const {
   ClientRequestedMissingOpsError,
@@ -22,6 +24,7 @@ const {
 
 const rclient = RedisWrapper.createClient(settings.redis.documentupdater)
 const projectWriteGate = ProjectWriteGate.createProjectWriteGate(rclient)
+const workspaceEpochGate = WorkspaceEpochGate.createWorkspaceEpochGate(rclient)
 const Keys = settings.redis.documentupdater.key_schema
 
 async function getDocument(projectId, docId, fromVersion) {
@@ -130,7 +133,11 @@ async function queueChange(projectId, docId, change) {
   // Push onto pendingUpdates for doc_id first, because once the doc updater
   // gets an entry on pending-updates-list, it starts processing.
   try {
-    await projectWriteGate.enqueue(projectId, Keys.pendingUpdates({ doc_id: docId }), jsonChange)
+    if (ProjectWriteGate.enabled()) {
+      await workspaceEpochGate.enqueue(projectId, Keys.pendingUpdates({ doc_id: docId }), jsonChange, change.meta?.workspaceEpoch)
+    } else {
+      await projectWriteGate.enqueue(projectId, Keys.pendingUpdates({ doc_id: docId }), jsonChange)
+    }
   } catch (error) {
     throw new OError('error pushing update into redis').withCause(error)
   }
@@ -145,7 +152,16 @@ async function queueChange(projectId, docId, change) {
   }
 }
 
+let preparationGate
+function getPreparationGate() {
+  // Keep legacy/disabled deployments independent of the non-clustered gate.
+  return preparationGate ??= WorkspacePrepareGate.createWorkspacePrepareGate(rclient)
+}
+
 export default {
+  registerWorkspaceSession: callbackify(async (project, epoch, session) => getPreparationGate().register(project, epoch, session)),
+  leaveWorkspaceSession: callbackify(async (project, session) => getPreparationGate().leave(project, session)),
+  acknowledgeWorkspacePreparation: callbackify(async (project, request) => getPreparationGate().acknowledge(project, request)),
   nativeGitWriteGateEnabled: () => projectWriteGate.supported(),
   getDocument: callbackify(getDocument),
   checkDocument: callbackify(checkDocument),

@@ -1,4 +1,4 @@
-import { ElementType, Suspense, memo, useRef, useState } from 'react'
+import { ElementType, Suspense, memo, useEffect, useRef, useState } from 'react'
 import useIsMounted from '../../../shared/hooks/use-is-mounted'
 import { EditorView } from '@codemirror/view'
 import { EditorState } from '@codemirror/state'
@@ -70,6 +70,13 @@ function CodeMirrorEditor() {
     })
     viewRef.current = view
   }
+
+  // The view belongs to this component, not CodeMirrorView: review providers
+  // may remount that child when project features change during a reconnect.
+  useEffect(() => {
+    const view = viewRef.current!
+    return () => view.destroy()
+  }, [])
 
   return (
     <CodeMirrorStateContext.Provider value={state}>

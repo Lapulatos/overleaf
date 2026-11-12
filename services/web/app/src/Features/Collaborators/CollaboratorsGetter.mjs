@@ -14,6 +14,7 @@ import Sources from '../Authorization/Sources.mjs'
 import PrivilegeLevels from '../Authorization/PrivilegeLevels.mjs'
 import AsyncLocalStorage from '../../infrastructure/AsyncLocalStorage.mjs'
 import Metrics from '@overleaf/metrics'
+import { inheritedWorkspaceAccess, visibleProjects } from '../NativeGit/WorkspaceIdentity.mjs'
 
 const { ObjectId } = mongodb
 
@@ -283,7 +284,8 @@ async function getProjectAccess(projectId) {
   let projectAccess = _getCachedProjectAccess(projectId, 'full')
   if (projectAccess) return projectAccess
 
-  const project = await ProjectGetter.promises.getProject(projectId, {
+  let project = await ProjectGetter.promises.getProject(projectId, {
+    gitWorkspace: 1, gitProjectDeletion: 1,
     owner_ref: 1,
     collaberator_refs: 1,
     readOnly_refs: 1,
@@ -296,6 +298,19 @@ async function getProjectAccess(projectId) {
   })
   if (!project) {
     throw new Errors.NotFoundError(`no project found with id ${projectId}`)
+  }
+  if (project.gitProjectDeletion) throw new Errors.ForbiddenError('Project deletion is in progress; preserve local edits. The owner can resume or cancel it from the recovery vault.')
+  if (project.gitWorkspace?.logicalProjectId) {
+    const parent = await ProjectGetter.promises.getProject(project.gitWorkspace.logicalProjectId, {
+      owner_ref: 1, collaberator_refs: 1, readOnly_refs: 1, reviewer_refs: 1,
+      pendingEditor_refs: 1, pendingReviewer_refs: 1, gitWorkspace: 1, gitProjectDeletion: 1,
+    })
+    if (parent?.gitProjectDeletion) throw new Errors.ForbiddenError('Project deletion is in progress')
+    try { project = inheritedWorkspaceAccess(project, parent) }
+    catch (error) {
+      if (error.status === 403) throw new Errors.ForbiddenError(error.message)
+      throw error
+    }
   }
   projectAccess = new ProjectAccess(project)
   const store = AsyncLocalStorage.storage.getStore()
@@ -469,12 +484,13 @@ async function getProjectsUserIsMemberOf(userId, fields) {
   const limit = pLimit(2)
   const [readAndWrite, review, readOnly, tokenReadAndWrite, tokenReadOnly] =
     await Promise.all([
-      limit(() => Project.find({ collaberator_refs: userId }, fields).exec()),
-      limit(() => Project.find({ reviewer_refs: userId }, fields).exec()),
-      limit(() => Project.find({ readOnly_refs: userId }, fields).exec()),
+      limit(() => Project.find({ ...visibleProjects, collaberator_refs: userId }, fields).exec()),
+      limit(() => Project.find({ ...visibleProjects, reviewer_refs: userId }, fields).exec()),
+      limit(() => Project.find({ ...visibleProjects, readOnly_refs: userId }, fields).exec()),
       limit(() =>
         Project.find(
           {
+            ...visibleProjects,
             tokenAccessReadAndWrite_refs: userId,
             publicAccesLevel: PublicAccessLevels.TOKEN_BASED,
           },
@@ -484,6 +500,7 @@ async function getProjectsUserIsMemberOf(userId, fields) {
       limit(() =>
         Project.find(
           {
+            ...visibleProjects,
             tokenAccessReadOnly_refs: userId,
             publicAccesLevel: PublicAccessLevels.TOKEN_BASED,
           },

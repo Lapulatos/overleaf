@@ -1,6 +1,7 @@
 import { uniqueCitationKey } from './WritingAssistCitationKey.mjs'
 import { randomUUID } from 'node:crypto'
 import { AgentError } from './WritingAssistAgentService.mjs'
+import { assertWorkspaceIdentity } from './WritingAssistWorkspaceIdentity.mjs'
 
 const newFileName = /^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,119}\.bib$/
 export function assertCitationAbsent(documents, citation) {
@@ -40,6 +41,7 @@ export function createCitationService({
   snapshot,
   store,
   tasks,
+  readWorkspaceIdentity = async () => null,
 }) {
   async function authorize(userId, projectId) {
     if (!(await canWrite(userId, projectId)))
@@ -77,6 +79,7 @@ export function createCitationService({
         fetched.push(...await Promise.all(identifiers.slice(offset, offset + 5)
           .map(id => literature.lookup(userId, projectId, id))))
       }
+      const workspaceIdentity = await readWorkspaceIdentity(projectId)
       const documents = await snapshot(projectId)
       const citations = []
       const skipped = []
@@ -137,8 +140,11 @@ export function createCitationService({
           ? { docId: doc.id, version: doc.version }
           : { mode: 'create-bibliography' }),
       }
+      await authorize(userId, projectId)
+      assertWorkspaceIdentity(workspaceIdentity, await readWorkspaceIdentity(projectId))
       await store.create({
         id: taskId,
+        workspaceIdentity,
         userId,
         projectId,
         instruction: batch ? `Import ${citations.length} references` : `Import citation ${citation.doi || citation.sourceId || citation.key}`,

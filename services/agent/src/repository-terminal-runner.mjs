@@ -1,4 +1,9 @@
 import http from 'node:http'
+import Path from 'node:path'
+import { CollaborationTaskStore } from '../../web/app/src/Features/NativeGit/CollaborationTaskStore.mjs'
+import { ShellContainerLifecycle } from '../../web/app/src/Features/NativeGit/ShellContainerLifecycle.mjs'
+import { shellAttemptLock } from './shell-attempt-lock.mjs'
+import { shellDockerAdapter } from './shell-docker-adapter.mjs'
 import {randomUUID} from 'node:crypto'
 import { spawn, execFile } from 'node:child_process'
 import { promisify } from 'node:util'
@@ -10,19 +15,67 @@ const exec = promisify(execFile)
 const container = process.env.OVERLEAF_TERMINAL_CONTAINER || 'overleaf-deletion-acceptance-candidate-web-1'
 const token = process.env.OVERLEAF_TERMINAL_RUNNER_TOKEN
 if (!token) throw new Error('Runner authentication is required')
+const draftState = process.env.OVERLEAF_TERMINAL_DRAFT_STATE
+const draftDocker = shellDockerAdapter()
+const draftLifecycle = draftState ? new ShellContainerLifecycle({
+ store: new CollaborationTaskStore(Path.join(draftState, 'attempts')),
+ withLock: shellAttemptLock(Path.join(draftState, 'locks')), docker: draftDocker,
+}) : null
+function draftScope(body) {
+ if (!draftLifecycle) throw Error('Draft terminal runner is not configured')
+ if (body.logicalProjectId !== body.project || body.actorId !== body.user) throw Error('Draft owner mismatch')
+ return { attemptId: body.attemptId, draftId: body.draftId, logicalProjectId: body.logicalProjectId, workspaceId: body.workspaceId, actorId: body.actorId }
+}
+async function openDraft(body,key) {
+ const scope = draftScope(body)
+ // The caller can expose only this draft's scratch directory, never siblings.
+ const directory = `/var/lib/overleaf/native-git/${body.project}/drafts/${body.draftId}/work`
+ if (body.directory !== directory || body.commonDirectory || body.directories?.length) throw Error('Invalid draft mount')
+ const info=JSON.parse((await exec('docker',['inspect',container],{timeout:20000})).stdout)[0]
+ const volume=info.Mounts.find(m=>m.Destination==='/var/lib/overleaf'&&m.Type==='volume')?.Name
+ if(!volume)throw Error('Repository volume is unavailable')
+ const configuration={body:{project:body.project,directory,mode:body.mode},volume,image:info.Image}
+ const result=await draftLifecycle.start(scope,configuration)
+ for(const [id,owner] of owners)if(owner.key===key&&owner.attemptId===body.attemptId)return {...result,sessionId:id}
+ const session=openTerminal(directory,key,()=>draftDocker.attach(result.containerId),false)
+ owners.set(session.id,{key,mode:body.mode,attemptId:body.attemptId})
+ return {...result,sessionId:session.id}
+}
+async function stopDraft(body,key) {
+ const scope=draftScope(body)
+ const result=await draftLifecycle.stop(scope)
+ for(const [id,owner] of owners)if(owner.key===key&&owner.attemptId===body.attemptId){
+  closeTerminal(id,key);owners.delete(id);reviews.revoke(id)
+ }
+ return result
+}
+async function revoke(body,key) {
+ // Persisted attempts survive runner restarts; an in-memory session list is
+ // insufficient to revoke a full-access shell that may still be writing.
+ if(draftLifecycle){
+  const attempts=await draftLifecycle.store.list()
+  for(const attempt of attempts){
+   if(attempt.kind==='shell-container'&&attempt.logicalProjectId===body.project&&attempt.actorId===body.user&&attempt.state!=='stopped'){
+    await stopDraft({...attempt,project:body.project,user:body.user},key)
+   }
+  }
+ }
+ for(const [id,owner] of owners)if(owner.key===key){owners.delete(id);reviews.revoke(id)}
+ return closeOwnerTerminals(key)
+}
 async function open(body,key) {
  const info=JSON.parse((await exec('docker',['inspect',container])).stdout)[0]
  const volume=info.Mounts.find(m=>m.Destination==='/var/lib/overleaf'&&m.Type==='volume')?.Name
  if(!volume)throw Error('Repository volume is unavailable')
  const args=terminalContainerArgs(body,volume,info.Image)
- for(const [id,owner] of owners)if(owner.key===key){owners.delete(id);reviews.revoke(id)}
+ for(const [id,owner] of owners)if(owner.key===key&&!owner.attemptId){closeTerminal(id,key);owners.delete(id);reviews.revoke(id)}
  const name='native-git-shell-'+randomUUID()
  args.splice(1,0,'--name',name)
  const session=openTerminal(body.directory,key,()=>{
   const child=spawn('docker',args,{stdio:['pipe','pipe','pipe']})
   child.once('exit',()=>{void exec('docker',['rm','--force',name]).catch(()=>{})})
   return child
- })
+ },false)
  owners.set(session.id,{key,mode:body.mode});return session
 }
 const server=http.createServer(async(req,res)=>{
@@ -34,9 +87,11 @@ const server=http.createServer(async(req,res)=>{
   if(!/^[a-f0-9]{24}$/.test(b.project)||!/^[a-f0-9]{24}$/.test(b.user))throw Error('Invalid session owner')
   const key=`${b.project}:${b.user}`
   let result
-  if(b.action==='open')result=await open(b,key)
-  else if(b.action==='revoke'){for(const [id,owner] of owners)if(owner.key===key){owners.delete(id);reviews.revoke(id)}result=closeOwnerTerminals(key)}
-  else if(b.action==='poll')result=pollTerminal(b.id,key)
+  if(b.action==='draft-start')result=await openDraft(b,key)
+  else if(b.action==='draft-stop')result=await stopDraft(b,key)
+  else if(b.action==='open')result=await open(b,key)
+  else if(b.action==='revoke')result=await revoke(b,key)
+  else if(b.action==='poll')result=pollTerminal(b.id,key,b.cursor)
   else if(b.action==='close'){result=closeTerminal(b.id,key);owners.delete(b.id);reviews.revoke(b.id)}
   else if(b.action==='run'){
    const owner=owners.get(b.id);if(!owner||owner.key!==key||owner.mode!=='auto-review')throw Error('Reviewed session required')
@@ -48,7 +103,9 @@ const server=http.createServer(async(req,res)=>{
   else throw Error('Invalid terminal action')
   res.end(JSON.stringify(result))
  }catch(error){res.writeHead(409);res.end(JSON.stringify({error:error.message}))}
-}).listen(Number(process.env.OVERLEAF_TERMINAL_PORT || 47292),'0.0.0.0')
+}).listen(Number(process.env.OVERLEAF_TERMINAL_PORT || 47292),process.env.OVERLEAF_TERMINAL_HOST || '0.0.0.0',()=>{
+ if(process.send)process.send({type:'listening',port:server.address().port})
+})
 
 function shutdown() {
  server.close()

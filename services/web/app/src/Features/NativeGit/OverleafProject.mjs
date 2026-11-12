@@ -8,7 +8,7 @@ const conflict = path => Object.assign(new Error(`Project changed while switchin
 // Dependencies are existing Overleaf services, not a replacement document store.
 // withExclusiveWrite must exclude collaborative/structural writers during apply;
 // a production route must not be enabled without that platform integration.
-export function createOverleafProject({ projectId, userId, entities, documents, blobs, editor, isEditable, withExclusiveWrite }) {
+export function createOverleafProject({ projectId, userId, entities, documents, blobs, editor, isEditable, withExclusiveWrite, withPreparedWrite }) {
   const normalize = path => projectPath(path.replace(/^\//, ''))
   async function inventory() {
     const listed = await entities(projectId)
@@ -51,17 +51,29 @@ export function createOverleafProject({ projectId, userId, entities, documents, 
         } finally { stream.destroy() }
       }
     }
-    const { entries: current } = await inventory()
+    const { entries: current, folders: currentFolders } = await inventory()
     if (entries.size !== current.size || [...entries].some(([path, entry]) => {
       const now = current.get(path)
       return !now || now.id !== entry.id || now.hash !== entry.hash || now.type !== entry.type
-    })) throw conflict('file tree')
+    }) || folders.size !== currentFolders.size || [...folders].some(([path, id]) => currentFolders.get(path) !== id)) throw conflict('file tree')
+    // A second version collection rejects a mixed-time snapshot. Byte equality
+    // alone misses an edit followed by undo (the document version still changed).
+    for (const [path, entry] of entries) {
+      if (entry.type !== 'doc') continue
+      const latest = await documents.getDocument(projectId, entry.id, -1)
+      if (latest.version !== entry.version) throw conflict(path)
+    }
     return { files: validateFiles(files), entries, folders }
   }
-  async function apply(changes, expected) {
-    if (typeof withExclusiveWrite !== 'function') throw new Error('Exclusive project write access is not configured')
-    return withExclusiveWrite(async () => {
+  async function applyLocked(changes, expected, assertActive, onStep = async () => {}) {
+      await assertActive()
       const live = await read()
+      for (const [path, entry] of expected.entries) {
+        const actual = live.entries.get(path)
+        if (!actual || actual.id !== entry.id || actual.version !== entry.version || actual.hash !== entry.hash) throw conflict(path)
+      }
+      if (live.entries.size !== expected.entries.size || live.folders.size !== expected.folders.size ||
+          [...expected.folders].some(([path, id]) => live.folders.get(path) !== id)) throw conflict('file tree')
       // Preflight the whole transfer before the first mutation, including file
       // identity. Content equality alone cannot identify a deleted/recreated doc.
       for (const change of changes) {
@@ -72,17 +84,23 @@ export function createOverleafProject({ projectId, userId, entities, documents, 
       const temporary = await mkdtemp(Path.join(tmpdir(), 'overleaf-git-import-'))
       try {
         const ordered = [...changes].sort((a, b) => Number(a.after !== undefined) - Number(b.after !== undefined))
-        for (const change of ordered) {
+        for (const [step, change] of ordered.entries()) {
+          await assertActive()
+          await onStep({ phase: 'before', step, path: change.path })
+          await assertActive()
           const path = normalize(change.path)
           const existing = live.entries.get(path)
           if (change.after === undefined) {
             if (existing) await editor.deleteEntityWithPath(projectId, path, 'git', userId)
+            await assertActive()
+            await onStep({ phase: 'after', step, path })
             continue
           }
           if (live.folders.has(path)) {
             // The file transfer already deleted the folder's old file contents.
             // Overleaf's native delete emits the structural update for the now-empty folder.
             await editor.deleteEntityWithPath(projectId, path, 'git', userId)
+            await assertActive()
           }
           const text = change.after.toString('utf8')
           const editable = Buffer.from(text).equals(change.after) && isEditable(text, { filename: Path.basename(path) })
@@ -90,17 +108,53 @@ export function createOverleafProject({ projectId, userId, entities, documents, 
             // Native docupdater tests the version under the document update lock.
             await documents.setDocument(projectId, existing.id, userId, text.split('\n'), 'git-bridge', existing.version)
           } else if (editable) {
-            await editor.upsertDocWithPath(projectId, path, text.split('\n'), 'git', userId)
+            await editor.upsertDocWithPath(projectId, `/${path}`, text.split('\n'), 'git', userId)
           } else {
             const file = Path.join(temporary, 'asset')
             await writeFile(file, change.after, { mode: 0o600 })
-            await editor.upsertFileWithPath(projectId, path, file, null, 'git', userId)
+            await assertActive()
+            await editor.upsertFileWithPath(projectId, `/${path}`, file, null, 'git', userId)
           }
+          await assertActive()
+          await onStep({ phase: 'after', step, path })
         }
       } finally { await rm(temporary, { recursive: true, force: true }) }
+  }
+  async function transaction(action, { prepare = false, epoch } = {}) {
+    const enter = prepare
+      ? callback => withPreparedWrite(epoch, callback)
+      : withExclusiveWrite
+    if (prepare && typeof withPreparedWrite !== 'function') throw new Error('Prepared project write access is not configured')
+    if (typeof enter !== 'function') throw new Error('Exclusive project write access is not configured')
+    return enter(async (assertLease = async () => {}, preparation) => {
+      let active = true
+      const assertActive = async () => {
+        if (!active) throw new Error('Project transaction is no longer active')
+        await assertLease()
+      }
+      // The capability is valid only inside this lease. It cannot be retained
+      // and later used to bypass the normal write admission check.
+      const tx = {
+        assertActive,
+        ...(prepare ? { advanceEpoch: async () => {
+          await assertActive()
+          if (typeof preparation?.advanceEpoch !== 'function') throw new Error('Prepared epoch advancement is not configured')
+          return preparation.advanceEpoch()
+        } } : {}),
+        read: async () => { await assertActive(); const result = await read(); await assertActive(); return result },
+        apply: (changes, expected, onStep) => applyLocked(changes, expected, assertActive, onStep),
+      }
+      try {
+        const result = await action(tx)
+        await assertActive()
+        return result
+      } finally { active = false }
     })
   }
-  return { read, apply }
+  async function apply(changes, expected) {
+    return transaction(tx => tx.apply(changes, expected))
+  }
+  return { read, apply, transaction }
 }
 
 function same(a, b) { return a === undefined ? b === undefined : b !== undefined && a.equals(b) }

@@ -1,3 +1,13 @@
+import WorkspaceTaskNotice from '@/features/source-control/workspace-task-notice'
+import { gitApi } from '@/features/source-control/api'
+import { accumulateLocalRecovery, saveLocalRecovery, type RecoveryDocument } from '../editor/local-recovery'
+import LocalRecoveryCopies from '../components/modals/local-recovery-copies'
+import { bindGitPresence } from '@/features/source-control/git-presence'
+import { publishGitPresence, onGitViewingIntent } from '@/features/source-control/git-presence-state'
+import { flushSync } from 'react-dom'
+import { useProjectContext } from '@/shared/context/project-context'
+import { bindWorkspaceEpochChange } from '../editor/workspace-epoch'
+import { bindWorkspacePreparation } from '../editor/workspace-preparation'
 import {
   createContext,
   FC,
@@ -85,7 +95,7 @@ export const EditorManagerProvider: FC<React.PropsWithChildren> = ({
   const { t } = useTranslation()
   const { reportError, eventEmitter, projectId, setOutOfSync } =
     useIdeReactContext()
-  const { socket, closeConnection, connectionState } = useConnectionContext()
+  const { socket, closeConnection, connectionState, reconnectWorkspace } = useConnectionContext()
   const { view, setView, setOpenFile } = useLayoutContext()
   const { showGenericMessageModal, genericModalVisible, showOutOfSyncModal } =
     useModalsContext()
@@ -156,6 +166,7 @@ export const EditorManagerProvider: FC<React.PropsWithChildren> = ({
     error: Error | string
     meta?: Record<string, any>
     editorContent?: string
+    recoveryNotice?: string
   } | null>(null)
 
   const [docTooLongErrorShown, setDocTooLongErrorShown] = useState(false)
@@ -169,6 +180,106 @@ export const EditorManagerProvider: FC<React.PropsWithChildren> = ({
   const [openDocs] = useState(
     () => new OpenDocuments(socket, globalEditorWatchdogManager, eventEmitter)
   )
+
+  useEffect(() => {
+    openDocs.updateDocumentNames(docId => findDocEntityById(fileTreeData, docId)?.name)
+  }, [openDocs, fileTreeData])
+
+  const { project } = useProjectContext()
+  const workspaceEpoch = project?.gitWorkspaceEpoch
+  const preparedEpoch = useRef<number>()
+  const epochTransition = useRef<{ epoch: number; docId: string | null; recover(): void; timer: ReturnType<typeof setTimeout>; opening?: boolean }>()
+  const taskApi = useMemo(() => gitApi(projectId), [projectId])
+  const [recoveryRevision, setRecoveryRevision] = useState(0)
+  const pendingRecovery = useRef<ReturnType<typeof accumulateLocalRecovery>>()
+  const preserveRecovery = useCallback((content: string, documents: RecoveryDocument[] = openDocs.snapshotForRecovery()) => {
+    if (!workspaceEpoch || !userId) return { content, notice: undefined }
+    const retained = accumulateLocalRecovery(pendingRecovery.current, { userId, workspaceId: projectId, epoch: workspaceEpoch, content, documents })
+    pendingRecovery.current = retained
+    try {
+      saveLocalRecovery(localStorage, retained)
+      setRecoveryRevision(value => value + 1)
+      return { content: retained.content, notice: 'A local recovery copy was saved in this browser. You can open it after reloading using Local recovery copies.' }
+    } catch {
+      return { content: retained.content, notice: 'A local recovery copy could not be saved. Copy or download the text below before reloading or closing this page.' }
+    }
+  }, [userId, projectId, workspaceEpoch, openDocs])
+  useEffect(() => {
+    if (!workspaceEpoch || connectionState.forceDisconnected) return
+    return bindGitPresence({ socket,
+      publish: snapshot => publishGitPresence(projectId, snapshot),
+      onIntent: listener => onGitViewingIntent(projectId, listener),
+    })
+  }, [socket, projectId, workspaceEpoch, connectionState.forceDisconnected])
+  useEffect(() => bindWorkspacePreparation({
+    socket, projectId, epoch: workspaceEpoch, documents: openDocs,
+    onAcknowledged: epoch => { preparedEpoch.current = epoch },
+    setBusy: busy => {
+      const notify = () => window.dispatchEvent(new CustomEvent('native-git-prepare-write-state', { detail: { busy } }))
+      if (busy) flushSync(notify)
+      else notify()
+    },
+  }), [socket, projectId, workspaceEpoch, openDocs])
+
+  const archivedWorkspace = useRef(false)
+  useEffect(() => { archivedWorkspace.current = false }, [projectId])
+  useEffect(() => {
+    const blocked = (value: { projectId?: string; logicalProjectId?: string }, deleting = false) => {
+      if (value.projectId !== projectId || !/^[a-f0-9]{24}$/.test(value.logicalProjectId || '')) return
+      archivedWorkspace.current = true
+      if (epochTransition.current) clearTimeout(epochTransition.current.timer)
+      epochTransition.current = undefined
+      const documents = openDocs.snapshotForRecovery()
+      const retained = preserveRecovery(JSON.stringify({ documents }, null, 2), documents)
+      flushSync(() => setOutOfSync(true))
+      closeConnection('out-of-sync'); setOpening(false)
+      showGenericMessageModal(deleting ? 'Project deletion started' : 'Branch archived', <>
+        <p>{deleting ? 'The owner has started deleting this paper project. Editing is stopped. The owner can resume the operation or restore its retained backup from the recovery vault.' : 'This branch is archived. Its documents, comments and history are retained. The project owner can restore it from Branch workspaces.'}</p>
+        <p>{retained.notice}</p>
+        {deleting && <button type="button" className="btn btn-default" onClick={() => {
+          const url = URL.createObjectURL(new Blob([retained.content], { type: 'application/json;charset=utf-8' }))
+          const link = document.createElement('a'); link.href = url; link.download = 'local-recovery.json'; link.click()
+          setTimeout(() => URL.revokeObjectURL(url), 1000)
+        }}>Download local text</button>}
+        {' '}<a href={deleting ? '/git-recovery' : `/project/${value.logicalProjectId}`}>{deleting ? 'Open your recovery vault' : 'Return to the paper project'}</a>
+      </>)
+    }
+    const archived = (value: { projectId?: string; logicalProjectId?: string }) => blocked(value)
+    const deleting = (value: { projectId?: string; logicalProjectId?: string }) => blocked(value, true)
+    socket.on('nativeGitWorkspaceArchived', archived)
+    socket.on('nativeGitProjectDeleting', deleting)
+    return () => { socket.removeListener('nativeGitWorkspaceArchived', archived); socket.removeListener('nativeGitProjectDeleting', deleting) }
+  }, [socket, projectId, openDocs, preserveRecovery, setOutOfSync, closeConnection, setOpening, showGenericMessageModal])
+
+  useEffect(() => bindWorkspaceEpochChange({
+    socket, projectId, epoch: workspaceEpoch,
+    freeze: () => flushSync(() => setOutOfSync(true)),
+    recover: nextEpoch => {
+      if (archivedWorkspace.current) return
+      const documents = openDocs.snapshotForRecovery()
+      const text = documents.length === 1 ? documents[0].content : JSON.stringify({ documents }, null, 2)
+      const recover = () => {
+        if (epochTransition.current) clearTimeout(epochTransition.current.timer)
+        epochTransition.current = undefined
+        const recovery = preserveRecovery(text, documents)
+        closeConnection('out-of-sync')
+        setErrorState(true)
+        showOutOfSyncModal(recovery.content, recovery.notice)
+      }
+      // Only an actively paused and acknowledged clean client may discard its
+      // old OT instances. Every other case retains the existing recovery flow.
+      if (!workspaceEpoch || preparedEpoch.current !== workspaceEpoch || nextEpoch !== (workspaceEpoch || 0) + 1 ||
+          openDocs.hasUnsavedChanges() || epochTransition.current) { recover(); return }
+      try {
+        openDocs.clearSavedDocumentsForEpochTransition()
+        setCurrentDocument(null)
+        setOpening(true)
+        epochTransition.current = { epoch: nextEpoch, docId: currentDocumentId, recover,
+          timer: setTimeout(recover, 30000) }
+        reconnectWorkspace()
+      } catch { recover() }
+    },
+  }), [socket, projectId, workspaceEpoch, openDocs, setOutOfSync, closeConnection, setErrorState, showOutOfSyncModal, preserveRecovery, reconnectWorkspace, currentDocumentId, setCurrentDocument, setOpening])
 
   const currentDocumentIdStorageKey = `doc.open_id.${projectId}`
 
@@ -214,11 +325,18 @@ export const EditorManagerProvider: FC<React.PropsWithChildren> = ({
           meta?: Record<string, any>,
           editorContent?: string
         ) => {
-          setDocError({ doc, document, error, meta, editorContent })
+          // Persist synchronously before DocumentContainer cleanup and React's
+          // batched error state can replace a previous document's failure.
+          const content = editorContent ?? document.getSnapshot() ?? ''
+          const recoveryDocuments = openDocs.snapshotForRecovery().filter(item => item.docId !== document.doc_id)
+          recoveryDocuments.push({ docId: document.doc_id, name: document.docName || '',
+            version: document.doc?.getVersion() ?? null, epoch: document.doc?.workspaceEpoch ?? null, content })
+          const recovery = preserveRecovery(content, recoveryDocuments)
+          setDocError({ doc, document, error, meta, editorContent: recovery.content, recoveryNotice: recovery.notice })
         }
       )
     },
-    []
+    [openDocs, preserveRecovery]
   )
 
   const ignoringExternalUpdatesRef = useRef<boolean>(ignoringExternalUpdates)
@@ -298,6 +416,7 @@ export const EditorManagerProvider: FC<React.PropsWithChildren> = ({
         debugConsole.error(`No open document with ID '${doc._id}' found`)
         return Promise.reject(new Error('no open document found'))
       }
+      newDocument.docName = doc.name
       const preJoinEpoch = ++editorOpenDocEpochRef.current
       return joinCurrentDocument(
         newDocument,
@@ -481,6 +600,26 @@ export const EditorManagerProvider: FC<React.PropsWithChildren> = ({
     [fileTreeData, openDoc]
   )
 
+  useEffect(() => {
+    const transition = epochTransition.current
+    if (!transition || transition.opening || workspaceEpoch !== transition.epoch ||
+        connectionState.readyState !== WebSocket.OPEN) return
+    transition.opening = true
+    void (async () => {
+      try {
+        const docId = transition.docId || project?.rootDocId
+        if (docId) {
+          const opened = await openDocWithId(docId, { forceReopen: true, keepCurrentView: true })
+          if (!opened) throw new Error('Document changed during workspace transition')
+        }
+        if (epochTransition.current !== transition) return
+        clearTimeout(transition.timer)
+        epochTransition.current = undefined
+        setOutOfSync(false); setErrorState(false); setOpening(false)
+      } catch { if (epochTransition.current === transition) transition.recover() }
+    })()
+  }, [workspaceEpoch, connectionState.readyState, openDocWithId, project?.rootDocId, setOutOfSync, setErrorState, setOpening])
+
   const openFileWithId = useCallback(
     (fileRefId: string) => {
       const fileRef = findFileRefEntityById(fileTreeData, fileRefId)
@@ -544,6 +683,8 @@ export const EditorManagerProvider: FC<React.PropsWithChildren> = ({
             ? editorContent
             : document.getSnapshot()
 
+        const recoveryNotice = docError.recoveryNotice
+
         // Tear down the ShareJsDoc.
         if (document.doc) document.doc.clearInflightAndPendingOps()
 
@@ -558,7 +699,7 @@ export const EditorManagerProvider: FC<React.PropsWithChildren> = ({
         // Ensure that the editor is locked
         setOutOfSync(true)
         // Display the "out of sync" modal
-        showOutOfSyncModal(editorContent || '')
+        showOutOfSyncModal(editorContent || '', recoveryNotice)
 
         // Do not forceReopen the document.
         return
@@ -584,6 +725,7 @@ export const EditorManagerProvider: FC<React.PropsWithChildren> = ({
     setErrorState,
     showGenericMessageModal,
     showOutOfSyncModal,
+    preserveRecovery,
     setOutOfSync,
     t,
   ])
@@ -659,6 +801,8 @@ export const EditorManagerProvider: FC<React.PropsWithChildren> = ({
   return (
     <EditorManagerContext.Provider value={value}>
       {children}
+      {workspaceEpoch !== undefined && <WorkspaceTaskNotice api={taskApi} canApply={project?.gitWorkspacePrepareEnabled === true} />}
+      <LocalRecoveryCopies userId={userId} workspaceId={projectId} revision={recoveryRevision} />
     </EditorManagerContext.Provider>
   )
 }

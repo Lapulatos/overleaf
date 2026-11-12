@@ -1,5 +1,5 @@
 import { skillDescription } from './SkillMetadata.mjs'
-import { AgentError } from '../WritingAssist/WritingAssistAgentService.mjs'
+import { AgentError } from '../WritingAssist/WritingAssistErrors.mjs'
 const fail = message => { throw new AgentError(422, message) }
 const safePath = path => typeof path === 'string' && path.length < 200 && path.split('/').every(p=>p && p!=='.' && p!=='..' && !/^(AGENTS|CLAUDE)\.md$/i.test(p) && !/[\\\x00-\x1f]/.test(p))
 export function parseGitHubSource(value) {
@@ -14,17 +14,53 @@ export function parseGitHubSource(value) {
  if(path && !safePath(path))fail('Invalid Skill folder path.')
  return {owner,repo,ref,path}
 }
-export function createGitHubSkills(fetcher=fetch) {
+export function createGitHubSkills(fetcher=fetch, { token = '', now = Date.now } = {}) {
+ const cache=new Map(), pending=new Map();let cacheBytes=0, retryAt=0
+ const limited=()=>new AgentError(429,`GitHub request limit reached. Retry after ${new Date(retryAt).toISOString().replace('T',' ').replace('.000Z',' UTC')}. This limit is shared by requests from the server.`)
  async function api(path) {
-  let response;try{response=await fetcher(`https://api.github.com${path}`,{redirect:'error',signal:AbortSignal.timeout(15000),headers:{Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','User-Agent':'Overleaf-Skill-Library'}})}catch{throw new AgentError(502,'GitHub could not be reached. Try again later.')}
-  if(!response.ok)throw new AgentError(response.status===404?404:502,response.status===403 || response.status===429?'GitHub rate limit reached. Try again later.':'GitHub repository or revision could not be read.')
+  const cached=cache.get(path)
+  if(cached && cached.expires>now())return structuredClone(cached.value)
+  if(cached){cache.delete(path);cacheBytes-=cached.bytes}
+  if(retryAt>now())throw limited()
+  if(pending.has(path))return structuredClone(await pending.get(path))
+  const request=load(path)
+  pending.set(path,request)
+  try {
+   const value=await request
+   if(/\/git\/(trees|blobs)\/[a-f0-9]{40}(?:\?recursive=1)?$/.test(path)){
+    const bytes=Buffer.byteLength(JSON.stringify(value))
+    while(cache.size && (cache.size>=64 || cacheBytes+bytes>8*1024*1024)){
+     const key=cache.keys().next().value;cacheBytes-=cache.get(key).bytes;cache.delete(key)
+    }
+    if(bytes<=8*1024*1024){cache.set(path,{value,bytes,expires:now()+300000});cacheBytes+=bytes}
+   }
+   return structuredClone(value)
+  } finally {pending.delete(path)}
+ }
+ async function load(path) {
+  let response;try{response=await fetcher(`https://api.github.com${path}`,{redirect:'error',signal:AbortSignal.timeout(15000),headers:{...(token?{Authorization:`Bearer ${token}`} : {}),Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','User-Agent':'Overleaf-Skill-Library'}})}catch{throw new AgentError(502,'GitHub could not be reached. Try again later.')}
   const reader=response.body.getReader();let size=0;const chunks=[]
-  try{while(true){const {done,value}=await reader.read();if(done)break;size+=value.length;if(size>3000000)fail('Repository response exceeds the supported size.');chunks.push(Buffer.from(value))}}finally{await reader.cancel()}
-  return JSON.parse(Buffer.concat(chunks).toString('utf8'))
+  try{while(true){const {done,value}=await reader.read();if(done)break;size+=value.length;if(size>(response.ok?3000000:16000))fail('Repository response exceeds the supported size.');chunks.push(Buffer.from(value))}}finally{await reader.cancel()}
+  let data;try{data=JSON.parse(Buffer.concat(chunks).toString('utf8'))}catch{if(response.ok)throw new AgentError(502,'GitHub returned an unreadable response.');data={}}
+  if(!response.ok){
+   const remaining=response.headers.get('x-ratelimit-remaining')
+   if(response.status===429 || (response.status===403 && (remaining==='0' || /rate limit/i.test(data.message || '')))){
+    const retry=response.headers.get('retry-after'),reset=Number(response.headers.get('x-ratelimit-reset'))*1000
+    const after=retry ? (/^\d+$/.test(retry)?now()+Number(retry)*1000:Date.parse(retry)) : 0
+    retryAt=Math.max(now()+60000,Number.isFinite(after) && after<=8640000000000000?after:0,remaining==='0' && Number.isFinite(reset) && reset<=8640000000000000?reset:0)
+    throw limited()
+   }
+   if(response.status===403)throw new AgentError(403,'GitHub denied access to this repository. Check that it is public and accessible; this response is not a confirmed rate limit.')
+   if(response.status===401)throw new AgentError(502,'The server GitHub credential was rejected. Ask the administrator to update the Skill installer credential.')
+   throw new AgentError(response.status===404?404:502,'GitHub repository or revision could not be read. Check the public repository URL and revision.')
+  }
+  return data
  }
  async function discover(url) {
   const source=parseGitHubSource(url);const base=`/repos/${encodeURIComponent(source.owner)}/${encodeURIComponent(source.repo)}`
-  const ref=source.ref || (await api(base)).default_branch
+  const metadata=(!source.ref || token)?await api(base):null
+  if(token && metadata?.private!==false)fail('Only public GitHub repositories can be installed.')
+  const ref=source.ref || metadata.default_branch
   const commit=await api(`${base}/commits/${encodeURIComponent(ref)}`)
   if(!/^[a-f0-9]{40}$/.test(commit.sha || ''))fail('GitHub returned an invalid revision.')
   const tree=await api(`${base}/git/trees/${commit.sha}?recursive=1`)

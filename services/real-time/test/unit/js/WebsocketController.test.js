@@ -80,6 +80,78 @@ describe('WebsocketController', function () {
     return tk.reset()
   })
 
+  describe('workspace preparation acknowledgement', function () {
+    beforeEach(function (ctx) {
+      ctx.client.ol_context = { user_id: ctx.user_id, project_id: ctx.project_id, workspace_epoch: 7, workspace_prepare_registered: true }
+      ctx.request = { id: '00000000-0000-4000-8000-000000000001', epoch: 7, saved: true }
+      ctx.DocumentUpdaterManager.acknowledgeWorkspacePreparation = sinon.stub().callsArg(2)
+    })
+    it('uses authenticated identity rather than client supplied identity', function (ctx) {
+      ctx.WebsocketController.acknowledgeWorkspacePreparation(ctx.client, { ...ctx.request, session: 'victim', project: 'other' }, ctx.callback)
+      sinon.assert.calledWith(ctx.DocumentUpdaterManager.acknowledgeWorkspacePreparation, ctx.project_id, { ...ctx.request, session: ctx.client.id })
+      sinon.assert.calledOnce(ctx.callback)
+    })
+    it('rejects disconnected or unregistered sessions', function (ctx) {
+      ctx.client.disconnected = true
+      ctx.WebsocketController.acknowledgeWorkspacePreparation(ctx.client, ctx.request, ctx.callback)
+      ctx.client.disconnected = false
+      ctx.client.ol_context.workspace_prepare_registered = false
+      ctx.WebsocketController.acknowledgeWorkspacePreparation(ctx.client, ctx.request, ctx.callback)
+      sinon.assert.notCalled(ctx.DocumentUpdaterManager.acknowledgeWorkspacePreparation)
+      expect(ctx.callback.args.every(([err]) => err instanceof Error)).to.equal(true)
+    })
+    it('rejects stale epochs and malformed acknowledgements', function (ctx) {
+      for (const request of [null, {}, { ...ctx.request, epoch: 6 }, { ...ctx.request, saved: 'true' }, { ...ctx.request, id: 'bad' }]) {
+        ctx.WebsocketController.acknowledgeWorkspacePreparation(ctx.client, request, ctx.callback)
+      }
+      sinon.assert.notCalled(ctx.DocumentUpdaterManager.acknowledgeWorkspacePreparation)
+      expect(ctx.callback.callCount).to.equal(5)
+    })
+  })
+
+  describe('registered workspace join admission', function () {
+    beforeEach(function (ctx) {
+      ctx.WebApiManager.joinProject = sinon.stub().callsArgWith(2, null,
+        { gitWorkspacePrepareEnabled: true, gitWorkspaceEpoch: 7 }, 'owner', {})
+      ctx.DocumentUpdaterManager.registerWorkspaceSession = sinon.stub()
+      ctx.DocumentUpdaterManager.leaveWorkspaceSession = sinon.stub().callsArg(2)
+      ctx.RoomManager.joinProject = sinon.stub().callsArg(2)
+      ctx.ConnectedUsersManager.updateUserPosition = sinon.stub()
+      ctx.WebsocketController.joinProject(ctx.client, ctx.user, ctx.project_id, ctx.callback)
+    })
+    it('waits for authoritative registration before joining the room', function (ctx) {
+      sinon.assert.notCalled(ctx.RoomManager.joinProject)
+      ctx.DocumentUpdaterManager.registerWorkspaceSession.firstCall.args[3]()
+      sinon.assert.calledOnce(ctx.RoomManager.joinProject)
+      expect(ctx.client.ol_context.workspace_prepare_registered).to.equal(true)
+    })
+    it('rejects document joins and edits while registration is pending', function (ctx) {
+      ctx.WebsocketController.joinDoc(ctx.client, 'doc', 0, {}, ctx.callback)
+      ctx.WebsocketController.applyOtUpdate(ctx.client, 'doc', {}, ctx.callback)
+      expect(ctx.callback.callCount).to.equal(2)
+      expect(ctx.callback.args.every(([err]) => err instanceof Error)).to.equal(true)
+    })
+    it('does not admit the client when registration fails', function (ctx) {
+      const error = new Error('WORKSPACE_PREPARE_BUSY')
+      ctx.DocumentUpdaterManager.registerWorkspaceSession.firstCall.args[3](error)
+      sinon.assert.notCalled(ctx.RoomManager.joinProject)
+      sinon.assert.calledWith(ctx.callback, error)
+    })
+    it('removes registration if room admission fails', function (ctx) {
+      const error = new Error('room admission failed')
+      ctx.RoomManager.joinProject.callsArgWith(2, error)
+      ctx.DocumentUpdaterManager.registerWorkspaceSession.firstCall.args[3]()
+      sinon.assert.calledWith(ctx.DocumentUpdaterManager.leaveWorkspaceSession, ctx.project_id, ctx.client.id)
+      sinon.assert.calledWith(ctx.callback, error)
+    })
+    it('removes registration if disconnect raced its completion', function (ctx) {
+      ctx.client.disconnected = true
+      ctx.DocumentUpdaterManager.registerWorkspaceSession.firstCall.args[3]()
+      sinon.assert.notCalled(ctx.RoomManager.joinProject)
+      sinon.assert.calledWith(ctx.DocumentUpdaterManager.leaveWorkspaceSession, ctx.project_id, ctx.client.id)
+    })
+  })
+
   describe('joinProject', function () {
     describe('when authorised', function () {
       beforeEach(function (ctx) {
@@ -1470,6 +1542,23 @@ describe('WebsocketController', function () {
         .stub()
         .yields()
       ctx.DocumentUpdaterManager.queueChange = sinon.stub().callsArg(3)
+    })
+
+    it('rejects pending edits from an old workspace without relabelling or enqueueing them', function (ctx) {
+      ctx.client.ol_context.workspace_epoch = 2
+      ctx.update.meta = { workspaceEpoch: 1 }
+      ctx.WebsocketController.applyOtUpdate(ctx.client, ctx.doc_id, ctx.update, ctx.callback)
+      ctx.callback.firstCall.args[0].code.should.equal('WORKSPACE_EPOCH_STALE')
+      ctx.DocumentUpdaterManager.queueChange.called.should.equal(false)
+      ctx.update.meta.workspaceEpoch.should.equal(1)
+    })
+
+    it('accepts an edit bound to the joined workspace epoch', function (ctx) {
+      ctx.client.ol_context.workspace_epoch = 2
+      ctx.update.meta = { workspaceEpoch: 2 }
+      ctx.WebsocketController.applyOtUpdate(ctx.client, ctx.doc_id, ctx.update, ctx.callback)
+      ctx.DocumentUpdaterManager.queueChange.calledOnce.should.equal(true)
+      ctx.update.meta.workspaceEpoch.should.equal(2)
     })
 
     describe('succesfully', function () {

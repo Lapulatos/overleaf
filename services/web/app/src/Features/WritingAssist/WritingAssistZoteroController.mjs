@@ -11,6 +11,7 @@ import { createCitationService } from './WritingAssistCitationService.mjs'
 import {
   agentService,
   agentStore,
+  readWorkspaceIdentity,
   snapshot,
 } from './WritingAssistAgentController.mjs'
 
@@ -32,6 +33,7 @@ const zotero = createZoteroService({
   },
 })
 const citations = createCitationService({
+  readWorkspaceIdentity,
   canWrite,
   literature: zotero,
   snapshot,

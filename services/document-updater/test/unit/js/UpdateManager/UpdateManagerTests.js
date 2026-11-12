@@ -33,6 +33,7 @@ describe('UpdateManager', function () {
 
     this.RedisManager = {
       promises: {
+        assertProjectWrite: sinon.stub().resolves(),
         withDocumentWriteContext: sinon.stub().callsFake(async (projectId, docId, action) => action()),
         setDocument: sinon.stub().resolves(),
         updateDocument: sinon.stub(),
@@ -43,7 +44,7 @@ describe('UpdateManager', function () {
       sendData: sinon.stub(),
       promises: {
         getUpdatesLength: sinon.stub(),
-        getPendingUpdatesForDoc: sinon.stub(),
+        getPendingUpdatesForWorkspace: sinon.stub(),
       },
     }
 
@@ -89,9 +90,11 @@ describe('UpdateManager', function () {
       },
     }
 
+    this.ProjectWriteGate = { current: sinon.stub().returns(undefined) }
     this.UpdateManager = SandboxedModule.require(MODULE_PATH, {
       requires: {
         './LockManager': this.LockManager,
+        '@overleaf/redis-wrapper/ProjectWriteGate': this.ProjectWriteGate,
         './RedisManager': this.RedisManager,
         './RealTimeRedisManager': this.RealTimeRedisManager,
         './ShareJsUpdateManager': this.ShareJsUpdateManager,
@@ -138,7 +141,7 @@ describe('UpdateManager', function () {
         project_id: this.project_id, doc_id: this.doc_id, error: 'DOCUMENT_DELETION_FENCED',
       })
       sinon.assert.notCalled(this.UpdateManager.promises.processOutstandingUpdates)
-      sinon.assert.notCalled(this.RealTimeRedisManager.promises.getPendingUpdatesForDoc)
+      sinon.assert.notCalled(this.RealTimeRedisManager.promises.getPendingUpdatesForWorkspace)
       sinon.assert.calledOnce(this.LockManager.promises.releaseLock)
     })
 
@@ -154,7 +157,7 @@ describe('UpdateManager', function () {
       this.RedisManager.promises.withDocumentWriteContext.rejects(new Error('DOCUMENT_DELETION_FENCED'))
       this.RealTimeRedisManager.sendData.rejects(new Error('pubsub unavailable'))
       await expect(this.UpdateManager.promises.processOutstandingUpdatesWithLock(this.project_id, this.doc_id)).to.be.rejectedWith('pubsub unavailable')
-      sinon.assert.notCalled(this.RealTimeRedisManager.promises.getPendingUpdatesForDoc)
+      sinon.assert.notCalled(this.RealTimeRedisManager.promises.getPendingUpdatesForWorkspace)
       sinon.assert.calledOnce(this.LockManager.promises.releaseLock)
     })
 
@@ -298,7 +301,7 @@ describe('UpdateManager', function () {
         this.updates = [{ p: 1, t: 'foo' }]
         this.updatedDocLines = ['updated', 'lines']
         this.version = 34
-        this.RealTimeRedisManager.promises.getPendingUpdatesForDoc.resolves(
+        this.RealTimeRedisManager.promises.getPendingUpdatesForWorkspace.resolves(
           this.updates
         )
         this.UpdateManager.promises.applyUpdate = sinon.stub().resolves()
@@ -309,8 +312,8 @@ describe('UpdateManager', function () {
       })
 
       it('should get the pending updates', function () {
-        this.RealTimeRedisManager.promises.getPendingUpdatesForDoc
-          .calledWith(this.doc_id)
+        this.RealTimeRedisManager.promises.getPendingUpdatesForWorkspace
+          .calledWith(this.project_id, this.doc_id)
           .should.equal(true)
       })
 
@@ -326,7 +329,7 @@ describe('UpdateManager', function () {
     describe('when there are no updates', function () {
       beforeEach(async function () {
         this.updates = []
-        this.RealTimeRedisManager.promises.getPendingUpdatesForDoc.resolves(
+        this.RealTimeRedisManager.promises.getPendingUpdatesForWorkspace.resolves(
           this.updates
         )
         this.UpdateManager.promises.applyUpdate = sinon.stub().resolves()
@@ -850,6 +853,53 @@ describe('UpdateManager', function () {
       sinon.assert.notCalled(this.method)
       sinon.assert.notCalled(this.UpdateManager.promises.processOutstandingUpdates)
       sinon.assert.calledWith(this.LockManager.promises.releaseLock, this.doc_id, this.lockValue)
+    })
+
+    it('drains every accepted batch before a Git snapshot while holding the document lock', async function () {
+      this.ProjectWriteGate.current.returns({ token: 'exclusive-token' })
+      const calls = []
+      this.UpdateManager.promises.processOutstandingUpdates = sinon.stub().callsFake(async () => { calls.push('batch') })
+      this.UpdateManager.promises.continueProcessingUpdatesWithLock = sinon.stub().resolves()
+      this.RealTimeRedisManager.promises.getUpdatesLength.onCall(0).resolves(17)
+      this.RealTimeRedisManager.promises.getUpdatesLength.onCall(1).resolves(9)
+      this.RealTimeRedisManager.promises.getUpdatesLength.onCall(2).resolves(1)
+      this.RealTimeRedisManager.promises.getUpdatesLength.onCall(3).resolves(0)
+      this.method.callsFake(async () => { calls.push('snapshot'); return this.methodResult })
+      await this.UpdateManager.promises.lockUpdatesAndDo(this.method, this.project_id, this.doc_id)
+      expect(calls).to.deep.equal(['batch', 'batch', 'batch', 'batch', 'snapshot'])
+      sinon.assert.callOrder(this.LockManager.promises.getLock, this.method, this.LockManager.promises.releaseLock)
+    })
+
+    it('rechecks the lease after the final batch before reading or replacing the document', async function () {
+      this.ProjectWriteGate.current.returns({ token: 'exclusive-token' })
+      this.UpdateManager.promises.processOutstandingUpdates = sinon.stub().resolves()
+      this.RealTimeRedisManager.promises.getUpdatesLength.resolves(0)
+      this.RedisManager.promises.assertProjectWrite.rejects(new Error('PROJECT_WRITE_BUSY'))
+      await expect(this.UpdateManager.promises.lockUpdatesAndDo(this.method, this.project_id, this.doc_id))
+        .to.be.rejectedWith('PROJECT_WRITE_BUSY')
+      sinon.assert.notCalled(this.method)
+      sinon.assert.calledOnce(this.LockManager.promises.releaseLock)
+    })
+
+    it('refuses the snapshot if an exclusive drain stops making progress', async function () {
+      this.ProjectWriteGate.current.returns({ token: 'exclusive-token' })
+      this.UpdateManager.promises.processOutstandingUpdates = sinon.stub().resolves()
+      this.RealTimeRedisManager.promises.getUpdatesLength.resolves(9)
+      await expect(this.UpdateManager.promises.lockUpdatesAndDo(this.method, this.project_id, this.doc_id))
+        .to.be.rejectedWith('queue drain made no progress')
+      sinon.assert.notCalled(this.method)
+      sinon.assert.calledOnce(this.LockManager.promises.releaseLock)
+    })
+
+    it('does not run the Git snapshot after losing the lease between queued batches', async function () {
+      this.ProjectWriteGate.current.returns({ token: 'exclusive-token' })
+      this.UpdateManager.promises.processOutstandingUpdates = sinon.stub().resolves()
+      this.UpdateManager.promises.processOutstandingUpdates.onCall(1).rejects(new Error('PROJECT_WRITE_BUSY'))
+      this.RealTimeRedisManager.promises.getUpdatesLength.resolves(9)
+      await expect(this.UpdateManager.promises.lockUpdatesAndDo(this.method, this.project_id, this.doc_id))
+        .to.be.rejectedWith('PROJECT_WRITE_BUSY')
+      sinon.assert.notCalled(this.method)
+      sinon.assert.calledOnce(this.LockManager.promises.releaseLock)
     })
 
     describe('successfully', function () {

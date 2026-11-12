@@ -1,3 +1,4 @@
+import { replaceRecoveredTask } from './recovered-task'
 import { ReferenceTaskView } from './reference-task-view';
 import MaterialIcon from '@/shared/components/material-icon';
 import { useEffect, useState, useRef } from "react";
@@ -336,7 +337,7 @@ export function ReferenceTools({
       )}
       {(batchTasks.length?batchTasks:task?[task]:[]).map((result,index)=><div key={result.taskId}>
         {batchTasks.length>0 && <h3>Batch {index+1}</h3>}
-        <ReferenceTaskView task={result} busy={running} onFields={fields=>applyFields(fields,result)} onClaim={id=>applyClaim(id,result)} onRepair={target=>start('metadata',target)} act={(proposal,accept)=>act(result,proposal,accept)}/>
+        <ReferenceTaskView onRecovered={value=>{setTask(current=>replaceRecoveredTask(current,value));setBatchTasks(current=>current.map(item=>replaceRecoveredTask(item,value)))}} task={result} busy={running} onFields={fields=>applyFields(fields,result)} onClaim={id=>applyClaim(id,result)} onRepair={target=>start('metadata',target)} act={(proposal,accept)=>act(result,proposal,accept)}/>
       </div>)}
     </section>
   );

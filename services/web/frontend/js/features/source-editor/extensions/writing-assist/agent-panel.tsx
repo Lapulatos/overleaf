@@ -1,3 +1,4 @@
+import { replaceRecoveredTask } from './recovered-task'
 import "./agent-panel.css";
 import {
   AgentTaskResult,
@@ -173,7 +174,7 @@ export function AgentTaskView({ projectId }: { projectId: string }) {
             </OLButton>
           </div>
         )}
-        {task && <AgentTaskResult task={task} busy={busy} act={act} />}
+        {task && <AgentTaskResult onRecovered={value=>setTask(current=>replaceRecoveredTask(current,value))} task={task} busy={busy} act={act} />}
       </div>
     </>
   );

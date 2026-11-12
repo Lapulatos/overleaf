@@ -394,4 +394,17 @@ describe('Reference file import', function(){
   expect(body).to.deep.equal({bibtex:text,enrich:true,destination:{newName:'references.bib'}})
   expect(screen.getByLabelText('Bibliography destination').closest('details')?.open).to.equal(true)
  })
+ it('refreshes full search task after acknowledged recovery',async()=>{
+  sessionStorage.setItem('writing-assist-citation:project','task')
+  const interrupted={...task,projectId:'project',proposals:[{...proposal,status:'uncertain'}]}
+  fetchMock.get(`${base}/tasks/task`,interrupted)
+  fetchMock.get(`${base}/tasks/task/proposals/proposal/inspection`,{checkedAt:'2026-11-11T00:00:00Z',workspaceMatches:true,comparison:'matches-proposal',acknowledgement:{state:'server-acknowledged',acknowledgedAt:'2026-11-11T00:00:00Z'},baseline:{content:''},proposed:{content:citation.bibtex},current:{content:citation.bibtex,path:'references.bib',version:1}})
+  fetchMock.post(`${base}/tasks/task/proposals/proposal/recover`,{...interrupted,summary:'Recovered citation task metadata',proposals:[{...proposal,status:'accepted'}]})
+  render(<LiteratureView projectId="project" />)
+  fireEvent.click(await screen.findByRole('button',{name:'Inspect write'}))
+  fireEvent.click(await screen.findByRole('button',{name:'Confirm acknowledged write'}))
+  await screen.findByText('Recovered citation task metadata')
+  expect(screen.queryByRole('button',{name:'Inspect write'})).to.equal(null)
+ })
+
 })

@@ -22,13 +22,6 @@ function CodeMirrorView({ hidden = false }: CodeMirrorViewProps) {
     [view]
   )
 
-  // destroy the editor when unmounted
-  useEffect(() => {
-    return () => {
-      view.destroy()
-    }
-  }, [view])
-
   // Add the CodeMirror view to the editor view context so that it can be
   // accessed outside the editor component
   useEffect(() => {

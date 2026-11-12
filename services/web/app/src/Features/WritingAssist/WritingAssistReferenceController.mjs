@@ -8,6 +8,7 @@ import { AgentError } from "./WritingAssistAgentService.mjs";
 import {
   agentService,
   agentStore,
+  readWorkspaceIdentity,
   snapshot,
 } from "./WritingAssistAgentController.mjs";
 import { createLiteratureService } from "./WritingAssistLiteratureService.mjs";
@@ -18,6 +19,7 @@ import { citationKey } from "./WritingAssistCitationKey.mjs";
 const canWrite = (u, p) =>
   AuthorizationManager.promises.canUserWriteProjectContent(u, p);
 const service = createReferenceService({
+  readWorkspaceIdentity,
   canWrite,
   snapshot,
   literature: createLiteratureService({ canWrite }),
@@ -152,6 +154,7 @@ function handler(action) {
           };
         });
         const citations = createCitationService({
+          readWorkspaceIdentity,
           canWrite,
           snapshot,
           store: agentStore,

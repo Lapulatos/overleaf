@@ -365,7 +365,7 @@ const RestoreManager = {
     }
   },
 
-  async revertProject(userId, projectId, version) {
+  async revertProject(userId, projectId, version, options = {}) {
     const endTimer = Metrics.revertProjectDurationSeconds.startTimer()
     const project = await ProjectGetter.promises.getProject(projectId, {
       overleaf: true,
@@ -391,6 +391,7 @@ const RestoreManager = {
 
     const reverted = []
     for (const pathname of pathsAtPastVersion) {
+      await options.onStep?.('before', pathname, 'restore')
       const res = await RestoreManager._revertSingleFile(
         userId,
         projectId,
@@ -400,6 +401,7 @@ const RestoreManager = {
         snapshot,
         { origin }
       )
+      await options.onStep?.('after', pathname, 'restore')
       reverted.push({
         id: res._id,
         type: res.type,
@@ -420,12 +422,14 @@ const RestoreManager = {
     // Delete files that were not present at the reverted version
     for (const path of pathsAtLiveVersion) {
       if (!pathsAtPastVersion.includes(path)) {
+        await options.onStep?.('before', path, 'delete')
         await EditorController.promises.deleteEntityWithPath(
           projectId,
           path,
           origin,
           userId
         )
+        await options.onStep?.('after', path, 'delete')
       }
     }
 

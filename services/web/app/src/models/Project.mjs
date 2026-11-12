@@ -15,6 +15,24 @@ const DeletedDocSchema = new Schema({
 export const ProjectSchema = new Schema(
   {
     name: { type: String, default: 'new project' },
+    gitProjectDeletion: { type: String, default: undefined },
+    gitWorkspaceEnabled: { type: Boolean, default: false },
+    gitWorkspacePrepareEnabled: { type: Boolean, default: false },
+    gitWorkspaceFenceEnabled: { type: Boolean, default: false },
+    gitWorkspaceEpoch: { type: Number, default: 1, min: 1 },
+    // Internal branch storage. Membership is always inherited from the parent.
+    gitWorkspace: {
+      type: new Schema({
+        logicalProjectId: { type: ObjectId, required: true, index: true },
+        branch: { type: String, required: true },
+        sourceWorkspaceId: { type: ObjectId },
+        sourceRootPath: { type: String },
+        sourceCommit: { type: String },
+        state: { type: String, enum: ['preparing', 'ready', 'archived', 'failed'], required: true },
+        epoch: { type: Number, default: 1, min: 1 },
+      }, { _id: false }),
+      default: undefined,
+    },
     lastUpdated: {
       type: Date,
       default() {
@@ -47,6 +65,7 @@ export const ProjectSchema = new Schema(
     description: { type: String, default: '' },
     archived: { type: Schema.Types.Mixed },
     trashed: [{ type: ObjectId, ref: 'User' }],
+    gitBackupRestore: { operationId: String, sourceProjectId: String, backupId: String },
     deletedDocs: [DeletedDocSchema],
     imageName: { type: String },
     brandVariationId: { type: String },
@@ -134,5 +153,10 @@ function applyToAllFilesRecursivly(folder, fun) {
   _.forEach(folder.folders, folder => applyToAllFilesRecursivly(folder, fun))
 }
 ProjectSchema.statics.applyToAllFilesRecursivly = applyToAllFilesRecursivly
+
+ProjectSchema.index({ 'gitWorkspace.logicalProjectId': 1, 'gitWorkspace.branch': 1 }, {
+  unique: true,
+  partialFilterExpression: { 'gitWorkspace.logicalProjectId': { $exists: true } },
+})
 
 export const Project = mongoose.model('Project', ProjectSchema)

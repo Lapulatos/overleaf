@@ -32,7 +32,14 @@ async function withinProjectStructureWrite(projectId, action, lockManager) {
     await scope.assertWrite()
     return action()
   }
-  return lockManager.promises.runWithLock(LOCK_NAMESPACE, projectId, action)
+  return lockManager.promises.runWithLock(LOCK_NAMESPACE, projectId, async () => {
+    const record = await Project.findById(projectId).select('gitProjectDeletion').lean().exec()
+    if (!record) throw Object.assign(Error('Project no longer exists'), { status: 404 })
+    if (record.gitProjectDeletion) {
+      throw Object.assign(Error('Project deletion is in progress; preserve local edits'), { status: 409 })
+    }
+    return action()
+  })
 }
 const VALID_ROOT_DOC_EXTENSIONS = Settings.validRootDocExtensions
 const VALID_ROOT_DOC_REGEXP = new RegExp(

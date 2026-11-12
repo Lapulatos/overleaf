@@ -1,3 +1,4 @@
+import { assertStorageCapacity, storageFailure } from './StorageCapacity.mjs'
 import Path from 'node:path'
 import { constants } from 'node:fs'
 import { open, readdir, lstat, mkdir, rename, unlink, rmdir } from 'node:fs/promises'
@@ -17,12 +18,22 @@ export function projectPath(path) {
 export function validateFiles(files) {
   if (!(files instanceof Map) || files.size > MAX_FILES) throw new Error('Invalid project file collection')
   let total = 0
+  const portablePaths = new Map()
   for (const [path, content] of files) {
     projectPath(path)
     if (!Buffer.isBuffer(content)) throw new Error('Project file content must be bytes')
     total += content.length
     if (total > MAX_BYTES) throw new Error('Project exceeds Git workspace size limit')
     const parts = path.split('/')
+    for (let i = 1; i <= parts.length; i++) {
+      const prefix = parts.slice(0, i).join('/')
+      const key = prefix.normalize('NFC').toLowerCase()
+      const existing = portablePaths.get(key)
+      if (existing && existing !== prefix) {
+        throw Object.assign(new Error(`Conflicting project paths: ${existing} and ${prefix}. Rename one path so names differ beyond letter case or Unicode normalization before importing or applying Git changes.`), { status: 409, code: 'PROJECT_PATH_COLLISION' })
+      }
+      portablePaths.set(key, prefix)
+    }
     for (let i = 1; i < parts.length; i++) {
       if (files.has(parts.slice(0, i).join('/'))) throw new Error('A project path is both a file and a folder')
     }
@@ -73,6 +84,8 @@ export async function writeWorktree(directory, files) {
   validateFiles(files)
   const before = await readWorktree(directory)
   const changes = fileChanges(before, files)
+  const writes = new Map(changes.filter(change => change.after).map(change => [change.path, change.after]))
+  if (writes.size) await assertStorageCapacity(directory, [writes])
   // Remove old files first to support file <-> folder renames using Git's normal
   // working-tree semantics. Their source still exists in the live project.
   for (const change of changes) {
@@ -96,7 +109,7 @@ export async function writeWorktree(directory, files) {
         await handle.sync()
       } finally { await handle.close() }
       await rename(temporary, destination)
-    } catch (error) { await unlink(temporary).catch(() => {}); throw error }
+    } catch (error) { await unlink(temporary).catch(() => {}); throw error.code === 'ENOSPC' || error.code === 'EDQUOT' ? storageFailure() : error }
   }
 }
 

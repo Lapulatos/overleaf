@@ -1,3 +1,12 @@
+import ReadOnlyHistory from './read-only-history'
+import ProjectBackups from './project-backups'
+import HistoryRecovery from './history-recovery'
+import BranchWorkspaces from './branch-workspaces'
+import AutoSyncSettings from './auto-sync-settings'
+import AutoCommitSettings from './auto-commit-settings'
+import ShellDrafts from './shell-drafts'
+import RemoteDiscoveryStatus from './remote-discovery-status'
+import SessionRecovery from './session-recovery'
 import { formatGitDate } from './format-date'
 import { sectionLayout } from './section-layout'
 import { useFileTreePathContext } from '@/features/file-tree/contexts/file-tree-path'
@@ -23,6 +32,7 @@ import { useRailContext } from '@/features/ide-react/context/rail-context'
 import GraphHistory from './graph-history'
 import RemoteSettings from './remote-settings'
 import WorktreeManager, { type WorktreeEntry } from './worktree-manager'
+import CollaborationTasks from './collaboration-tasks'
 import MergeBranchPicker from './merge-branch-picker'
 import ResetDialog, { type ResetPreview } from './reset-dialog'
 import IgnoredFiles from './ignored-files'
@@ -79,6 +89,9 @@ export function SourceControlView({ api, onOpenFile, active = true, projectName 
   const [ignoredFiles, setIgnoredFiles] = useState<string[]>()
   const [resetOpen, setResetOpen] = useState(false)
   const [mergeTarget, setMergeTarget] = useState<string>()
+  const [mergeTasksOpen, setMergeTasksOpen] = useState(false)
+  const [shellDraftsOpen, setShellDraftsOpen] = useState(false)
+  const [mergeTaskId, setMergeTaskId] = useState<string>()
   const [conflict, setConflict] = useState<ConflictDetails>()
   const [blame, setBlame] = useState<{ path: string; output: string }>()
   const [stashIntent, setStashIntent] = useState<'apply'|'pop'|'drop'|'view'>()
@@ -247,16 +260,7 @@ export function SourceControlView({ api, onOpenFile, active = true, projectName 
     const response = await command({ command: 'ignoredFiles' })
     if (response) setIgnoredFiles(response.result as string[])
   }
-  const amendCommit = async () => {
-    const response = await command({ command: 'amendDetails' })
-    if (!response) return
-    const details = response.result as { head: string; branch: string | null; message: string }
-    setAction({ title: 'Amend latest commit', submitLabel: 'Amend commit',
-      summary: `Replace ${details.head.slice(0, 8)} on ${details.branch || 'detached HEAD'} using staged changes. Unstaged edits stay unchanged. If already pushed, this rewrites published history.`,
-      fields: [{ key: 'message', label: 'Replacement commit message', value: details.message, multiline: true }],
-      execute: values => command({ command: 'commit', amend: true, message: values.message,
-        expectedHead: details.head, expectedBranch: details.branch }) })
-  }
+  const amendCommit = () => commitVariant('staged', true)
   const mergeBranch = () => {
     if (status?.branch) { setError(''); setMergeTarget(status.branch) }
   }
@@ -264,7 +268,14 @@ export function SourceControlView({ api, onOpenFile, active = true, projectName 
     setAction({ title: publish ? 'Publish branch' : `${name[0].toUpperCase()}${name.slice(1)}`,
       fields: [{ key: 'remote', label: 'Remote', value: 'origin' },
         ...(name === 'fetch' ? [] : [{ key: 'branch', label: 'Branch', value: status?.branch || '' }])],
-      execute: values => command({ command: name, ...values, ...(name === 'push' ? { publish } : {}), ...(name === 'pull' && rebase ? { rebase: true } : {}) }) })
+      ...(name === 'pull' && snapshot.collaboration?.drafts ? { summary: 'Fetch the remote branch and open a shared merge review. Files change only after you review and apply the task.', submitLabel: 'Fetch and review' } : {}),
+      execute: async values => {
+        const result = await command({ command: name, ...values, ...(name === 'push' ? { publish } : {}), ...(name === 'pull' ? { operationId: crypto.randomUUID(), ...(rebase ? { rebase: true } : {}) } : {}) })
+        if (result?.reviewRequired && result.result && typeof result.result === 'object' && 'id' in result.result) {
+          setMergeTaskId(String(result.result.id)); setMergeTasksOpen(true)
+        }
+        return result
+      } })
   }
   const inspectCommit = async (commit: GitCommit) => {
     if (commitDetails[commit.hash] || inspecting.current.has(commit.hash)) return
@@ -367,8 +378,7 @@ export function SourceControlView({ api, onOpenFile, active = true, projectName 
   }
   const commit = async () => {
     if (!message.trim() || !indexFiles.length) return
-    const result = await command({ command: 'commit', message })
-    if (result) setMessage('')
+    await commitVariant('staged')
   }
   const files = (items: GitFile[], inIndex: boolean) => <CommitFiles tree={changesTree} files={[...items].sort((a, b) => { const key = (f: GitFile) => changesSort === 'name' ? f.path.split('/').pop()! : changesSort === 'status' ? (inIndex ? f.index : f.workingTree) : f.path; return key(a).localeCompare(key(b)) || a.path.localeCompare(b.path) })} renderFile={file => <div className="native-git-file" key={file.path}>
     <button type="button" className="native-git-file-name" disabled={busy}
@@ -394,10 +404,12 @@ export function SourceControlView({ api, onOpenFile, active = true, projectName 
     const all = scope === 'all' || scope === 'auto' && !indexFiles.length
     const details = amend ? (await command({command:'amendDetails'}))?.result as {head:string;branch:string|null;message:string} | undefined : undefined
     if (amend && !details) return
+    const preview = (await command({command:'commitPreview', all, amend, signoff}))?.result as {fingerprint:string;paths:string[]} | undefined
+    if (!preview) return
     setAction({title:`${amend ? 'Amend' : 'Commit'} ${all ? 'all changes' : 'staged changes'}${signoff ? ' (Signed Off)' : ''}`,submitLabel:amend?'Amend commit':'Commit',
-      summary:`${all?'Includes tracked changes and untracked files.':'Includes only staged changes.'}${signoff?' Adds a Signed-off-by trailer using your configured Git identity.':''}${amend?' Replaces the latest commit; published history may be affected.':''}`,
+      summary:`Files: ${preview.paths.join(', ') || '(no file changes)'}. ${all?'Includes tracked changes and untracked files.':'Includes only staged changes.'}${signoff?' Adds a Signed-off-by trailer using your configured Git identity.':''}${amend?' Replaces the latest commit; published history may be affected.':''}`,
       fields:[{key:'message',label:'Commit message',value:message || details?.message || '',multiline:true}],
-      execute: async values => { const result=await command({command:'commit',message:values.message,all,amend,signoff,...(details?{expectedHead:details.head,expectedBranch:details.branch}:{})});if(result)setMessage('');return result }})
+      execute: async values => { const result=await command({command:'commit',fingerprint:preview.fingerprint,message:values.message,all,amend,signoff,...(details?{expectedHead:details.head,expectedBranch:details.branch}:{})});if(result)setMessage('');return result }})
   }
   const undoLastCommit = async () => {
     const preview=(await command({command:'undoDetails'}))?.result as (Omit<ResetPreview,'target'> & {target:string|null}) | undefined
@@ -551,7 +563,8 @@ export function SourceControlView({ api, onOpenFile, active = true, projectName 
     </Dropdown>
   </div>
   if (!snapshot) return <div className="native-git-panel"><p role={error ? 'alert' : 'status'}>{error || 'Loading repository…'}</p>
-    {error && <button className="btn btn-default" disabled={busy} onClick={() => run(() => api.status())}>Retry</button>}</div>
+    {error && <><button className="btn btn-default" disabled={busy} onClick={() => run(() => api.status())}>Retry</button><SessionRecovery api={api} /></>}</div>
+  if (snapshot.readOnly) return <ReadOnlyHistory api={api} snapshot={snapshot} onRefresh={() => run(() => api.status())} />
   if (snapshot.connected === false) return <div className="native-git-panel native-git-connect">
     <BranchIcon /><h4>Source Control</h4><p>Track this project with Git.</p>
     {error && <p role="alert">{error}</p>}
@@ -563,7 +576,14 @@ export function SourceControlView({ api, onOpenFile, active = true, projectName 
     {(error || refreshError) && <div className="native-git-error" role="alert">{error || refreshError}{' '}
       <button type="button" className="btn btn-default btn-sm" disabled={busy} onClick={() => run(() => api.status())}>Refresh repository status</button>
     </div>}
-    {snapshot.switching && <div className="native-git-error" role="status">Updating project files… <button type="button" disabled={busy} onClick={() => command({ command: 'resumeTransfer' })}>Retry</button></div>}
+    {snapshot.mutationTaskId ? <div className="native-git-error" role="status">{snapshot.mutationKind === 'auto-commit'
+      ? <>An automatic commit needs recovery before Git changes can continue. The project owner can review it in Automatic commits.</>
+      : snapshot.mutationKind === 'shell'
+      ? <>A Shell application needs recovery before Git changes can continue. {snapshot.canRecoverMutation
+        ? <button type="button" disabled={busy} onClick={() => setShellDraftsOpen(true)}>Review interrupted Shell application</button>
+        : <span>The draft owner must review the interrupted application.</span>}</>
+      : <>A merge needs recovery before Git changes can continue. <button type="button" disabled={busy} onClick={() => { setMergeTaskId(snapshot.mutationTaskId); setMergeTasksOpen(true) }}>Review interrupted merge</button></>}</div>
+      : snapshot.switching && <div className="native-git-error" role="status">Updating project files… <button type="button" disabled={busy} onClick={() => command({ command: 'resumeTransfer' })}>Retry</button></div>}
     <div ref={sectionGroup} className="native-git-section-group"><PanelGroup ref={panelGroup} direction="vertical" autoSaveId="native-git-sections-v3">
       <Section expand={() => expandSection(0)} collapse={() => collapseSection(0)} title="Repositories" defaultSize={20} collapsedSize={collapsedSize}>
         <div className="native-git-repository-row">
@@ -578,6 +598,14 @@ export function SourceControlView({ api, onOpenFile, active = true, projectName 
             </Dropdown.Menu>, document.body)}
           </Dropdown>
         </div>
+        {snapshot.collaboration?.drafts && <button type="button" className="btn btn-link" disabled={busy} onClick={() => { setMergeTaskId(undefined); setMergeTasksOpen(true) }}>Shared merge tasks…</button>}
+        <ProjectBackups api={api} />
+        {snapshot.collaboration?.apply && <><BranchWorkspaces api={api} /><SessionRecovery api={api} /><AutoCommitSettings api={api} /><AutoSyncSettings api={api} branch={status?.branch || 'main'} /></>}
+        {snapshot.collaboration?.drafts && <button type="button" className="btn btn-link" disabled={busy} onClick={() => setShellDraftsOpen(true)}>Shell drafts…</button>}
+        {snapshot.collaboration?.drafts && <RemoteDiscoveryStatus api={api} busy={busy} onReview={async (ref, expectedSourceOid) => {
+          const result = await command({ command: 'mergeDraftPrepare', ref, expectedSourceOid, operationId: crypto.randomUUID() })
+          if (result) { setMergeTaskId((result.result as { id: string }).id); setMergeTasksOpen(true) }
+        }} />}
         <div className="native-git-repository-status">{status?.ahead ? `${status.ahead} outgoing commits` : 'Local repository'}{status?.behind ? ` · ${status.behind} incoming commits` : ''}</div>
       </Section>
       <PanelResizeHandle className="native-git-resize" aria-label="Resize repositories and changes" />
@@ -697,11 +725,18 @@ export function SourceControlView({ api, onOpenFile, active = true, projectName 
           setResetOpen(false); closeDiff()
         }
       }} />}
+    {shellDraftsOpen && <ShellDrafts key={api.projectId} api={api} canApply={snapshot.collaboration?.apply === true} onClose={() => setShellDraftsOpen(false)} />}
+    {mergeTasksOpen && <CollaborationTasks api={api} canApply={snapshot.collaboration?.apply === true} selectedId={mergeTaskId} onClose={() => setMergeTasksOpen(false)} />}
     {mergeTarget && <MergeBranchPicker branches={snapshot.branches || []} target={mergeTarget} busy={busy} error={error}
       onClose={() => setMergeTarget(undefined)}
       onMerge={async ref => {
-        const result = await command({ command: 'merge', ref, expectedBranch: mergeTarget })
-        if (result) setMergeTarget(undefined)
+        const result = await command(snapshot.collaboration?.drafts
+          ? { command: 'mergeDraftPrepare', ref, operationId: crypto.randomUUID() }
+          : { command: 'merge', ref, expectedBranch: mergeTarget })
+        if (result) {
+          setMergeTarget(undefined)
+          if (snapshot.collaboration?.drafts) { setMergeTaskId((result.result as { id: string }).id); setMergeTasksOpen(true) }
+        }
       }} />}
     {conflict && <ConflictEditor details={conflict} busy={busy} error={error} onClose={() => setConflict(undefined)}
       onResolve={async (choice, text) => {
@@ -773,10 +808,10 @@ export default function SourceControlPanel() {
     const busy = (busy: boolean) => window.dispatchEvent(new CustomEvent('native-git-local-write-state', { detail: { busy } }))
     return { ...backend,
       initialize: () => withSavedEditor(openDocs, busy, () => backend.initialize()),
-      command: (command: GitCommand) => ['accessPolicy', 'setAccessPolicy', 'terminalApprove', 'terminalPoll', 'terminalInput', 'terminalRun', 'terminalResize', 'terminalClose', 'commitDetails', 'graphSettings', 'commitFiles', 'commitFileDiff', 'commitDiff', 'commitFilePreview', 'graph'].includes(command.command)
+      command: (command: GitCommand) => ['webhookStatus', 'configureWebhook', 'autoCommitSchedule', 'configureAutoCommitSchedule', 'autoCommitRecoveryPreview', 'autoCommitRecover', 'remoteDiscoveryList', 'discoverySchedule', 'configureDiscoverySchedule', 'discoverRemote', 'accessPolicy', 'setAccessPolicy', 'terminalApprove', 'terminalPoll', 'terminalInput', 'terminalRun', 'terminalResize', 'terminalClose', 'commitDetails', 'graphSettings', 'commitFiles', 'commitFileDiff', 'commitDiff', 'commitFilePreview', 'graph'].includes(command.command)
         ? backend.command(command)
         : withSavedEditor(openDocs, busy, () => backend.command(command)),
     }
   }, [projectId, openDocs])
-  return <div className="native-git-root"><RailPanelHeader title="Source Control" /><SourceControlView key={projectId} projectName={projectName || 'Repository'} active={selectedTab === 'native-git'} api={api} onOpenFile={openFile} /></div>
+  return <div className="native-git-root"><RailPanelHeader title="Source Control" /><HistoryRecovery key={projectId} projectId={projectId} /><SourceControlView key={projectId} projectName={projectName || 'Repository'} active={selectedTab === 'native-git'} api={api} onOpenFile={openFile} /></div>
 }

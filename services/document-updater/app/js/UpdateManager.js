@@ -2,6 +2,7 @@
 
 const { callbackifyAll } = require('@overleaf/promise-utils')
 const LockManager = require('./LockManager')
+const ProjectWriteGate = require('@overleaf/redis-wrapper/ProjectWriteGate')
 const RedisManager = require('./RedisManager')
 const ProjectHistoryRedisManager = require('./ProjectHistoryRedisManager')
 const RealTimeRedisManager = require('./RealTimeRedisManager')
@@ -86,7 +87,7 @@ const UpdateManager = {
     })
 
     const updates =
-      await RealTimeRedisManager.promises.getPendingUpdatesForDoc(docId)
+      await RealTimeRedisManager.promises.getPendingUpdatesForWorkspace(projectId, docId)
     logger.debug(
       { projectId, docId, count: updates.length },
       'processing updates'
@@ -295,6 +296,20 @@ const UpdateManager = {
     try {
       result = await RedisManager.promises.withDocumentWriteContext(projectId, docId, async () => {
         await UpdateManager.processOutstandingUpdates(projectId, docId)
+        // Ordinary reads keep bounded batches. A Git lease closes admission,
+        // so every previously accepted update must be applied before its snapshot.
+        if (ProjectWriteGate.current(projectId)?.token) {
+          let remaining = await RealTimeRedisManager.promises.getUpdatesLength(docId)
+          let batches = 0
+          while (remaining > 0) {
+            if (++batches > 10000) throw new Error('Workspace queue drain exceeded its batch limit')
+            await UpdateManager.processOutstandingUpdates(projectId, docId)
+            const next = await RealTimeRedisManager.promises.getUpdatesLength(docId)
+            if (next >= remaining) throw new Error('Workspace queue drain made no progress')
+            remaining = next
+          }
+          await RedisManager.promises.assertProjectWrite(projectId)
+        }
         profile.log('processOutstandingUpdates')
         const value = await method(projectId, docId, ...args)
         profile.log('method')

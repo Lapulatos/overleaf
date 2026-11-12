@@ -271,6 +271,31 @@ describe('EditorHttpController', function () {
       ctx.req.body = { userId: ctx.user._id.toString() }
     })
 
+    it('uses inherited parent membership for internal workspace realtime joins', async function (ctx) {
+      const parentId = new ObjectId()
+      ctx.project.gitWorkspace = { logicalProjectId: parentId, state: 'ready' }
+      const inherited = new ctx.CollaboratorsGetter.ProjectAccess()
+      ctx.CollaboratorsGetter.promises.getProjectAccess = sinon.stub().resolves(inherited)
+      await new Promise((resolve, reject) => {
+        ctx.res.callback = resolve
+        ctx.EditorHttpController.joinProject(ctx.req, ctx.res, reject)
+      })
+      expect(ctx.CollaboratorsGetter.promises.getProjectAccess).to.have.been.calledWith(ctx.project._id.toString())
+      expect(ctx.AuthorizationManager.promises.getPrivilegeLevelForProjectWithProjectAccess)
+        .to.have.been.calledWith(ctx.user._id.toString(), ctx.project._id.toString(), undefined, inherited)
+      expect(ctx.CollaboratorsInviteGetter.promises.getAllInvites).to.have.been.calledWith(parentId)
+    })
+
+    it('does not fall back to child ownership if inherited workspace access is refused', async function (ctx) {
+      ctx.project.gitWorkspace = { logicalProjectId: new ObjectId(), state: 'preparing' }
+      const error = Object.assign(new Error('Workspace is not available'), { status: 403 })
+      ctx.CollaboratorsGetter.promises.getProjectAccess = sinon.stub().rejects(error)
+      const caught = await new Promise(resolve => ctx.EditorHttpController.joinProject(ctx.req, ctx.res, resolve))
+      expect(caught).to.equal(error)
+      expect(ctx.AuthorizationManager.promises.getPrivilegeLevelForProjectWithProjectAccess.called).to.equal(false)
+      expect(ctx.res.json).not.toHaveBeenCalled()
+    })
+
     describe('successfully', function () {
       beforeEach(async function (ctx) {
         await new Promise(resolve => {

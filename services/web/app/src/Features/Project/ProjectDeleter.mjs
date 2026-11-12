@@ -1,3 +1,4 @@
+import { assertLegacyDeletionAllowed } from '../NativeGit/DeletionRetentionGuard.mjs'
 import { recoverAcceptedDeletionsForProjectRemoval } from '../WritingAssist/DocumentDeletionTeardownService.mjs'
 import _ from 'lodash'
 import {
@@ -30,6 +31,12 @@ import { promiseMapWithLimit } from '@overleaf/promise-utils'
 import { DeletedProjectReasons } from './DeletedProjectReasons.mjs'
 
 const PROJECT_EXPIRATION_BATCH_SIZE = 10000
+
+function assertProjectRetention(project) {
+  return assertLegacyDeletionAllowed(project, id =>
+    Project.exists({ 'gitWorkspace.logicalProjectId': id })
+  )
+}
 
 export default {
   markAsDeletedByExternalSource: callbackify(markAsDeletedByExternalSource),
@@ -90,6 +97,8 @@ async function deleteUsersProjects(userId) {
     { userId, projectCount: projects.length },
     'found user projects to delete'
   )
+  // Preflight the entire account before deleting even one ordinary project.
+  for (const project of projects) await assertProjectRetention(project)
   await promiseMapWithLimit(5, projects, (project) =>
     deleteProject(project._id, {
       deletedReason: DeletedProjectReasons.ACCOUNT_DELETION,
@@ -189,6 +198,8 @@ async function deleteProject(projectId, options = {}) {
     if (!project) {
       throw new Errors.NotFoundError('project not found')
     }
+
+    await assertProjectRetention(project)
 
     const pendingDeletion = await DocumentDeletionReservation.collection.findOne({
       projectId: String(projectId), state: { $ne: 'committed' },
@@ -403,6 +414,8 @@ async function expireDeletedProject(projectId) {
       )
       return
     }
+    await assertProjectRetention(deletedProject.project)
+
     // Keep the project snapshot and task recovery state until every document
     // deletion has a terminal receipt. A fence alone cannot recover lost data.
     const unfinishedDeletion = await DocumentDeletionReservation.collection.findOne(

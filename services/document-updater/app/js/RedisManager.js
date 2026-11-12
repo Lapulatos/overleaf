@@ -34,6 +34,9 @@ const { createProjectWriteGate } = require('@overleaf/redis-wrapper/ProjectWrite
 const projectWriteGate = createProjectWriteGate(rclient)
 
 const RedisManager = {
+  async assertProjectWrite(projectId) {
+    await projectWriteGate.assertWrite(projectId)
+  },
   async withDocumentWriteContext(projectId, docId, action) {
     return projectWriteGate.withWriter(projectId, () => deletionFence.withOperation(docId, async () => {
       return Boolean(await db.documentDeletionReservations.findOne({

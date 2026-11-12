@@ -70,7 +70,8 @@ export class ShareJsDoc extends EventEmitter {
     readonly socket: Socket,
     private readonly globalEditorWatchdogManager: EditorWatchdogManager,
     private readonly eventEmitter: IdeEventEmitter,
-    readonly type: OTType = 'sharejs-text-ot'
+    readonly type: OTType = 'sharejs-text-ot',
+    readonly workspaceEpoch?: number
   ) {
     super()
     let sharejsType
@@ -88,6 +89,9 @@ export class ShareJsDoc extends EventEmitter {
 
     this.connection = {
       send: (update: Update) => {
+        if (this.workspaceEpoch !== undefined) {
+          update.meta = { ...update.meta, workspaceEpoch: this.workspaceEpoch }
+        }
         this.startInflightOpTimeout(update)
         if (this.track_changes && this.track_changes_id_seeds) {
           if (update.meta == null) {

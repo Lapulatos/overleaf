@@ -117,7 +117,13 @@ const httpPermissionsPolicy = {
 
 module.exports = {
   nativeGit: {
+    // Enable only with an isolated draft runner and prepared writeback support.
+    shellDrafts: false,
     enabled: process.env.OVERLEAF_NATIVE_GIT_ENABLED === 'true',
+    discoveryScheduler: process.env.OVERLEAF_NATIVE_GIT_DISCOVERY_SCHEDULER === 'true',
+    autoSyncScheduler: process.env.OVERLEAF_NATIVE_GIT_AUTO_SYNC_SCHEDULER === 'true',
+    autoCommitScheduler: process.env.OVERLEAF_NATIVE_GIT_AUTO_COMMIT_SCHEDULER === 'true',
+    workspaceProjects: (process.env.OVERLEAF_NATIVE_GIT_WORKSPACE_PROJECTS || '').split(',').filter(Boolean),
     storagePath: process.env.OVERLEAF_NATIVE_GIT_STORAGE_PATH || '/var/lib/overleaf/native-git',
     credentialKey: process.env.OVERLEAF_NATIVE_GIT_CREDENTIAL_KEY,
   },

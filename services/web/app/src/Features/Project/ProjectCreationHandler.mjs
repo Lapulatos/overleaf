@@ -272,7 +272,7 @@ async function _createBlankProject(
     'ace.spellCheckLanguage': 1,
     _id: 1,
   })
-  project.spellCheckLanguage = user.ace.spellCheckLanguage
+  project.spellCheckLanguage = attributes.spellCheckLanguage ?? user.ace.spellCheckLanguage
   const historyRangesSupportAssignment =
     await SplitTestHandler.promises.getAssignmentForUser(
       user._id,

@@ -1,3 +1,4 @@
+import { replaceRecoveredTask } from './recovered-task'
 import { ReferenceTools } from './reference-tools'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import ZoteroLogo from '@/shared/svgs/zotero-logo'
@@ -335,7 +336,7 @@ export function LiteratureView({ projectId }: { projectId: string }) {
           </OLButton>
         </div>
       )}
-      {task && <AgentTaskResult task={task} busy={busy} act={decide} />}
+      {task && <AgentTaskResult onRecovered={value=>setTask(current=>replaceRecoveredTask(current,value))} task={task} busy={busy} act={decide} />}
       {pending && (
         <p>Accept or reject the current import before preparing another.</p>
       )}

@@ -5,6 +5,7 @@ import { ProposalDiff } from './proposal-diff'
 import { OLModal, OLModalHeader, OLModalTitle, OLModalBody, OLModalFooter } from '@/shared/components/ol/ol-modal'
 import { FetchError } from '@/infrastructure/fetch-json'
 import OLButton from '@/shared/components/ol/ol-button'
+import { ApplicationInspection } from './application-inspection'
 
 export type Proposal = {
   id: string
@@ -21,6 +22,7 @@ export type Proposal = {
     | 'rejected'
     | 'conflict'
     | 'uncertain'
+    | 'closed-unconfirmed'
 }
 export type ReferenceFieldChoice = { key: string; field: string }
 export type ReferenceReview = {
@@ -41,6 +43,8 @@ export type ClaimReview = { checkedAt: string; items: {
  status:'pending'|'review'|'accepted';note:string|null;
 }[] }
 export type Task = {
+  workspaceIdentity?: { projectId: string; workspaceId: string; branch: string | null; epoch: number } | null
+  projectId?: string
   scope?: {kind:string;path:string}[]
   plugins?: {command:string}[]
   claimReview?: ClaimReview
@@ -68,9 +72,11 @@ export function AgentTaskResult({
   busy,
   act,
   onReviewInEditor,
+  onRecovered,
   hideInstruction = false,
   messageActions,
 }: {
+  onRecovered?: (task: Task) => void
   messageActions?: React.ReactNode
   hideInstruction?: boolean
   task: Task
@@ -91,41 +97,44 @@ export function AgentTaskResult({
       </div>
       {maintenanceEvent&&<EnvironmentMaintenance key={`${task.taskId}-${maintenanceEvent.status}`} taskRunning={task.status==='running'}/>}
       {task.proposals.length > 0 && <div className="paper-change-heading"><strong>Changes</strong><span>{task.proposals.length} {task.proposals.length === 1 ? 'file' : 'files'} · Review before applying</span></div>}
-      {task.proposals.map(proposal => <ProposalCard key={proposal.id} proposal={proposal} busy={busy} act={act} onReviewInEditor={onReviewInEditor} />)}
+      {task.proposals.map(proposal => <ProposalCard key={`${task.projectId}:${task.taskId}:${proposal.id}`} projectId={task.projectId} taskId={task.taskId} proposal={proposal} busy={busy} act={act} onReviewInEditor={onReviewInEditor} onRecovered={onRecovered} />)}
     </section>
   )
 }
 
-export function ProposalCard({ proposal, busy, act, onReviewInEditor }: { proposal: Proposal; busy: boolean; act: (proposal: Proposal, accept: boolean) => void; onReviewInEditor?: (proposal: Proposal) => void }) {
+export function ProposalCard({ proposal, busy, act, onReviewInEditor, projectId, taskId, onRecovered }: { onRecovered?: (task: Task) => void; projectId?: string; taskId?: string; proposal: Proposal; busy: boolean; act: (proposal: Proposal, accept: boolean) => void; onReviewInEditor?: (proposal: Proposal) => void }) {
   const [review, setReview] = useState(false)
+  const [recoveredProposal, setRecoveredProposal] = useState<Proposal | null>(null)
+  const status = recoveredProposal?.id === proposal.id ? recoveredProposal.status : proposal.status
   const buttons = <>
-    {proposal.status === 'pending' && <>
+    {status === 'pending' && <>
       <OLButton variant={proposal.mode === 'delete-document' ? 'danger' : 'primary'} disabled={busy} onClick={() => act(proposal, true)}>
         {proposal.mode === 'delete-document' ? 'Delete file' : 'Accept change'}
       </OLButton>
       <OLButton variant="secondary" disabled={busy} onClick={() => act(proposal, false)}>Reject</OLButton>
     </>}
-    {proposal.mode === 'delete-document' && ['applying', 'uncertain'].includes(proposal.status) && <OLButton variant="danger" disabled={busy} onClick={() => act(proposal, true)}>Retry deletion</OLButton>}
+    {proposal.mode === 'delete-document' && ['applying', 'uncertain'].includes(status) && <OLButton variant="danger" disabled={busy} onClick={() => act(proposal, true)}>Retry deletion</OLButton>}
   </>
-  const notice = proposal.status === 'conflict' ? 'The document changed. Run a new task to get a current suggestion.'
-    : proposal.status === 'uncertain' && proposal.mode !== 'delete-document' ? 'The write could not be confirmed. Check the document before requesting another change.'
-      : proposal.mode === 'delete-document' && ['applying', 'uncertain'].includes(proposal.status) ? 'Deletion has not been confirmed. Retry this request to check and finish it.' : null
+  const notice = status === 'closed-unconfirmed' ? 'Closed without retry. The earlier write outcome remains unconfirmed. Inspect the retained evidence and start a new review before further changes.' : status === 'conflict' ? 'The document changed. Run a new task to get a current suggestion.'
+    : status === 'uncertain' && proposal.mode !== 'delete-document' ? 'The write could not be confirmed. Check the document before requesting another change.'
+      : proposal.mode === 'delete-document' && ['applying', 'uncertain'].includes(status) ? 'Deletion has not been confirmed. Retry this request to check and finish it.' : null
   return <article className="paper-change-card" data-proposal-path={proposal.path}>
-    <div className="paper-change-file"><span className="paper-change-file-icon" aria-hidden="true">{proposal.mode === 'delete-document' ? '−' : proposal.mode?.startsWith('create-') ? '+' : '≠'}</span><strong>{proposal.path}</strong><span className={`paper-change-status paper-change-status-${proposal.status}`}>Status: {proposal.status}</span></div>
+    <div className="paper-change-file"><span className="paper-change-file-icon" aria-hidden="true">{proposal.mode === 'delete-document' ? '−' : proposal.mode?.startsWith('create-') ? '+' : '≠'}</span><strong>{proposal.path}</strong><span className={`paper-change-status paper-change-status-${status}`}>Status: {status}</span></div>
     {proposal.mode === 'create-document' && <p className="paper-change-notice">New file — created only after you accept.</p>}
     {proposal.mode === 'delete-document' && <p className="paper-change-notice">Delete this file from the project. Review the removed content below.</p>}
-    <details open={proposal.status === 'pending' || undefined} className="paper-change-preview">
+    <details open={status === 'pending' || undefined} className="paper-change-preview">
       <summary>Review changes</summary>
       <ProposalDiff before={proposal.before} after={proposal.after} />
     </details>
     {notice && <p className="paper-change-notice" role="status">{notice}</p>}
+    {projectId && taskId && proposal.mode !== 'delete-document' && ['applying', 'uncertain', 'closed-unconfirmed'].includes(status) && <ApplicationInspection projectId={projectId} taskId={taskId} proposalId={proposal.id} onRecovered={task => { setRecoveredProposal(task.proposals.find(value => value.id === proposal.id) || null); onRecovered?.(task) }} />}
     <div className="paper-change-actions">
-      {onReviewInEditor && proposal.docId && proposal.status === 'pending' && !proposal.mode?.startsWith('create-') && proposal.mode !== 'delete-document' && <button type="button" className="paper-review-open" disabled={busy} onClick={() => onReviewInEditor(proposal)}>Review in editor</button>}
+      {onReviewInEditor && proposal.docId && status === 'pending' && !proposal.mode?.startsWith('create-') && proposal.mode !== 'delete-document' && <button type="button" className="paper-review-open" disabled={busy} onClick={() => onReviewInEditor(proposal)}>Review in editor</button>}
       <button type="button" className="paper-review-open" onClick={() => setReview(true)}>Expand diff</button>{!review && buttons}</div>
     <OLModal show={review} onHide={() => setReview(false)} size="lg" className="paper-review-modal" aria-label={`Review ${proposal.path}`}>
       <OLModalHeader><OLModalTitle>{proposal.path}</OLModalTitle></OLModalHeader>
       <OLModalBody><ProposalDiff before={proposal.before} after={proposal.after} /></OLModalBody>
-      <OLModalFooter><p>{notice || `Status: ${proposal.status}`}</p>{buttons}<OLButton variant="secondary" onClick={() => setReview(false)}>Close review</OLButton></OLModalFooter>
+      <OLModalFooter><p>{notice || `Status: ${status}`}</p>{buttons}<OLButton variant="secondary" onClick={() => setReview(false)}>Close review</OLButton></OLModalFooter>
     </OLModal>
   </article>
 }

@@ -14,6 +14,34 @@ function state(): GitSnapshot {
 describe('Native Source Control panel', () => {
   beforeEach(() => { const host = document.createElement('div'); host.id = 'native-git-editor-diff-host'; document.body.append(host) })
   afterEach(() => { cleanup(); document.getElementById('native-git-editor-diff-host')?.remove() })
+  it('opens shared review after collaborative Pull instead of applying files', async () => {
+    const snapshot = { ...state(), collaboration: { drafts: true, apply: true } }
+    const task = { id: 'pull-task', revision: 1, state: 'conflicted', sourceRef: 'refs/remotes/origin/B', targetBranch: 'B', remainingPaths: ['main.tex'], leaseGeneration: 0 }
+    const command = sinon.stub().callsFake(async body => body.command === 'pull'
+      ? { ...snapshot, result: task, reviewRequired: true }
+      : { result: body.command === 'mergeDraftGet' ? task : body.command === 'mergeDraftList' ? [task] : [] })
+    render(<SourceControlView api={{ status: sinon.stub().resolves(snapshot), initialize: sinon.stub(), command }} />)
+    fireEvent.click(await screen.findByRole('button', { name: 'Repository actions' }))
+    fireEvent.click(screen.getByText('Pull…'))
+    const dialog = await screen.findByRole('dialog', { name: 'Pull', exact: true })
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Fetch and review' }))
+    const review = await screen.findByRole('dialog', { name: 'Shared merge tasks' })
+    await waitFor(() => expect((within(review).getByRole('combobox', { name: 'Task' }) as HTMLSelectElement).value).to.equal(task.id))
+    const request = command.getCalls().find(c => c.args[0].command === 'pull')!.args[0]
+    expect(request).to.include({ remote: 'origin', branch: 'B' })
+    expect(request.operationId).to.match(/^[a-f0-9-]{36}$/)
+    expect(command.getCalls().some(c => c.args[0].command === 'mergeDraftApply')).to.equal(false)
+  })
+  it('opens pending merge recovery instead of retrying a legacy branch transfer', async () => {
+    const snapshot = { ...state(), switching: true, mutationTaskId: 'task', collaboration: { drafts: true, apply: true } }
+    const task = { id: 'task', state: 'recovery-required', revision: 1, sourceRef: 'source', targetBranch: 'main', remainingPaths: [], leaseGeneration: 0 }
+    const command = sinon.stub().callsFake(async body => ({ result: body.command === 'remoteDiscoveryList' ? [] : [task] }))
+    render(<SourceControlView api={{ status: sinon.stub().resolves(snapshot), initialize: sinon.stub(), command }} />)
+    fireEvent.click(await screen.findByRole('button', { name: 'Review interrupted merge' }))
+    const dialog = await screen.findByRole('dialog', { name: 'Shared merge tasks' })
+    await within(dialog).findByRole('button', { name: 'Review recovery' })
+    expect(command.args.some(([body]) => body.command === 'resumeTransfer')).to.equal(false)
+  })
   it('confirms Undo initial commit and dispatches the guarded undo operation',async()=>{
     const command=sinon.stub().callsFake(async body=>body.command==='undoDetails'?{result:{target:null,head:'a'.repeat(40),branch:'main',fingerprint:'f'.repeat(64)}}:state())
     render(<SourceControlView api={{status:sinon.stub().resolves(state()),initialize:sinon.stub(),command}}/>)

@@ -176,6 +176,17 @@ function apply(webRouter) {
     requireLogin,
     WritingAssistAgentController.decide,
   );
+  webRouter.get(
+    `${tasks}/:taskId/proposals/:proposalId/inspection`,
+    requireLogin,
+    WritingAssistAgentController.inspect,
+  );
+  webRouter.post(
+    `${tasks}/:taskId/proposals/:proposalId/recover`,
+    requireLogin,
+    WritingAssistAgentController.recover,
+  )
+  webRouter.post(`${tasks}/:taskId/proposals/:proposalId/close-unconfirmed`, requireLogin, WritingAssistAgentController.closeUnconfirmed);
 
   webRouter.post(
     "/writing-assist/check",

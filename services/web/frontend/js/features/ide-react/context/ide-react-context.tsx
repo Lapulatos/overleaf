@@ -48,6 +48,7 @@ export const IdeReactProvider: FC<React.PropsWithChildren> = ({ children }) => {
   const [permissionsLevel, setPermissionsLevel] =
     useState<PermissionsLevel>('readOnly')
   const [outOfSync, setOutOfSync] = useState(false)
+  const [gitPrepareBusy, setGitPrepareBusy] = useState(false)
   const [gitLocalBusy, setGitLocalBusy] = useState(false)
   const [gitRemoteBusy, setGitRemoteBusy] = useState(false)
   const [scopeEventEmitter] = useState(
@@ -70,6 +71,7 @@ export const IdeReactProvider: FC<React.PropsWithChildren> = ({ children }) => {
   const { socket, getSocketDebuggingInfo } = useConnectionContext()
   useEffect(() => {
     let expiry: ReturnType<typeof setTimeout> | undefined
+    const preparing = (event: Event) => setGitPrepareBusy((event as CustomEvent<{ busy: boolean }>).detail.busy)
     const local = (event: Event) => setGitLocalBusy((event as CustomEvent<{ busy: boolean }>).detail.busy)
     const remote = (value: { busy: boolean; ttlMs?: number }) => {
       clearTimeout(expiry)
@@ -77,12 +79,19 @@ export const IdeReactProvider: FC<React.PropsWithChildren> = ({ children }) => {
       if (value.busy) expiry = setTimeout(() => setGitRemoteBusy(false), Math.min(300000, value.ttlMs || 300000))
     }
     const disconnected = () => { clearTimeout(expiry); setGitRemoteBusy(false) }
+    window.addEventListener('native-git-prepare-write-state', preparing)
     window.addEventListener('native-git-local-write-state', local)
+    const repositoryChanged = () => window.dispatchEvent(new Event('native-git-command-completed'))
+    socket.on('nativeGitRepositoryChanged', repositoryChanged)
+    socket.on('reconnect', repositoryChanged)
     socket.on('nativeGitWriteState', remote)
     socket.on('disconnect', disconnected)
     return () => {
       clearTimeout(expiry)
+      window.removeEventListener('native-git-prepare-write-state', preparing)
       window.removeEventListener('native-git-local-write-state', local)
+      socket.removeListener('nativeGitRepositoryChanged', repositoryChanged)
+      socket.removeListener('reconnect', repositoryChanged)
       socket.removeListener('nativeGitWriteState', remote)
       socket.removeListener('disconnect', disconnected)
     }
@@ -166,7 +175,7 @@ export const IdeReactProvider: FC<React.PropsWithChildren> = ({ children }) => {
       eventEmitter,
       startedFreeTrial,
       setStartedFreeTrial,
-      permissionsLevel: outOfSync || gitLocalBusy || gitRemoteBusy ? 'readOnly' : permissionsLevel,
+      permissionsLevel: outOfSync || gitLocalBusy || gitRemoteBusy || gitPrepareBusy ? 'readOnly' : permissionsLevel,
       setPermissionsLevel,
       setOutOfSync,
       projectId,
@@ -176,6 +185,7 @@ export const IdeReactProvider: FC<React.PropsWithChildren> = ({ children }) => {
     [
       eventEmitter,
       outOfSync,
+      gitPrepareBusy,
       gitLocalBusy,
       gitRemoteBusy,
       permissionsLevel,

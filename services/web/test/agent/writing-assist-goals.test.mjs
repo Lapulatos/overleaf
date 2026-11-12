@@ -93,3 +93,9 @@ test('replacing a goal validates the new objective before stopping and resets it
  const task=f.records.get(f.goal.taskId);task.summary=JSON.stringify({...JSON.parse(task.summary),blocker:'DNS resolution unavailable for all authoritative sources'});
  await f.service.tick(f.goal);assert.equal(f.goal.status,'blocked');assert.equal(f.decisions.length,0);
  })
+
+test('manual closure without confirmed outcome cannot complete an automatic goal',async()=>{
+ const f=fixture('ai');f.work([{id:'p1',path:'tex/a.tex',status:'closed-unconfirmed'}])
+ await f.service.tick(f.goal);f.review('approve','complete');await f.service.tick(f.goal)
+ assert.equal(f.goal.status,'blocked');assert.equal(f.decisions.length,0);assert.equal(f.goal.steps,0)
+})

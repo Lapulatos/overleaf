@@ -95,6 +95,11 @@ function apply(webRouter, privateApiRouter) {
     HistoryController.revertProject
   )
 
+  webRouter.get('/project/:project_id/history-recovery',
+    AuthorizationMiddleware.ensureUserCanWriteProjectContent, HistoryController.recoveryPreview)
+  webRouter.post('/project/:project_id/history-recovery',
+    AuthorizationMiddleware.ensureUserCanWriteProjectContent, HistoryController.recoverHistory)
+
   // History download
 
   webRouter.get(

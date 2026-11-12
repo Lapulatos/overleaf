@@ -16,7 +16,7 @@ export const gitCommands: Definition[] = [
  {usage:'history <path>',description:'Show file history; quote paths containing spaces.',backend:'fileHistory',names:['path'],read:true},
  {usage:'blame <path>',description:'Show line authorship.',backend:'blame',names:['path'],read:true},
  {usage:'fetch [remote] [--prune]',description:'Fetch from origin by default; optionally prune stale references.',backend:'fetch',names:['remote'],optional:1,flags:{'--prune':'prune'}},
- {usage:'pull [remote] [branch] [--rebase]',description:'Pull origin/current branch by default; credentials come from Git settings.',backend:'pull',names:['remote','branch'],optional:2,flags:{'--rebase':'rebase'}},
+ {usage:'pull [remote] [branch] [--rebase]',description:'Pull origin/current branch by default; credentials come from Git settings. In collaborative workspaces this fetches updates and creates a shared merge review; files change only after explicit apply. Remote fetching requires the project owner. --rebase is unavailable in collaborative workspaces.',backend:'pull',names:['remote','branch'],optional:2,flags:{'--rebase':'rebase'}},
  {usage:'push [remote] [branch]',description:'Push origin/current branch; never force-push.',backend:'push',names:['remote','branch'],optional:2},
  {usage:'publish [remote] [branch]',description:'Push and set the upstream branch.',backend:'push',names:['remote','branch'],optional:2},
  {usage:'sync [remote] [branch]',description:'Pull then push the selected branch.',backend:'sync',names:['remote','branch'],optional:2},
@@ -97,6 +97,7 @@ export async function prepareGitCommand(api:GitApi,body:GitCommand) {
  if(command.command==='undoCommit'||command.command==='reset') {preview=await query(command.command==='reset'?{command:'resetDetails',ref:command.ref}:{command:'undoDetails'});command.fingerprint=(preview as Record<string,unknown>).fingerprint}
  if(command.command==='discard'){preview=await query({command:'discardDetails',path:(command.paths as string[])[0]});command.fingerprint=(preview as Record<string,unknown>).fingerprint}
  if(command.command==='commit'&&command.amend){preview=await query({command:'amendDetails'});command.expectedHead=(preview as Record<string,unknown>).head;command.expectedBranch=(preview as Record<string,unknown>).branch}
+ if(command.command==='commit'){preview=await query({command:'commitPreview',all:!!command.all,amend:!!command.amend,signoff:!!command.signoff});command.fingerprint=(preview as Record<string,unknown>).fingerprint}
  if(['applyStash','dropStash','stashDiff'].includes(command.command)){const stashes=(await api.command({command:'stashes'})).result as {hash:string}[];const stash=stashes[Number(command.index)];if(!stash)throw Error('Stash not found.');command.expectedHash=stash.hash}
  return {body:command,preview}
 }

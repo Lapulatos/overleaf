@@ -1,3 +1,5 @@
+import { PresenceMarkers } from './git-presence-list'
+import type { GitPresence } from './git-presence'
 import { formatGitDate } from './format-date'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Overlay, Popover } from 'react-bootstrap'
@@ -24,7 +26,8 @@ export function graphRows(commits: GitCommit[]) {
   })
 }
 
-export default function CommitGraph({ commits, detailed = false, selectedHash, selectedDetails, branches = [], onCheckout, onSelect, onFile, onOpenFile, onInspect, expanded = {}, details = {}, webRemotes = [], tree = true, emptyMessage = 'No commits yet', busy }: {
+export default function CommitGraph({ commits, presence = [], detailed = false, selectedHash, selectedDetails, branches = [], onCheckout, onSelect, onFile, onOpenFile, onInspect, expanded = {}, details = {}, webRemotes = [], tree = true, emptyMessage = 'No commits yet', busy }: {
+  presence?: GitPresence[]
   detailed?: boolean
   branches?: import('./types').GitBranch[]
   onCheckout?: (branch: import('./types').GitBranch) => void
@@ -82,7 +85,7 @@ export default function CommitGraph({ commits, detailed = false, selectedHash, s
           <circle cx={x(column)} cy="16" r={expanded[commit.hash] ? 5 : 4} stroke={color} />
         </svg>
         {detailed && <span className="native-git-commit-dot" aria-hidden="true" style={{ left: x(column) - 5, borderColor: color }} />}
-        <span className="native-git-commit-description">{detailed && commit.refs && <span className="native-git-full-refs">{commit.refs.split(', ').map(ref => { const name = ref.replace(/^HEAD -> /, ''); const branch = branches.find(branch => branch.name === name && !branch.tag); return <span className="native-git-ref" key={ref} title={branch ? `Double-click to checkout ${name}` : name} onClick={event => event.stopPropagation()} onDoubleClick={event => { event.stopPropagation(); if (branch && !busy) onCheckout?.(branch) }}>{name}</span> })}</span>}<span>{commit.subject}</span></span>
+        <span className="native-git-commit-description">{detailed && commit.refs && <span className="native-git-full-refs">{commit.refs.split(', ').map(ref => { const name = ref.replace(/^HEAD -> /, ''); const branch = branches.find(branch => branch.name === name && !branch.tag); return <span className="native-git-ref" key={ref} title={branch ? `Double-click to checkout ${name}` : name} onClick={event => event.stopPropagation()} onDoubleClick={event => { event.stopPropagation(); if (branch && !busy) onCheckout?.(branch) }}>{name}</span> })}</span>}<span>{commit.subject}</span><PresenceMarkers sessions={presence} hash={commit.hash} /></span>
         {detailed && <time className="native-git-commit-date" dateTime={commit.date} title={formatGitDate(commit.date)}>{formatGitDate(commit.date)}</time>}
         <span className="native-git-commit-author" title={commit.author}>{commit.author}</span>
         {!detailed && commit.refs && <span className="native-git-ref">{commit.refs.replace(/^HEAD -> /, '')}</span>}

@@ -6,6 +6,7 @@ import { AgentError } from './WritingAssistAgentService.mjs'
 import {
   agentService,
   agentStore,
+  readWorkspaceIdentity,
   snapshot,
 } from './WritingAssistAgentController.mjs'
 import { createLiteratureService } from './WritingAssistLiteratureService.mjs'
@@ -14,6 +15,7 @@ const canWrite = (userId, projectId) =>
   AuthorizationManager.promises.canUserWriteProjectContent(userId, projectId)
 const literature = createLiteratureService({ canWrite })
 const citations = createCitationService({
+  readWorkspaceIdentity,
   canWrite,
   literature,
   snapshot,

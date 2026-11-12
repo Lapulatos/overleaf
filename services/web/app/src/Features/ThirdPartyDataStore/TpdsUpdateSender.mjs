@@ -8,6 +8,7 @@ import { fetchNothing } from '@overleaf/fetch-utils'
 import settings from '@overleaf/settings'
 import CollaboratorsGetterModule from '../Collaborators/CollaboratorsGetter.mjs'
 import UserGetterModule from '../User/UserGetter.mjs'
+import { isWorkspaceStorage } from '../NativeGit/WorkspaceScope.mjs'
 
 const { promises: UserGetter } = UserGetterModule
 const { promises: CollaboratorsGetter } = CollaboratorsGetterModule
@@ -149,7 +150,7 @@ async function deleteEntity(params) {
 }
 
 async function createProject(params) {
-  if (!tpdsUrl) return // Overleaf Community Edition/Server Pro
+  if (!tpdsUrl || await isWorkspaceStorage(params.projectId)) return // No independent third-party project for internal branch storage
 
   const { projectId, projectName, userId } = params
 
@@ -191,6 +192,9 @@ async function enqueue(group, method, job) {
 }
 
 async function getProjectUsersIds(projectId) {
+  // Branches share the logical paper name but have different contents. Sending
+  // them to legacy project-name-based sync would overwrite the default branch.
+  if (!tpdsUrl || await isWorkspaceStorage(projectId)) return []
   // get list of all user ids with access to project. project owner
   // will always be the first entry in the list.
   const userIds = await CollaboratorsGetter.getInvitedMemberIds(projectId)

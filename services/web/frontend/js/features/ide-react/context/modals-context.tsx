@@ -24,7 +24,8 @@ type ModalsContextValue = {
     message: GenericMessageModalOwnProps['message']
   ) => void
   showOutOfSyncModal: (
-    editorContent: OutOfSyncModalProps['editorContent']
+    editorContent: OutOfSyncModalProps['editorContent'],
+    recoveryNotice?: string
   ) => void
 }
 
@@ -48,6 +49,7 @@ export const ModalsContextProvider: FC<React.PropsWithChildren> = ({
     useState(false)
   const [outOfSyncModalData, setOutOfSyncModalData] = useState({
     editorContent: '',
+    recoveryNotice: undefined as string | undefined,
   })
 
   const handleHideGenericModal = useCallback(() => {
@@ -86,8 +88,8 @@ export const ModalsContextProvider: FC<React.PropsWithChildren> = ({
     setShouldShowOutOfSyncModal(false)
   }, [])
 
-  const showOutOfSyncModal = useCallback((editorContent: string) => {
-    setOutOfSyncModalData({ editorContent })
+  const showOutOfSyncModal = useCallback((editorContent: string, recoveryNotice?: string) => {
+    setOutOfSyncModalData({ editorContent, recoveryNotice })
     setShouldShowOutOfSyncModal(true)
   }, [])
 

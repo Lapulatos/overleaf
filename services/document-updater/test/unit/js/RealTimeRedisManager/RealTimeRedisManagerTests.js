@@ -61,6 +61,35 @@ describe('RealTimeRedisManager', function () {
     return (this.callback = sinon.stub())
   })
 
+  describe('workspace queue admission', function () {
+    beforeEach(function () {
+      this.previousNativeGit = process.env.OVERLEAF_NATIVE_GIT_ENABLED
+      process.env.OVERLEAF_NATIVE_GIT_ENABLED = 'true'
+    })
+    afterEach(function () {
+      if (this.previousNativeGit === undefined) delete process.env.OVERLEAF_NATIVE_GIT_ENABLED
+      else process.env.OVERLEAF_NATIVE_GIT_ENABLED = this.previousNativeGit
+    })
+    it('returns accepted operations and announces retained stale edits without broadcasting their content', async function () {
+      const accepted = { op: [], meta: { workspaceEpoch: 2 } }
+      this.rclient.eval = sinon.stub().resolves([JSON.stringify([JSON.stringify(accepted)]), 1])
+      this.pubsubClient.publish.resolves()
+      const updates = await this.RealTimeRedisManager.promises.getPendingUpdatesForWorkspace(this.project_id, this.doc_id)
+      sinon.assert.calledOnce(this.rclient.eval)
+      require('assert').deepStrictEqual(updates, [accepted])
+      const event = JSON.parse(this.pubsubClient.publish.firstCall.args[1])
+      require('assert').strictEqual(event.code, 'WORKSPACE_EPOCH_STALE')
+      require('assert').strictEqual(event.op, undefined)
+    })
+    it('still returns accepted operations if the recovery notice cannot be published', async function () {
+      const accepted = { op: [], meta: { workspaceEpoch: 2 } }
+      this.rclient.eval = sinon.stub().resolves([JSON.stringify([JSON.stringify(accepted)]), 1])
+      this.pubsubClient.publish.rejects(new Error('notification failed'))
+      const updates = await this.RealTimeRedisManager.promises.getPendingUpdatesForWorkspace(this.project_id, this.doc_id)
+      require('assert').deepStrictEqual(updates, [accepted])
+    })
+  })
+
   describe('getPendingUpdatesForDoc', function () {
     beforeEach(function () {
       this.rclient.llen = sinon.stub()

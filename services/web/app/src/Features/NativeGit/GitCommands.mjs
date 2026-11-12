@@ -6,6 +6,59 @@ const text = z.string().min(1).max(1024).refine(value => !/[\0\r\n]/.test(value)
 const paths = z.array(text).min(1).max(20000)
 const command = (name, fields = {}) => z.object({ command: z.literal(name), ...fields }).strict()
 export const commandSchema = z.discriminatedUnion('command', [
+  command('backupRestoreList'),
+  command('backupRestorePreview', { id: z.string().uuid() }),
+  command('backupRestoreApply', { id: z.string().uuid(), revision: z.number().int().positive() }),
+  command('backupCreate'),
+  command('backupList'),
+  command('backupRetain', { id: z.string().uuid() }),
+  command('backupCleanupPreview'),
+  command('backupCleanupApply', { id: z.string().uuid(), fingerprint: z.string().regex(/^[a-f0-9]{64}$/) }),
+  command('workspaceList'),
+  command('workspaceLifecycle', { workspaceId: z.string().regex(/^[a-f0-9]{24}$/), expectedState: z.enum(['ready', 'archived']), action: z.enum(['archive', 'restore']) }),
+  command('shellDraftApply', { id: z.string().uuid(), revision: z.number().int().positive(), fingerprint: z.string().regex(/^[a-f0-9]{64}$/) }),
+  command('shellDraftRecoveryPreview', { id: z.string().uuid() }),
+  command('shellDraftRecover', { id: z.string().uuid(), revision: z.number().int().positive(), fingerprint: z.string().regex(/^[a-f0-9]{64}$/), mode: z.enum(['resume','preserve-current']), operationId: z.string().uuid() }),
+  command('shellDraftPoll', { id: z.string().uuid(), cursor: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER).default(0) }),
+  command('shellDraftInput', { id: z.string().uuid(), input: z.string().max(65536) }),
+  command('shellDraftRun', { id: z.string().uuid(), text: z.string().min(1).max(16384), approval: z.string().uuid().optional() }),
+  command('shellDraftResize', { id: z.string().uuid(), cols: z.number().int().min(2).max(500), rows: z.number().int().min(2).max(200) }),
+  command('shellDraftList'),
+  command('shellDraftGet', { id: z.string().uuid() }),
+  command('shellDraftPrepare', { operationId: z.string().uuid() }),
+  command('shellDraftStart', { id: z.string().uuid(), revision: z.number().int().positive() }),
+  command('shellDraftSeal', { id: z.string().uuid(), revision: z.number().int().positive() }),
+  command('shellDraftReview', { id: z.string().uuid() }),
+  command('shellDraftFile', { id: z.string().uuid(), path: text, fingerprint: z.string().regex(/^[a-f0-9]{64}$/) }),
+  command('autoSyncSchedule'),
+  command('configureAutoSyncSchedule', { revision: z.number().int().nonnegative(), enabled: z.boolean(), pull: z.boolean(), push: z.boolean(), remote: text, branch: text, intervalMs: z.number().int().min(60000).max(86400000) }),
+  command('reconcileAutoSync', { revision: z.number().int().positive(), retryPush: z.boolean().default(false) }),
+  command('autoCommitSchedule'),
+  command('configureAutoCommitSchedule', { revision: z.number().int().nonnegative(), enabled: z.boolean(), intervalMs: z.number().int().min(60000).max(86400000) }),
+  command('autoCommitRecoveryPreview', { operationId: z.string().uuid() }),
+  command('autoCommitRecover', { operationId: z.string().uuid(), revision: z.number().int().positive(), scheduleRevision: z.number().int().positive(), fingerprint: z.string().regex(/^[a-f0-9]{64}$/) }),
+  command('webhookStatus'),
+  command('configureWebhook', { revision: z.number().int().nonnegative(), enabled: z.boolean() }),
+  command('discoverySchedule'),
+  command('configureDiscoverySchedule', { revision: z.number().int().nonnegative(), enabled: z.boolean(), remote: text, intervalMs: z.number().int().min(60000).max(86400000) }),
+  command('remoteDiscoveryList'),
+  command('discoverRemote', { remote: text.default('origin'), operationId: z.string().uuid() }),
+  command('mergeDraftPrepare', { operationId: z.string().uuid(), ref: text, expectedSourceOid: z.string().regex(/^[a-f0-9]{40,64}$/).optional() }),
+  command('mergeDraftList'),
+  command('mergeDraftCompile', { id: z.string().uuid(), revision: z.number().int().positive() }),
+  command('sessionRecoveryList'),
+  command('sessionRecover', { operationId: z.string().uuid() }),
+  command('mergeDraftGet', { id: z.string().uuid() }),
+  command('mergeDraftClaim', { id: z.string().uuid(), revision: z.number().int().positive(), sessionId: z.string().uuid() }),
+  command('mergeDraftConflict', { id: z.string().uuid(), path: text }),
+  command('mergeDraftResolve', { id: z.string().uuid(), revision: z.number().int().positive(), sessionId: z.string().uuid(),
+    generation: z.number().int().positive(), path: text, fingerprint: z.string().regex(/^[a-f0-9]{64}$/),
+    choice: z.enum(['current', 'incoming', 'edited']), text: z.string().max(2 * 1024 * 1024).optional() }),
+  command('mergeDraftApply', { id: z.string().uuid(), revision: z.number().int().positive(), sessionId: z.string().uuid(), generation: z.number().int().positive() }),
+  command('mergeDraftRecoveryPreview', { id: z.string().uuid() }),
+  command('mergeDraftRecover', { id: z.string().uuid(), revision: z.number().int().positive(), fingerprint: z.string().regex(/^[a-f0-9]{64}$/), mode: z.enum(['resume', 'preserve-current']), operationId: z.string().uuid() }),
+  command('mergeDraftValidate', { id: z.string().uuid() }),
+  command('mergeDraftCancel', { id: z.string().uuid(), revision: z.number().int().positive(), sessionId: z.string().uuid(), generation: z.number().int().positive() }),
   command('accessPolicy'), command('setAccessPolicy', { mode: z.enum(['read-only','workspace-write','auto-review','full-access','extended']), directories: z.array(z.string().max(1024)).max(4).default([]), approval: z.string().uuid().optional() }),
   command('graphSettings'), command('saveGraphSettings', { settings: graphSettingsSchema }),
   command('changeRemote', { name: text, expectedUrl: text, fetchUrl: text, pushUrl: text }),
@@ -15,9 +68,10 @@ export const commandSchema = z.discriminatedUnion('command', [
   command('terminalInfo'), command('terminalRead', { operation: z.enum(['status', 'log', 'diff', 'branch', 'remote', 'pwd']), staged: z.boolean().optional() }),
   command('gitOutput'), command('ignoredFiles'), command('stage', { paths, force: z.boolean().optional() }), command('unstage', { paths }),
   command('generateMessage'), command('amendDetails'),
+  command('commitPreview', { all: z.boolean().optional(), amend: z.boolean().optional(), signoff: z.boolean().optional() }),
   command('clone', {url:text,branch:text.optional(),name:z.string().trim().min(1).max(150),operationId:z.string().uuid(),username:text.optional(),token:z.string().min(1).max(16000).optional()}),
   command('connect', { url: text, branch: text.optional(), username: text.optional(), token: z.string().min(1).max(16000).optional() }),
-  command('commit', { message: z.string().trim().min(1).max(64000), amend: z.boolean().optional(), all: z.boolean().optional(), signoff: z.boolean().optional(), expectedHead: text.optional(), expectedBranch: text.nullable().optional() }),
+  command('commit', { fingerprint: z.string().regex(/^[a-f0-9]{64}$/), message: z.string().trim().min(1).max(64000), amend: z.boolean().optional(), all: z.boolean().optional(), signoff: z.boolean().optional(), expectedHead: text.optional(), expectedBranch: text.nullable().optional() }),
   command('diff', { paths: z.array(text).max(20000).optional(), staged: z.boolean().optional(), from: text.optional(), to: text.optional() }),
   command('graph', { showRemotes: z.boolean().optional(), showTags: z.boolean().optional(), showStashes: z.boolean().optional(), includeReflogs: z.boolean().optional(), firstParent: z.boolean().optional(), hiddenRemotes: z.array(text).max(100).optional(), refs: z.array(text).max(100).optional(), query: text.optional(), skip: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER).optional(), ref: text.optional(), all: z.boolean().optional(), limit: z.number().int().min(1).max(1000).optional() }),
   command('show', { ref: text, path: text }),
@@ -34,6 +88,7 @@ export const commandSchema = z.discriminatedUnion('command', [
   command('conflictDetails', { path: text }),
   command('resolveConflict', { path: text, fingerprint: z.string().regex(/^[a-f0-9]{64}$/), choice: z.enum(['current', 'incoming', 'edited']), text: z.string().max(2 * 1024 * 1024).optional() }),
   command('blame', { path: text, ref: text.optional() }),
+  command('branches'),
   command('createBranch', { name: text, from: text.optional() }),
   command('trackBranch', { name: text, remoteRef: text }),
   command('renameBranch', { from: text, to: text }), command('deleteBranch', { name: text }),
@@ -58,7 +113,7 @@ export const commandSchema = z.discriminatedUnion('command', [
   command('remotes'), command('removeRemote', { name: text, expectedUrl: text.optional() }),
   command('addRemote', { name: text, url: text }),
   command('fetch', { remote: text.default('origin'), prune: z.boolean().optional() }),
-  command('pull', { remote: text.default('origin'), branch: text, rebase: z.boolean().optional() }),
+  command('pull', { remote: text.default('origin'), branch: text, rebase: z.boolean().optional(), operationId: z.string().uuid().optional() }),
   command('push', { remote: text.default('origin'), branch: text, publish: z.boolean().optional() }),
   command('sync', { remote: text.default('origin'), branch: text }),
   command('remoteRef', {remote:text,kind:z.enum(['branch','tag']),name:text}),
@@ -94,9 +149,11 @@ export async function executeGitCommand(workspace, input, author) {
     case 'stage': return run(repo => repo.stage(c.paths, c.force))
     case 'unstage': return run(repo => repo.unstage(c.paths))
     case 'amendDetails': return run(repo => repo.amendDetails())
+    case 'commitPreview': return run(repo => repo.commitPreview(c))
     case 'commit': return run(repo => repo.commit(c.message, c))
     case 'diff': return run(repo => repo.diff(c))
-    case 'graph': return run(repo => repo.graph(c))
+    case 'graph': return workspace.readHistory(repo => repo.graph(c))
+    case 'branches': return workspace.readHistory(repo => repo.branches())
     case 'show': return run(repo => repo.show(c.ref, c.path))
     case 'commitDiff': return workspace.readHistory(repo => repo.commitDiff(c.ref))
     case 'commitDetails': return workspace.readHistory(repo => repo.commitDetails(c.ref))

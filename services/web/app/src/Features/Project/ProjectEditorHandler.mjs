@@ -31,6 +31,11 @@ export default ProjectEditorHandler = {
           : undefined,
     }
 
+    if (project.gitWorkspaceFenceEnabled) {
+      result.gitWorkspaceEpoch = project.gitWorkspaceEpoch
+      if (project.gitWorkspacePrepareEnabled) result.gitWorkspacePrepareEnabled = true
+    }
+
     if (isRestrictedUser) {
       result.owner = { _id: project.owner_ref }
       result.members = []

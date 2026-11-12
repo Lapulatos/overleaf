@@ -1,3 +1,4 @@
+import { applicationOutcomeFields } from './WritingAssistApplicationOutcome.mjs'
 import Path from 'node:path'
 import { readAccessPolicy } from '../NativeGit/AccessPolicy.mjs'
 import {resolveCheckIssues,completeCheckIssues} from '../SubmissionDeadlines/TrackCheckReportStore.mjs'
@@ -12,6 +13,13 @@ import EditorController from '../Editor/EditorController.mjs'
 import ProjectEntityHandler from '../Project/ProjectEntityHandler.mjs'
 import DocumentUpdaterHandler from '../DocumentUpdater/DocumentUpdaterHandler.mjs'
 import { WritingAssistTask } from '../../models/WritingAssistTask.mjs'
+import { Project } from '../../models/Project.mjs'
+import { workspaceIdentity } from './WritingAssistWorkspaceIdentity.mjs'
+import { applicationAcknowledgement, validatedApplicationAcknowledgement } from './WritingAssistApplicationAcknowledgement.mjs'
+import { createAgentWriteTransaction } from './WritingAssistWriteTransaction.mjs'
+import { withPreparedProjectWrite } from '../NativeGit/ProjectWriteAccess.mjs'
+import { withProjectOperationLock } from '../NativeGit/ProjectOperationLock.mjs'
+import ProjectWriteGate from '@overleaf/redis-wrapper/ProjectWriteGate.js'
 import { z, parseReq } from '../../infrastructure/Validation.mjs'
 import { assertCitationAbsent } from './WritingAssistCitationService.mjs'
 import { createAgentService, AgentError } from './WritingAssistAgentService.mjs'
@@ -83,6 +91,7 @@ export const agentStore = {
     return result.modifiedCount === 1
   },
   async claim(id, proposalId, status) {
+    if (status === 'applying') return deletionTaskRetention.claimApplication(id, proposalId)
     const result = await WritingAssistTask.updateOne(
       {
         _id: id,
@@ -94,11 +103,65 @@ export const agentStore = {
     return result.modifiedCount === 1
   },
   claimDeletion: (id, proposalId) => deletionTaskRetention.claim(id, proposalId),
+  async recordApplicationAcknowledgement(task, proposal) {
+    const result = await WritingAssistTask.updateOne({
+      ...taskQuery(task.id, task.userId, task.projectId), status: 'completed', workspaceIdentity: task.workspaceIdentity || null,
+      applicationOutcome: task.applicationOutcome || { $exists: false },
+      proposals: { $elemMatch: { id: proposal.id, status: 'applying', before: proposal.before, after: proposal.after,
+        path: proposal.path, docId: proposal.docId || { $exists: false }, mode: proposal.mode || { $exists: false },
+        version: proposal.version ?? { $exists: false }, applicationAcknowledgement: { $exists: false } } },
+    }, { $set: { 'proposals.$.applicationAcknowledgement': applicationAcknowledgement(task, proposal) } }).exec()
+    if (result.matchedCount !== 1) throw new AgentError(502, 'Application acknowledgement could not be recorded')
+  },
   claimDeletionRetry: (id, proposalId) => deletionTaskRetention.claim(id, proposalId, true),
+  async recoverAcknowledged(task, proposal) {
+    const outcomeFields = applicationOutcomeFields(task, proposal)
+    const result = await WritingAssistTask.updateOne({
+      ...taskQuery(task.id, task.userId, task.projectId), status: 'completed', workspaceIdentity: task.workspaceIdentity || null,
+      applicationOutcome: task.applicationOutcome || { $exists: false },
+      proposals: { $elemMatch: { id: proposal.id, status: proposal.status,
+        before: proposal.before, after: proposal.after, path: proposal.path,
+        docId: proposal.docId || { $exists: false }, mode: proposal.mode || { $exists: false },
+        version: proposal.version ?? { $exists: false },
+        applicationAcknowledgement: proposal.applicationAcknowledgement } },
+    }, { $set: { ...outcomeFields, 'proposals.$.status': 'accepted', 'proposals.$.applicationRecovery': proposal.applicationRecovery || {
+      kind: 'server-acknowledgement', recoveredAt: new Date().toISOString(), userId: task.userId,
+    } } }).exec()
+    if (result.matchedCount !== 1) return false
+    await deletionTaskRetention.releaseCompleted(task.id)
+    return true
+  },
+  async closeUnconfirmed(task, proposal, disposition) {
+    const result = await WritingAssistTask.updateOne({
+      ...taskQuery(task.id, task.userId, task.projectId), status: 'completed',
+      workspaceIdentity: task.workspaceIdentity || null,
+      proposals: { $elemMatch: { ...proposal, status: proposal.status,
+        applicationAcknowledgement: Object.hasOwn(proposal, 'applicationAcknowledgement') ? proposal.applicationAcknowledgement : { $exists: false } } },
+    }, { $set: { 'proposals.$.status': 'closed-unconfirmed', 'proposals.$.applicationDisposition': disposition,
+      applicationRetention: true }, $unset: { expiresAt: 1 } }).exec()
+    return result.modifiedCount === 1
+  },
+  releaseApplicationRetention: id => deletionTaskRetention.releaseCompleted(id),
   async settle(id, proposalId, status) {
     if (await settleAdmittedDeletion(id, proposalId, status)) {
       await deletionTaskRetention.releaseCompleted(id)
       return
+    }
+    if (status === 'accepted') {
+      const saved = await WritingAssistTask.findById(id).lean().exec()
+      if (saved?.applicationOutcome) {
+        const task = { ...saved, id: saved._id }
+        const proposal = saved.proposals.find(value => value.id === proposalId)
+        if (!proposal || !validatedApplicationAcknowledgement(task, proposal)) throw new AgentError(409, 'Workflow settlement requires a valid application acknowledgement')
+        const fields = applicationOutcomeFields(task, proposal)
+        const result = await WritingAssistTask.updateOne({
+          _id: id, status: 'completed', applicationOutcome: saved.applicationOutcome,
+          proposals: { $elemMatch: { ...proposal, status: 'applying' } },
+        }, { $set: { ...fields, 'proposals.$.status': 'accepted' } }).exec()
+        if (result.matchedCount !== 1) throw new AgentError(409, 'Workflow changed before settlement')
+        await deletionTaskRetention.releaseCompleted(id)
+        return
+      }
     }
     await WritingAssistTask.updateOne(
       {
@@ -136,7 +199,14 @@ const executeDeletion = createDocumentDeletionCoordinator({
       throw new AgentError(409, 'Deletion task could not be retained')
     }
   },
-  withProjectLock: (projectId, action) => LockManager.promises.runWithLock('sequentialProjectStructureUpdateLock', projectId, action),
+  withProjectLock: async (projectId, action) => {
+    const writer = ProjectWriteGate.current(projectId)
+    if (writer?.structureLocked && writer.assertWrite) {
+      await writer.assertWrite()
+      return action()
+    }
+    return LockManager.promises.runWithLock('sequentialProjectStructureUpdateLock', projectId, action)
+  },
   prepareDocument: DocumentUpdaterHandler.promises.prepareDocumentDeletion,
   commitDeletion, inspectDeletion, notifyCommitted: notifyDeletionCommitted,
 })
@@ -224,7 +294,24 @@ async function daemon(path, method, body) {
   }
 }
 
+export const readWorkspaceIdentity = async projectId => workspaceIdentity(projectId,
+  await Project.findById(projectId)
+    .select('gitWorkspace gitWorkspaceFenceEnabled gitWorkspaceEpoch').lean().exec())
+const agentWriteLocks = LockManager.withTimeout(6 * 60)
+
 export const agentService = createAgentService({
+  readWorkspaceIdentity,
+  withApplicationLock: (id, action) => withProjectOperationLock(agentWriteLocks, 'nativeGitProject', id, action),
+  withWriteTransaction: createAgentWriteTransaction({
+    readIdentity: readWorkspaceIdentity,
+    withProjectLock: (id, action) => withProjectOperationLock(agentWriteLocks, 'nativeGitProject', id, action),
+    withPreparedWrite: withPreparedProjectWrite,
+    authorize: async (userId, projectId) => {
+      if (!await AuthorizationManager.promises.canUserWriteProjectContent(userId, projectId)) {
+        throw new AgentError(403, 'Project write access required')
+      }
+    },
+  }),
   authorizeWrite: async (userId, projectId) => {
     const policy = await readAccessPolicy(Path.join(settings.nativeGit?.storagePath || '/var/lib/overleaf/native-git', String(projectId)), String(userId))
     if (policy.mode === 'read-only') throw new AgentError(403, 'Read-only mode: change the mode in Paper Assistant before applying file changes.')
@@ -321,6 +408,9 @@ const schemas = {
   models: z.object({ params }),
   cancel: z.object({ params }),
   decide: z.object({ params, body: z.object({ accept: z.boolean() }) }),
+  inspect: z.object({ params }),
+  recover: z.object({ params, body: z.object({}) }),
+  closeUnconfirmed: z.object({ params, body: z.object({ fingerprint: z.string().regex(/^[a-f0-9]{64}$/), decision: z.literal('close-without-retry') }) }),
 }
 
 function handler(action) {
@@ -336,6 +426,10 @@ function handler(action) {
           projectId,
           parsed.body.instruction,
         )
+      else if (action === 'closeUnconfirmed')
+        result = await service.closeUnconfirmed(userId, projectId, taskId, proposalId, parsed.body)
+      else if (action === 'inspect' || action === 'recover')
+        result = await service[action](userId, projectId, taskId, proposalId)
       else if (action === 'decide')
         result = await service.decide(
           userId,
@@ -359,4 +453,7 @@ export default {
   models: handler('models'),
   cancel: handler('cancel'),
   decide: handler('decide'),
+  inspect: handler('inspect'),
+  recover: handler('recover'),
+  closeUnconfirmed: handler('closeUnconfirmed'),
 }

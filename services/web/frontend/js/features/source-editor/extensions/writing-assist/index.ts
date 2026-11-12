@@ -222,7 +222,10 @@ export function writingAssist(options: WritingAssistOptions): Extension {
         saved.analysisMode === 'eager' || saved.analysisMode === 'lazy'
           ? saved.analysisMode
           : 'lazy'
-      enabled = saved.enabled
+      // A saved opt-in is not a usable provider configuration. Without this
+      // gate each visible sentence produces a failed request on every recheck.
+      // Local agents have no user API key and remain independently available.
+      enabled = saved.enabled && (saved.provider === 'agent' || saved[saved.provider]?.hasKey === true)
       checker.updateConfig(
         saved.debounceMs ?? 1500,
         enabledCategories(saved),

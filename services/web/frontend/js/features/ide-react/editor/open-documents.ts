@@ -1,3 +1,4 @@
+import type { RecoveryDocument } from './local-recovery'
 // Migrated from static methods of Document in Document.js
 
 import { DocumentContainer } from '@/features/ide-react/editor/document-container'
@@ -91,6 +92,32 @@ export class OpenDocuments {
       }
     }
     return false
+  }
+
+  clearSavedDocumentsForEpochTransition() {
+    if (this.hasUnsavedChanges()) throw new Error('Unsaved documents require recovery')
+    for (const doc of [...this.openDocs.values()]) {
+      doc.off()
+      doc.cleanUp()
+    }
+    if (this.openDocs.size) throw new Error('Documents could not be detached safely')
+  }
+
+  updateDocumentNames(resolveName: (docId: string) => string | undefined) {
+    for (const [docId, doc] of this.openDocs) {
+      const name = resolveName(docId)
+      // Deleted documents retain their last known name, never a replacement's.
+      if (name !== undefined) doc.docName = name
+    }
+  }
+
+  snapshotForRecovery() {
+    const documents: RecoveryDocument[] = []
+    for (const [docId, doc] of this.openDocs) {
+      const content = doc.getSnapshot()
+      if (typeof content === 'string') documents.push({ docId, content, name: doc.docName || '', version: doc.doc?.getVersion() ?? null, epoch: doc.doc?.workspaceEpoch ?? null })
+    }
+    return documents
   }
 
   flushAll() {

@@ -48,13 +48,20 @@ export type BranchChoice = GitBranch & {
 export type GitWebRemote = { name: string; provider: string; commitBaseUrl: string }
 
 export type GitSnapshot = {
+  readOnly?: boolean
+  workspaceNavigation?: { logicalProjectId: string; workspaceId: string; branch: string; url: string }
   webRemotes?: GitWebRemote[]
+  collaboration?: { drafts: boolean; apply: boolean }
   connected?: boolean
   switching?: boolean
+  mutationTaskId?: string
+  mutationKind?: 'shell' | 'auto-commit'
+  canRecoverMutation?: boolean
   status?: GitStatus
   branches?: GitBranch[]
   tags?: GitBranch[]
   graph?: GitCommit[]
+  reviewRequired?: boolean
   result?: unknown
 }
 

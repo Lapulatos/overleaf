@@ -1,3 +1,7 @@
+import Settings from '@overleaf/settings'
+import { expressify } from '@overleaf/promise-utils'
+import { createGitPresenceHandler } from '../NativeGit/GitPresenceHandlers.mjs'
+import { nativeGitRuntime } from '../NativeGit/NativeGitRuntime.mjs'
 import EditorHttpController from './EditorHttpController.mjs'
 import AuthenticationController from '../Authentication/AuthenticationController.mjs'
 import AuthorizationMiddleware from '../Authorization/AuthorizationMiddleware.mjs'
@@ -19,6 +23,9 @@ const rateLimiters = {
 
 export default {
   apply(webRouter, privateApiRouter) {
+    privateApiRouter.post('/project/:Project_id/native-git/presence-position',
+      AuthenticationController.requirePrivateApiAuth(),
+      expressify(createGitPresenceHandler({ enabled: () => Settings.nativeGit?.enabled === true, runtime: nativeGitRuntime })))
     webRouter.post(
       '/project/:Project_id/doc',
       AsyncLocalStorage.middleware,

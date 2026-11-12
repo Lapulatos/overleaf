@@ -43,10 +43,12 @@ function fixture() {
         assert.equal(locked, true);calls.push({ type: 'delete', path, origin, actor });source.delete(path)
       },
       upsertDocWithPath: async (project, path, lines, origin, actor) => {
+        assert.ok(path.startsWith('/'), 'Native mkdirp requires an absolute project path'); path = path.slice(1)
         assert.equal(locked, true);calls.push({ type: 'addDoc', path, origin, actor })
         source.set(path, { id: path, type: 'doc', bytes: Buffer.from(lines.join('\n')), version: 0 })
       },
       upsertFileWithPath: async (project, path, diskPath, link, origin, actor) => {
+        assert.ok(path.startsWith('/'), 'Native mkdirp requires an absolute project path'); path = path.slice(1)
         assert.equal(locked, true);assert.equal(link, null);calls.push({ type: 'addFile', path, origin, actor })
         source.set(path, { id: path, type: 'file', bytes: await readFile(diskPath), hash: 'a'.repeat(40) })
       },
@@ -97,4 +99,84 @@ test('adapter cannot mutate a project until production exclusive-access integrat
   const project = createOverleafProject(f.services)
   await assert.rejects(project.apply([], await project.read()), /not configured/)
   assert.deepEqual(f.calls, [])
+})
+
+test('edit followed by undo invalidates an old mutation even when bytes match', async () => {
+  const f = fixture()
+  const before = await f.project.read()
+  f.source.get('main.tex').version += 2
+  const next = new Map(before.files); next.set('main.tex', Buffer.from('stale planned change'))
+  await assert.rejects(f.project.apply(fileChanges(before.files, next), before), { status: 409 })
+  assert.deepEqual(f.calls, [])
+})
+
+test('snapshot refuses documents changed during collection instead of committing mixed versions', async () => {
+  const f = fixture()
+  const read = f.services.documents.getDocument
+  let calls = 0
+  f.services.documents.getDocument = async (...args) => {
+    if (++calls === 2) f.source.get('main.tex').version++
+    return read(...args)
+  }
+  await assert.rejects(f.project.read(), { status: 409 })
+  assert.deepEqual(f.calls, [])
+})
+
+test('transaction holds one write scope across snapshots and writes; leaked capability is rejected', async () => {
+  const f = fixture()
+  let count = 0, leaked
+  const lock = f.services.withExclusiveWrite
+  f.services.withExclusiveWrite = action => { count++; return lock(action) }
+  const project = createOverleafProject(f.services)
+  const phases = []
+  await project.transaction(async tx => {
+    leaked = tx
+    const before = await tx.read(), next = new Map(before.files)
+    next.set('main.tex', Buffer.from('transaction update'))
+    await tx.apply(fileChanges(before.files, next), before, event => phases.push(event.phase))
+    assert.equal((await tx.read()).files.get('main.tex').toString(), 'transaction update')
+  })
+  assert.equal(count, 1)
+  assert.deepEqual(phases, ['before', 'after'])
+  await assert.rejects(leaked.read(), /no longer active/)
+  await assert.rejects(leaked.apply([], {}), /no longer active/)
+})
+
+test('lease loss after the first document stops the next write and preserves the step boundary', async () => {
+  const f = fixture()
+  let valid = true
+  const lock = f.services.withExclusiveWrite
+  f.services.withExclusiveWrite = action => lock(() => action(async () => {
+    if (!valid) throw new Error('lost lease')
+  }))
+  const project = createOverleafProject(f.services), before = await project.read()
+  const next = new Map(before.files)
+  next.set('main.tex', Buffer.from('first update'))
+  next.set('second.tex', Buffer.from('must not be written'))
+  const phases = []
+  await assert.rejects(project.transaction(tx => tx.apply(fileChanges(before.files, next), before, event => {
+    phases.push(event)
+    if (event.phase === 'after') valid = false
+  })), /lost lease/)
+  assert.equal(f.source.get('main.tex').bytes.toString(), 'first update')
+  assert.equal(f.source.has('second.tex'), false)
+  assert.deepEqual(phases.map(x => x.phase), ['before', 'after'])
+})
+
+test('prepared transaction refuses an unconfigured adapter instead of falling back', async () => {
+ const f=fixture()
+ await assert.rejects(f.project.transaction(()=>assert.fail('must not run'),{prepare:true,epoch:7}),/Prepared project write access/)
+ assert.deepEqual(f.calls,[])
+})
+test('prepared transaction delegates epoch advancement and expires its capability on return', async () => {
+ const f=fixture();let retained,advances=0,checks=0
+ f.services.withPreparedWrite=async(epoch,callback)=>{
+  assert.equal(epoch,7)
+  return callback(async()=>{checks++},{advanceEpoch:async()=>{advances++;return 8}})
+ }
+ const project=createOverleafProject(f.services)
+ const result=await project.transaction(async tx=>{retained=tx;return tx.advanceEpoch()},{prepare:true,epoch:7})
+ assert.equal(result,8);assert.equal(advances,1);assert.ok(checks>=2)
+ await assert.rejects(retained.advanceEpoch(),/no longer active/)
+ assert.equal(advances,1)
 })

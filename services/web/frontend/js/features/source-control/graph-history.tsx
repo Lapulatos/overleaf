@@ -1,3 +1,5 @@
+import GitPresenceList from './git-presence-list'
+import { useGitPresence } from './git-presence-state'
 import { useEffect, useRef, useState, type ReactNode, type ComponentProps } from 'react'
 import { createPortal } from 'react-dom'
 import { Modal, Dropdown } from 'react-bootstrap'
@@ -23,6 +25,8 @@ type Props = Omit<ComponentProps<typeof CommitGraph>, 'commits'> & {
 const pageSize = 100
 
 export default function GraphHistory({ api, commits, branches, extraTools, graphOptions, initialSelection, inlineToolbar = false, currentRef = 'HEAD', onRefresh, onFetchAll, onPull, onPublish, ...graphProps }: Props) {
+  const presence = useGitPresence(api.projectId)
+  const [presenceTarget, setPresenceTarget] = useState<string>()
   const [toolbarHost, setToolbarHost] = useState<HTMLElement | null>(null)
   useEffect(() => { setToolbarHost(inlineToolbar ? null : document.getElementById('native-git-graph-toolbar-host')) }, [inlineToolbar])
   const [refreshVersion, setRefreshVersion] = useState(0)
@@ -97,6 +101,17 @@ export default function GraphHistory({ api, commits, branches, extraTools, graph
     const target = root.current?.querySelector<HTMLButtonElement>(`[data-commit="${hash}"]`)
     if (target) { target.scrollIntoView({ block: 'nearest' }); target.focus(); setLocate(false) }
   }, [locate, loading, loaded, currentRef, branches])
+  const locatePerson = (hash: string) => {
+    setPresenceTarget(hash)
+    if (!loaded.some(commit => commit.hash === hash)) {
+      setQuery(''); setSearch(''); setRefs([]); setRef(hash); setMode('selected')
+    }
+  }
+  useEffect(() => {
+    if (!presenceTarget || loading) return
+    const target = root.current?.querySelector<HTMLButtonElement>(`[data-commit="${presenceTarget}"]`)
+    if (target) { target.scrollIntoView?.({ block: 'nearest' }); target.focus(); setPresenceTarget(undefined) }
+  }, [presenceTarget, loading, loaded])
   const toolbarButton = (label: string, icon: string, action?: () => unknown) => <button type="button" className="native-git-icon-button" title={label} aria-label={label} disabled={graphProps.busy || !action} onClick={() => action?.()}><MaterialIcon type={icon} /></button>
   const toolbar = (
 <div className="native-git-graph-toolbar" role="toolbar" aria-label="Graph actions">
@@ -142,7 +157,9 @@ export default function GraphHistory({ api, commits, branches, extraTools, graph
     </Modal>
     <input type="search" className="form-control native-git-history-search" aria-label="Search history" placeholder="Search history" value={query} onChange={event => setQuery(event.target.value)} />
     {error && <p role="alert" className="native-git-error">{error}</p>}
-    <CommitGraph {...graphProps} branches={branches} tree={tree} commits={loaded} emptyMessage={loading ? 'Loading history…' : search ? 'No matching commits' : 'No commits yet'} />
+    {!presence && <p role="status" className="native-git-presence-status">Collaborator positions unavailable — reconnecting…</p>}
+    {presence && <GitPresenceList sessions={presence.sessions} loaded={new Set(loaded.map(commit => commit.hash))} onLocate={locatePerson} />}
+    <CommitGraph {...graphProps} presence={presence?.sessions || []} branches={branches} tree={tree} commits={loaded} emptyMessage={loading ? 'Loading history…' : search ? 'No matching commits' : 'No commits yet'} />
     {more && <button type="button" className="btn btn-default btn-sm" disabled={loading} onClick={loadMore}>{loading ? 'Loading history…' : 'Load earlier commits'}</button>}
     {loading && !more && <p role="status">Loading history…</p>}
   </div>

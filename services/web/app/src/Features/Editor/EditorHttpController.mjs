@@ -81,7 +81,11 @@ async function _buildJoinProjectView(req, projectId, userId) {
   if (project == null) {
     throw new Errors.NotFoundError('project not found')
   }
-  const projectAccess = new ProjectAccess(project)
+  // Realtime joins must inherit the same parent authorization as HTTP reads.
+  // Internal storage deliberately has no independent collaborator list.
+  const projectAccess = project.gitWorkspace?.logicalProjectId
+    ? await CollaboratorsGetter.promises.getProjectAccess(projectId)
+    : new ProjectAccess(project)
   const token = req.body.anonymousAccessToken
   const privilegeLevel =
     await AuthorizationManager.promises.getPrivilegeLevelForProjectWithProjectAccess(
@@ -92,6 +96,10 @@ async function _buildJoinProjectView(req, projectId, userId) {
     )
   if (privilegeLevel == null || privilegeLevel === PrivilegeLevels.NONE) {
     return { project: null, privilegeLevel: null, isRestrictedUser: false }
+  }
+  if (project.gitWorkspaceFenceEnabled) {
+    const { workspaceEpochAdapter } = await import('../NativeGit/WorkspaceEpochRuntime.mjs')
+    project.gitWorkspaceEpoch = await workspaceEpochAdapter(projectId).hydrate()
   }
   const isTokenMember = projectAccess.isUserTokenMember(userId)
   const isInvitedMember = projectAccess.isUserInvitedMember(userId)
@@ -109,7 +117,7 @@ async function _buildJoinProjectView(req, projectId, userId) {
   } else {
     ;({ ownerMember, members } =
       await projectAccess.loadOwnerAndInvitedMembers())
-    invites = await CollaboratorsInviteGetter.promises.getAllInvites(projectId)
+    invites = await CollaboratorsInviteGetter.promises.getAllInvites(project.gitWorkspace?.logicalProjectId || projectId)
   }
   return {
     project: ProjectEditorHandler.buildProjectModelView(

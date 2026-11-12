@@ -10,6 +10,7 @@ const enabled = () => process.env.OVERLEAF_NATIVE_GIT_ENABLED === 'true'
 const supported = client => enabled() && typeof client.nodes !== 'function'
 const conflict = () => Object.assign(new Error('Project files are being updated by Git; retry after the update finishes'), { status: 409, code: 'PROJECT_WRITE_BUSY' })
 
+function currentProjectWrite() { return context.getStore() }
 function current(projectId) {
   const value = context.getStore()
   return value?.projectId === String(projectId) ? value : undefined
@@ -82,4 +83,4 @@ function createProjectWriteGate(client, { isEnabled = enabled, ttlMs = 120000, m
   }
 }
 
-module.exports = { createProjectWriteGate, current, runWithToken, requestHeaders, enabled, supported, keyFor }
+module.exports = { createProjectWriteGate, currentProjectWrite, current, runWithToken, requestHeaders, enabled, supported, keyFor }

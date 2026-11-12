@@ -1,3 +1,4 @@
+import { viewGitCommit } from './git-presence-state'
 import { formatGitDate } from './format-date'
 import GitGraphIcon from './git-graph-icon'
 import { createPortal } from 'react-dom'
@@ -29,6 +30,7 @@ export default function EditorGraph({ api, commits, branches, currentRef, busy, 
   useEffect(() => { let active = true; api.command({ command: 'graphSettings' }).then(result => { if (active && result.result && typeof result.result === 'object' && 'showRemotes' in result.result) setSettings({ ...defaultGraphSettings, ...result.result as GraphSettings }) }).catch(error => { if (active) setError(errorMessage(error)) }); return () => { active = false } }, [api])
   const [details, setDetails] = useState<Details>()
   const [selected, setSelected] = useState('')
+  useEffect(() => { viewGitCommit(api.projectId, selected || null); return () => viewGitCommit(api.projectId, null) }, [api.projectId, selected])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [tree, setTree] = useState(true)

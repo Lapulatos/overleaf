@@ -93,7 +93,22 @@ export class GitRepository {
       message: (await this.git.raw(['log', '-1', '--format=%B', head])).trimEnd() }
   }
 
-  async commit(message, { amend = false, all = false, signoff = false, expectedHead, expectedBranch } = {}) {
+  async commitPreview({ all = false, amend = false, signoff = false } = {}) {
+    const status = await this.status()
+    const head = await this.head().catch(() => null)
+    const hash = createHash('sha256').update(JSON.stringify([head, status.branch, status.operation, all, amend, signoff]))
+      .update(await this.git.raw(['ls-files', '--stage', '-z']))
+    if (all) for (const [path, content] of [...await readWorktree(this.directory)].sort(([a], [b]) => a.localeCompare(b))) {
+      hash.update(JSON.stringify([path, content.length])).update(content)
+    }
+    return { head, branch: status.branch, fingerprint: hash.digest('hex'),
+      paths: status.files.filter(file => all || ![' ', '?', '!'].includes(file.index)).map(file => file.path) }
+  }
+
+  async commit(message, { amend = false, all = false, signoff = false, expectedHead, expectedBranch, fingerprint } = {}) {
+    if (fingerprint && (await this.commitPreview({ all, amend, signoff })).fingerprint !== fingerprint) {
+      throw Object.assign(new Error('The branch or selected changes changed. Reopen the commit review before committing.'), { status: 409 })
+    }
     if (amend && ((expectedHead && await this.head() !== expectedHead) ||
         (expectedBranch !== undefined && (await this.status()).branch !== expectedBranch))) {
       throw Object.assign(new Error('The current commit or branch changed. Reopen Amend before continuing.'), { status: 409 })

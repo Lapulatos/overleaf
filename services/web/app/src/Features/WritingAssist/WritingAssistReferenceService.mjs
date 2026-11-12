@@ -1,3 +1,4 @@
+import { assertWorkspaceIdentity } from './WritingAssistWorkspaceIdentity.mjs';
 import { pmlrEvidence } from './WritingAssistPmlrEvidence.mjs';
 import { bareDoi, candidateMatches, citationDoi, verifyReferenceIdentity } from './WritingAssistReferenceVerification.mjs';
 import { aclEvidence } from './WritingAssistClaimSource.mjs';
@@ -137,6 +138,7 @@ export function referencePrompt(mode, entries) {
   );
 }
 export function createReferenceService({
+  readWorkspaceIdentity = async () => null,
   canWrite,
   snapshot,
   literature,
@@ -149,8 +151,8 @@ export function createReferenceService({
       throw new AgentError(403, "Project write access required");
   };
   return {
-    apply: (user, project, input) => applyReferenceReview({ canWrite, snapshot, store, tasks }, user, project, input),
-    applyClaim(user, project, input) { return applyClaimSuggestion({canWrite,snapshot,store,tasks},user,project,input); },
+    apply: (user, project, input) => applyReferenceReview({ canWrite, snapshot, store, tasks, readWorkspaceIdentity }, user, project, input),
+    applyClaim(user, project, input) { return applyClaimSuggestion({canWrite,snapshot,store,tasks,readWorkspaceIdentity},user,project,input); },
     async inventory(user, project) {
       await authorize(user, project);
       return (await snapshot(project))
@@ -191,6 +193,7 @@ export function createReferenceService({
         new Set(keys).size !== keys.length
       )
         throw new AgentError(400, "Select 1–10 distinct references");
+      const workspaceIdentity = await readWorkspaceIdentity(project);
       const docs = await snapshot(project);
       const doc = docs.find((d) => d.id === docId && /\.bib$/i.test(d.path));
       if (!doc) throw new AgentError(404, "Bibliography not found");
@@ -330,7 +333,9 @@ export function createReferenceService({
             (changes.length ? changes.map(c => `- ${c.field}: ${c.before ? 'proposed correction' : 'missing field added'}`).join('\n') : 'No sourced changes prepared.') +
             (item.reason ? `\n${item.reason}` : '');
         }).join('\n\n') + `\n\nRemoved ${parsed.markup.length} clipboard HTML block(s). Existing citation keys and unsupported fields are preserved. Missing source fields remain unverified. Page counts, when present, are derived from a numeric page range. Review the diff before applying; provider differences may reflect publication versions.`;
-        await store.create({ id, userId: user, projectId: project, status: 'completed',
+        await authorize(user, project);
+        assertWorkspaceIdentity(workspaceIdentity, await readWorkspaceIdentity(project));
+        await store.create({ id, userId: user, projectId: project, workspaceIdentity, status: 'completed',
           instruction: 'Review reference corrections and missing metadata', summary, referenceReview,
           documents: [doc], createdAt: new Date(), proposals: after === doc.content ? [] : [{
             id: randomUUID(), docId: doc.id, path: doc.path, version: doc.version,
@@ -367,7 +372,10 @@ Return ONLY JSON, no Markdown wrapper: {"findings":[{"contextId":"context-0","ci
           422,
           "Evidence is too large; select fewer references",
         );
+      await authorize(user, project);
+      assertWorkspaceIdentity(workspaceIdentity, await readWorkspaceIdentity(project));
       return tasks.create(user, project, prompt, {
+        expectedWorkspaceIdentity: workspaceIdentity,
         model,
         effort,
         reportOnly: true,

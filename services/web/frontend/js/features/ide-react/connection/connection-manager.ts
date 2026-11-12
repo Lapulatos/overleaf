@@ -140,6 +140,12 @@ export class ConnectionManager extends EventTarget {
     this.onForceDisconnect(0, error)
   }
 
+  reconnectWorkspace() {
+    if (this.state.forceDisconnected) throw new Error('Connection requires manual recovery')
+    this.disconnect()
+    this.tryReconnect()
+  }
+
   tryReconnectNow() {
     this.tryReconnectWithBackoff(USER_ACTIVITY_RECONNECT_NOW_DELAY)
   }

@@ -62,6 +62,23 @@ async function joinProject(projectId, user) {
   }
 }
 
+async function gitPresencePosition({ workspaceId, userId, viewedCommit }) {
+  const url = new URL(settings.apis.web.url)
+  url.pathname = Path.posix.join('project', workspaceId, 'native-git', 'presence-position')
+  try {
+    return await fetchJson(url, {
+      method: 'POST', signal: AbortSignal.timeout(10000),
+      basicAuth: { user: settings.apis.web.user, password: settings.apis.web.pass },
+      json: { userId, viewedCommit },
+    })
+  } catch (error) {
+    if (error instanceof RequestFailedError) {
+      throw Object.assign(new Error('Git collaboration position is unavailable'), { status: error.response.status })
+    }
+    throw error
+  }
+}
+
 export default {
   joinProject: callbackifyMultiResult(joinProject, [
     'project',
@@ -70,5 +87,6 @@ export default {
   ]),
   promises: {
     joinProject,
+    gitPresencePosition,
   },
 }

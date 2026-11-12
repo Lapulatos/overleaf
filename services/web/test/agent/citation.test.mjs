@@ -23,7 +23,8 @@ function fixture(documents = []) {
         return citation
       },
     },
-    snapshot: async () => structuredClone(documents),
+    readWorkspaceIdentity: async () => structuredClone(state.identity || null),
+    snapshot: async () => { await state.onSnapshot?.(); return structuredClone(documents) },
     store: { create: async (task) => records.set(task.id, task) },
     tasks: {
       get: async (user, project, id) => ({ ...records.get(id), taskId: id }),
@@ -156,4 +157,17 @@ test('a different reference with a colliding key receives a suffix without chang
   assert.equal(result.citation.key, citation.key + 'a')
   assert.ok(result.task.proposals[0].after.startsWith(existing))
   assert.match(result.citation.bibtex, /Author2024_abcda/)
+})
+
+const identity={projectId:'root',workspaceId:'p',branch:'draft',epoch:3}
+test('citation preview retains snapshot workspace identity',async()=>{
+ const f=fixture();f.state.identity={...identity}
+ const result=await f.service.preview('u','p',citation.doi,{newName:'refs.bib'})
+ assert.deepEqual(result.task.workspaceIdentity,identity)
+})
+for(const change of ['epoch','permission'])test(`citation snapshot ${change} race creates no preview`,async()=>{
+ const f=fixture();f.state.identity={...identity}
+ f.state.onSnapshot=()=>{if(change==='epoch')f.state.identity.epoch++;else f.state.allowed=false}
+ await assert.rejects(f.service.preview('u','p',citation.doi,{newName:'refs.bib'}),{status:change==='epoch'?409:403})
+ assert.equal(f.records.size,0)
 })

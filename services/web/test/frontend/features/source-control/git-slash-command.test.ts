@@ -23,4 +23,13 @@ describe('Paper Assistant /git commands',()=>{
  it('rejects invalid parameters before mutation',()=>{
   for(const command of ['/git reset HEAD invalid','/git stash-drop -1','/git checkout','/git status extra'])expect(()=>parseGitCommand(command)).to.throw()
  })
+ it('freezes the selected commit scope and index preview before confirmation',async()=>{
+  const calls:any[]=[]
+  const api={command:async(body:any)=>{calls.push(body);return {result:{fingerprint:'a'.repeat(64),paths:['main.tex']}}}} as any
+  const prepared=await prepareGitCommand(api,parseGitCommand('/git commit "Reviewed" --all --signoff').body!)
+  expect(calls).to.deep.equal([{command:'commitPreview',all:true,amend:false,signoff:true}])
+  expect(prepared.body.fingerprint).to.equal('a'.repeat(64))
+  expect(prepared.preview).to.deep.equal({fingerprint:'a'.repeat(64),paths:['main.tex']})
+ })
+
 })

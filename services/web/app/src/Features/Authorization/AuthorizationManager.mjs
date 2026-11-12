@@ -12,6 +12,7 @@ import Errors from '../Errors/Errors.js'
 import AdminAuthorizationHelper from '../Helpers/AdminAuthorizationHelper.mjs'
 import Settings from '@overleaf/settings'
 import ChatApiHandler from '../Chat/ChatApiHandler.mjs'
+import { isWorkspaceStorage } from '../NativeGit/WorkspaceScope.mjs'
 
 const { hasAdminAccess, getAdminCapabilities } = AdminAuthorizationHelper
 const { ObjectId } = mongodb
@@ -63,11 +64,12 @@ async function getPublicAccessLevel(projectId) {
   // Note, the Project property in the DB is `publicAccesLevel`, without the second `s`
   const project = await ProjectGetter.promises.getProject(projectId, {
     publicAccesLevel: 1,
+    gitWorkspace: 1,
   })
   if (!project) {
     throw new Errors.NotFoundError(`no project found with id ${projectId}`)
   }
-  return project.publicAccesLevel
+  return project.gitWorkspace?.logicalProjectId ? PublicAccessLevels.PRIVATE : project.publicAccesLevel
 }
 
 /**
@@ -319,6 +321,7 @@ async function canUserWriteProjectSettings(userId, projectId, token) {
 }
 
 async function canUserRenameProject(userId, projectId, token) {
+  if (await isWorkspaceStorage(projectId)) return false
   const privilegeLevel = await getPrivilegeLevelForProject(
     userId,
     projectId,
@@ -332,6 +335,7 @@ async function canUserRenameProject(userId, projectId, token) {
 }
 
 async function canUserAdminProject(userId, projectId, token) {
+  if (await isWorkspaceStorage(projectId)) return false
   const privilegeLevel = await getPrivilegeLevelForProject(
     userId,
     projectId,

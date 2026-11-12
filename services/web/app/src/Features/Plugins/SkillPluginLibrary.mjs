@@ -4,7 +4,7 @@ import { randomUUID } from 'node:crypto'
 import { SkillPlugin } from '../../models/SkillPlugin.mjs'
 import { AgentError } from '../WritingAssist/WritingAssistAgentService.mjs'
 import { createGitHubSkills } from './GitHubSkills.mjs'
-const github=createGitHubSkills()
+const github=createGitHubSkills(fetch,{token:process.env.OVERLEAF_SKILLS_GITHUB_TOKEN || ''})
 export const publicPlugin=({files,userId,...plugin})=>({...plugin,id:plugin._id,description:skillDescription(files?.find(f=>f.path==='SKILL.md')?.content,plugin.description),resourceCount:files?.length || 0,resourcePaths:(files || []).map(f=>f.path)})
 export const pluginLibrary={
  async list(userId){return [publicPlugin(deadlineSkill),...(await SkillPlugin.find({userId}).sort({installedAt:-1}).lean()).map(publicPlugin)]},

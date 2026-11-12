@@ -55,3 +55,30 @@ describe('Repository PTY terminal', () => {
  })
 
 })
+
+describe('reviewed terminal startup',()=>{
+ afterEach(cleanup)
+ it('disables submission until the active session is attached',async()=>{
+  const pending:Array<(value:unknown)=>void>=[]
+  const terminal={open:sinon.stub(),onData:sinon.stub(),resize:sinon.stub(),focus:sinon.stub(),write:sinon.stub(),writeln:sinon.stub(),dispose:sinon.stub()}
+  const command=sinon.stub().callsFake(async c=>{
+   if(c.command==='accessPolicy')return {result:{mode:'auto-review',directories:[]}}
+   if(c.command==='terminalOpen')return new Promise(resolve=>pending.push(resolve))
+   if(c.command==='terminalRun')return {result:{approvalRequired:true,approval:'token',reason:'Explicit approval required'}}
+   return {result:{output:'',exited:false}}
+  })
+  render(<GitTerminal createTerminal={async()=>terminal as any} api={{projectId:'delayed-review',command,status:sinon.stub(),initialize:sinon.stub()}} onClose={()=>{}} onChanged={()=>{}} />)
+  await screen.findByRole('textbox',{name:'Reviewed terminal command'})
+  await waitFor(()=>expect(pending.length).to.be.greaterThan(0))
+  fireEvent.change(screen.getByRole('textbox'),{target:{value:'touch draft'}})
+  expect((screen.getByRole('button',{name:'Review and run'}) as HTMLButtonElement).disabled).to.equal(true)
+  expect(command.args.some(([c])=>c.command==='terminalRun')).to.equal(false)
+  await new Promise(resolve=>setTimeout(resolve,20))
+  pending.forEach((resolve,i)=>resolve({result:{id:`attached-${i}`,directory:'/attached'}}))
+  await screen.findByText('/attached')
+  await waitFor(()=>expect((screen.getByRole('button',{name:'Review and run'}) as HTMLButtonElement).disabled).to.equal(false))
+  fireEvent.click(screen.getByRole('button',{name:'Review and run'}))
+  await screen.findByText('Explicit approval required')
+  expect(command.args.find(([c])=>c.command==='terminalRun')![0].id).to.equal(`attached-${pending.length-1}`)
+ })
+})

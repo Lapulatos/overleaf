@@ -9,7 +9,7 @@ import {
 import { randomBytes } from "node:crypto";
 import Path from "node:path";
 import { GitRepository, remoteUrl } from "./GitRepository.mjs";
-import { readWorktree } from "./WorktreeFiles.mjs";
+import { validateCloneResources } from "./CloneResources.mjs";
 
 // All destinations are server-generated. Retries reuse the operation and project IDs.
 export async function cloneRepository(
@@ -60,13 +60,15 @@ export async function cloneRepository(
       await clone.withRemoteCredentials(url, credential, (repo) =>
         repo.clone(url, input.branch),
       );
-      await readWorktree(directory); // Reject unsupported paths/files before creating a project.
+      await validateCloneResources(clone); // Reject incomplete resources before creating a project.
       state.branch = (await clone.status()).branch;
       state.head = await clone.head().catch(() => null);
       state.cloned = true;
       await save(state);
     }
     if (!state.projectId) {
+      // Also validate resumable operations created before this guard existed.
+      await validateCloneResources(new GitRepository(directory, source.repository.options));
       state.projectId = randomBytes(12).toString("hex");
       await save(state);
     }
@@ -82,6 +84,7 @@ export async function cloneRepository(
         throw new Error(
           "The clone destination changed; refusing to replace it",
         );
+      await validateCloneResources(target.repository);
       if (credential)
         await target.credentials.save(
           url,

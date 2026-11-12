@@ -7,6 +7,7 @@ import { DeletedProject } from '../../models/DeletedProject.mjs'
 import { callbackifyAll } from '@overleaf/promise-utils'
 import ProjectEntityMongoUpdateHandler from './ProjectEntityMongoUpdateHandler.mjs'
 import CollaboratorsGetter from '../Collaborators/CollaboratorsGetter.mjs'
+import { visibleProjects } from '../NativeGit/WorkspaceIdentity.mjs'
 
 const { normalizeQuery } = Mongo
 
@@ -72,7 +73,7 @@ const ProjectGetter = {
    */
   async findAllUsersProjects(userId, fields) {
     const ownedProjects = await Project.find(
-      { owner_ref: userId },
+      { ...visibleProjects, owner_ref: userId },
       fields
     ).exec()
 

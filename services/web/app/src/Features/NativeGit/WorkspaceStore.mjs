@@ -26,13 +26,29 @@ export class WorkspaceStore {
     return this.read()
   }
 
+  async beginMutation(taskId) {
+    const binding = await this.read()
+    if (binding.pending || binding.mutationTaskId) throw new Error('A workspace mutation is already pending')
+    await this.write({ ...binding, mutationTaskId: taskId })
+  }
+
+  async finishMutation(taskId) {
+    const binding = await this.read()
+    if (binding.mutationTaskId !== taskId) throw new Error('Workspace mutation ownership changed')
+    const { mutationTaskId, ...rest } = binding
+    await this.write(rest)
+  }
+
   async begin(pending) {
     const binding = await this.read()
-    if (binding.pending) throw new Error('A file transfer is already pending')
+    if (binding.pending || binding.mutationTaskId) throw new Error('A file transfer is already pending')
     await this.write({ ...binding, pending })
   }
 
-  async finish(binding) { await this.write({ directory: binding.directory, branch: binding.branch }) }
+  async finish(binding) {
+    if ((await this.read()).mutationTaskId) throw new Error('A collaboration mutation is pending')
+    await this.write({ directory: binding.directory, branch: binding.branch })
+  }
 
   async write(binding) {
     validate(binding)
@@ -55,6 +71,7 @@ function validate(binding) {
   const absolute = value => typeof value === 'string' && Path.isAbsolute(value) && !value.includes('\0')
   const branch = value => value === null || (typeof value === 'string' && value.length > 0)
   if (!binding || !absolute(binding.directory) || !branch(binding.branch)) throw new Error('Invalid workspace binding')
+  if (binding.mutationTaskId !== undefined && !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/.test(binding.mutationTaskId)) throw new Error('Invalid mutation task identity')
   if (binding.pending) {
     const pending = binding.pending
     if (!absolute(pending.directory) || !branch(pending.branch) ||

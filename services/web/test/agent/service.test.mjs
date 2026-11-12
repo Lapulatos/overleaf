@@ -21,6 +21,8 @@ function fixture() {
   const deletions = []
   const state = {
     allowed: true,
+    workspaceIdentity: null,
+    beforeRead: null,
     allowDeletion: false,
     diffs: [diff],
     deleteError: null,
@@ -81,6 +83,9 @@ function fixture() {
   const service = createAgentService({
     store,
     canWrite: async () => state.allowed,
+    readWorkspaceIdentity: async () => structuredClone(state.workspaceIdentity),
+    withWriteTransaction: async (_user, _project, _identity, action) =>
+      state.transaction ? state.transaction(action) : action(async () => {}),
     allowDeletion: () => state.allowDeletion,
     deleteDocument: async (...args) => {
       deletions.push(args)
@@ -93,10 +98,10 @@ function fixture() {
       if (state.daemonError) throw state.daemonError
       return { status: 'completed', summary: 'Revised', diffs: state.diffs }
     },
-    readDocument: async () => ({
-      version: state.version,
-      lines: state.content.split('\n'),
-    }),
+    readDocument: async () => {
+      await state.beforeRead?.()
+      return { version: state.version, lines: state.content.split('\n') }
+    },
     createDocument: async (...args) => {
       if (state.createError) throw state.createError
       creations.push(args)
@@ -586,4 +591,130 @@ test('issue status commands complete without daemon or manuscript snapshots afte
  assert.equal(resolveCalls,0)
  const task=await service.create('owner','p','/close-issue ID',{taskId:'command-task'})
  assert.equal(task.status,'completed');assert.deepEqual(task.proposals,[]);assert.equal(task.taskId,'command-task');assert.equal(daemonCalls,0);assert.equal(records.size,1)
+})
+
+const taskWorkspace = { projectId: 'root', workspaceId: 'project', branch: 'draft', epoch: 4 }
+
+test('AI task persists and returns its server workspace identity', async () => {
+  const f = fixture()
+  f.state.workspaceIdentity = { ...taskWorkspace }
+  const task = await f.completed()
+  assert.deepEqual(task.workspaceIdentity, taskWorkspace)
+  assert.deepEqual(f.records.get(task.taskId).workspaceIdentity, taskWorkspace)
+  await f.service.decide('user', 'project', task.taskId, task.proposals[0].id, true)
+  assert.equal(f.writes.length, 1)
+})
+
+for (const change of ['epoch', 'branch', 'workspaceId', 'projectId', 'legacy']) {
+  test(`AI acceptance refuses changed ${change} without writing`, async () => {
+    const f = fixture()
+    f.state.workspaceIdentity = { ...taskWorkspace }
+    const task = await f.completed()
+    if (change === 'legacy') delete f.records.get(task.taskId).workspaceIdentity
+    else f.state.workspaceIdentity[change] = change === 'epoch' ? 5 : 'different'
+    await assert.rejects(f.service.decide('user', 'project', task.taskId, task.proposals[0].id, true),
+      { status: 409, code: 'AI_WORKSPACE_CHANGED' })
+    assert.equal(f.writes.length, 0)
+    assert.equal(f.records.get(task.taskId).proposals[0].status, 'conflict')
+  })
+}
+
+test('workspace epoch change during snapshot stops model submission', async () => {
+  const f = fixture()
+  f.state.workspaceIdentity = { ...taskWorkspace }
+  f.state.snapshot = async () => { f.state.workspaceIdentity.epoch++; return structuredClone(documents) }
+  await assert.rejects(f.service.create('user', 'project', 'Edit'), { code: 'AI_WORKSPACE_CHANGED' })
+  assert.equal(f.state.calls.some(call => call[0] === '/agent/task'), false)
+  assert.equal(f.writes.length, 0)
+})
+
+for (const change of ['epoch', 'authorization']) {
+  test(`AI acceptance rechecks ${change} after document read`, async () => {
+    const f = fixture()
+    f.state.workspaceIdentity = { ...taskWorkspace }
+    const task = await f.completed()
+    f.state.beforeRead = () => {
+      if (change === 'epoch') f.state.workspaceIdentity.epoch++
+      else f.state.allowed = false
+    }
+    await assert.rejects(f.service.decide('user', 'project', task.taskId, task.proposals[0].id, true),
+      { status: change === 'epoch' ? 409 : 403 })
+    assert.equal(f.writes.length, 0)
+  })
+}
+
+for (const mode of ['create-document', 'create-bibliography', 'delete-document']) {
+  test(`stale workspace cannot bypass identity check through ${mode}`, async () => {
+    const f = fixture()
+    f.state.workspaceIdentity = { ...taskWorkspace }
+    f.state.allowDeletion = true
+    const task = await f.completed()
+    f.records.get(task.taskId).proposals[0].mode = mode
+    f.state.workspaceIdentity.epoch++
+    await assert.rejects(f.service.decide('user', 'project', task.taskId, task.proposals[0].id, true),
+      {code:'AI_WORKSPACE_CHANGED'})
+    assert.deepEqual([f.writes.length,f.creations.length,f.deletions.length], [0,0,0])
+  })
+}
+
+test('AI acceptance keeps validation and mutation inside transaction and settles afterwards', async () => {
+  const f=fixture(), events=[]
+  const task=await f.completed()
+  f.state.transaction=async action => {
+    events.push('enter')
+    await action(async () => events.push('lease'))
+    assert.equal(f.writes.length,1)
+    assert.equal(f.records.get(task.taskId).proposals[0].status,'applying')
+    events.push('release')
+  }
+  await f.service.decide('user','project',task.taskId,task.proposals[0].id,true)
+  assert.equal(events[0],'enter'); assert.equal(events.at(-1),'release')
+  assert.equal(f.records.get(task.taskId).proposals[0].status,'accepted')
+})
+
+test('transaction failure after AI mutation retains uncertain proposal and prevents replay', async () => {
+  const f=fixture(), task=await f.completed()
+  f.state.transaction=async action => {
+    await action(async()=>{})
+    throw Object.assign(new Error('release failed'),{status:502,code:'AI_WRITE_OUTCOME_UNCERTAIN'})
+  }
+  await assert.rejects(f.service.decide('user','project',task.taskId,task.proposals[0].id,true),{status:502})
+  assert.equal(f.writes.length,1)
+  assert.equal(f.records.get(task.taskId).proposals[0].status,'uncertain')
+  await assert.rejects(f.service.decide('user','project',task.taskId,task.proposals[0].id,true),{status:409})
+  assert.equal(f.writes.length,1)
+})
+
+test('report tasks reject evidence captured in an older workspace before persistence',async()=>{
+ const f=fixture();f.state.workspaceIdentity={...taskWorkspace,epoch:5}
+ await assert.rejects(f.service.create('user','project','Audit',{reportOnly:true,expectedWorkspaceIdentity:taskWorkspace}),{code:'AI_WORKSPACE_CHANGED'})
+ assert.equal(f.records.size,0);assert.equal(f.state.calls.length,0)
+})
+
+test('application acknowledgement follows server write and precedes settlement',async()=>{
+ const f=fixture(),task=await f.completed(),events=[]
+ f.store.recordApplicationAcknowledgement=async(saved,proposal)=>{
+  assert.equal(f.writes.length,1);assert.equal(saved.id,task.taskId)
+  assert.equal(f.records.get(saved.id).proposals[0].status,'applying')
+  events.push(proposal.id)
+ }
+ await f.service.decide('user','project',task.taskId,task.proposals[0].id,true)
+ assert.deepEqual(events,[task.proposals[0].id]);assert.equal(f.records.get(task.taskId).proposals[0].status,'accepted')
+})
+
+test('server mutation error never records acknowledgement',async()=>{
+ const f=fixture(),task=await f.completed();let acknowledgements=0
+ f.store.recordApplicationAcknowledgement=async()=>{acknowledgements++}
+ f.state.writeError=Error('response lost')
+ await assert.rejects(f.service.decide('user','project',task.taskId,task.proposals[0].id,true),{status:502})
+ assert.equal(acknowledgements,0);assert.equal(f.records.get(task.taskId).proposals[0].status,'uncertain')
+})
+
+test('acknowledged operation retains its journal when final settlement fails',async()=>{
+ const f=fixture(),task=await f.completed();let journal=false
+ f.store.recordApplicationAcknowledgement=async()=>{journal=true}
+ const settle=f.store.settle
+ f.store.settle=async(id,pid,status)=>{if(status==='accepted')throw Error('settlement unavailable');return settle(id,pid,status)}
+ await assert.rejects(f.service.decide('user','project',task.taskId,task.proposals[0].id,true),{status:502})
+ assert.equal(journal,true);assert.equal(f.writes.length,1);assert.equal(f.records.get(task.taskId).proposals[0].status,'uncertain')
 })

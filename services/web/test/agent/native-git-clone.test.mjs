@@ -119,3 +119,30 @@ test("new project clone resumes partial import under the same project ID", async
     /options changed/,
   );
 });
+
+for (const kind of ['lfs', 'submodule']) {
+  test(`clone refuses ${kind} before creating a project and allows retry after source repair`, async t => {
+    const { source, remote } = await fixture(t)
+    if (kind === 'lfs') {
+      await writeFile(Path.join(remote.directory, 'figure.pdf'), `version https://git-lfs.github.com/spec/v1\noid sha256:${'a'.repeat(64)}\nsize 10000\n`)
+      await remote.stage(['figure.pdf'])
+    } else {
+      await remote.git.raw(['update-index', '--add', '--cacheinfo', `160000,${await remote.head()},assets`])
+    }
+    await remote.commit('Incomplete resources')
+    const input = { operationId: randomUUID(), url: remote.directory, name: 'Resource check' }
+    let created = 0
+    const deps = { createProject: async () => { created++; throw Error('validated source reached project creation') } }
+    await assert.rejects(cloneRepository(source, user, input, deps), e => e.status === 400 && /LFS|submodules/.test(e.message))
+    assert.equal(created, 0)
+    if (kind === 'lfs') {
+      await writeFile(Path.join(remote.directory, 'figure.pdf'), '%PDF-1.4\nmaterialized bytes\n')
+      await remote.stage(['figure.pdf'])
+    } else {
+      await remote.git.raw(['update-index', '--force-remove', 'assets'])
+    }
+    await remote.commit('Repair resources')
+    await assert.rejects(cloneRepository(source, user, input, deps), /validated source reached project creation/)
+    assert.equal(created, 1)
+  })
+}

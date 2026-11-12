@@ -15,6 +15,7 @@ import Metrics from '@overleaf/metrics'
 import RedisWrapper from '../../infrastructure/RedisWrapper.mjs'
 import os from 'node:os'
 import crypto from 'node:crypto'
+import { Project } from '../../models/Project.mjs'
 let EditorRealTimeController
 const rclient = RedisWrapper.client('pubsub')
 
@@ -23,7 +24,11 @@ const RND = crypto.randomBytes(4).toString('hex') // generate a random key for t
 let COUNT = 0
 
 export default EditorRealTimeController = {
-  emitToRoom(roomId, message, ...payload) {
+  async emitToRoom(roomId, message, ...payload) {
+    if (['userRemovedFromProject', 'project:collaboratorAccessLevel:changed', 'project:publicAccessLevel:changed'].includes(message) && /^[a-f0-9]{24}$/i.test(String(roomId))) {
+      const children = await Project.find({ 'gitWorkspace.logicalProjectId': roomId }, { _id: 1 }).lean().exec()
+      await Promise.all(children.map(child => this.emitToRoom(String(child._id), message, ...payload)))
+    }
     // create a unique message id using a counter
     const messageId = `web:${HOST}:${RND}-${COUNT++}`
     let channel

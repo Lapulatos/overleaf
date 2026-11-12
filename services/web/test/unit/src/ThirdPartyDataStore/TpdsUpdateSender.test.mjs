@@ -97,7 +97,22 @@ describe('TpdsUpdateSender', function () {
       default: ctx.UserGetter,
     }))
 
+    ctx.isWorkspaceStorage = sinon.stub().resolves(false)
+    vi.doMock('../../../../app/src/Features/NativeGit/WorkspaceScope.mjs', () => ({
+      isWorkspaceStorage: ctx.isWorkspaceStorage,
+    }))
     ctx.TpdsUpdateSender = (await import(modulePath)).default
+  })
+
+  it('does not export internal branch storage as a separate third-party project', async function (ctx) {
+    ctx.isWorkspaceStorage.resolves(true)
+    const params = { projectId, projectName, userId, path: '/main.tex', docId: new ObjectId(), rev: 1 }
+    await ctx.TpdsUpdateSender.promises.createProject(params)
+    await ctx.TpdsUpdateSender.promises.addDoc(params)
+    await ctx.TpdsUpdateSender.promises.deleteEntity(params)
+    await ctx.TpdsUpdateSender.promises.moveEntity({ ...params, startPath: '/main.tex', endPath: '/new.tex' })
+    expect(ctx.FetchUtils.fetchNothing.called).to.equal(false)
+    expect(ctx.CollaboratorsGetter.promises.getInvitedMemberIds.called).to.equal(false)
   })
 
   describe('enqueue', function () {

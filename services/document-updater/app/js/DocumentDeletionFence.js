@@ -1,4 +1,5 @@
 const { AsyncLocalStorage } = require('node:async_hooks')
+const ProjectWriteGate = require('@overleaf/redis-wrapper/ProjectWriteGate')
 const operationContext = new AsyncLocalStorage()
 const SERVER_GENERATION = `return string.match(redis.call('INFO', 'server'), 'run_id:([a-f0-9]+)')`
 
@@ -72,6 +73,11 @@ end
 -- Check at the mutation boundary, not just in a preceding GET under a lease.
 if ARGV[3] ~= '' and redis.call('GET', KEYS[2]) ~= ARGV[3] then
   return redis.error_reply('DOCUMENT_VERSION_CONFLICT')
+end
+-- A privileged request may have paused after admission while its lease expired.
+-- Check its ownership in the same Redis operation that mutates the document.
+if ARGV[4] ~= '' and redis.call('GET', ARGV[4]) ~= ARGV[5] then
+  return redis.error_reply('PROJECT_WRITE_BUSY')
 end
 local commands = cjson.decode(ARGV[1])
 local results = {}
@@ -204,8 +210,12 @@ function createDocumentDeletionFence(client, keys) {
         }
         return [name.toUpperCase(), ...args]
       })
+      const writer = ProjectWriteGate.currentProjectWrite()
+      const writeKey = ProjectWriteGate.enabled() && typeof client.nodes !== 'function' && writer?.token
+        ? ProjectWriteGate.keyFor(writer.projectId) : ''
+      if (writeKey) declared.add(writeKey)
       return client.eval(WRITE, declared.size, ...declared, JSON.stringify(normalized), generationFor(docId),
-        expectedVersion === undefined ? '' : String(expectedVersion))
+        expectedVersion === undefined ? '' : String(expectedVersion), writeKey, writeKey ? writer.token : '')
     },
   }
   // Minimal MULTI-compatible builder for the fixed document write commands.

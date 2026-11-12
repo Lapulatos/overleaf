@@ -1,3 +1,4 @@
+import { applyGitHubWebhookRoute } from '../Features/NativeGit/GitHubWebhookRouter.mjs'
 import express from 'express'
 import Settings from '@overleaf/settings'
 import logger from '@overleaf/logger'
@@ -149,6 +150,7 @@ if (Settings.enabledServices.includes('web')) {
 app.use(metrics.http.monitor(logger))
 
 await Modules.applyMiddleware(app, 'appMiddleware')
+applyGitHubWebhookRoute(app)
 app.use(bodyParser.urlencoded({ extended: true, limit: '2mb' }))
 app.use(bodyParser.json({ limit: Settings.max_json_request_size }))
 app.use(methodOverride())

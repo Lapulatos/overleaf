@@ -1,3 +1,4 @@
+import { replaceRecoveredTask } from './recovered-task'
 import { useEffect, useState } from 'react'
 import { getJSON, postJSON } from '@/infrastructure/fetch-json'
 import { AssistantMessage } from './agent-messages'
@@ -15,9 +16,9 @@ export function GoalPanel({projectId,conversationId,onState,onGoal}:{projectId:s
  return <section className="paper-goal-panel" aria-label="Persistent goal"><header><strong>Goal</strong><span>{stage}</span></header><p>{goal.objective}</p><p className="paper-context-scope">{goal.reviewMode==='ai'?'Automatic · AI review':'Manual approval'}</p>{!!goal.scope?.length&&<p className="paper-context-scope">Edit scope: {goal.scope.map(s=>s.path+(s.kind==='folder'?'/':'')).join(', ')}</p>}{!!goal.skills?.length&&<p className="paper-context-scope">Skills: {goal.skills.join(', ')}</p>}<div className="paper-goal-progress" role="status"><strong>{goal.steps} {goal.steps===1?'round':'rounds'} completed{goal.status==='active'?` · Round ${goal.steps+1}`:''}</strong></div><AssistantMessage text={goal.reason} compact/>
   {!!goal.review?.reason&&<details><summary>Latest review</summary><AssistantMessage text={goal.review.reason} compact/></details>}
   {!!goal.recent?.length&&<details open><summary>Recent progress</summary>{goal.recent.map((step,index)=><GoalHistoryStep key={`${step.taskId}-${index}`} projectId={projectId} step={step}/>)}</details>}
-  {value.task&&<details open={['active','waiting_review'].includes(goal.status)}><summary>Current work &amp; changes</summary><AgentTaskResult hideInstruction task={value.task} busy={busy||goal.status==='active'} act={decide}/></details>}
+  {value.task&&<details open={['active','waiting_review'].includes(goal.status)}><summary>Current work &amp; changes</summary><AgentTaskResult onRecovered={task=>{setValue(current=>current?{...current,task:replaceRecoveredTask(current.task,task)}:current);setRevision(n=>n+1)}} hideInstruction task={value.task} busy={busy||goal.status==='active'} act={decide}/></details>}
 
-  {value.reviewTask&&<section aria-label="AI review activity"><strong>AI review</strong><AgentTaskResult hideInstruction task={value.reviewTask} busy act={()=>{}}/></section>}
+  {value.reviewTask&&<section aria-label="AI review activity"><strong>AI review</strong><AgentTaskResult onRecovered={task=>setValue(current=>current?{...current,reviewTask:replaceRecoveredTask(current.reviewTask,task)}:current)} hideInstruction task={value.reviewTask} busy act={()=>{}}/></section>}
   {error&&<p role="alert">{error}</p>}
  </section>
 }
@@ -29,7 +30,7 @@ function GoalHistoryStep({projectId,step}:{projectId:string;step:NonNullable<Non
   {!task&&<AssistantMessage text={step.summary}/>}
   {!!step.changes?.length&&<ul>{step.changes.map(change=><li key={change.path}><code>{change.path}</code><span>{change.status==='accepted'?'Applied':change.status}</span></li>)}</ul>}
   {step.review?.reason&&<details><summary>AI review decision</summary><AssistantMessage text={step.review.reason}/></details>}
-  {step.taskId&&<details open onToggle={e=>setOpened(e.currentTarget.open)}><summary>Files, diffs &amp; commands</summary>{loading&&<p role="status">Loading execution details…</p>}{task&&<AgentTaskResult hideInstruction task={task} busy act={()=>{}}/>}{error&&<p role="alert">Execution details are unavailable. The task snapshot may have expired. {error}</p>}</details>}
+  {step.taskId&&<details open onToggle={e=>setOpened(e.currentTarget.open)}><summary>Files, diffs &amp; commands</summary>{loading&&<p role="status">Loading execution details…</p>}{task&&<AgentTaskResult onRecovered={value=>setTask(current=>replaceRecoveredTask(current,value))} hideInstruction task={task} busy act={()=>{}}/>}{error&&<p role="alert">Execution details are unavailable. The task snapshot may have expired. {error}</p>}</details>}
  </article>
 }
 

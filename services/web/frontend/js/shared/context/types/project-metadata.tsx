@@ -14,6 +14,8 @@ export type ProjectMember = {
 }
 
 export interface ProjectMetadata extends ProjectSettings {
+  gitWorkspaceEpoch?: number
+  gitWorkspacePrepareEnabled?: boolean
   _id: string
   mainBibliographyDocId?: string
   members: ProjectMember[]

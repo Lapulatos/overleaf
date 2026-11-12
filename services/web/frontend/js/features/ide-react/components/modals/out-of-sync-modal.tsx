@@ -12,11 +12,12 @@ import {
 
 export type OutOfSyncModalProps = {
   editorContent: string
+  recoveryNotice?: string
   show: boolean
   onHide: () => void
 }
 
-function OutOfSyncModal({ editorContent, show, onHide }: OutOfSyncModalProps) {
+function OutOfSyncModal({ editorContent, recoveryNotice, show, onHide }: OutOfSyncModalProps) {
   const { t } = useTranslation()
   const location = useLocation()
   const [editorContentShown, setEditorContentShown] = useState(false)
@@ -56,6 +57,7 @@ function OutOfSyncModal({ editorContent, show, onHide }: OutOfSyncModalProps) {
         />
       </OLModalBody>
       <OLModalBody>
+        {recoveryNotice && <p role="status">{recoveryNotice}</p>}
         <OLButton
           variant="secondary"
           onClick={() => setEditorContentShown(shown => !shown)}
@@ -64,6 +66,11 @@ function OutOfSyncModal({ editorContent, show, onHide }: OutOfSyncModalProps) {
             ? t('hide_local_file_contents')
             : t('show_local_file_contents')}
         </OLButton>
+        <OLButton variant="secondary" onClick={() => {
+          const url = URL.createObjectURL(new Blob([editorContent], { type: 'text/plain;charset=utf-8' }))
+          const link = document.createElement('a'); link.href = url; link.download = 'local-recovery.txt'; link.click()
+          setTimeout(() => URL.revokeObjectURL(url), 1000)
+        }}>Download local text</OLButton>
         {editorContentShown ? (
           <div className="text-preview">
             <textarea

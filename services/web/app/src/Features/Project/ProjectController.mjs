@@ -254,7 +254,7 @@ const _ProjectController = {
     ProjectAuditLogHandler.addEntryIfManagedInBackground(
       projectId,
       'project-restored',
-      user._id,
+      user,
       req.ip
     )
     res.sendStatus(200)

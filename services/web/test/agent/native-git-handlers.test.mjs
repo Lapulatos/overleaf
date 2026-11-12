@@ -112,3 +112,75 @@ test('unexpected storage failures remain server errors', async () => {
   const f = fixture({ runtime: { status: async () => { throw failure } } })
   await assert.rejects(f.handlers.status(f.req, f.res), error => error === failure)
 })
+
+test('merge draft commands validate task/revision/lease input before dispatch and never accept disk paths', async () => {
+  const id = '10000000-0000-4000-8000-000000000001'
+  for (const body of [
+    { command: 'mergeDraftPrepare', operationId: id, ref: 'source', directory: '/private' },
+    { command: 'mergeDraftGet', id: '../task' },
+    { command: 'mergeDraftClaim', id, revision: 0, sessionId: id },
+    { command: 'mergeDraftResolve', id, revision: 1, sessionId: id, generation: 0, path: 'main.tex', fingerprint: 'a'.repeat(64), choice: 'incoming' },
+  ]) {
+    const f = fixture(); f.req.body = body
+    await f.handlers.command(f.req, f.res)
+    assert.equal(f.res.statusCode, 400)
+    assert.equal(f.calls.some(call => call[0] === 'execute'), false)
+  }
+  const f = fixture()
+  f.req.body = { command: 'mergeDraftPrepare', operationId: id, ref: 'source' }
+  await f.handlers.command(f.req, f.res)
+  assert.equal(f.res.statusCode, 200)
+  assert.deepEqual(f.calls[1], ['execute', project, user, f.req.body])
+  const denied = fixture({ canWrite: async () => false })
+  denied.req.body = { command: 'mergeDraftList' }
+  await denied.handlers.command(denied.req, denied.res)
+  assert.equal(denied.res.statusCode, 403)
+  assert.equal(denied.calls.length, 0)
+})
+
+test('application and recovery commands enforce explicit bounded identities and recovery choice', async () => {
+ const id='10000000-0000-4000-8000-000000000001'
+ const apply={command:'mergeDraftApply',id,revision:1,sessionId:id,generation:1}
+ const recover={command:'mergeDraftRecover',id,revision:1,fingerprint:'a'.repeat(64),mode:'resume',operationId:id}
+ for(const body of [apply,recover,{command:'mergeDraftRecoveryPreview',id}]){
+  const f=fixture();f.req.body=body;await f.handlers.command(f.req,f.res)
+  assert.equal(f.res.statusCode,200)
+  const denied=fixture({canWrite:async()=>false});denied.req.body=body
+  await denied.handlers.command(denied.req,denied.res);assert.equal(denied.res.statusCode,403)
+ }
+ for(const body of [{...apply,generation:0},{...apply,directory:'/tmp'}, {...recover,mode:'overwrite'}, {...recover,fingerprint:''}, {...recover,epoch:99}]){
+  const f=fixture();f.req.body=body;await f.handlers.command(f.req,f.res)
+  assert.equal(f.res.statusCode,400);assert.equal(f.calls.some(call=>call[0]==='execute'),false)
+ }
+})
+
+test('session recovery commands reject client epochs, lease tokens and disk paths', async () => {
+ const operationId='10000000-0000-4000-8000-000000000001'
+ for(const body of [{command:'sessionRecover',operationId},{command:'sessionRecoveryList'}]){
+  const f=fixture();f.req.body=body;await f.handlers.command(f.req,f.res)
+  assert.equal(f.res.statusCode,200)
+  const denied=fixture({canWrite:async()=>false});denied.req.body=body
+  await denied.handlers.command(denied.req,denied.res);assert.equal(denied.res.statusCode,403)
+  assert.equal(denied.calls.length,0)
+ }
+ for(const extra of [{epoch:7},{writeToken:operationId},{directory:'/tmp'},{operationId:'../invalid'}]){
+  const f=fixture();f.req.body={command:'sessionRecover',operationId,...extra}
+  await f.handlers.command(f.req,f.res);assert.equal(f.res.statusCode,400)
+  assert.equal(f.calls.some(call=>call[0]==='execute'),false)
+ }
+})
+
+test('read-only members may inspect history but never stage, initialize, or configure a webhook', async () => {
+  for (const command of [{command:'graph'}, {command:'commitDetails',ref:'HEAD'}]) {
+    const f=fixture({canWrite:async()=>false,canRead:async()=>true});f.req.body=command
+    await f.handlers.command(f.req,f.res);assert.equal(f.res.statusCode,200);assert(f.calls.some(c=>c[0]==='execute'))
+  }
+  for (const command of [{command:'stage',paths:['main.tex']}, {command:'configureWebhook',revision:0,enabled:true}, {command:'terminalOpen'}]) {
+    const f=fixture({canWrite:async()=>false,canRead:async()=>true});f.req.body=command
+    await f.handlers.command(f.req,f.res);assert.equal(f.res.statusCode,403);assert.equal(f.calls.length,0)
+  }
+  const f=fixture({canWrite:async()=>false,canRead:async()=>true})
+  await f.handlers.status(f.req,f.res);assert.equal(f.res.statusCode,200)
+  const g=fixture({canWrite:async()=>false,canRead:async()=>true})
+  await g.handlers.initialize(g.req,g.res);assert.equal(g.res.statusCode,403)
+})

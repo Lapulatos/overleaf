@@ -125,3 +125,13 @@ test('citation full text lookup still runs when metadata has no exact title matc
  assert.equal(submitted.claimInput.evidence[0].fullText.coverage,'full-text')
  assert.match(submitted.claimInput.evidence[0].fullText.text,/Exact source text/)
 })
+
+for(const mode of ['metadata','claims','complete'])test(`reference ${mode} refuses workspace changed during provider lookup`,async()=>{
+ const identity={projectId:'root',workspaceId:'p',branch:'draft',epoch:2}
+ let current={...identity},created=0
+ const service=createReferenceService({canWrite:async()=>true,readWorkspaceIdentity:async()=>({...current}),snapshot:async()=>[bib],
+ literature:{lookup:async()=>{current.epoch++;return {title:'Spiking',url:'https://doi.org/10.1234/spiking',sourceUrl:'https://api.crossref.org/works/10.1234%2Fspiking',metadata:{title:'Spiking',author:'Cao, A',year:'2024',doi:'10.1234/spiking'}}}},
+ tasks:{create:async()=>{created++}},store:{create:async()=>{created++}}})
+ await assert.rejects(service.start('u','p',{mode,docId:'bib',keys:['cao2024spiking']}),{code:'AI_WORKSPACE_CHANGED'})
+ assert.equal(created,0)
+})

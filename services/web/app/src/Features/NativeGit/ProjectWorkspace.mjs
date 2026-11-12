@@ -20,6 +20,7 @@ export class ProjectWorkspace {
   }
 
   async synchronize(binding) {
+    if (binding.mutationTaskId) throw Object.assign(new Error('A collaboration mutation requires recovery'), { status: 409 })
     if (binding.pending) throw Object.assign(new Error('A branch switch is still being applied'), { status: 409 })
     const repository = await this.current(binding)
     const snapshot = await this.project.read()
@@ -30,6 +31,7 @@ export class ProjectWorkspace {
   async inspect() {
     return this.withLock(async () => {
       const binding = await this.store.read()
+      if (binding.mutationTaskId) return { switching: true, branch: binding.branch, mutationTaskId: binding.mutationTaskId }
       if (binding.pending) return { switching: true, branch: binding.branch }
       const { repository } = await this.synchronize(binding)
       return { switching: false, status: await repository.status(), branches: await repository.branches(), tags: await repository.tagRefs(), graph: await repository.graph(), webRemotes: remoteWebLinks(await repository.remotes()) }

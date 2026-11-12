@@ -27,6 +27,7 @@ type ConnectionContextValue = {
   isStillReconnecting: boolean
   secondsUntilReconnect: () => number
   tryReconnectNow: () => void
+  reconnectWorkspace: () => void
   registerUserActivity: () => void
   closeConnection: (err: ConnectionError) => void
   getSocketDebuggingInfo: () => SocketDebuggingInfo
@@ -72,6 +73,8 @@ export const ConnectionProvider: FC<React.PropsWithChildren> = ({
     () => connectionManager.tryReconnectNow(),
     [connectionManager]
   )
+
+  const reconnectWorkspace = useCallback(() => connectionManager.reconnectWorkspace(), [connectionManager])
 
   const registerUserActivity = useCallback(
     () => connectionManager.registerUserActivity(),
@@ -119,6 +122,7 @@ export const ConnectionProvider: FC<React.PropsWithChildren> = ({
       isStillReconnecting,
       secondsUntilReconnect,
       tryReconnectNow,
+      reconnectWorkspace,
       registerUserActivity,
       closeConnection,
       getSocketDebuggingInfo,
@@ -131,6 +135,7 @@ export const ConnectionProvider: FC<React.PropsWithChildren> = ({
       registerUserActivity,
       secondsUntilReconnect,
       tryReconnectNow,
+      reconnectWorkspace,
       closeConnection,
       getSocketDebuggingInfo,
     ]

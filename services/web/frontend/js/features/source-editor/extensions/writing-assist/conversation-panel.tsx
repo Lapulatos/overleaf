@@ -1,3 +1,4 @@
+import { replaceRecoveredTask } from './recovered-task'
 import { useGitCommand } from '@/features/source-control/git-command-panel'
 import AccessMode from '@/features/source-control/access-mode'
 import {usePlanCommand} from '@/features/plugins/plan-command'
@@ -355,7 +356,7 @@ export function ConversationView({
   const latestTurn = result?.conversation.turns.at(-1);
   const ordinaryTaskLatest = Boolean(result?.conversation.activeTaskId) || (!goalActive && Boolean(latestTurn?.createdAt && goalInfo && Date.parse(latestTurn.createdAt) > Date.parse(goalInfo.updatedAt || goalInfo.createdAt || '')));
   const goalPanel = <GoalPanel key="goal" projectId={projectId} conversationId={id} onState={setGoalActive} onGoal={setGoalInfo}/>;
-  const currentTask = result?.task ? <div key="current-task"><AgentTaskResult task={result.task} busy={busy} act={act} onReviewInEditor={onReviewInEditor ? reviewInEditor : undefined} messageActions={turnActions(result.task)} /></div> : null;
+  const currentTask = result?.task ? <div key="current-task"><AgentTaskResult onRecovered={value=>setResult(current=>current?{...current,task:replaceRecoveredTask(current.task,value)}:current)} task={result.task} busy={busy} act={act} onReviewInEditor={onReviewInEditor ? reviewInEditor : undefined} messageActions={turnActions(result.task)} /></div> : null;
   const latestActivity = result?.task?.activity?.at(-1);
   return (
     <IssueReplyContext.Provider value={{key:`${projectId}:${id}`,disabled:busy||running||!id,submit:replyToIssue}}>

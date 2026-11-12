@@ -1,5 +1,6 @@
 // @ts-check
 
+import { withHistoryWorkspaceWrite, historyRecoveryPreview } from './HistoryWorkspaceWrite.mjs'
 import { setTimeout } from 'node:timers/promises'
 import { pipeline } from 'node:stream/promises'
 import OError from '@overleaf/o-error'
@@ -282,13 +283,12 @@ async function revertFile(req, res, next) {
     await prepareHistoryRestore(projectId)
   }
 
-  const entity = await RestoreManager.promises.revertFile(
-    userId,
-    projectId,
-    version,
-    pathname,
-    {}
-  )
+  const entity = await withHistoryWorkspaceWrite(projectId, userId, async step => {
+    await step?.('before', pathname, 'restore')
+    const result = await RestoreManager.promises.revertFile(userId, projectId, version, pathname, {})
+    await step?.('after', pathname, 'restore')
+    return result
+  }, { version, pathname })
 
   ProjectAuditLogHandler.addEntryIfManagedInBackground(
     projectId,
@@ -314,6 +314,30 @@ async function revertFile(req, res, next) {
  * @param {any} res
  * @param {any} next
  */
+async function recoveryPreview(req, res) {
+  res.json(await historyRecoveryPreview(req.params.project_id, SessionManager.getLoggedInUserId(req.session)))
+}
+async function recoverHistory(req, res) {
+  const projectId = req.params.project_id, userId = SessionManager.getLoggedInUserId(req.session)
+  const { id, revision, fingerprint, decision } = req.body
+  if (!['retry', 'keep'].includes(decision) || typeof fingerprint !== 'string' || !Number.isSafeInteger(revision)) return res.status(400).json({ error: 'Invalid recovery review' })
+  try {
+    const result = await withHistoryWorkspaceWrite(projectId, userId, async (step, spec) => {
+      if (spec.pathname) {
+        await step('before', spec.pathname, 'restore')
+        const entity = await RestoreManager.promises.revertFile(userId, projectId, spec.version, spec.pathname, {})
+        await step('after', spec.pathname, 'restore')
+        return [entity]
+      }
+      return RestoreManager.promises.revertProject(userId, projectId, spec.version, { onStep: step })
+    }, undefined, { id, revision, fingerprint, decision })
+    res.json({ completed: true, decision, result })
+  } catch (error) {
+    if ([400,403,409,507].includes(error.status)) return res.status(error.status).json({ error: error.message })
+    throw error
+  }
+}
+
 async function revertProject(req, res, next) {
   const { project_id: projectId } = req.params
   const { version } = req.body
@@ -323,11 +347,9 @@ async function revertProject(req, res, next) {
     await prepareHistoryRestore(projectId)
   }
 
-  const reverted = await RestoreManager.promises.revertProject(
-    userId,
-    projectId,
-    version
-  )
+  const reverted = await withHistoryWorkspaceWrite(projectId, userId, step => RestoreManager.promises.revertProject(
+    userId, projectId, version, { onStep: step }
+  ), { version })
 
   ProjectAuditLogHandler.addEntryIfManagedInBackground(
     projectId,
@@ -745,6 +767,8 @@ export default {
   restoreFileFromV2: expressify(restoreFileFromV2),
   revertFile: expressify(revertFile),
   revertProject: expressify(revertProject),
+  recoveryPreview: expressify(recoveryPreview),
+  recoverHistory: expressify(recoverHistory),
   getLabels: expressify(getLabels),
   createLabel: expressify(createLabel),
   deleteLabel: expressify(deleteLabel),

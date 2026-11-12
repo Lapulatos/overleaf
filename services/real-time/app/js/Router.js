@@ -55,6 +55,12 @@ export default Router = {
         status: method,
       })
       callback(serializedError)
+    } else if (error.code === 'WORKSPACE_EPOCH_STALE') {
+      logger.warn(attrs, 'stale workspace editor')
+      callback({
+        code: 'WORKSPACE_EPOCH_STALE',
+        message: 'This editor belongs to an older workspace version; preserve pending edits and reload the workspace',
+      })
     } else if (error.name === 'CodedError') {
       logger.warn(attrs, error.message)
       const serializedError = { message: error.message, code: error.info.code }
@@ -399,6 +405,20 @@ export default Router = {
           }
         )
       }
+
+      client.on('nativeGitPresence', function (intent, callback) {
+        if (typeof callback !== 'function') return
+        WebsocketController.updateGitPresence(client, intent).then(
+          snapshot => callback(null, snapshot),
+          error => callback({ message: error.message, status: error.status || 503 })
+        )
+      })
+
+      client.on('nativeGitPrepareAck', function (request) {
+        WebsocketController.acknowledgeWorkspacePreparation(client, request, err => {
+          if (err) Router._handleError(function () {}, err, client, 'nativeGitPrepareAck')
+        })
+      })
 
       client.on('disconnect', function () {
         metrics.inc('socket-io.disconnect', 1, { status: client.transport })

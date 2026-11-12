@@ -1,3 +1,4 @@
+import { assertDocumentEpoch } from './workspace-epoch'
 /* eslint-disable camelcase */
 // Migrated from services/web/frontend/js/ide/editor/Document.js
 
@@ -488,10 +489,19 @@ export class DocumentContainer extends EventEmitter {
           version,
           updates,
           ranges,
-          type = 'sharejs-text-ot'
+          type = 'sharejs-text-ot',
+          workspaceEpoch?: number
         ) => {
           if (error) {
             callback?.(error)
+            return
+          }
+          try {
+            assertDocumentEpoch(this.doc?.workspaceEpoch, workspaceEpoch ?? undefined)
+          } catch (error) {
+            const stale = error as Error
+            this.onError(stale, {}, this.doc?.getSnapshot())
+            callback?.(stale)
             return
           }
           this.joined = true
@@ -524,7 +534,8 @@ export class DocumentContainer extends EventEmitter {
           version,
           updates,
           ranges,
-          type: OTType = 'sharejs-text-ot'
+          type: OTType = 'sharejs-text-ot',
+          workspaceEpoch?: number
         ) => {
           if (error) {
             callback?.(error)
@@ -538,7 +549,8 @@ export class DocumentContainer extends EventEmitter {
             this.socket,
             this.globalEditorWatchdogManager,
             this.ideEventEmitter,
-            type
+            type,
+            workspaceEpoch ?? undefined
           )
           if (type === 'sharejs-text-ot') {
             this.decodeRanges(ranges)
@@ -695,6 +707,9 @@ export class DocumentContainer extends EventEmitter {
       return
     }
     if (this.doc) {
+      // Capture every failure before pending operations are cleared; several
+      // documents can fail in one event-loop turn.
+      editorContent ??= this.doc.getSnapshot()
       this.doc.clearInflightAndPendingOps()
     }
     this.trigger('error', error, meta, editorContent)

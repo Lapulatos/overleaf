@@ -36,7 +36,7 @@ export function createGoalService({store,tasks,conversations}){
  }
  async function advance(g,work,review){
   const pending=work.proposals.filter(p=>p.status==='pending')
-  if(work.proposals.some(p=>['conflict','uncertain','applying'].includes(p.status)))return save(g,{status:'blocked',reason:'A file changed or a write could not be confirmed. Review the changes before resuming.'})
+  if(work.proposals.some(p=>['conflict','uncertain','applying','closed-unconfirmed'].includes(p.status)))return save(g,{status:'blocked',reason:'A file changed or a write could not be confirmed. Review the changes before resuming.'})
   if(review.decision==='blocked'||review.goalStatus==='blocked')return save(g,{status:'blocked',review,reason:review.reason})
   if(pending.length&&g.reviewMode==='human')return save(g,{status:'waiting_review',review,reason:'Review this batch of changes to continue.'})
   if(pending.length){

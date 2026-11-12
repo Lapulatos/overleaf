@@ -1,3 +1,4 @@
+import WorkspaceEpochGate from '@overleaf/redis-wrapper/WorkspaceEpochGate.js'
 import OError from '@overleaf/o-error'
 import logger from '@overleaf/logger'
 import metrics from '@overleaf/metrics'
@@ -90,6 +91,8 @@ export default WebsocketController = {
         client.ol_context.privilege_level = privilegeLevel
         client.ol_context.user_id = userId
         client.ol_context.project_id = projectId
+        client.ol_context.workspace_epoch = project.gitWorkspaceEpoch
+        client.ol_context.workspace_prepare_required = project.gitWorkspacePrepareEnabled === true
         client.ol_context.owner_id = project.owner && project.owner._id
         client.ol_context.first_name = user.first_name
         client.ol_context.last_name = user.last_name
@@ -101,8 +104,11 @@ export default WebsocketController = {
         client.ol_context.is_token_member = !!userMetadata.isTokenMember
         client.ol_context.is_invited_member = !!userMetadata.isInvitedMember
 
-        RoomManager.joinProject(client, projectId, function (err) {
+        const joinRoom = () => RoomManager.joinProject(client, projectId, function (err) {
           if (err) {
+            if (client.ol_context.workspace_prepare_registered) {
+              return DocumentUpdaterManager.leaveWorkspaceSession(projectId, client.id, cleanupError => callback(cleanupError || err))
+            }
             return callback(err)
           }
           logger.debug(
@@ -122,6 +128,20 @@ export default WebsocketController = {
             WebsocketController.PROTOCOL_VERSION
           )
         })
+
+        if (project.gitWorkspacePrepareEnabled === true) {
+          DocumentUpdaterManager.registerWorkspaceSession(projectId, project.gitWorkspaceEpoch, client.id, err => {
+            if (err) return callback(err)
+            client.ol_context.workspace_prepare_registered = true
+            // Disconnect may race the asynchronous Redis registration.
+            if (client.disconnected) {
+              return DocumentUpdaterManager.leaveWorkspaceSession(projectId, client.id, callback)
+            }
+            joinRoom()
+          })
+        } else {
+          joinRoom()
+        }
 
         // No need to block for setting the user as connected in the cursor tracking
         ConnectedUsersManager.updateUserPosition(
@@ -146,7 +166,17 @@ export default WebsocketController = {
   // but we need to wait for the triggering client to disconnect. How long we wait
   // is determined by FLUSH_IF_EMPTY_DELAY.
   FLUSH_IF_EMPTY_DELAY: 500, // ms
+  async updateGitPresence(client, intent) {
+    const { gitPresenceForClient } = await import('./GitPresenceRuntime.js')
+    if (client.disconnected) throw new Error('Git presence session disconnected')
+    client.gitPresence ||= gitPresenceForClient(client)
+    return client.gitPresence.update(intent)
+  },
   leaveProject(io, client, callback) {
+    if (client.gitPresence) {
+      client.gitPresence.close().catch(err => logger.error({ err, clientId: client.id }, 'Git presence cleanup failed'))
+      client.gitPresence = null
+    }
     const { project_id: projectId, user_id: userId } = client.ol_context
     if (!projectId) {
       return callback()
@@ -177,6 +207,11 @@ export default WebsocketController = {
       }
     )
 
+    if (client.ol_context.workspace_prepare_registered) {
+      DocumentUpdaterManager.leaveWorkspaceSession(projectId, client.id, err => {
+        if (err) logger.error({ err, projectId, clientId: client.id }, 'workspace session removal failed; preparation remains blocked')
+      })
+    }
     RoomManager.leaveProjectAndDocs(client)
     setTimeout(function () {
       const remainingClients = io.sockets.clients(projectId)
@@ -198,7 +233,26 @@ export default WebsocketController = {
     }, WebsocketController.FLUSH_IF_EMPTY_DELAY)
   },
 
+  acknowledgeWorkspacePreparation(client, request, callback) {
+    const context = client.ol_context
+    if (client.disconnected || !context?.user_id || !context.project_id || !context.workspace_prepare_registered) {
+      return callback(new NotJoinedError())
+    }
+    if (!request || typeof request.id !== 'string' || !/^[a-f0-9-]{36}$/i.test(request.id) ||
+        !Number.isSafeInteger(request.epoch) || request.epoch < 1 ||
+        request.epoch !== context.workspace_epoch || typeof request.saved !== 'boolean') {
+      return callback(new Error('Invalid workspace preparation acknowledgement'))
+    }
+    // Project and session are taken solely from the authenticated socket.
+    DocumentUpdaterManager.acknowledgeWorkspacePreparation(context.project_id, {
+      id: request.id, epoch: context.workspace_epoch, session: client.id, saved: request.saved,
+    }, callback)
+  },
+
   joinDoc(client, docId, fromVersion, options, callback) {
+    if (client.ol_context.workspace_prepare_required && !client.ol_context.workspace_prepare_registered) {
+      return callback(new NotJoinedError())
+    }
     if (client.disconnected) {
       metrics.inc('editor.join-doc.disconnected', 1, { status: 'immediately' })
       return callback()
@@ -373,7 +427,11 @@ export default WebsocketController = {
                 },
                 'client joined doc'
               )
-              callback(null, escapedLines, version, ops, ranges, type)
+              if (client.ol_context.workspace_epoch === undefined) {
+                callback(null, escapedLines, version, ops, ranges, type)
+              } else {
+                callback(null, escapedLines, version, ops, ranges, type, client.ol_context.workspace_epoch)
+              }
             }
           )
         })
@@ -556,6 +614,9 @@ export default WebsocketController = {
   },
 
   applyOtUpdate(client, docId, update, callback) {
+    if (client.ol_context.workspace_prepare_required && !client.ol_context.workspace_prepare_registered) {
+      return callback(new NotJoinedError())
+    }
     // client may have disconnected, but we can submit their update to doc-updater anyways.
     const { user_id: userId, project_id: projectId } = client.ol_context
     if (!projectId) {
@@ -576,6 +637,9 @@ export default WebsocketController = {
           )
           return callback(error)
         }
+        try {
+          WorkspaceEpochGate.assertSessionEpoch(client.ol_context.workspace_epoch, update.meta?.workspaceEpoch)
+        } catch (error) { return callback(error) }
         if (!update.meta) {
           update.meta = {}
         }

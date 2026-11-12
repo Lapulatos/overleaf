@@ -1,13 +1,15 @@
+import { assertWorkspaceIdentity } from './WritingAssistWorkspaceIdentity.mjs'
 import { createHash, randomUUID } from 'node:crypto'
 import { AgentError } from './WritingAssistAgentService.mjs'
 import { parseBibliography } from './WritingAssistBibTeX.mjs'
 import { applyReferenceFields } from './WritingAssistReferenceCompletion.mjs'
 const hash = value => createHash('sha256').update(value).digest('hex')
-export async function applyReferenceReview({ canWrite, snapshot, store, tasks }, user, project, {taskId, fields}) {
+export async function applyReferenceReview({ canWrite, snapshot, store, tasks , readWorkspaceIdentity = async () => null }, user, project, {taskId, fields}) {
  if (!(await canWrite(user, project))) throw new AgentError(403, 'Project write access required')
  const task = await store.find(taskId, user, project)
  if (!task) throw new AgentError(404, 'Reference check not found')
- if (task.status !== 'completed' || task.proposals?.some(p => ['applying','uncertain'].includes(p.status))) throw new AgentError(409, 'Finish the current review before applying fields')
+ if (task.status !== 'completed' || task.proposals?.some(p => ['applying','uncertain','closed-unconfirmed'].includes(p.status))) throw new AgentError(409, 'Finish the current review before applying fields')
+ assertWorkspaceIdentity(task.workspaceIdentity, await readWorkspaceIdentity(project))
  const review = task.referenceReview
  if (task.proposals?.some(p=>p.status==='pending' && (p.docId!==review?.docId || hash(p.before)!==review?.baseHash))) throw new AgentError(409, 'Finish the unrelated file preview before applying fields')
  if (!review?.baseHash) throw new AgentError(409, 'Run a new reference check to enable field application')
@@ -42,9 +44,7 @@ export async function applyReferenceReview({ canWrite, snapshot, store, tasks },
  const id=randomUUID(); const proposalId=randomUUID()
  // Reuse the existing version-checked writer. All selected fields are one document
  // update; concurrent writers cannot silently overwrite the checked snapshot.
- await store.create({id,userId:user,projectId:project,status:'completed',instruction:`Apply ${fields.length} checked reference fields`,summary:`Requested fields: ${fields.map(f=>`${f.key}.${f.field}`).join(', ')}`,documents:[doc],proposals:[{id:proposalId,docId:doc.id,path:doc.path,version:doc.version,before:doc.content,after,status:'pending'}],createdAt:new Date()})
- const applied=await tasks.decide(user,project,id,proposalId,true)
- if (!applied.proposals?.every(p=>p.status==='accepted')) return applied
+ assertWorkspaceIdentity(task.workspaceIdentity, await readWorkspaceIdentity(project))
  const next=structuredClone(review)
  next.baseHash=hash(after)
  next.appliedCount=(next.appliedCount || 0)+fields.length
@@ -54,6 +54,9 @@ export async function applyReferenceReview({ canWrite, snapshot, store, tasks },
   if(compared){compared.current=entry.actions.find(c=>c.field===choice.field).after;compared.status='matches'}
   entry.actions=entry.actions.filter(c=>c.field!==choice.field)
  }
+ await store.create({id,userId:user,projectId:project,workspaceIdentity:task.workspaceIdentity,status:'completed',instruction:`Apply ${fields.length} checked reference fields`,summary:`Requested fields: ${fields.map(f=>`${f.key}.${f.field}`).join(', ')}`,applicationOutcome:{proposalId,afterHash:hash(after),fields:{referenceReview:next,summary:`Applied ${fields.length} reference changes.`}},documents:[doc],proposals:[{id:proposalId,docId:doc.id,path:doc.path,version:doc.version,before:doc.content,after,status:'pending'}],createdAt:new Date()})
+ const applied=await tasks.decide(user,project,id,proposalId,true)
+ if (!applied.proposals?.every(p=>p.status==='accepted')) return applied
  await store.recordReferenceApplication(id,user,project,proposalId,next,`Applied ${fields.length} reference changes.`)
  return tasks.get(user,project,id)
 }

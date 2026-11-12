@@ -37,12 +37,12 @@ function requireSession(id, key) {
  if (!s || s.key!==key) throw Object.assign(new Error('Terminal session expired. Reopen the terminal.'),{status:409})
  s.touched=Date.now(); return s
 }
-export function openTerminal(directory,key,spawnChild) {
- for(const [id,s] of sessions) if(s.key===key) closeTerminal(id,key)
+export function openTerminal(directory,key,spawnChild,replaceExisting=true) {
+ if(replaceExisting)for(const [id,s] of sessions) if(s.key===key) closeTerminal(id,key)
  const id=randomUUID(), decoder=new StringDecoder('utf8')
  const child=spawnChild ? spawnChild() : spawn('python3',['-u','-c',terminalBridge],{cwd:directory,env:{PATH:process.env.PATH,HOME:directory,HISTFILE:'/dev/null',TERM:'xterm-256color',LANG:'C.UTF-8',PS1:'\\w \\$ '},stdio:['pipe','pipe','pipe']})
- const session={key,child,directory,output:'',exited:false,touched:Date.now()}; sessions.set(id,session)
- const append=text=>{session.output=(session.output+text).slice(-1024*1024)}
+ const session={key,child,directory,output:'',outputStart:0,outputEnd:0,legacyCursor:0,exited:false,touched:Date.now()}; sessions.set(id,session)
+ const append=text=>{session.outputEnd+=text.length;session.output=(session.output+text).slice(-1024*1024);session.outputStart=session.outputEnd-session.output.length}
  createInterface({input:child.stdout}).on('line',line=>{try{append(decoder.write(Buffer.from(JSON.parse(line).data,'base64')))}catch{}})
  child.stdin.on('error',error=>{append(error.message);session.exited=true})
  child.stderr.on('data',data=>append(data.toString()))
@@ -50,7 +50,13 @@ export function openTerminal(directory,key,spawnChild) {
  child.on('exit',()=>{append(decoder.end());session.exited=true})
  return {id,directory}
 }
-export function pollTerminal(id,key) {const s=requireSession(id,key);const output=s.output;s.output='';return {output,exited:s.exited}}
+export function pollTerminal(id,key,cursor) {
+ const s=requireSession(id,key),offset=cursor===undefined?s.legacyCursor:cursor
+ if(!Number.isSafeInteger(offset)||offset<0||offset>s.outputEnd)throw Object.assign(Error('Invalid terminal output cursor'),{status:409})
+ const result={output:s.output.slice(Math.max(offset,s.outputStart)-s.outputStart),exited:s.exited,cursor:s.outputEnd,truncated:offset<s.outputStart}
+ if(cursor===undefined)s.legacyCursor=s.outputEnd
+ return result
+}
 export function writeTerminal(id,key,input,cols,rows) {const s=requireSession(id,key);if(s.exited) throw Object.assign(new Error('Shell exited. Reopen the terminal.'),{status:409});s.child.stdin.write(JSON.stringify(input!==undefined?{input}:{cols,rows})+'\n');return {}}
 export function closeTerminal(id,key) {const s=requireSession(id,key);s.child.stdin.end(JSON.stringify({close:true})+'\n');const kill=setTimeout(()=>s.child.kill('SIGKILL'),1500);kill.unref();sessions.delete(id);return {}}
 const reap=setInterval(()=>{for(const [id,s] of sessions)if(Date.now()-s.touched>30*60*1000)closeTerminal(id,s.key)},60000);reap.unref()

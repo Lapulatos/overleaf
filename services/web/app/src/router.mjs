@@ -7,6 +7,8 @@ import ProjectListController from './Features/Project/ProjectListController.mjs'
 import SpellingController from './Features/Spelling/SpellingController.mjs'
 import WritingAssistRouter from './Features/WritingAssist/WritingAssistRouter.mjs'
 import NativeGitRouter from './Features/NativeGit/NativeGitRouter.mjs'
+import { expressify } from '@overleaf/promise-utils'
+import { guardWorkspaceControls, resolveWorkspaceEditor } from './Features/NativeGit/WorkspaceRoutes.mjs'
 import EditorRouter from './Features/Editor/EditorRouter.mjs'
 import Settings from '@overleaf/settings'
 import TpdsController from './Features/ThirdPartyDataStore/TpdsController.mjs'
@@ -209,6 +211,7 @@ const rateLimiters = {
 
 async function initialize(webRouter, privateApiRouter, publicApiRouter) {
   webRouter.use(unsupportedBrowserMiddleware)
+  webRouter.use('/project/:workspaceProjectId', expressify(guardWorkspaceControls))
 
   if (!Settings.allowPublicAccess) {
     webRouter.all('*', AuthenticationController.requireGlobalLogin)
@@ -552,6 +555,14 @@ async function initialize(webRouter, privateApiRouter, publicApiRouter) {
     RateLimiterMiddleware.rateLimit(rateLimiters.getProjects),
     ProjectListController.getProjectsJson
   )
+
+  webRouter.get('/project/:Project_id/workspace/:workspaceId',
+    AuthenticationController.requireLogin(),
+    expressify(resolveWorkspaceEditor),
+    AsyncLocalStorage.middleware,
+    PermissionsController.useCapabilities(),
+    AuthorizationMiddleware.ensureUserCanReadProject,
+    ProjectController.loadEditor)
 
   for (const route of [
     // Keep the old route for continuous metrics

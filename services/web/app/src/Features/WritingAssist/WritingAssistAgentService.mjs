@@ -1,3 +1,4 @@
+import { createApplicationDisposition } from './WritingAssistApplicationDisposition.mjs'
 import { normalizeScope, assertScopedProposals, scopeInstruction } from './WritingAssistScope.mjs'
 import { buildClaimReview } from './WritingAssistClaimReview.mjs'
 import { boundedActivity } from './WritingAssistActivity.mjs'
@@ -6,14 +7,12 @@ import { validateImages } from '@overleaf/validation-tools/image-input.mjs'
 import { randomUUID, createHash } from 'node:crypto'
 import { parsePatch, applyPatch } from 'diff'
 import { validateProjectPath } from '@overleaf/validation-tools/project-input.mjs'
+import { assertWorkspaceIdentity } from './WritingAssistWorkspaceIdentity.mjs'
+import { createApplicationInspection } from './WritingAssistApplicationInspection.mjs'
+import { createApplicationRecovery } from './WritingAssistApplicationRecovery.mjs'
 
-export class AgentError extends Error {
-  constructor(status, message, code) {
-    super(message)
-    this.status = status
-    this.code = code
-  }
-}
+import { AgentError } from './WritingAssistErrors.mjs'
+export { AgentError } from './WritingAssistErrors.mjs'
 
 // Only exact, complete patches against the server-captured snapshot are eligible
 // for acceptance. New files use explicit creation proposals, never fuzzy patches.
@@ -133,6 +132,9 @@ const terminal = new Set(['completed', 'failed', 'cancelled', 'timeout'])
  * independently of MongoDB and a running paid model. */
 export function createAgentService({
   authorizeWrite = async () => {},
+  readWorkspaceIdentity = async () => null,
+  withWriteTransaction = async (_userId, _projectId, _identity, action) => action(async () => {}),
+  withApplicationLock = async () => { throw new AgentError(503, 'Application recovery is unavailable') },
   store,
   canWrite,
   snapshot,
@@ -162,6 +164,8 @@ export function createAgentService({
   function visible(task) {
     return {
       taskId: task.id,
+      projectId: task.projectId,
+      workspaceIdentity: task.workspaceIdentity || null,
       status: ['preparing', 'submitting'].includes(task.status)
         ? 'running'
         : task.status,
@@ -193,6 +197,14 @@ export function createAgentService({
     })
   }
   return {
+    inspect: createApplicationInspection({ canWrite, store, snapshot, readWorkspaceIdentity }),
+    async closeUnconfirmed(userId, projectId, taskId, proposalId, input) {
+      const inspect = createApplicationInspection({ canWrite, store, snapshot, readWorkspaceIdentity })
+      return visible(await createApplicationDisposition({ canWrite, store, inspect, withApplicationLock })(userId, projectId, taskId, proposalId, input))
+    },
+    async recover(userId, projectId, taskId, proposalId) {
+      return visible(await createApplicationRecovery({ canWrite, store, withApplicationLock })(userId, projectId, taskId, proposalId))
+    },
     async fingerprints(userId, projectId) {
       await authorize(userId, projectId)
       return (await snapshot(projectId)).map(d=>({path:d.path,hash:createHash('sha256').update(d.content).digest('hex')}))
@@ -238,8 +250,12 @@ export function createAgentService({
           )
       }
       const id = options.taskId || randomUUID()
+      const workspaceIdentity = await readWorkspaceIdentity(projectId)
+      if (Object.hasOwn(options, 'expectedWorkspaceIdentity'))
+        assertWorkspaceIdentity(options.expectedWorkspaceIdentity, workspaceIdentity)
       const task = {
         id,
+        workspaceIdentity,
         userId,
         projectId,
         instruction,
@@ -291,6 +307,8 @@ export function createAgentService({
           )
         if (options.isActive && !(await options.isActive()))
           throw new AgentError(409, 'Conversation turn is no longer active')
+        await authorize(userId, projectId)
+        assertWorkspaceIdentity(task.workspaceIdentity, await readWorkspaceIdentity(projectId))
         if (!(await store.prepare(id, documents)))
           throw new AgentError(409, 'Task preparation was cancelled or expired')
         await daemon('/agent/task', 'POST', {
@@ -416,58 +434,86 @@ export function createAgentService({
           : await store.claim(taskId, proposalId, accept ? 'applying' : 'rejected')
       if (!claimed) throw new AgentError(409, 'Proposal has already been reviewed')
       if (accept) {
+        let mutationStarted = false
         try {
-          if (validateProposal) await validateProposal(projectId, proposal)
-          if (deletion) {
-            await deleteDocument(userId, projectId, taskId, proposal)
-          } else if (proposal.mode === 'create-document') {
-            try {
-              validateProjectPath(proposal.path)
-            } catch {
-              throw new AgentError(422, 'Unsupported new document path')
+          await withWriteTransaction(userId, projectId, task.workspaceIdentity, async assertLease => {
+            const assertCurrent = async () => {
+              await assertLease()
+              await authorize(userId, projectId)
+              await authorizeWrite(userId, projectId)
+              assertWorkspaceIdentity(task.workspaceIdentity, await readWorkspaceIdentity(projectId))
+              await assertLease()
             }
-            if (!createDocument)
-              throw new AgentError(422, 'Document creation is unavailable')
-            await createDocument(
-              projectId,
-              proposal.path,
-              proposal.after.split('\n'),
-              userId,
-            )
-          } else if (proposal.mode === 'create-bibliography') {
-            if (
-              !/^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,119}\.bib$/.test(proposal.path) ||
-              !createDocument
-            )
-              throw new AgentError(422, 'Unsupported bibliography destination')
-            await createDocument(
-              projectId,
-              proposal.path,
-              proposal.after.split('\n'),
-              userId,
-            )
-          } else {
-            // Recheck membership: documents may have been deleted or moved.
-            const current = await readDocument(projectId, proposal.docId)
-            if (
-              current.version !== proposal.version ||
-              current.lines.join('\n') !== proposal.before
-            ) {
-              throw new AgentError(
-                409,
-                'Document changed since this suggestion. Run a new task.',
+            await assertCurrent()
+            if (validateProposal) await validateProposal(projectId, proposal)
+            if (deletion) {
+              await assertCurrent()
+              mutationStarted = true
+              await deleteDocument(userId, projectId, taskId, proposal)
+            } else if (proposal.mode === 'create-document') {
+              try {
+                validateProjectPath(proposal.path)
+              } catch {
+                throw new AgentError(422, 'Unsupported new document path')
+              }
+              if (!createDocument)
+                throw new AgentError(422, 'Document creation is unavailable')
+              await assertCurrent()
+              mutationStarted = true
+              await createDocument(
+                projectId,
+                proposal.path,
+                proposal.after.split('\n'),
+                userId,
+              )
+            } else if (proposal.mode === 'create-bibliography') {
+              if (
+                !/^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,119}\.bib$/.test(proposal.path) ||
+                !createDocument
+              )
+                throw new AgentError(422, 'Unsupported bibliography destination')
+              await assertCurrent()
+              mutationStarted = true
+              await createDocument(
+                projectId,
+                proposal.path,
+                proposal.after.split('\n'),
+                userId,
+              )
+            } else {
+              // Recheck membership: documents may have been deleted or moved.
+              const current = await readDocument(projectId, proposal.docId)
+              if (
+                current.version !== proposal.version ||
+                current.lines.join('\n') !== proposal.before
+              ) {
+                throw new AgentError(
+                  409,
+                  'Document changed since this suggestion. Run a new task.',
+                )
+              }
+              await assertCurrent()
+              mutationStarted = true
+              await writeDocument(
+                projectId,
+                proposal.docId,
+                userId,
+                proposal.after.split('\n'),
+                proposal.version,
               )
             }
-            await writeDocument(
-              projectId,
-              proposal.docId,
-              userId,
-              proposal.after.split('\n'),
-              proposal.version,
-            )
-          }
+            // Record only after the server mutation call has returned. This is
+            // retained even if subsequent lease release or settlement fails.
+            if (!deletion && store.recordApplicationAcknowledgement)
+              await store.recordApplicationAcknowledgement(task, proposal)
+          })
           await store.settle(taskId, proposalId, 'accepted')
         } catch (error) {
+          if (!mutationStarted && !recovering &&
+              (error.code === 'AI_WORKSPACE_CHANGED' || error.status === 403)) {
+            await store.settle(taskId, proposalId, error.status === 409 ? 'conflict' : 'pending')
+            throw error
+          }
           if (deletion) {
             const conflict = error.code === 'DELETION_SNAPSHOT_CONFLICT'
             try {

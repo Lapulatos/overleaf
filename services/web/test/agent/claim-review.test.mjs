@@ -22,3 +22,32 @@ test('one suggestion applies exactly once and rejects stale or unavailable-evide
  await assert.rejects(applyClaimSuggestion(deps,'u','p',{taskId:t.id,suggestionId:'c0'}),{status:422})
  await assert.rejects(applyClaimSuggestion({...deps,canWrite:async()=>false},'u','p',{taskId:t.id,suggestionId:'c0'}),{status:403})
 })
+
+test('claim application preserves original workspace identity and refuses stale review',async()=>{
+ const identity={projectId:'root',workspaceId:'p',branch:'draft',epoch:2}
+ const doc={id:'d',path:'main.tex',version:1,content:'Original claim.'}
+ const task={id:'audit',status:'completed',workspaceIdentity:identity,proposals:[],claimInput:{documents:[doc]},claimReview:{items:[{id:'c',path:doc.path,before:doc.content,after:'Corrected claim.',status:'pending'}]}}
+ let current={...identity},saved,decisions=0
+ const deps={canWrite:async()=>true,readWorkspaceIdentity:async()=>({...current}),snapshot:async()=>[doc],store:{find:async()=>task,create:async value=>saved=value},tasks:{decide:async()=>{decisions++;return {proposals:[{status:'pending'}]}}}}
+ await applyClaimSuggestion(deps,'u','p',{taskId:'audit',suggestionId:'c'})
+ assert.deepEqual(saved.workspaceIdentity,identity);assert.equal(decisions,1)
+ saved=null;current.epoch++
+ await assert.rejects(applyClaimSuggestion(deps,'u','p',{taskId:'audit',suggestionId:'c'}),{code:'AI_WORKSPACE_CHANGED'})
+ assert.equal(saved,null);assert.equal(decisions,1)
+ current={...identity}
+ deps.snapshot=async()=>{current.epoch++;return [doc]}
+ await assert.rejects(applyClaimSuggestion(deps,'u','p',{taskId:'audit',suggestionId:'c'}),{code:'AI_WORKSPACE_CHANGED'})
+ assert.equal(saved,null);assert.equal(decisions,1)
+})
+
+test('claim continuation is persisted before dispatch without prematurely accepting original review',async()=>{
+ const original={status:'completed',claimInput:structuredClone(input),claimReview:buildClaimReview(input,summary),proposals:[]}
+ let saved
+ const deps={canWrite:async()=>true,snapshot:async()=>structuredClone(input.documents),store:{find:async()=>original,create:async t=>{saved=structuredClone(t)}},tasks:{decide:async()=>{throw Error('interrupted response')}}}
+ await assert.rejects(applyClaimSuggestion(deps,'u','p',{taskId:'audit',suggestionId:'c0'}),/interrupted response/)
+ assert.equal(original.claimReview.items[0].status,'pending')
+ assert.equal(saved.claimReview,undefined)
+ assert.equal(saved.applicationOutcome.proposalId,saved.proposals[0].id)
+ assert.equal(saved.applicationOutcome.fields.claimReview.items[0].status,'accepted')
+ assert.equal(saved.applicationOutcome.fields.claimInput.documents[0].content,saved.proposals[0].after)
+})
