@@ -7,23 +7,45 @@ const base='/writing-assist/project/project/conversations'
 const conversation={id:'thread',title:'Test',activeTaskId:null,turns:[]}
 describe('Composer context and goal controls',function(){
  beforeEach(function(){
-  fetchMock.get('/writing-assist/plugins',{plugins:[{id:'s',command:'audit',name:'Audit',description:'Check a paper',enabled:true}]})
+  fetchMock.get('/writing-assist/plugins',{plugins:[{id:'s',command:'audit',name:'Audit',description:'Check a paper',enabled:true,usage:{input:'Give a file and review goal.',examples:['Review [file] for missing evidence.'],source:'From the installed Skill guide'}}]})
   fetchMock.get('/writing-assist/project/project/speech',{available:false})
   fetchMock.get('/writing-assist/project/project/context',[{kind:'folder',path:'tex'},{kind:'file',path:'tex/main.tex'}])
   fetchMock.get(base,[conversation]);fetchMock.get(base+'/thread',{conversation,task:null});fetchMock.get(base+'/thread/goal',{goal:null,task:null},{name:'goal-status'})
  })
  afterEach(function(){cleanup();fetchMock.removeRoutes().clearHistory()})
- it('adds scope and Skill chips using mentions and submits structured context',async function(){
+ it('keeps file scope attachments but inserts Skill commands inline and submits their context',async function(){
   fetchMock.post(base+'/thread/messages',{conversation,task:null})
   render(<ConversationView projectId="project"/>);await waitFor(()=>{expect((screen.getByLabelText('Conversation',{exact:true}) as HTMLSelectElement).value).to.equal('thread');expect((screen.getByLabelText('Instructions') as HTMLTextAreaElement).disabled).to.equal(false)})
   fireEvent.click(screen.getByRole('button',{name:'Mention files or folders'}))
   fireEvent.click(await screen.findByRole('option',{name:'tex/'}))
   expect(screen.getByRole('button',{name:'Remove scope tex'})).to.exist
   fireEvent.click(screen.getByRole('button',{name:'Skills and commands'}));fireEvent.click(await screen.findByRole('option',{name:'audit'}))
-  expect(screen.getByRole('button',{name:'Remove Skill audit'})).to.exist
+  expect(screen.queryByRole('button',{name:'Remove Skill audit'})).to.equal(null)
+  expect((screen.getByLabelText('Instructions') as HTMLTextAreaElement).value).to.equal('/audit ')
+  fireEvent.change(screen.getByLabelText('Instructions'),{target:{value:'/audit Check this folder'}});fireEvent.click(screen.getByRole('button',{name:'Send message'}))
+  await waitFor(()=>expect(fetchMock.callHistory.calls(base+'/thread/messages')).to.have.length(1))
+  const body=JSON.parse(fetchMock.callHistory.calls(base+'/thread/messages')[0].options.body as string);expect(body.scope).to.deep.equal([{kind:'folder',path:'tex'}]);expect(body.skills).to.deep.equal(['audit']);expect(body.instruction).to.equal('/audit Check this folder')
+ })
+ it('drops selected Skill context when its inline command is deleted',async function(){
+  fetchMock.post(base+'/thread/messages',{conversation,task:null})
+  render(<ConversationView projectId="project"/>);await waitFor(()=>{expect((screen.getByLabelText('Conversation',{exact:true}) as HTMLSelectElement).value).to.equal('thread');expect((screen.getByLabelText('Instructions') as HTMLTextAreaElement).disabled).to.equal(false)})
+  fireEvent.click(screen.getByRole('button',{name:'Mention files or folders'}))
+  fireEvent.click(await screen.findByRole('option',{name:'tex/'}))
+  expect(screen.getByRole('button',{name:'Remove scope tex'})).to.exist
+  fireEvent.click(screen.getByRole('button',{name:'Skills and commands'}));fireEvent.click(await screen.findByRole('option',{name:'audit'}))
+  expect(screen.queryByRole('button',{name:'Remove Skill audit'})).to.equal(null)
+  expect((screen.getByLabelText('Instructions') as HTMLTextAreaElement).value).to.equal('/audit ')
   fireEvent.change(screen.getByLabelText('Instructions'),{target:{value:'Check this folder'}});fireEvent.click(screen.getByRole('button',{name:'Send message'}))
   await waitFor(()=>expect(fetchMock.callHistory.calls(base+'/thread/messages')).to.have.length(1))
-  const body=JSON.parse(fetchMock.callHistory.calls(base+'/thread/messages')[0].options.body as string);expect(body.scope).to.deep.equal([{kind:'folder',path:'tex'}]);expect(body.skills).to.deep.equal(['audit']);expect(body.instruction).to.equal('Check this folder')
+  const body=JSON.parse(fetchMock.callHistory.calls(base+'/thread/messages')[0].options.body as string);expect(body.scope).to.deep.equal([{kind:'folder',path:'tex'}]);expect(body.skills).to.deep.equal([]);expect(body.instruction).to.equal('Check this folder')
+ })
+ it('shows Skill usage after selection and fills examples without sending',async function(){
+  render(<ConversationView projectId="project"/>);await waitFor(()=>expect((screen.getByLabelText('Instructions') as HTMLTextAreaElement).disabled).to.equal(false))
+  fireEvent.click(screen.getByRole('button',{name:'Skills and commands'}));fireEvent.click(await screen.findByRole('option',{name:'audit'}))
+  expect(await screen.findByLabelText('Skill usage')).to.exist
+  fireEvent.click(screen.getByRole('button',{name:/Review \[file\] for missing evidence/}))
+  expect((screen.getByLabelText('Instructions') as HTMLTextAreaElement).value).to.equal('/audit Review [file] for missing evidence.')
+  expect(fetchMock.callHistory.calls(base+'/thread/messages')).to.have.length(0)
  })
  it('starts an explicit automatic goal instead of a normal message',async function(){
   fetchMock.post(base+'/thread/goal',{goal:{status:'active'},task:null})

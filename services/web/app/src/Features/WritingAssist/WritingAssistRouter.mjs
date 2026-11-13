@@ -58,6 +58,7 @@ function apply(webRouter) {
   webRouter.get('/writing-assist/submission-deadlines/detail', requireLogin, DeadlineController.detail);
   webRouter.get(plugins, requireLogin, SkillPluginController.list);
   webRouter.post(`${plugins}/discover`, requireLogin, SkillPluginController.discover);
+  webRouter.post(`${plugins}/batch`, requireLogin, SkillPluginController.batch);
   webRouter.post(plugins, requireLogin, SkillPluginController.install);
   webRouter.put(`${plugins}/:pluginId`, requireLogin, SkillPluginController.enable);
   webRouter.delete(`${plugins}/:pluginId`, requireLogin, SkillPluginController.remove);

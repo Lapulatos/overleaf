@@ -1,0 +1,112 @@
+[
+  {
+    "path": "services/web/frontend/js/features/source-control/access-mode.tsx",
+    "deployedSha256": "a9f3d9af1c58bf7aa6c11b0d1ebfc6475142ddd56deeef03e1bcccd1d5a34a2d",
+    "source": "frontend-build"
+  },
+  {
+    "path": "services/web/frontend/js/features/source-control/branch-workspaces.tsx",
+    "deployedSha256": "17e35f80f0ae07f464c6006a73fa68fddbcda0741da9c7a1d39ca30d0b215417",
+    "source": "frontend-build"
+  },
+  {
+    "path": "services/web/frontend/js/features/source-control/source-control.css",
+    "deployedSha256": "d481625cb534d51b52bfaacc5dfeb95f515b6c5dd9701ac0996441292cc05cc8",
+    "source": "frontend-build"
+  },
+  {
+    "path": "services/web/frontend/js/features/source-editor/extensions/writing-assist-transform/preview-react.tsx",
+    "deployedSha256": "0dc9c283f87a543ed72f60918832c9f33fdb4deac6e795bc749f18dcece76143",
+    "source": "frontend-build"
+  },
+  {
+    "path": "libraries/redis-wrapper/package.json",
+    "deployedSha256": "1bf96533bf7081a6d572c27eec089d6249337c5a4c6f8ae137f6da92f6eb757a",
+    "source": "both-web-containers"
+  },
+  {
+    "path": "services/web/app/views/project/editor/_meta.pug",
+    "deployedSha256": "55b16e5956cd030288d2185a430b7014d147eb79b56b0396230ddbced3d36a61",
+    "source": "both-web-containers"
+  },
+  {
+    "path": "services/web/app/src/Features/DocumentUpdater/DocumentUpdaterHandler.mjs",
+    "deployedSha256": "3eaf65876f950089d5bd6c75f5e585150b5a2626289ee4d2d9435e8ba1ea6ec5",
+    "source": "both-web-containers"
+  },
+  {
+    "path": "services/document-updater/app/js/ProjectHistoryRedisManager.js",
+    "deployedSha256": "828c80ddc92f8715367e9ded22cde3c6af4594610055b03ce965b95d769ec60a",
+    "source": "both-web-containers"
+  },
+  {
+    "path": "services/document-updater/app/js/HttpController.js",
+    "deployedSha256": "a46a807643d2d8951c3c477fbc71e83b7cbd829c8068921a1aa1def31705750f",
+    "source": "both-web-containers"
+  },
+  {
+    "path": "services/document-updater/app/js/HistoryOTUpdateManager.js",
+    "deployedSha256": "939c9cba45f55ca68bdd17c0f7af4c38c8fd6a226cade4909b77feee3902016b",
+    "source": "both-web-containers"
+  },
+  {
+    "path": "services/agent/src/project-compile.mjs",
+    "deployedSha256": "ae293bd4fa8b4f02382d0309edf1aad8d6a64846968dabb8a0053a9853330245",
+    "source": "both-web-containers"
+  },
+  {
+    "path": "services/agent/src/project-workspace.mjs",
+    "deployedSha256": "3724e29058940890f5354874c09af1e2ede9ec90db33e0e2af761a73dde3b6c7",
+    "source": "both-web-containers"
+  },
+  {
+    "path": "services/agent/src/public-source.mjs",
+    "deployedSha256": "b6067b0678a9cada7d5f8884018b232a65c013216bbe95836fc2c4001e5af7af",
+    "source": "both-web-containers"
+  },
+  {
+    "path": "services/agent/src/types.mjs",
+    "deployedSha256": "bdf89befd34a971231cdd7690a4cb3f00e38f894c3a2cc7050376d14e2e20bfa",
+    "source": "both-web-containers"
+  },
+  {
+    "path": "services/agent/src/document-harness.mjs",
+    "deployedSha256": "45cbe7a52e0434dc50f5746e9776fb8295dd28069ca75dd04e68280824372334",
+    "source": "both-web-containers"
+  },
+  {
+    "path": "services/agent/src/task-manager.mjs",
+    "deployedSha256": "28f763283de9937bc9ba6f4f4b0ab2c7f59edcf566adbfa9ad21238c029063a4",
+    "source": "both-web-containers"
+  },
+  {
+    "path": "services/agent/src/index.mjs",
+    "deployedSha256": "c202e8736e5b05e01a53fd69c705f23e5aa25f90602dd5052c377d175e4530b4",
+    "source": "both-web-containers"
+  },
+  {
+    "path": "services/agent/src/cli.mjs",
+    "deployedSha256": "73b0a8f5092d943879f9471a184fe769142c5ce2ac39e2f2a59564004fad7322",
+    "source": "both-web-containers"
+  },
+  {
+    "path": "services/agent/src/backends/base.mjs",
+    "deployedSha256": "79b21116aca273d1620bfc42e88f633768b1ca46fbb0ca63882a35a6bdcfc94d",
+    "source": "both-web-containers"
+  },
+  {
+    "path": "services/agent/src/backends/codex.mjs",
+    "deployedSha256": "9840c78206eeb70e35b1e26f8bd6549464435dd9e3f17ccc0ff805cb9aab8701",
+    "source": "both-web-containers"
+  },
+  {
+    "path": "services/history-v1/config/custom-environment-variables.json",
+    "deployedSha256": "8fba5499cb69b329e9d4b4cb6feee6d94697e20f664e3481d3aa78e254434982",
+    "source": "both-web-containers"
+  },
+  {
+    "path": "services/history-v1/config/production.json",
+    "deployedSha256": "7eab7f1c8751e1d1f6185ce268206015611127ada012a2ac0d14309756a9f9d2",
+    "source": "both-web-containers"
+  }
+]

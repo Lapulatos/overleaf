@@ -18,7 +18,7 @@ export function MessageCopyButton({ text, label = 'Copy message' }: { text: stri
     } catch { setStatus('failed') }
   }
   return <span className="paper-message-copy">
-    <button type="button" aria-label={label} title={status === 'copied' ? 'Copied' : label} onClick={copy}>
+    <button className="btn btn-secondary" type="button" aria-label={label} title={status === 'copied' ? 'Copied' : label} onClick={copy}>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2" /><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3" /></svg>
       {status === 'copied' && <span className="visually-hidden">Copied</span>}
     </button>

@@ -68,3 +68,23 @@ test('installed files remain pinned text instructions and exclude scripts',async
  assert.equal(installed.commit,sha);assert.equal(installed.files.length,1)
  assert.deepEqual(installed.unsupportedFiles,['run.sh'])
 })
+test('batch installation retains successful Skills and reports each failed path',async()=>{
+ const client=createGitHubSkills(async path=>response(path))
+ const saved=[]
+ const results=await client.installMany(url,['SKILL.md','missing/SKILL.md'],sha,async skill=>{saved.push(skill.name);return {command:skill.name}})
+ assert.deepEqual(saved,['demo'])
+ assert.equal(results[0].plugin.command,'demo')
+ assert.match(results[1].error,/discovered Skills/)
+})
+test('batch rejects a changed revision before saving any Skill',async()=>{
+ const client=createGitHubSkills(async path=>response(path))
+ let saves=0
+ await assert.rejects(client.installMany(url,['SKILL.md'],'c'.repeat(40),async()=>{saves++}),e=>e.status===409)
+ assert.equal(saves,0)
+})
+test('import normalizes stray NUL characters in otherwise valid UTF-8 text',async()=>{
+ const client=createGitHubSkills(async path=>path.includes('/blobs/')?Response.json({encoding:'base64',content:Buffer.from('---\nname: demo\n---\nExtracted\0 text').toString('base64')}):response(path))
+ const skill=await client.install(url,'SKILL.md',sha)
+ assert.equal(skill.files[0].content.includes('\0'),false)
+ assert.match(skill.files[0].content,/Extracted text/)
+})

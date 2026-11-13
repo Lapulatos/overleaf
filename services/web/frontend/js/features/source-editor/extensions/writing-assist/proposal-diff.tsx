@@ -57,7 +57,7 @@ export function ProposalDiff({ before, after, startLine = 1 }: { before: string;
       <div className="paper-diff-legend">
         <span className="paper-diff-count-added">+{rows.filter(r => r.kind === 'added').length} added</span>
         <span className="paper-diff-count-removed">−{rows.filter(r => r.kind === 'removed').length} removed</span>
-        {hideContext && <button type="button" onClick={() => setFull(!full)}>{full ? 'Show changes only' : 'Show full file'}</button>}
+        {hideContext && <button className="btn btn-secondary" type="button" onClick={() => setFull(!full)}>{full ? 'Show changes only' : 'Show full file'}</button>}
       </div>
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- The scrollable diff must be reachable for keyboard scrolling. */}
       <div className="paper-diff-scroll" role="region" aria-label="Line diff" tabIndex={0}>

@@ -1,5 +1,6 @@
+import MaterialIcon from '@/shared/components/material-icon'
 import { useEffect, useState } from "react";
-import { getJSON } from "@/infrastructure/fetch-json";
+import { getJSON, FetchError } from "@/infrastructure/fetch-json";
 
 type Model = {
   id: string;
@@ -27,11 +28,11 @@ export function ModelControls({
   const [models, setModels] = useState<Model[]>([]);
   const [model, setModel] = useState("");
   const [effort, setEffort] = useState("");
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
   const [retry, setRetry] = useState(0);
   useEffect(() => {
     const controller = new AbortController();
-    setError(false);
+    setError("");
     getJSON<{ models: Model[] }>(
       `/writing-assist/project/${encodeURIComponent(projectId)}/models`,
       { signal: controller.signal },
@@ -49,8 +50,8 @@ export function ModelControls({
         projectSelections.set(projectId, nextSelection);
         onChange(nextSelection);
       })
-      .catch(() => {
-        if (!controller.signal.aborted) setError(true);
+      .catch((reason) => {
+        if (!controller.signal.aborted) setError(reason instanceof FetchError && /not configured/i.test(reason.data?.error || "") ? "AI not configured" : "Models unavailable");
       });
     return () => controller.abort();
   }, [projectId, retry, onChange]);
@@ -62,10 +63,12 @@ export function ModelControls({
       {error ? (
         <button
           type="button"
+          className="paper-model-retry"
+          title={error === "AI not configured" ? "Configure the server AI connection to use models. Click to check again." : "Could not load AI models. Click to retry."}
           disabled={disabled}
           onClick={() => setRetry((value) => value + 1)}
         >
-          Retry model list
+          <MaterialIcon type={error === "AI not configured" ? "settings" : "refresh"} /> {error}
         </button>
       ) : (
         <>

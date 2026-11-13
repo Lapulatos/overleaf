@@ -193,9 +193,9 @@ export function LiteratureView({ projectId }: { projectId: string }) {
   return (
     <div className="paper-assistant-view paper-literature-view">
       <div className="paper-literature-tabs" role="tablist" aria-label="References views">
-        <button type="button" role="tab" id="literature-settings-tab" aria-controls="literature-settings-panel" aria-selected={tab === 'settings'} onClick={() => setTab('settings')}>Settings</button>
-        <button type="button" role="tab" id="literature-search-tab" aria-controls="literature-search-panel" aria-selected={tab === 'search'} onClick={() => setTab('search')}>Search</button>
-        <button type="button" role="tab" id="references-check-tab" aria-controls="references-check-panel" aria-selected={tab === 'check'} onClick={() => setTab('check')}>Check</button>
+        <button className="btn btn-secondary" type="button" role="tab" id="literature-settings-tab" aria-controls="literature-settings-panel" aria-selected={tab === 'settings'} onClick={() => setTab('settings')}>Settings</button>
+        <button className="btn btn-secondary" type="button" role="tab" id="literature-search-tab" aria-controls="literature-search-panel" aria-selected={tab === 'search'} onClick={() => setTab('search')}>Search</button>
+        <button className="btn btn-secondary" type="button" role="tab" id="references-check-tab" aria-controls="references-check-panel" aria-selected={tab === 'check'} onClick={() => setTab('check')}>Check</button>
       </div>
       <div role="tabpanel" id="references-check-panel" aria-labelledby="references-check-tab" hidden={tab !== 'check'}>
         {(checkVisited || tab === 'check') && <ReferenceTools projectId={projectId} />}
@@ -233,7 +233,7 @@ export function LiteratureView({ projectId }: { projectId: string }) {
       <button type="button" className="paper-literature-start" onClick={() => setTab('search')}>{source === 'bibtex' ? 'Import reference files' : 'Search this library'} <span aria-hidden="true">→</span></button>
       </div>
       <div role="tabpanel" id="literature-search-panel" aria-labelledby="literature-search-tab" hidden={tab !== 'search'}>
-      <div className="paper-literature-source-badge">{source === 'zotero' && <ZoteroLogo size={18} />}<span>{source === 'zotero' ? 'My Zotero library' : source === 'bibtex' ? 'Reference file import' : 'Crossref'}</span><button type="button" onClick={() => setTab('settings')}>Change source</button></div>
+      <div className="paper-literature-source-badge">{source === 'zotero' && <ZoteroLogo size={18} />}<span>{source === 'zotero' ? 'My Zotero library' : source === 'bibtex' ? 'Reference file import' : 'Crossref'}</span><button className="btn btn-secondary" type="button" onClick={() => setTab('settings')}>Change source</button></div>
       {source !== 'bibtex' && <button type="button" className="paper-reference-import-shortcut" onClick={() => {setSource('bibtex');setError('')}}>Import reference files</button>}
       {source === 'zotero' && !connected && <p>Connect your Zotero library in Settings to search.</p>}
       {source !== 'bibtex' && <>
@@ -347,7 +347,7 @@ export function LiteratureView({ projectId }: { projectId: string }) {
           <label><input type="checkbox" aria-label="Select loaded references" disabled={busy || pending}
             checked={results.slice(0, 50).every(item => selected.has(citationIdentity(item)))}
             onChange={event => setSelected(new Set(event.target.checked ? results.slice(0, 50).map(item => citationIdentity(item)) : []))} /> Select loaded{results.length > 50 ? ' (first 50)' : ''}</label>
-          <button type="button" disabled={!selected.size || busy || pending} onClick={() => setSelected(new Set())}>Clear</button>
+          <button className="btn btn-secondary" type="button" disabled={!selected.size || busy || pending} onClick={() => setSelected(new Set())}>Clear</button>
           <OLButton disabled={!selected.size || busy || pending || (!destination && !newName.trim())}
             onClick={() => preview(results.filter(item => selected.has(citationIdentity(item))))}>Preview selected ({selected.size})</OLButton>
         </div>

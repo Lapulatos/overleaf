@@ -574,6 +574,10 @@
 .paper-literature-view a { color: var(--link-ui-themed); }
 .paper-literature-view :is(h3, h4, h5, code) { color: inherit; }
 
+.paper-model-retry { display: inline-flex; align-items: center; gap: 5px; border: 0; border-radius: 6px; padding: 6px 8px; background: transparent; color: var(--content-secondary-themed); font: inherit; font-size: 12px; cursor: pointer; }
+.paper-model-retry:hover { background: var(--bg-secondary-themed); }
+.paper-model-retry .material-symbols { font-size: 16px; }
+
 .paper-workspace-tabs-header { display:flex; align-items:center; justify-content:space-between; gap:8px; min-height:34px; flex-shrink:0; border-bottom:1px solid var(--border-divider-themed,#d4d9e1); }
 .paper-workspace-tabs-header [role=tablist] { display:flex; align-items:center; }
 .paper-workspace-tabs-header [role=tab] { display:flex; gap:5px; align-items:center; padding:8px 10px; border:0; border-bottom:2px solid transparent; background:transparent; color:var(--content-secondary-themed,#687080); font-size:12px; }
@@ -586,3 +590,15 @@
 .paper-terminal-tab .native-git-terminal-dock { flex:1; max-height:none; min-height:0; border-top:0; }
 .paper-terminal-tab { min-height:0; }
 .native-git-session-description input { width:100%; min-width:0; font:inherit; padding:2px 4px; border:1px solid var(--border-primary-themed,#7d8c9c); border-radius:3px; }
+
+.paper-composer .paper-context-picker button { min-height:36px; padding:6px 9px; border-radius:0; }
+.paper-context-picker small { -webkit-line-clamp:1; }
+.paper-context-picker strong { font-weight:500; }
+.paper-command-help { flex:0 0 auto; max-height:210px; overflow:auto; padding:8px 10px; margin-bottom:6px; border:1px solid var(--border-divider-themed,#ddd); border-radius:6px; font-size:12px; }
+.paper-command-help > div { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.paper-command-help strong span,.paper-command-help small { color:var(--content-secondary,#596579); font-weight:normal; font-size:11px; }
+.paper-command-help p { margin:5px 0; font-size:11px; }
+.paper-command-help button { border:0; background:transparent; color:inherit; padding:4px; }
+.paper-command-help .paper-command-example { display:flex; align-items:flex-start; gap:6px; text-align:left; width:100%; border-radius:4px; font-size:12px; overflow-wrap:anywhere; }
+.paper-command-example:hover { background:var(--bg-secondary,#f1f4f7); }
+.paper-command-help .material-symbols { font-size:16px; }

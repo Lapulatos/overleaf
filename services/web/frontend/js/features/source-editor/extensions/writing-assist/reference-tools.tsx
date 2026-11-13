@@ -253,7 +253,7 @@ export function ReferenceTools({
             <>
               <div className="paper-reference-check-selection">
                 <strong>{keys.size} selected</strong>
-                <button
+                <button className="btn btn-secondary"
                   type="button"
                   disabled={running}
                   onClick={() =>
@@ -266,8 +266,8 @@ export function ReferenceTools({
                 >
                   Select first 10
                 </button>
-                <button type="button" disabled={running} onClick={()=>setKeys(new Set(current.entries.map(entry=>entry.key)))}>Select all</button>
-                <button
+                <button className="btn btn-secondary" type="button" disabled={running} onClick={()=>setKeys(new Set(current.entries.map(entry=>entry.key)))}>Select all</button>
+                <button className="btn btn-secondary"
                   type="button"
                   disabled={running || !keys.size}
                   onClick={() => setKeys(new Set())}
@@ -309,22 +309,22 @@ export function ReferenceTools({
             <button type="button" className="paper-reference-primary" disabled={running || pending || !keys.size} onClick={() => start("metadata")} title="Check titles, authors, dates and other reference metadata">
               <MaterialIcon type="fact_check"/><span>Check metadata</span>
             </button>
-            <button type="button" disabled={running || pending || !keys.size} onClick={() => start("claims")} title="Check whether cited sources support the manuscript claims">
+            <button className="btn btn-secondary" type="button" disabled={running || pending || !keys.size} onClick={() => start("claims")} title="Check whether cited sources support the manuscript claims">
               <MaterialIcon type="find_in_page"/><span>Check citations</span>
             </button>
           </div>
       {busy && <p role="status">Processing references…</p>}
       {batchProgress && <p role="status">{batchProgress.done} / {batchProgress.total} references checked · Batch {batchProgress.batch} / {batchProgress.count}{!batchRunning && batchProgress.done<batchProgress.total?' · Stopped':''}</p>}
-      {batchRunning && <button type="button" onClick={stopBatch}>Stop remaining batches</button>}
+      {batchRunning && <button className="btn btn-secondary" type="button" onClick={stopBatch}>Stop remaining batches</button>}
       {!batchRunning && task?.status === "running" && (
-        <button type="button" disabled={busy} onClick={() => task && act(task)}>
+        <button className="btn btn-secondary" type="button" disabled={busy} onClick={() => task && act(task)}>
           Stop check
         </button>
       )}
       {error && (
         <div role="alert">
           <p>{error}</p>
-          <button
+          <button className="btn btn-secondary"
             type="button"
             onClick={() => {
               setError("");

@@ -14,7 +14,7 @@ export function parseGitHubSource(value) {
  if(path && !safePath(path))fail('Invalid Skill folder path.')
  return {owner,repo,ref,path}
 }
-export function createGitHubSkills(fetcher=fetch, { token = '', now = Date.now } = {}) {
+export function createGitHubSkills(fetcher=fetch, { token = '', now = Date.now, fallback } = {}) {
  const cache=new Map(), pending=new Map();let cacheBytes=0, retryAt=0
  const limited=()=>new AgentError(429,`GitHub request limit reached. Retry after ${new Date(retryAt).toISOString().replace('T',' ').replace('.000Z',' UTC')}. This limit is shared by requests from the server.`)
  async function api(path) {
@@ -56,7 +56,7 @@ export function createGitHubSkills(fetcher=fetch, { token = '', now = Date.now }
   }
   return data
  }
- async function discover(url) {
+ async function discoverWith(url, api) {
   const source=parseGitHubSource(url);const base=`/repos/${encodeURIComponent(source.owner)}/${encodeURIComponent(source.repo)}`
   const metadata=(!source.ref || token)?await api(base):null
   if(token && metadata?.private!==false)fail('Only public GitHub repositories can be installed.')
@@ -69,29 +69,52 @@ export function createGitHubSkills(fetcher=fetch, { token = '', now = Date.now }
   if(!skills.length)fail('No SKILL.md found at this location.')
   return {source,commit:commit.sha,skills,tree:tree.tree,base}
  }
- async function install(url,path,expectedCommit) {
-  const found=await discover(url)
+ async function discover(url) {
+  try { return await discoverWith(url, api) }
+  catch (error) {
+   if (!fallback || error.status !== 429) throw error
+   const transport = await fallback(parseGitHubSource(url))
+   try { return { ...await discoverWith(url, transport.request), readBlob: transport.request, dispose: transport.close } }
+   catch (error) { await transport.close(); throw error }
+  }
+ }
+ async function install(url,path,expectedCommit,sharedSource) {
+  const found=sharedSource || await discover(url)
+  try {
   if(expectedCommit && expectedCommit!==found.commit)throw new AgentError(409,'Repository changed after discovery. Find Skills again before installing.')
   const selected=path || (found.skills.length===1?found.skills[0].path:null)
   if(!found.skills.some(s=>s.path===selected))fail('Choose one of the discovered Skills.')
   const prefix=selected.slice(0,-8)
   const siblings=found.tree.filter(f=>f.type==='blob' && f.path.startsWith(prefix) && !found.skills.some(s=>s.path!==selected && s.path.startsWith(prefix) && f.path.startsWith(s.path.slice(0,-8))))
   const supported=siblings.filter(f=>f.mode==='100644' && /\.(md|txt|json)$/i.test(f.path) && f.path.slice(prefix.length).length<=180 && safePath(f.path.slice(prefix.length)) && f.path.slice(prefix.length).split('/').every(p=>!p.startsWith('.')))
-  if(supported.length>30 || supported.reduce((n,f)=>n+(f.size || 0),0)>200000)fail('Skill exceeds 30 text files or 200 KB.')
+  if(supported.length>300 || supported.reduce((n,f)=>n+(f.size || 0),0)>5000000)fail('Skill exceeds 300 text files or 5 MB.')
   const files=[]
   for(const file of supported){
    if(!/^[a-f0-9]{40}$/.test(file.sha))fail('Invalid file revision.')
-   const blob=await api(`${found.base}/git/blobs/${file.sha}`)
+   const blob=await (found.readBlob || api)(`${found.base}/git/blobs/${file.sha}`)
    if(blob.encoding!=='base64')fail('Unsupported GitHub file encoding.')
-   const bytes=Buffer.from(blob.content,'base64');if(bytes.length>100000 || bytes.includes(0) || !Buffer.from(bytes.toString('utf8')).equals(bytes))fail('Skill files must be UTF-8 text under 100 KB.')
-   files.push({path:file.path.slice(prefix.length),content:bytes.toString('utf8')})
+   const bytes=Buffer.from(blob.content,'base64');if(bytes.length>1000000 || !Buffer.from(bytes.toString('utf8')).equals(bytes))fail('Skill files must be UTF-8 text under 1 MB.')
+   files.push({path:file.path.slice(prefix.length),content:bytes.toString('utf8').replace(/\0/g,'')})
   }
-  if(files.reduce((n,f)=>n+Buffer.byteLength(f.content),0)>200000)fail('Skill exceeds 200 KB.')
+  if(files.reduce((n,f)=>n+Buffer.byteLength(f.content),0)>5000000)fail('Skill exceeds 5 MB.')
   const main=files.find(f=>f.path==='SKILL.md')?.content
   if(!main?.trim() || main.length>20000)fail('SKILL.md must contain between 1 and 20,000 characters.')
   const name=(main.match(/^name:\s*["']?([^\n"']+)/m)?.[1] || selected.split('/').at(-2) || found.source.repo).trim().toLowerCase().replace(/[^a-z0-9-]+/g,'-').replace(/^-|-$/g,'').slice(0,48)
   if(!name)fail('Skill needs a valid name.')
   return {name,description:skillDescription(main),sourceUrl:`https://github.com/${found.source.owner}/${found.source.repo}/tree/${found.commit}/${prefix}`,commit:found.commit,skillPath:selected,files,unsupportedFiles:siblings.filter(f=>!supported.includes(f)).map(f=>f.path.slice(prefix.length)).slice(0,100),capabilities:['instructions','project-tools'],formatVersion:1}
+  } finally { if (!sharedSource) await found.dispose?.() }
  }
- return {discover,install}
+ async function installMany(url, paths, commit, save) {
+  const found = await discover(url)
+  try {
+   if (found.commit !== commit) throw new AgentError(409, 'Repository changed. Find Skills again before installing.')
+   const results = []
+   for (const path of paths) {
+    try { results.push({path, plugin: await save(await install(url, path, commit, found))}) }
+    catch (error) { results.push({path, error: error instanceof AgentError ? error.message : 'Installation failed. Retry this Skill.'}) }
+   }
+   return results
+  } finally { await found.dispose?.() }
+ }
+ return {discover,install,installMany}
 }

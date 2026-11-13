@@ -26,7 +26,7 @@ export function ReferenceReviewCard({review,onRepair,onApply,disabled}: {review:
   {!!consistent && <p className="paper-reference-consistent">{consistent} checked with no pending corrections</p>}
   {actionable.length>0 && <div className="paper-reference-apply-bar">
    <label><input type="checkbox" aria-label="Select all applicable fields" disabled={disabled} checked={chosen.length===actionable.length} onChange={e=>setSelected(e.target.checked?new Set(actionIds):new Set())}/>{chosen.length} selected</label>
-   <button type="button" disabled={disabled || !chosen.length} onClick={()=>onApply(chosen)}>Apply selected</button>
+   <button className="btn btn-secondary" type="button" disabled={disabled || !chosen.length} onClick={()=>onApply(chosen)}>Apply selected</button>
    <button type="button" className="paper-reference-primary" disabled={disabled} onClick={()=>onApply(actionable)}>Apply all ({actionable.length})</button>
   </div>}
   {visible.map(entry=><article key={entry.key} className="paper-reference-issue-entry">
@@ -56,7 +56,7 @@ export function ReferenceReviewCard({review,onRepair,onApply,disabled}: {review:
    })}
    {(!entry.source || entry.identity || entry.reason) && <p className="paper-reference-manual"><MaterialIcon type="help"/>{entry.verification?.reason || (entry.identity?'Multiple title matches. Confirm the DOI and publication version.':entry.reason?.includes('No unique')?'No unique source found. Add a DOI and check again.':'Source unavailable. Check the DOI or try again later.')}</p>}
   </article>)}
-  {!review.baseHash && (different>0 || missing>0) && <button type="button" disabled={disabled} onClick={onRepair}>Check again to enable field actions</button>}
+  {!review.baseHash && (different>0 || missing>0) && <button className="btn btn-secondary" type="button" disabled={disabled} onClick={onRepair}>Check again to enable field actions</button>}
   {issues.some(e=>e.unknown.length>0) && <details className="paper-reference-unverified"><summary>Existing fields without source evidence</summary>{issues.filter(e=>e.unknown.length>0).map(e=><p key={e.key}>{e.key}: {e.unknown.map(f=>labels[f.field] || f.field).join(', ')}. Not supplied by the source; original values retained.</p>)}</details>}
   {!!rejected.size && <p className="paper-reference-consistent">Rejected suggestions are excluded from Apply all. Decisions are saved in this browser for this report.</p>}
   <footer>Matching fields hidden · {new Date(review.checkedAt).toLocaleString()}</footer>

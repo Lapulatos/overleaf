@@ -20,7 +20,7 @@ export function ClaimReviewCard({review,busy,onApply}:{review:ClaimReview;busy:b
     {item.quote && <details open={item.verdict==='supported'} className="paper-reference-passage"> <summary>Source evidence</summary><blockquote>{item.quote}</blockquote></details>}
     <div className="paper-reference-apply-bar">
      {item.source && /^https:\/\//.test(item.source) && <a href={item.source} target="_blank" rel="noopener noreferrer">Open source</a>}
-     {item.status==='pending' && item.after && <><button type="button" className="paper-reference-primary" disabled={busy || dismissed} aria-label={`Apply suggestion ${item.id}`} onClick={()=>onApply(item.id)}>Apply</button><button type="button" disabled={busy} aria-label={`${dismissed?'Undo reject':'Reject'} suggestion ${item.id}`} onClick={()=>toggle(item.id)}>{dismissed?'Undo reject':'Reject'}</button></>}
+     {item.status==='pending' && item.after && <><button type="button" className="paper-reference-primary" disabled={busy || dismissed} aria-label={`Apply suggestion ${item.id}`} onClick={()=>onApply(item.id)}>Apply</button><button className="btn btn-secondary" type="button" disabled={busy} aria-label={`${dismissed?'Undo reject':'Reject'} suggestion ${item.id}`} onClick={()=>toggle(item.id)}>{dismissed?'Undo reject':'Reject'}</button></>}
     </div>
     {item.note && item.verdict!=='insufficient' && <p className="paper-reference-consistent">{item.note}</p>}
    </article>
