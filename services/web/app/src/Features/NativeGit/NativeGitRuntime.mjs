@@ -1,3 +1,8 @@
+import { autoSyncScheduleId } from './AutoSyncSchedule.mjs'
+import { annotateTerminalLocations } from './TerminalIndicators.mjs'
+import { shellSessionWorkspace } from './ShellSessionWorkspace.mjs'
+import { annotateAutoCommitBranches, annotateAutoSyncBranches } from './AutoCommitIndicators.mjs'
+import { readAutoCommitSchedule } from './AutoCommitSchedule.mjs'
 import { isHistoryReadCommand } from './HistoryReadCommands.mjs'
 import { readWebhook, publicWebhook, configureWebhook, receiveWebhook } from './GitHubWebhook.mjs'
 import { RecoveryVault } from './RecoveryVault.mjs'
@@ -14,7 +19,7 @@ import { AutoCommitService } from './AutoCommitService.mjs'
 import { AutoCommitController } from './AutoCommitController.mjs'
 import { ShellApplicationService } from './ShellApplicationService.mjs'
 import { ShellRecoveryService } from './ShellRecoveryService.mjs'
-import { publicShellDraft, ShellDraftService } from './ShellDraftService.mjs'
+import { publicShellDraft, ShellDraftService, manualTerminalMode } from './ShellDraftService.mjs'
 import { executeShellDraftCommand, shellDraftTerminal } from './ShellDraftCommands.mjs'
 import { authorizedOperationLock, authorizedWriteLease } from './AuthorizedOperationLock.mjs'
 import AuthorizationManager from '../Authorization/AuthorizationManager.mjs'
@@ -144,6 +149,45 @@ export function createNativeGitRuntime({ storagePath, withExclusiveWrite, withPr
     return { name: [user.first_name, user.last_name].filter(Boolean).join(' ') || user.email, email: user.email }
   }
 
+  async function withAutoCommitIndicators(c, projectId, snapshot) {
+    if (!snapshot.branches || !c.isolated) return snapshot
+    const projects = await Project.find({ 'gitWorkspace.logicalProjectId': c.logicalProjectId }, { _id: 1, 'gitWorkspace.branch': 1, 'gitWorkspace.state': 1 }).lean().exec()
+    const workspaces = projects.map(project => ({ id: String(project._id), branch: project.gitWorkspace?.branch, archived: project.gitWorkspace?.state === 'archived' }))
+    if (!workspaces.some(item => item.id === String(projectId))) {
+      const binding = await c.store.read()
+      workspaces.push({ id: String(projectId), branch: binding.branch, archived: false })
+    }
+    let branches = await annotateAutoCommitBranches(snapshot.branches, workspaces, id => readAutoCommitSchedule(new CollaborationTaskStore(Path.join(c.root, 'auto-commit', identity(id), 'schedule'))))
+    branches = await annotateAutoSyncBranches(branches, workspaces, async id => {
+      try { return await new CollaborationTaskStore(Path.join(c.root, 'auto-sync', identity(id), 'schedule')).read(autoSyncScheduleId) }
+      catch (error) { if (error.code !== 'ENOENT') throw error; return null }
+    })
+    await c.assertAccess()
+    return withTerminalIndicators(c, { ...snapshot, branches })
+  }
+  async function withTerminalIndicators(c, snapshot) {
+    if (!c.isolated) return snapshot
+    const tasks = await new CollaborationTaskStore(Path.join(c.root, 'shell-draft-tasks')).list()
+    const visible = tasks.filter(task => task.kind === 'shell-draft' && task.logicalProjectId === c.logicalProjectId && !task.deletedAt)
+    const owners = [...new Set(visible.map(task => task.createdBy))]
+    const people = owners.length ? await User.find({ _id: { $in: owners } }).select('first_name last_name').lean().exec() : []
+    const users = new Map(people.map(user => [String(user._id), [user.first_name, user.last_name].filter(Boolean).join(' ').slice(0, 200) || 'Collaborator']))
+    const result = await annotateTerminalLocations(snapshot, visible, {
+      logicalProjectId: c.logicalProjectId, users,
+      health: async task => {
+        if (!task.sessionId) return 'unavailable'
+        try {
+          // The runner response stays server-side; only liveness is shared.
+          const status = await terminalRequest({ action: 'poll', project: c.logicalProjectId, user: task.createdBy, id: task.sessionId, cursor: 0 })
+          return status.exited ? 'stopped' : 'running'
+        } catch (error) {
+          return /session expired|shell exited/i.test(error.message) ? 'stopped' : 'unavailable'
+        }
+      },
+    })
+    await c.assertAccess()
+    return result
+  }
   function autoCommitController(c, projectId, userId) {
     if (!c.epoch || !c.collaboration.apply || !withPreparedWrite) throw Object.assign(Error('Automatic commits require prepared branch workspaces'), { status: 409 })
     const authorize = async actor => {
@@ -282,7 +326,7 @@ export function createNativeGitRuntime({ storagePath, withExclusiveWrite, withPr
           }
         } catch (error) { if (error.code !== 'ENOENT') throw error }
       }
-      return { connected: true, collaboration: c.collaboration, ...snapshot }
+      return { connected: true, collaboration: c.collaboration, ...await withAutoCommitIndicators(c, projectId, snapshot) }
     },
     async status(projectId, userId) {
       const scope = await resolveWorkspaceScope(projectId)
@@ -292,8 +336,9 @@ export function createNativeGitRuntime({ storagePath, withExclusiveWrite, withPr
       if (readOnly) {
         try { await c.store.read() } catch (error) { if (error.code === 'ENOENT') return { connected: false, readOnly: true }; throw error }
         // Never export live editor contents just to show a viewer the graph.
-        return c.workspace.readHistory(async repo => ({ connected: true, readOnly: true,
+        const snapshot = await c.workspace.readHistory(async repo => ({ connected: true, readOnly: true,
           graph: await repo.graph(), branches: await repo.branches(), tags: await repo.tagRefs() }))
+        return withAutoCommitIndicators(c, projectId, snapshot)
       }
       try { await c.store.read() } catch (error) { if (error.code === 'ENOENT') return { connected: false }; throw error }
       const snapshot = await c.workspace.inspect()
@@ -315,10 +360,20 @@ export function createNativeGitRuntime({ storagePath, withExclusiveWrite, withPr
           }
         } catch (error) { if (error.code !== 'ENOENT') throw error }
       }
-      return { connected: true, collaboration: c.collaboration, ...snapshot }
+      return { connected: true, collaboration: c.collaboration, ...await withAutoCommitIndicators(c, projectId, snapshot) }
     },
     async execute(projectId, userId, command) {
-      const c = await context(projectId, userId, command.command)
+      let c = await context(projectId, userId, command.command)
+      if(command.command.startsWith('shellDraft')) {
+        await c.assertAccess()
+        const workspaceId=await shellSessionWorkspace({command,store:new CollaborationTaskStore(Path.join(c.root,'shell-draft-tasks')),logicalProjectId:c.logicalProjectId,actorId:identity(userId),currentWorkspaceId:identity(projectId)})
+        if(workspaceId!==identity(projectId)) {
+          const source=await context(workspaceId,userId,command.command)
+          if(source.logicalProjectId!==c.logicalProjectId)throw Object.assign(new Error('Terminal workspace belongs to another project'),{status:403})
+          await source.assertAccess()
+          c=source;projectId=workspaceId
+        }
+      }
       if (command.command === 'backupRestoreList') return { result: await new BackupRestoreService(c, userId).list() }
       if (command.command === 'backupRestorePreview') return { result: await new BackupRestoreService(c, userId).preview(command.id) }
       if (command.command === 'backupRestoreApply') return { result: await new BackupRestoreService(c, userId).apply(command.id, command.revision) }
@@ -331,7 +386,10 @@ export function createNativeGitRuntime({ storagePath, withExclusiveWrite, withPr
       if (command.command === 'backupCreate') return { result: await new ProjectBackupService(c, userId).create() }
       if (command.command === 'backupList') return { result: await new ProjectBackupService(c, userId).list() }
       await c.assertAccess()
-      if (isHistoryReadCommand(command.command)) return { result: await executeGitCommand(c.workspace, command) }
+      if (isHistoryReadCommand(command.command)) {
+        const result = await executeGitCommand(c.workspace, command)
+        return { result: command.command === 'graph' ? (await withTerminalIndicators(c, { graph: result })).graph : result }
+      }
       const policy = await readAccessPolicy(c.root, userId)
       if (['workspaceList', 'workspaceLifecycle'].includes(command.command)) {
         const children = () => Project.find({ 'gitWorkspace.logicalProjectId': c.logicalProjectId }).select('gitWorkspace').lean().exec()
@@ -487,7 +545,7 @@ export function createNativeGitRuntime({ storagePath, withExclusiveWrite, withPr
           store: new CollaborationTaskStore(Path.join(c.root, 'shell-draft-tasks')),
           project: c.project, withLock: c.withLock, authorize: c.assertAccess,
           readEpoch: () => c.epoch.read(), logicalProjectId: c.logicalProjectId,
-          workspaceId: identity(projectId), actorId: identity(userId), readPermissionMode: async () => (await readAccessPolicy(c.root, userId)).mode, terminal: shellDraftTerminal(terminalRequest) })
+          workspaceId: identity(projectId), actorId: identity(userId), readPosition: async () => { const position = await readGitPresencePosition({workspace:c.workspace,epoch:c.epoch,logicalProjectId:c.logicalProjectId,workspaceId:identity(projectId),userId:identity(userId)});return {branch:position.branch,head:position.head,dirty:position.dirty} }, readPermissionMode: async () => (await readAccessPolicy(c.root, userId)).mode, terminal: shellDraftTerminal(terminalRequest) })
         if (['shellDraftApply', 'shellDraftRecover', 'shellDraftRecoveryPreview'].includes(command.command)) {
           if (!withPreparedWrite || !c.collaboration.apply) throw Object.assign(new Error('Prepared workspace transactions are required for shell application and recovery'), { status: 409 })
           const options = { drafts, workspaceStore: c.store }
@@ -499,8 +557,14 @@ export function createNativeGitRuntime({ storagePath, withExclusiveWrite, withPr
           return { result: publicShellDraft(result) }
         }
         // Startup is opt-in after this deployment passes terminal/application acceptance.
-        return { result: await executeShellDraftCommand({ drafts, command, policy,
-          startEnabled: Settings.nativeGit?.shellDrafts === true && !!withPreparedWrite && c.collaboration.apply === true }) }
+        const result = await executeShellDraftCommand({ drafts, command, policy,
+          startEnabled: Settings.nativeGit?.shellDrafts === true && !!withPreparedWrite && c.collaboration.apply === true })
+        if (Array.isArray(result) || result?.kind === 'shell-draft') {
+          const owner = await User.findById(userId).select('first_name last_name').lean().exec()
+          const ownerDisplayName = [owner?.first_name, owner?.last_name].filter(Boolean).join(' ').slice(0, 200) || 'Collaborator'
+          return { result: Array.isArray(result) ? result.map(task => ({ ...task, ownerDisplayName })) : { ...result, ownerDisplayName } }
+        }
+        return { result }
       }
       if (c.isolated && command.command === 'pull') {
         const authorize = async () => {
@@ -522,7 +586,7 @@ export function createNativeGitRuntime({ storagePath, withExclusiveWrite, withPr
       }
       if (command.command.startsWith('mergeDraft')) {
         if (!c.isolated) throw Object.assign(new Error('Merge drafts require a branch workspace'), { status: 409 })
-        const readOnly = ['mergeDraftList', 'mergeDraftGet', 'mergeDraftConflict', 'mergeDraftRecoveryPreview'].includes(command.command)
+        const readOnly = ['mergeDraftList', 'mergeDraftGet', 'mergeDraftReview', 'mergeDraftConflict', 'mergeDraftRecoveryPreview'].includes(command.command)
         if (!readOnly) requireRepositoryWrite(policy)
         const drafts = new MergeDraftService({ workspace: c.workspace, repository: c.repository,
           store: new CollaborationTaskStore(Path.join(c.root, 'collaboration-tasks')),
@@ -545,6 +609,7 @@ export function createNativeGitRuntime({ storagePath, withExclusiveWrite, withPr
             if (!c.collaboration.apply || !c.epoch) throw Object.assign(Error('Prepared branch workspace required for validation'), { status: 409 })
             return { result: await mergeValidationRuntime(c, drafts, projectId).run(command.id, command.revision) }
           }
+          case 'mergeDraftReview': return { result: await drafts.review(command.id, command.path) }
           case 'mergeDraftGet': return { result: publicMergeTask(await drafts.get(command.id)) }
           case 'mergeDraftConflict': return { result: await drafts.conflict(command.id, command.path) }
           case 'mergeDraftPrepare': return { result: publicMergeTask(await drafts.prepare(command)) }
@@ -569,8 +634,9 @@ export function createNativeGitRuntime({ storagePath, withExclusiveWrite, withPr
           // Serialize with draft start/input and revoke every branch session of
           // this owner before recording a policy that promises a closed shell.
           await c.assertAccess()
-          await terminalRequest({project:c.logicalProjectId,user:String(userId),action:'revoke'})
-          if (c.logicalProjectId !== String(projectId)) await terminalRequest({project:String(projectId),user:String(userId),action:'revoke'})
+          const currentPolicy = await readAccessPolicy(c.root, userId)
+          if (manualTerminalMode(currentPolicy.mode) !== manualTerminalMode(command.mode)) await terminalRequest({project:c.logicalProjectId,user:String(userId),action:'revoke'})
+          if (manualTerminalMode(currentPolicy.mode) !== manualTerminalMode(command.mode) && c.logicalProjectId !== String(projectId)) await terminalRequest({project:String(projectId),user:String(userId),action:'revoke'})
           await c.assertAccess()
           return { result: await saveAccessPolicy(c.root,userId,{ mode:command.mode,directories:[] }) }
         })
@@ -650,12 +716,12 @@ export function createNativeGitRuntime({ storagePath, withExclusiveWrite, withPr
           }
         } catch (error) { if (error.code !== 'ENOENT') throw error }
       }
-      return { connected: true, collaboration: c.collaboration, ...snapshot }
+      return { connected: true, collaboration: c.collaboration, ...await withAutoCommitIndicators(c, projectId, snapshot) }
       }
       if (command.command === 'generateMessage') {
         const result = await generateCommitMessage(c.workspace, ({ systemPrompt, userMessage }) =>
           WritingAssistLLMProvider.check({ provider: 'agent', timeout: 60000 }, '', systemPrompt, [], userMessage))
-        return { result, ...(await c.workspace.inspect()) }
+        return { result, ...(await withAutoCommitIndicators(c, projectId, await c.workspace.inspect())) }
       }
       const editorCommands = new Set(['checkout', 'checkoutDetached', 'merge', 'rebase', 'cherryPick', 'revert', 'reset',
         'continueOperation', 'resolveConflict', 'discard', 'discardAll', 'stash', 'applyStash', 'resumeTransfer', 'cancelTransfer', 'pull', 'sync'])
@@ -674,7 +740,7 @@ export function createNativeGitRuntime({ storagePath, withExclusiveWrite, withPr
           return executeRemoteCommand(repo,command,{credentials:c.credentials,author:identity})
         }
         const result = await (['pull','sync'].includes(command.command) ? c.workspace.mutate(execute) : c.workspace.run(execute))
-        return { result: result ?? null, ...(await c.workspace.inspect()) }
+        return { result: result ?? null, ...(await withAutoCommitIndicators(c, projectId, await c.workspace.inspect())) }
       }
       if (['commitDetails', 'commitDiff', 'commitFiles', 'commitFileDiff', 'commitFilePreview'].includes(command.command)) {
         return { result: await executeGitCommand(c.workspace, command) }
@@ -683,7 +749,7 @@ export function createNativeGitRuntime({ storagePath, withExclusiveWrite, withPr
       const preferences = needsAuthor ? await readGraphSettings(c.root, userId) : null
       const commitIdentity = preferences?.userName ? { name: preferences.userName, email: preferences.userEmail } : needsAuthor ? await author(userId) : undefined
       const result = await executeGitCommand(c.workspace, command, commitIdentity)
-      return { result: result ?? null, ...(await c.workspace.inspect()) }
+      return { result: result ?? null, ...(await withAutoCommitIndicators(c, projectId, await c.workspace.inspect())) }
     },
   }
 }

@@ -1,9 +1,10 @@
+import MaterialIcon from '@/shared/components/material-icon'
 import { useEffect, useRef, useState } from 'react'
 import { useAccessPolicy } from './access-mode'
 import { errorMessage, type GitApi } from './api'
 import type { Terminal } from './vendor/xterm'
 import './vendor/xterm.css'
-export default function GitTerminal({ api, onClose, onChanged, createTerminal }: { api: GitApi; onClose: () => void; onChanged: () => unknown; createTerminal?: () => Promise<Terminal> }) {
+export default function GitTerminal({ api, onClose, onChanged, createTerminal, interactive = false }: { interactive?: boolean; api: GitApi; onClose: () => void; onChanged: () => unknown; createTerminal?: () => Promise<Terminal> }) {
   const { policy: access, setPolicy } = useAccessPolicy(api)
   const sessionId = useRef<string>()
   const generation = useRef(0)
@@ -57,7 +58,7 @@ export default function GitTerminal({ api, onClose, onChanged, createTerminal }:
     void (async () => {
       terminal = createTerminal ? await createTerminal() : new (await import('./vendor/xterm.cjs')).Terminal({ fontSize: 13, lineHeight: 1.2, cursorBlink: true, scrollback: 5000, theme: { background: '#f7f8fa', foreground: '#202630', cursor: '#202630', selectionBackground: '#b7cfe9' } })
       if (!active) { terminal.dispose(); return }
-      terminal.open(host.current!); if(access.mode !== 'auto-review') terminal.onData(send)
+      terminal.open(host.current!); if(interactive || access.mode !== 'auto-review') terminal.onData(send)
       terminal.onScroll?.(() => { if (!terminal) return; follow = terminal.buffer.active.viewportY >= terminal.buffer.active.baseY; setAtBottom(follow) })
       const result = (await api.command({ command: 'terminalOpen', ...access })).result as { id: string; directory: string }
       id = result.id
@@ -66,12 +67,12 @@ export default function GitTerminal({ api, onClose, onChanged, createTerminal }:
       setDirectory(result.directory); resize(); requestAnimationFrame(() => { if (active) resize() }); terminal.focus()
       observer = new ResizeObserver(resize); observer.observe(host.current!)
       void poll()
-    })().catch(error => { if (active) setError(errorMessage(error)) })
+    })().catch(error => { if (active) { setError(errorMessage(error)); setDirectory('Connection failed'); setReady(false) } })
     return () => {
       active = false; generation.current++; setReady(false); sessionId.current = undefined; setApproval(undefined); jumpToBottom.current = undefined; clearTimeout(timer); observer?.disconnect(); terminal?.dispose()
       if (id) void api.command({ command: 'terminalClose', id }).catch(() => {}).finally(() => { void api.command({ command:'accessPolicy' }).then(result => { if ((result.result as any)?.mode) setPolicy(result.result as any) }).catch(() => {}); void changed.current() })
     }
-  }, [api, createTerminal, access])
+  }, [api, createTerminal, access, interactive])
   return <section className="native-git-terminal" aria-label="Repository terminal" style={{ flexBasis: height }}>
     <div className="native-git-terminal-resize" role="separator" aria-label="Resize terminal" aria-orientation="horizontal" aria-valuenow={height} aria-valuemin={150} aria-valuemax={700} tabIndex={0}
       onPointerDown={event => { drag.current = { y: event.clientY, height }; event.currentTarget.setPointerCapture(event.pointerId); event.preventDefault() }}
@@ -79,6 +80,6 @@ export default function GitTerminal({ api, onClose, onChanged, createTerminal }:
       onPointerUp={() => { drag.current = undefined }} onPointerCancel={() => { drag.current = undefined }}
       onKeyDown={event => { if (event.key === 'ArrowUp' || event.key === 'ArrowDown') { event.preventDefault(); setHeight(value => Math.max(150, Math.min(700, value + (event.key === 'ArrowUp' ? 20 : -20)))) } }} />
     <header><strong>Terminal</strong><span className="native-git-terminal-mode">{({'read-only':'Read Only','workspace-write':'Ask for approval','auto-review':'Approve for me','full-access':'Full Access'})[access.mode]}</span><code title={directory}>{directory}</code><button className="native-git-icon-button" aria-label="Close terminal" onClick={onClose}>×</button></header>
-    {access.mode === 'auto-review' && <form onSubmit={event => {event.preventDefault();void execute()}} style={{padding:'8px'}}><label>Command (starts in repository directory)<textarea aria-label="Reviewed terminal command" value={command} disabled={!ready || running || !!approval} onChange={event => setCommand(event.target.value)} style={{width:'100%'}} /></label><button type="submit" disabled={!ready || running || !!approval || !command.trim()}>Review and run</button>{approval && <div role="alert"><p>{approval.reason}</p><pre>{approval.text}</pre><button type="button" disabled={!ready || running} onClick={() => void execute(true)}>Approve this command</button><button type="button" disabled={running} onClick={() => setApproval(undefined)}>Cancel</button></div>}</form>}
+    {!interactive && access.mode === 'auto-review' && <form onSubmit={event => {event.preventDefault();void execute()}} style={{padding:'8px'}}><label>Command (starts in repository directory)<textarea aria-label="Reviewed terminal command" value={command} disabled={!ready || running || !!approval} onChange={event => setCommand(event.target.value)} style={{width:'100%'}} /></label><button className="btn btn-secondary" type="submit" disabled={!ready || running || !!approval || !command.trim()}><MaterialIcon type="visibility" />Review and run</button>{approval && <div role="alert"><p>{approval.reason}</p><pre>{approval.text}</pre><button className="btn btn-secondary" type="button" disabled={!ready || running} onClick={() => void execute(true)}><MaterialIcon type="terminal" />Approve this command</button><button className="btn btn-secondary" type="button" disabled={running} onClick={() => setApproval(undefined)}><MaterialIcon type="close" />Cancel</button></div>}</form>}
     {error && <p role="alert">{error}</p>}<div className="native-git-shell" ref={host} />{!atBottom && <button type="button" className="btn btn-default btn-sm native-git-terminal-jump" onClick={() => jumpToBottom.current?.()}>Back to bottom ↓</button>}</section>
 }

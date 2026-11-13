@@ -1,3 +1,6 @@
+import AutoSyncIndicator from './auto-sync-indicator'
+import TerminalIndicators from './terminal-indicators'
+import AutoCommitIndicator from './auto-commit-indicator'
 import { PresenceMarkers } from './git-presence-list'
 import type { GitPresence } from './git-presence'
 import { formatGitDate } from './format-date'
@@ -42,6 +45,7 @@ export default function CommitGraph({ commits, presence = [], detailed = false, 
   onInspect?: (commit: GitCommit) => void
   expanded?: Record<string, boolean>; details?: Record<string, CommitDetails>
 }) {
+  const refDrag = useRef<{node: HTMLSpanElement; x: number; left: number; moved: boolean}>()
   const rows = graphRows(commits)
   const columns = Math.max(1, ...rows.map(row => Math.max(row.before.length, row.after.length)))
   const x = (column: number) => 10 + column * 16
@@ -82,13 +86,19 @@ export default function CommitGraph({ commits, presence = [], detailed = false, 
             ? <path key={hash} stroke={colors.get(hash)} d={`M${x(index)} 0V16`} />
             : <path key={hash} stroke={colors.get(hash)} d={`M${x(index)} 0C${x(index)} 16 ${x(after.indexOf(hash))} 16 ${x(after.indexOf(hash))} 32`} />)}
           {commit.parents.map(parent => <path key={parent} stroke={colors.get(parent)} d={`M${x(column)} 16C${x(column)} 25 ${x(after.indexOf(parent))} 25 ${x(after.indexOf(parent))} 32`} />)}
-          <circle cx={x(column)} cy="16" r={expanded[commit.hash] ? 5 : 4} stroke={color} />
+          <circle cx={x(column)} cy="16" r={expanded[commit.hash] ? 5 : 4} stroke={color}><title>{commit.parents.length ? commit.subject : 'Initial commit — this history starts here'}</title></circle>
         </svg>
         {detailed && <span className="native-git-commit-dot" aria-hidden="true" style={{ left: x(column) - 5, borderColor: color }} />}
-        <span className="native-git-commit-description">{detailed && commit.refs && <span className="native-git-full-refs">{commit.refs.split(', ').map(ref => { const name = ref.replace(/^HEAD -> /, ''); const branch = branches.find(branch => branch.name === name && !branch.tag); return <span className="native-git-ref" key={ref} title={branch ? `Double-click to checkout ${name}` : name} onClick={event => event.stopPropagation()} onDoubleClick={event => { event.stopPropagation(); if (branch && !busy) onCheckout?.(branch) }}>{name}</span> })}</span>}<span>{commit.subject}</span><PresenceMarkers sessions={presence} hash={commit.hash} /></span>
+        <span className="native-git-commit-description">{detailed && commit.refs && <span className="native-git-full-refs">{commit.refs.split(', ').map(ref => { const name = ref.replace(/^HEAD -> /, ''); const branch = branches.find(branch => branch.name === name && !branch.tag); return <span className="native-git-ref" key={ref} title={branch ? `Double-click to checkout ${name}` : name} onClick={event => event.stopPropagation()} onDoubleClick={event => { event.stopPropagation(); if (branch && !busy) onCheckout?.(branch) }}>{name}<AutoCommitIndicator policy={branch?.autoCommit}/><AutoSyncIndicator policy={branch?.autoSync}/></span> })}</span>}<span><TerminalIndicators sessions={commit.terminals}/>{commit.subject}{!commit.parents.length && <span className="native-git-root-label" title="This is the first commit in a separate history; it has no parent."> · History start</span>}</span><PresenceMarkers sessions={presence} hash={commit.hash} /></span>
         {detailed && <time className="native-git-commit-date" dateTime={commit.date} title={formatGitDate(commit.date)}>{formatGitDate(commit.date)}</time>}
         <span className="native-git-commit-author" title={commit.author}>{commit.author}</span>
-        {!detailed && commit.refs && <span className="native-git-ref">{commit.refs.replace(/^HEAD -> /, '')}</span>}
+        {!detailed && commit.refs && <span className="native-git-sidebar-refs"
+          onPointerDown={event => { if(event.pointerType === 'mouse' && event.button === 0) refDrag.current={node:event.currentTarget,x:event.clientX,left:event.currentTarget.scrollLeft,moved:false} }}
+          onPointerMove={event => {const drag=refDrag.current;if(!drag || drag.node!==event.currentTarget || !(event.buttons&1))return;const delta=event.clientX-drag.x;if(Math.abs(delta)>5)drag.moved=true;if(drag.moved){event.preventDefault();event.currentTarget.setPointerCapture(event.pointerId);event.currentTarget.scrollLeft=drag.left-delta}}}
+          onPointerUp={event => {if(event.currentTarget.hasPointerCapture(event.pointerId))event.currentTarget.releasePointerCapture(event.pointerId)}}
+          onPointerCancel={() => {refDrag.current=undefined}}
+          onClickCapture={event => {if(refDrag.current?.moved){event.preventDefault();event.stopPropagation()}refDrag.current=undefined}}
+          onDragStart={event=>event.preventDefault()}>{commit.refs.split(', ').map(ref => { const name = ref.replace(/^HEAD -> /, ''); const branch = branches.find(item => item.name === name && !item.tag); return <span key={ref} className="native-git-ref" title={branch ? `Double-click to switch to ${name}` : name} onClick={event => event.stopPropagation()} onDoubleClick={event => { event.stopPropagation(); if (branch && !busy) onCheckout?.(branch) }}>{name}<AutoCommitIndicator policy={branch?.autoCommit}/><AutoSyncIndicator policy={branch?.autoSync}/></span> })}</span>}
         {detailed && <code className="native-git-commit-hash" title={commit.hash}>{commit.hash.slice(0, 8)}</code>}
       </button>
       {selectedHash === commit.hash && selectedDetails && <div className="native-git-inline-details">

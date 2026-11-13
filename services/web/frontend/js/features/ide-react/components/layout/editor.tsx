@@ -1,3 +1,4 @@
+import { useIdeReactContext } from '@/features/ide-react/context/ide-react-context';
 import { SubmissionWorkspace } from "@/features/plugins/submission-workspace";
 import { EditorLoadingPane } from "@/features/ide-react/components/editor/editor-loading-pane";
 import { useEditorOpenDocContext } from "@/features/ide-react/context/editor-open-doc-context";
@@ -17,6 +18,7 @@ import { AssistantDock } from "@/features/source-editor/extensions/writing-assis
 
 export const Editor = () => {
   const permissions = usePermissionsContext();
+  const { hasProjectWriteAccess } = useIdeReactContext();
   const editorContainer = useRef<HTMLDivElement>(null);
   const [assistantMinSize, setAssistantMinSize] = useState(20);
   const { opening, errorState, showSymbolPalette } =
@@ -98,7 +100,7 @@ export const Editor = () => {
             )}
           </PanelGroup>
         </Panel>
-        {permissions.write && (
+        {(hasProjectWriteAccess ?? permissions.write) && (
           <>
             <VerticalResizeHandle
               id="paper-assistant-resize"

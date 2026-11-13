@@ -34,6 +34,7 @@ type IdeReactContextValue = {
   reportError: (error: any, meta?: Record<string, any>) => void
   projectJoined: boolean
   permissionsLevel: PermissionsLevel
+  hasProjectWriteAccess?: boolean
   setPermissionsLevel: (permissionsLevel: PermissionsLevel) => void
   setOutOfSync: (value: boolean) => void
 }
@@ -68,7 +69,7 @@ export const IdeReactProvider: FC<React.PropsWithChildren> = ({ children }) => {
   // been called
   const [projectJoined, setProjectJoined] = useState(false)
 
-  const { socket, getSocketDebuggingInfo } = useConnectionContext()
+  const { socket, getSocketDebuggingInfo, connectionState } = useConnectionContext()
   useEffect(() => {
     let expiry: ReturnType<typeof setTimeout> | undefined
     const preparing = (event: Event) => setGitPrepareBusy((event as CustomEvent<{ busy: boolean }>).detail.busy)
@@ -175,6 +176,8 @@ export const IdeReactProvider: FC<React.PropsWithChildren> = ({ children }) => {
       eventEmitter,
       startedFreeTrial,
       setStartedFreeTrial,
+      // Tool visibility follows actual access, not transient Git write locks.
+      hasProjectWriteAccess: !outOfSync && !connectionState.forceDisconnected && ['owner', 'readAndWrite'].includes(permissionsLevel),
       permissionsLevel: outOfSync || gitLocalBusy || gitRemoteBusy || gitPrepareBusy ? 'readOnly' : permissionsLevel,
       setPermissionsLevel,
       setOutOfSync,
@@ -185,6 +188,7 @@ export const IdeReactProvider: FC<React.PropsWithChildren> = ({ children }) => {
     [
       eventEmitter,
       outOfSync,
+      connectionState.forceDisconnected,
       gitPrepareBusy,
       gitLocalBusy,
       gitRemoteBusy,

@@ -82,3 +82,17 @@ describe('reviewed terminal startup',()=>{
   expect(command.args.find(([c])=>c.command==='terminalRun')![0].id).to.equal(`attached-${pending.length-1}`)
  })
 })
+
+describe('Interactive draft terminal',()=>{
+ afterEach(cleanup)
+ it('does not show the Agent reviewed-command form and accepts terminal input',async()=>{
+  let send!: (value:string)=>void
+  const terminal={open:sinon.stub(),onData:(cb:typeof send)=>{send=cb},resize:sinon.stub(),focus:sinon.stub(),write:sinon.stub(),writeln:sinon.stub(),dispose:sinon.stub()}
+  const command=sinon.stub().callsFake(async c=>({result:c.command==='accessPolicy'?{mode:'auto-review',directories:[]}:c.command==='terminalOpen'?{id:'interactive',directory:'/interactive'}:c.command==='terminalPoll'?{output:'',exited:false}:{}}))
+  render(<GitTerminal interactive createTerminal={async()=>terminal as any} api={{projectId:'interactive-mode-test',command,status:sinon.stub(),initialize:sinon.stub()}} onClose={()=>{}} onChanged={()=>{}}/>)
+  await screen.findByText('/interactive')
+  expect(screen.queryByRole('textbox',{name:'Reviewed terminal command'})).to.equal(null)
+  send('pwd\r')
+  await waitFor(()=>expect(command).to.have.been.calledWith({command:'terminalInput',id:'interactive',input:'pwd\r'}))
+ })
+})

@@ -1,3 +1,4 @@
+import MaterialIcon from '@/shared/components/material-icon'
 import { useEffect, useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import { errorMessage, type GitApi } from './api'
@@ -58,7 +59,7 @@ export default function RemoteSettings({ api, onClose }: { api: GitApi; onClose:
     } catch (error) { setError(errorMessage(error)) }
     finally { setBusy(false) }
   }
-  return <Modal show onHide={() => { if (!busy) onClose() }} aria-label="Repository settings">
+  return <Modal className="native-git-dialog" show onHide={() => { if (!busy) onClose() }} aria-label="Repository settings">
     <Modal.Header closeButton><Modal.Title>Repository settings</Modal.Title></Modal.Header>
     <Modal.Body>
       {error && <p role="alert" className="native-git-error">{error}</p>}
@@ -74,17 +75,17 @@ export default function RemoteSettings({ api, onClose }: { api: GitApi; onClose:
           <label className="native-git-field">Username<input className="form-control" autoComplete="off" value={username} disabled={busy || loading} onChange={event => setUsername(event.target.value)} /></label>
           <label className="native-git-field">Repository access token<input className="form-control" type="password" autoComplete="new-password" value={token} placeholder={configured ? '••••••••••••' : 'Access token'} disabled={busy || loading} onChange={event => setToken(event.target.value)} /></label>
           {configured && <p role="status">Token configured</p>}
-          <div className="native-git-operation"><button type="submit" className="btn btn-primary" disabled={busy || loading || !username.trim() || !token}>{configured ? 'Replace token' : 'Save token'}</button>
-            {configured && <button type="button" className="btn btn-default" disabled={busy || loading} onClick={() => update(true)}>Remove token</button>}</div>
+          <div className="native-git-operation"><button type="submit" className="btn btn-primary" disabled={busy || loading || !username.trim() || !token}><MaterialIcon type="save" />{configured ? 'Replace token' : 'Save token'}</button>
+            {configured && <button type="button" className="btn btn-default" disabled={busy || loading} onClick={() => update(true)}><MaterialIcon type="delete" />Remove token</button>}</div>
         </form>
         <hr />
         {removing ? <div>
           <p>Remove remote <strong>{remote}</strong> ({remotes.find(item => item.name === remote)?.refs.fetch})? This removes its remote-tracking references. Local branches, commits and project files stay intact.</p>
           <div className="native-git-operation">
-            <button type="button" className="btn btn-danger" disabled={busy || loading} onClick={removeRemote}>Confirm remove remote</button>
-            <button type="button" className="btn btn-default" disabled={busy} onClick={() => setRemoving(false)}>Cancel</button>
+            <button type="button" className="btn btn-danger" disabled={busy || loading} onClick={removeRemote}><MaterialIcon type="check" />Confirm remove remote</button>
+            <button type="button" className="btn btn-default" disabled={busy} onClick={() => setRemoving(false)}><MaterialIcon type="close" />Cancel</button>
           </div>
-        </div> : <button type="button" className="btn btn-default" disabled={busy || loading} onClick={() => setRemoving(true)}>Remove remote…</button>}
+        </div> : <button type="button" className="btn btn-default" disabled={busy || loading} onClick={() => setRemoving(true)}><MaterialIcon type="delete" />Remove remote…</button>}
       </>}
     </Modal.Body>
   </Modal>

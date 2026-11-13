@@ -1,3 +1,5 @@
+export type TerminalIndicator = { branch?: string | null; userId: string; displayName: string; name: string; state: 'running' | 'stopped' | 'unavailable' | 'ready' }
+
 export type GitFile = {
   path: string
   from?: string
@@ -17,6 +19,9 @@ export type GitStatus = {
 }
 
 export type GitBranch = {
+  terminals?: TerminalIndicator[]
+  autoSync?: { enabled: boolean; state: string }
+  autoCommit?: { enabled: boolean; state: string }
   ref: string
   name: string
   commit: string
@@ -30,6 +35,7 @@ export type GitBranch = {
 }
 
 export type GitCommit = {
+  terminals?: TerminalIndicator[]
   hash: string
   parents: string[]
   author: string

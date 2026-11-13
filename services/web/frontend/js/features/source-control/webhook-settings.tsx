@@ -1,3 +1,4 @@
+import MaterialIcon from '@/shared/components/material-icon'
 import { formatGitDate } from './format-date'
 import { useEffect, useState } from 'react'
 import { errorMessage, type GitApi } from './api'
@@ -31,8 +32,8 @@ export default function WebhookSettings({ api }: { api: GitApi }) {
         {hook.secret && <label className="native-git-field">Secret (shown once; save it in GitHub)<input className="form-control" type="password" autoComplete="off" readOnly value={hook.secret} onFocus={event => event.target.select()} /></label>}
         <p>Last notification: {hook.lastReceivedAt ? formatGitDate(hook.lastReceivedAt) : 'None received'}</p>
       </>}
-      <button type="button" className="btn btn-default" disabled={busy} onClick={() => void save(true)}>{hook.enabled ? 'Rotate webhook secret and URL' : 'Enable GitHub notifications'}</button>{' '}
-      {hook.enabled && <button type="button" className="btn btn-default" disabled={busy} onClick={() => void save(false)}>Disable GitHub notifications</button>}
+      <button type="button" className="btn btn-default" disabled={busy} onClick={() => void save(true)}><MaterialIcon type="notifications" />{hook.enabled ? 'Rotate webhook secret and URL' : 'Enable GitHub notifications'}</button>{' '}
+      {hook.enabled && <button type="button" className="btn btn-default" disabled={busy} onClick={() => void save(false)}><MaterialIcon type="notifications" />Disable GitHub notifications</button>}
     </>}
   </section>
 }

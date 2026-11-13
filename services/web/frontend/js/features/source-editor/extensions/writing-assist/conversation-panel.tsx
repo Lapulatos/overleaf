@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom'
 import { replaceRecoveredTask } from './recovered-task'
 import { useGitCommand } from '@/features/source-control/git-command-panel'
 import AccessMode from '@/features/source-control/access-mode'
@@ -59,12 +60,14 @@ export function ConversationView({
   projectId,
   diagnostics,
   dock = false,
+  toolbarTarget,
   onReviewInEditor,
   getSourceSelection,
 }: {
   projectId: string;
   diagnostics?: CompileDiagnostics;
   dock?: boolean;
+  toolbarTarget?: HTMLElement | null;
   getSourceSelection?: () => { docId: string | null | undefined; from: number; to: number; text: string } | undefined;
   onReviewInEditor?: (review: EditorReview | null) => void;
 }) {
@@ -277,10 +280,10 @@ export function ConversationView({
   function turnActions(turn:{taskId:string;status:string;summary:string}){
     return <div className="paper-turn-actions" role="group" aria-label="Message actions">
       <MessageCopyButton text={turn.summary} label="Copy assistant message" />
-      {['failed','timeout','cancelled'].includes(turn.status)&&<button type="button" aria-label="Retry request" title="Retry request" disabled={busy||running} onClick={()=>branchTurn(turn.taskId,'retry')}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M20 7v5h-5M20 12a8 8 0 1 0-2 6M20 7l-3-3"/></svg></button>}
+      {['failed','timeout','cancelled'].includes(turn.status)&&<button className="btn btn-secondary" type="button" aria-label="Retry request" title="Retry request" disabled={busy||running} onClick={()=>branchTurn(turn.taskId,'retry')}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M20 7v5h-5M20 12a8 8 0 1 0-2 6M20 7l-3-3"/></svg></button>}
       <details className="paper-branch-menu" onToggle={event=>{const node=event.currentTarget;if(!node.open)return;const rect=node.getBoundingClientRect();const menu=node.querySelector<HTMLElement>('.paper-branch-menu-options');if(menu){menu.style.left=`${Math.max(8,Math.min(rect.left,window.innerWidth-200))}px`;menu.style.top=`${Math.max(8,rect.top-90)}px`}}}><summary aria-label="Branch conversation" title="Branch conversation"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><circle cx="6" cy="5" r="2"/><circle cx="18" cy="5" r="2"/><circle cx="6" cy="19" r="2"/><path d="M6 7v10M18 7c0 7-12 3-12 8"/></svg></summary><div className="paper-branch-menu-options">
-      <button type="button" disabled={busy} onClick={()=>branchTurn(turn.taskId,'user')}>Branch from request</button>
-      <button type="button" disabled={busy||!['completed','failed','timeout','cancelled'].includes(turn.status)} onClick={()=>branchTurn(turn.taskId,'assistant')}>Branch from reply</button>
+      <button className="btn btn-secondary" type="button" disabled={busy} onClick={()=>branchTurn(turn.taskId,'user')}>Branch from request</button>
+      <button className="btn btn-secondary" type="button" disabled={busy||!['completed','failed','timeout','cancelled'].includes(turn.status)} onClick={()=>branchTurn(turn.taskId,'assistant')}>Branch from reply</button>
       </div></details>
     </div>;
   }
@@ -362,10 +365,15 @@ export function ConversationView({
     <IssueReplyContext.Provider value={{key:`${projectId}:${id}`,disabled:busy||running||!id,submit:replyToIssue}}>
     <div className="paper-assistant-view">
       {gitCommand.panel}
-      {dock && (
-        <div className="paper-dock-heading">
-          <strong>Paper Assistant</strong>
-          <button
+      {dock && (toolbarTarget ? createPortal((<button className="btn btn-secondary"
+            type="button"
+            aria-expanded={expanded}
+            onClick={() => setExpanded((value) => !value)}
+          >
+            {expanded ? "Hide conversation" : "Conversation & changes"}
+            {running || planCommand.running ? " · Working" : ""}
+          </button>), toolbarTarget) : (
+        <div className="paper-dock-heading"><strong>Paper Assistant</strong>          <button className="btn btn-secondary"
             type="button"
             aria-expanded={expanded}
             onClick={() => setExpanded((value) => !value)}
@@ -373,8 +381,7 @@ export function ConversationView({
             {expanded ? "Hide conversation" : "Conversation & changes"}
             {running || planCommand.running ? " · Working" : ""}
           </button>
-        </div>
-      )}
+</div>))}
       <div ref={transcript} className="paper-conversation-content" hidden={dock && !expanded}>
         <p className="paper-assistant-intro" hidden={Boolean(result)}>
           Write, revise, and explore ideas with your paper in context.
@@ -405,7 +412,7 @@ export function ConversationView({
           ))}
         </select>
         </div>
-        {result?.conversation.parent&&<div className="paper-branch-notice"><span>Branched conversation · uses the current manuscript files.</span><button type="button" disabled={busy} onClick={()=>{setId(result.conversation.parent!.conversationId);setResult(null);setInstruction('');setScope([]);setSkills([]);setAttachment(null);setGoalActive(false);setGoalInfo(null)}}>Back to parent conversation</button></div>}
+        {result?.conversation.parent&&<div className="paper-branch-notice"><span>Branched conversation · uses the current manuscript files.</span><button className="btn btn-secondary" type="button" disabled={busy} onClick={()=>{setId(result.conversation.parent!.conversationId);setResult(null);setInstruction('');setScope([]);setSkills([]);setAttachment(null);setGoalActive(false);setGoalInfo(null)}}>Back to parent conversation</button></div>}
         <div role="log" aria-label="Conversation history">
           {result?.conversation.turns
             .filter((turn) => turn.taskId !== result.task?.taskId)
@@ -496,7 +503,7 @@ export function ConversationView({
         </label>
         <ComposerContext projectId={projectId} value={instruction} caret={caret} scope={scope} skills={skills} onScope={setScope} onSkills={setSkills} disabled={busy||running} onReplace={(value,position)=>{setInstruction(value);setCaret(position);requestAnimationFrame(()=>{textarea.current?.focus();textarea.current?.setSelectionRange(position,position)})}}/>
         {goalMode&&<div className="paper-goal-mode"><span>Goal</span><label htmlFor="paper-goal-review-mode">Review mode</label><select id="paper-goal-review-mode" value={reviewMode} onChange={e=>setReviewMode(e.target.value as 'human'|'ai')}><option value="human">Manual approval</option><option value="ai">Automatic · AI review</option></select><label htmlFor="paper-goal-time-limit">Time limit</label><input id="paper-goal-time-limit" type="number" min="1" max="1440" placeholder="No limit" value={goalMinutes} onChange={e=>setGoalMinutes(e.target.value)}/><span>min</span></div>}
-        {attachment&&<div className="paper-image-chip"><img src={`data:${attachment.mime};base64,${attachment.data}`} alt={`Attached image: ${attachment.name}`}/><span>{attachment.name}</span><button type="button" aria-label="Remove image" disabled={busy||running} onClick={()=>{imageSequence.current++;setAttachment(null);setImageLoading(false)}}>×</button></div>}
+        {attachment&&<div className="paper-image-chip"><img src={`data:${attachment.mime};base64,${attachment.data}`} alt={`Attached image: ${attachment.name}`}/><span>{attachment.name}</span><button className="btn btn-secondary" type="button" aria-label="Remove image" disabled={busy||running} onClick={()=>{imageSequence.current++;setAttachment(null);setImageLoading(false)}}>×</button></div>}
         <input ref={imageInput} type="file" accept="image/png,image/jpeg" hidden aria-label="Upload image file" onChange={e=>{attachImage(e.target.files?.[0]);e.target.value=''}}/>
         <textarea
           ref={textarea}
@@ -595,7 +602,7 @@ export function ConversationView({
       {result?.conversation.activeTaskId ? <div className="paper-current-task-status" role="status" aria-label="Current task progress">
         <strong>Working</strong><span>{result.task?.scope?.map(item=>item.path).join(', ') || 'Current request'}</span>
         <span>{latestActivity ? `${result.task?.activity?.length || 0} actions · ${latestActivity.title} · ${latestActivity.status}` : 'Preparing task · waiting for the first update…'}</span>
-        {!following&&<button type="button" onClick={jumpToLatest}>View live progress</button>}
+        {!following&&<button className="btn btn-secondary" type="button" onClick={jumpToLatest}>View live progress</button>}
       </div> : !ordinaryTaskLatest&&<GoalTimer goal={goalInfo}/>}
       {error && (
         <div role="alert">

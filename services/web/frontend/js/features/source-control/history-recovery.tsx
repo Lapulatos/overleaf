@@ -1,3 +1,5 @@
+import MaterialIcon from '@/shared/components/material-icon'
+import ToolAction from './tool-action'
 import { useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import { getJSON, postJSON } from '@/infrastructure/fetch-json'
@@ -25,9 +27,9 @@ export default function HistoryRecovery({ projectId }: { projectId: string }) {
     finally { setBusy(false) }
   }
   return <>
-    <button type="button" className="btn btn-link" onClick={() => void review()}>History recovery…</button>
-    <Modal show={open} onHide={() => { if (!busy) setOpen(false) }} aria-label="History recovery">
-      <Modal.Header closeButton><Modal.Title>History recovery</Modal.Title></Modal.Header>
+    <ToolAction icon="history" type="button" onClick={() => void review()}>Recover interrupted restore</ToolAction>
+    <Modal className="native-git-dialog" show={open} onHide={() => { if (!busy) setOpen(false) }} aria-label="History recovery">
+      <Modal.Header closeButton><Modal.Title><MaterialIcon type="history" />History recovery</Modal.Title></Modal.Header>
       <Modal.Body>
         {error && <p role="alert" className="native-git-error">{error}</p>}
         {busy && <p role="status">Checking or recovering history…</p>}
@@ -38,13 +40,13 @@ export default function HistoryRecovery({ projectId }: { projectId: string }) {
           <p>The files below are the current state. Retry restores the selected historical version again, including files already processed. Keep current files ends recovery without replacing them. Earlier snapshots remain retained.</p>
           <ul>{task.currentFiles.map(f => <li key={f.path}>{f.path} <code>{f.hash.slice(0, 12)}</code></li>)}</ul>
           <label><input type="checkbox" checked={confirmed} disabled={busy} onChange={e => setConfirmed(e.target.checked)} /> I reviewed the current files and understand the selected recovery action.</label>
-          <div><button type="button" className="btn btn-default" disabled={busy || !confirmed} onClick={() => void recover(task, 'keep')}>Keep current files</button>{' '}
-            <button type="button" className="btn btn-primary" disabled={busy || !confirmed} onClick={() => void recover(task, 'retry')}>Retry historical restore</button></div>
+          <div><button type="button" className="btn btn-default" disabled={busy || !confirmed} onClick={() => void recover(task, 'keep')}><MaterialIcon type="save" />Keep current files</button>{' '}
+            <button type="button" className="btn btn-primary" disabled={busy || !confirmed} onClick={() => void recover(task, 'retry')}><MaterialIcon type="restore" />Retry historical restore</button></div>
         </div>)}
       </Modal.Body>
-      <Modal.Footer><button type="button" className="btn btn-default" disabled={busy} onClick={() => void review()}>Refresh preview</button>
-        {done && <button type="button" className="btn btn-primary" onClick={() => location.reload()}>Reload editor</button>}
-        <button type="button" className="btn btn-default" disabled={busy} onClick={() => setOpen(false)}>Close</button></Modal.Footer>
+      <Modal.Footer><button type="button" className="btn btn-default" disabled={busy} onClick={() => void review()}><MaterialIcon type="refresh" />Refresh preview</button>
+        {done && <button type="button" className="btn btn-primary" onClick={() => location.reload()}><MaterialIcon type="refresh" />Reload editor</button>}
+        <button type="button" className="btn btn-default" disabled={busy} onClick={() => setOpen(false)}><MaterialIcon type="close" />Close</button></Modal.Footer>
     </Modal>
   </>
 }

@@ -1,3 +1,4 @@
+import MaterialIcon from '@/shared/components/material-icon'
 import { useEffect, useState } from 'react'
 import type { GitApi } from './api'
 import CollaborationTasks from './collaboration-tasks'
@@ -50,10 +51,13 @@ export default function WorkspaceTaskNotice({ api, canApply }: { api: GitApi; ca
   return <>
     {(tasks.length > 0 || unavailable) && <aside className="native-git-workspace-notice" aria-label="Shared Git task notifications">
       {unavailable ? <p role="status">Shared task status is unavailable. Reconnect or refresh to verify access.</p> : <>
-        <p role="status">{tasks.length} shared Git {tasks.length === 1 ? 'task needs' : 'tasks need'} attention in this branch.</p>
-        <ul>{tasks.map(task => <li key={task.id}><button type="button" className="btn btn-link" onClick={() => setSelected(task.id)}>
-          {label(task.state)}: {task.sourceRef} → {task.targetBranch}
-        </button></li>)}</ul>
+        <div className="native-git-notice-heading"><MaterialIcon type="merge" /><strong role="status">{tasks.length === 1 ? 'Merge needs your review' : `${tasks.length} merges need review`}</strong></div>
+        {tasks.slice(0, 3).map(task => <div className="native-git-notice-row" key={task.id}>
+          <span title={`${label(task.state)}: ${task.sourceRef} → ${task.targetBranch}`}>{task.sourceRef.replace(/^refs\/remotes\//, '')} → {task.targetBranch}</span>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={() => setSelected(task.id)}>Review<MaterialIcon type="arrow_forward" /></button>
+        </div>)}
+        {tasks.length > 3 && <button type="button" className="btn btn-link" onClick={() => setSelected(tasks[0].id)}><MaterialIcon type="merge" />View all {tasks.length} merges</button>}
+
       </>}
     </aside>}
     {selected && <CollaborationTasks api={api} canApply={canApply} selectedId={selected} onClose={() => {

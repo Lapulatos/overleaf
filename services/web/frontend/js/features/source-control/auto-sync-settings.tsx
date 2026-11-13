@@ -1,3 +1,5 @@
+import MaterialIcon from '@/shared/components/material-icon'
+import ToolAction from './tool-action'
 import { useEffect, useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import { errorMessage, type GitApi } from './api'
@@ -36,14 +38,15 @@ function Settings({ api, branch, onClose }: { api: GitApi; branch: string; onClo
   }, [api, branch, reload])
   const execute = async (command: Record<string, unknown> & { command: string }) => {
     setBusy(true); setError('')
-    try { await api.command(command); setReload(value => value + 1) }
+    try { await api.command(command); window.dispatchEvent(new Event('native-git-command-completed')); setReload(value => value + 1) }
     catch (error) { setError(errorMessage(error)) }
     finally { setBusy(false) }
   }
-  return <Modal show onHide={onClose} aria-label="Automatic pull and push">
-    <Modal.Header closeButton><Modal.Title>Automatic pull and push</Modal.Title></Modal.Header>
+  return <Modal className="native-git-dialog" show onHide={onClose} aria-label="Automatic pull and push">
+    <Modal.Header closeButton><Modal.Title><MaterialIcon type="sync" />Automatic pull and push</Modal.Title></Modal.Header>
     <Modal.Body>
-      <p>This branch has one server schedule shared by all collaborators. Pull applies clean fast-forwards; divergence opens a shared review. Push never forces remote history.</p>
+      <p className="native-git-dialog-caption">Keep this branch in sync with its remote.</p>
+      <details className="native-git-help"><summary>How it works</summary><p>This branch has one server schedule shared by all collaborators. Pull applies clean fast-forwards; divergence opens a shared review. Push never forces remote history.</p></details>
       {error && <p role="alert">{error}</p>}
       {policy && <>
         <p role="status">Schedule status: {policy.state || 'disabled'}</p>
@@ -63,14 +66,14 @@ function Settings({ api, branch, onClose }: { api: GitApi; branch: string; onClo
       </>}
     </Modal.Body>
     <Modal.Footer>
-      <button className="btn btn-default" disabled={busy} onClick={() => setReload(value => value + 1)}>Reload settings</button>
+      <button className="btn btn-default" disabled={busy} onClick={() => setReload(value => value + 1)}><MaterialIcon type="refresh" />Reload settings</button>
       <button className="btn btn-primary" disabled={busy || !policy || !!policy.operationId || (enabled && (!policy.schedulerAvailable || (!pull && !push))) || !remote || !target || !Number.isInteger(minutes) || minutes < 1 || minutes > 1440}
-        onClick={() => policy && void execute({ command: 'configureAutoSyncSchedule', revision: policy.revision, enabled, pull, push, remote, branch: target, intervalMs: minutes * 60000 })}>Save automatic sync</button>
+        onClick={() => policy && void execute({ command: 'configureAutoSyncSchedule', revision: policy.revision, enabled, pull, push, remote, branch: target, intervalMs: minutes * 60000 })}><MaterialIcon type="save" />Save automatic sync</button>
     </Modal.Footer>
   </Modal>
 }
 export default function AutoSyncSettings({ api, branch }: { api: GitApi; branch: string }) {
   const [open, setOpen] = useState(false)
-  return <><button type="button" className="btn btn-link" onClick={() => setOpen(true)}>Automatic pull / push…</button>
+  return <><ToolAction icon="sync" type="button" onClick={() => setOpen(true)}>Automatic sync</ToolAction>
     {open && <Settings api={api} branch={branch} onClose={() => setOpen(false)} />}</>
 }

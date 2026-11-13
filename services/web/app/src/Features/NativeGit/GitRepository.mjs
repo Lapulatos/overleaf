@@ -1,3 +1,4 @@
+import { searchScore } from './SearchScore.mjs'
 import { captureGitOutput } from './GitOutput.mjs'
 import { simpleGit } from 'simple-git'
 import { createHash } from 'node:crypto'
@@ -144,22 +145,17 @@ export class GitRepository {
     if (!Number.isSafeInteger(skip) || skip < 0) throw new Error('Invalid history offset')
     if (query !== undefined && (typeof query !== 'string' || query.length > 1024 || /[\0\r\n]/.test(query))) throw new Error('Invalid history search')
     if (query?.trim()) {
-      // Let Git traverse and order history. Filter bounded native log pages so
-      // author, hash, refs and subject share the same literal search semantics.
-      const needle = query.trim().toLowerCase()
       const matches = []
-      let matched = 0
       for (let offset = 0; ; offset += 500) {
         const rows = await this.graph({ limit: 500, skip: offset, all, ref, refs, showRemotes, showTags, showStashes, includeReflogs, firstParent, hiddenRemotes })
         for (const row of rows) {
-          if (`${row.subject} ${row.author} ${row.email} ${row.hash} ${row.refs}`.toLowerCase().includes(needle)) {
-            if (matched++ >= skip) matches.push(row)
-            if (matches.length === limit) return matches
-          }
+          const score = Math.max(...[row.subject, row.author, row.email, row.hash, row.refs].map(value => searchScore(value, query)))
+          if (score) matches.push({ row, score })
         }
-        if (rows.length < 500) return matches
+        if (rows.length < 500) return matches.sort((a, b) => b.score - a.score).slice(skip, skip + limit).map(item => item.row)
       }
     }
+
     const options = { maxCount: limit, '--skip': skip, '--topo-order': null,
       format: { hash: '%H', parents: '%P', author: '%an', email: '%ae', date: '%cI', subject: '%s', refs: '%D' } }
     if (!(await this.git.raw(['rev-list', '--all', '--max-count=1'])).trim()) return []
@@ -377,7 +373,14 @@ export class GitRepository {
     name = branchName(name)
     if (typeof remoteRef !== 'string' || !remoteRef.startsWith('refs/remotes/')) throw new Error('Select a remote branch')
     await this.resolve(remoteRef)
-    await this.git.raw(['branch', '--track', '--', name, remoteRef])
+    try {
+      await this.git.raw(['branch', '--track', '--', name, remoteRef])
+    } catch (error) {
+      // Retained remote refs can outlive their remote/fetch mapping. They still
+      // identify a valid commit, but Git cannot assign an upstream to them.
+      if (!/cannot set up tracking information; starting point .* is not a branch/.test(error.message || '')) throw error
+      await this.git.raw(['branch', '--no-track', '--', name, await this.resolve(remoteRef)])
+    }
   }
   async renameBranch(name, next) { await this.git.raw(['branch', '-m', branchName(name), branchName(next)]) }
   async deleteBranch(name, { force = false } = {}) {

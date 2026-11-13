@@ -110,3 +110,25 @@ test('concurrent identical starts make one container and one start call', async 
   assert.deepEqual(results[0], results[1])
   assert.deepEqual(f.calls, ['create', 'start'])
 })
+
+test('missing attempt record is removable only after Docker confirms absence',async t=>{
+ const f=await fixture(t)
+ f.docker.inspect=async()=>{throw Object.assign(new Error('No such container'),{code:'SHELL_CONTAINER_NOT_FOUND'})}
+ assert.equal((await f.service().stop(f.input)).quiescent,true)
+ assert.equal((await f.store.read(f.input.attemptId)).state,'stopped')
+ await assert.rejects(f.service().start(f.input,f.configuration),/configuration changed|already exists/)
+})
+test('missing record does not hide Docker outage or stop an unowned container',async t=>{
+ const f=await fixture(t)
+ f.docker.inspect=async()=>{throw Error('Docker unavailable')}
+ await assert.rejects(f.service().stop(f.input),/Docker unavailable/)
+ f.docker.inspect=async()=>({Id:'other',Name:'/wrong'})
+ await assert.rejects(f.service().stop(f.input),/identity/)
+ assert.deepEqual(f.calls,[])
+})
+test('missing record with matching started container recovers journal and stops it',async t=>{
+ const f=await fixture(t);await f.service().start(f.input,f.configuration)
+ await rm(Path.join(f.store.directory,f.input.attemptId+'.json'))
+ assert.equal((await f.service().stop(f.input)).quiescent,true)
+ assert.equal(f.calls.filter(c=>c==='stop').length,1)
+})

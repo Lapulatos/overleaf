@@ -6,6 +6,7 @@ export function shellTerminalApi(api: GitApi, draftId: string): GitApi {
   let cursor = 0, generation = 0
   return {
     ...api,
+    projectId: `${api.projectId || "project"}/terminal/${draftId}`,
     command: async body => {
       if (body.command === 'terminalOpen') {
         generation++; cursor = 0
@@ -13,10 +14,11 @@ export function shellTerminalApi(api: GitApi, draftId: string): GitApi {
         if ((response.result as { state?: string })?.state !== 'running') {
           throw new Error('This draft has no running shell. Refresh its status.')
         }
+        if ((response.result as {permissionMode?:string}).permissionMode === 'auto-review') throw new Error('This older reviewed session cannot accept interactive input. Create a new terminal; its existing files are retained.')
         return { ...response, result: { id: draftId, directory: 'Private shell draft' } }
       }
       if (body.command === 'terminalClose') return { connected: true }
-      if (body.command === 'accessPolicy') return api.command(body)
+      if (body.command === 'accessPolicy') { const response=await api.command({command:'shellDraftGet',id:draftId});return {...response,result:{mode:(response.result as {permissionMode?:string}).permissionMode || 'workspace-write',directories:[]}} }
       switch (body.command) {
         case 'terminalPoll': {
           const current = generation

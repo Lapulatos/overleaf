@@ -84,7 +84,27 @@ export class ShellContainerLifecycle {
   async stop(input) {
     const identity = shellContainerIdentity(input)
     return this.withLock(identity.attemptId, async () => {
-      let { record } = await this.owned(input)
+      let record
+      try { ({ record } = await this.owned(input)) }
+      catch (error) {
+        if (error.code !== 'ENOENT') throw error
+        // The same attempt lock excludes an in-flight start. Missing journal
+        // alone is insufficient: inspect the deterministic Docker identity.
+        let found
+        try { found = await this.docker.inspect(identity.name) }
+        catch (inspection) {
+          const absent = inspection.code === 'SHELL_CONTAINER_NOT_FOUND' ||
+            (inspection.code === 1 && /no such (?:object|container)/i.test(inspection.stderr || ''))
+          if (!absent) throw inspection
+          await this.store.write({ ...identity, id: identity.attemptId, kind: 'shell-container', state: 'stopped', revision: 1,
+            createdAt: this.clock(), stoppedAt: this.clock(), missingRecordRecovered: true })
+          return { attemptId: identity.attemptId, quiescent: true }
+        }
+        this.verify(identity, found)
+        record = { ...identity, id: identity.attemptId, kind: 'shell-container', state: 'recovered', revision: 1,
+          containerId: found.Id, createdAt: this.clock(), missingRecordRecovered: true }
+        await this.store.write(record)
+      }
       const container = this.verify(identity, await this.docker.inspect(identity.name))
       if (record.containerId && record.containerId !== container.Id) throw refuse('Recorded container was replaced')
       // A timed-out create/start may still be in flight. Absence, or a never

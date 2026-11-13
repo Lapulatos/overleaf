@@ -1,3 +1,5 @@
+import logger from '@overleaf/logger'
+import { terminalUserError } from './TerminalUserError.mjs'
 import { isHistoryReadCommand } from './HistoryReadCommands.mjs'
 import { downloadBackup } from './BackupDownload.mjs'
 import { storageFailure } from './StorageCapacity.mjs'
@@ -29,7 +31,11 @@ export function createNativeGitHandlers({ enabled, userId, canWrite, canRead = c
         return res.status(503).json({ error: error.message, code: error.code })
       }
       if (error.code === 'GIT_CONFLICT') return res.status(409).json({ error: error.message, code: error.code })
-      if (['ENOSPC', 'EDQUOT'].includes(error.code)) return res.status(507).json({ error: storageFailure().message })
+      if (['ENOSPC', 'EDQUOT'].includes(error.code) || (error.code === 14031 && /available disk space/i.test(error.message || ''))) return res.status(507).json({ error: storageFailure().message })
+      if (/^(?:shellDraft|terminal)/.test(req.body?.command || '')) {
+        const publicMessage=terminalUserError(error)
+        if(publicMessage!==error.message){logger.warn({err:error,command:req.body.command},'Private terminal diagnostic withheld');return res.status(error.status===403?403:409).json({error:publicMessage})}
+      }
       const status = error.status || error.statusCode
       if ([400, 403, 404, 409, 413, 429, 499, 502, 503, 504, 507].includes(status)) return res.status(status).json({ error: error.message })
       const refusal = gitUserError(error)

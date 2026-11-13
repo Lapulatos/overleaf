@@ -1,3 +1,5 @@
+import logger from '@overleaf/logger'
+import { terminalUserError } from './TerminalUserError.mjs'
 import { randomUUID } from 'node:crypto'
 const approvals=new Map()
 export function approveTerminal(key,directories) {
@@ -11,6 +13,7 @@ export function consumeTerminalApproval(key,id,directories) {
 export async function terminalRequest(body) {
  const endpoint=process.env.OVERLEAF_NATIVE_GIT_TERMINAL_ENDPOINT
  if(!endpoint)throw Object.assign(new Error('Isolated terminal runner is not configured. Shell access remains disabled.'),{status:503})
- const response=await fetch(endpoint+'/terminal',{method:'POST',headers:{'Content-Type':'application/json','X-Agent-Token':process.env.OVERLEAF_TERMINAL_RUNNER_TOKEN},body:JSON.stringify(body),signal:AbortSignal.timeout(15000)})
- const result=await response.json();if(!response.ok)throw Object.assign(new Error(result.error||'Terminal runner refused the operation'),{status:409});return result
+ let response
+ try { response=await fetch(endpoint+'/terminal',{method:'POST',headers:{'Content-Type':'application/json','X-Agent-Token':process.env.OVERLEAF_TERMINAL_RUNNER_TOKEN},body:JSON.stringify(body),signal:AbortSignal.timeout(15000)}) } catch { throw Object.assign(new Error('The terminal service is unavailable. Please retry after it reconnects.'), { status: 503 }) }
+ const result=await response.json();if(!response.ok){logger.warn({action:body.action,runnerError:result.error},'Terminal runner operation failed');throw Object.assign(new Error(terminalUserError(result.error)),{status:409})}return result
 }

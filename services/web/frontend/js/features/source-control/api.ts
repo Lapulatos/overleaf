@@ -10,13 +10,25 @@ export type GitApi = {
 }
 
 export function gitApi(projectId: string): GitApi {
+  const endedTerminals = new Set<string>()
   const base = `/project/${encodeURIComponent(projectId)}/native-git`
   return {
     projectId,
     status: signal => getJSON<GitSnapshot>(base, { signal }),
     initialize: () => postJSON<GitSnapshot>(`${base}/initialize`, { body: { branch: 'main' } }),
     command: async body => {
-      const result = await postJSON<GitSnapshot>(`${base}/commands`, { body })
+      const result = await postJSON<GitSnapshot>(`${base}/commands`, { body }).catch(error => {
+        if (body.command === 'shellDraftPoll' && !endedTerminals.has(String(body.id))) {
+          endedTerminals.add(String(body.id))
+          window.dispatchEvent(new Event('native-git-command-completed'))
+        }
+        throw error
+      })
+      if (['shellDraftStart', 'shellDraftSeal', 'shellDraftDelete', 'shellDraftRename'].includes(body.command)) window.dispatchEvent(new Event('native-git-command-completed'))
+      if (body.command === 'shellDraftPoll' && (result.result as {exited?: boolean})?.exited && !endedTerminals.has(String(body.id))) {
+        endedTerminals.add(String(body.id))
+        window.dispatchEvent(new Event('native-git-command-completed'))
+      }
       if (result.workspaceNavigation) {
         // Reload releases old document sockets and compile responses for this tab.
         const { logicalProjectId, workspaceId } = result.workspaceNavigation

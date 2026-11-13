@@ -1,3 +1,4 @@
+import MaterialIcon from '@/shared/components/material-icon'
 import { formatGitDate } from './format-date'
 import { useState } from 'react'
 import { Modal } from 'react-bootstrap'
@@ -27,7 +28,7 @@ export default function ResetDialog({ commits, busy, error, onPreview, onReset, 
     setPreview(undefined); setConfirmed(false)
     setPreview(await onPreview(selected))
   }
-  return <Modal show size="lg" onHide={() => { if (!busy) onClose() }} aria-label="Reset current branch">
+  return <Modal className="native-git-dialog" show size="lg" onHide={() => { if (!busy) onClose() }} aria-label="Reset current branch">
     <Modal.Header closeButton><Modal.Title>Reset current branch</Modal.Title></Modal.Header>
     <Modal.Body>
       {error && <p role="alert" className="native-git-error">{error}</p>}
@@ -40,7 +41,7 @@ export default function ResetDialog({ commits, busy, error, onPreview, onReset, 
         </label>)}
         {!visible.length && <p>No matching commits in loaded history.</p>}
       </div>
-      <button type="button" className="btn btn-default" disabled={busy || !selected} onClick={refresh}>Preview reset</button>
+      <button type="button" className="btn btn-default" disabled={busy || !selected} onClick={refresh}><MaterialIcon type="visibility" />Preview reset</button>
       {preview && <>
         <p>{preview.branch || 'Detached HEAD'}: {preview.head.slice(0, 8)} → {preview.target.slice(0, 8)}</p>
         <pre>{preview.changes || 'No tracked file differences.'}</pre>
@@ -53,7 +54,7 @@ export default function ResetDialog({ commits, busy, error, onPreview, onReset, 
       </>}
     </Modal.Body>
     <Modal.Footer>
-      <button type="button" className="btn btn-default" disabled={busy} onClick={onClose}>Cancel</button>
+      <button type="button" className="btn btn-default" disabled={busy} onClick={onClose}><MaterialIcon type="close" />Cancel</button>
       <button type="button" className={`btn ${mode === 'hard' ? 'btn-danger' : 'btn-primary'}`} disabled={busy || !preview || (mode === 'hard' && !confirmed)} onClick={() => { if (preview) onReset(preview, mode) }}>Reset branch</button>
     </Modal.Footer>
   </Modal>

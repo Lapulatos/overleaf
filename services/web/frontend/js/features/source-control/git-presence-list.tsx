@@ -1,56 +1,40 @@
 import type { GitPresence } from './git-presence'
+import MaterialIcon from '@/shared/components/material-icon'
 import { formatGitDate } from './format-date'
-export function PresenceMarkers({ sessions, hash }: { sessions: GitPresence[]; hash: string }) {
- const groups = new Map<string, { location: 'editing' | 'viewing history'; dirty: boolean; sessions: GitPresence[] }>()
- for (const session of sessions) {
-  for (const location of ['editing', 'viewing history'] as const) {
-   if ((location === 'editing' ? session.head : session.viewedCommit) !== hash) continue
-   const dirty = location === 'editing' && session.dirty
-   const key = JSON.stringify([session.userId, location, session.online, dirty])
-   const group = groups.get(key) || { location, dirty, sessions: [] }
-   group.sessions.push(session); groups.set(key, group)
-  }
- }
- return <span className="native-git-presence-markers">{[...groups].map(([key, group]) => {
-  const ordered = [...group.sessions].sort((a, b) => b.lastSeen - a.lastSeen || a.sessionId.localeCompare(b.sessionId))
-  const session = ordered[0]
-  const label = `${session.displayName} · ${session.online ? '' : 'last '}${group.location}${group.dirty ? ' · Working Changes based on this commit' : ''} · ${ordered.length} session${ordered.length === 1 ? '' : 's'} · ${session.online ? 'online' : 'offline'}`
-  const title = label + '\n' + ordered.map(item => `${item.branch || 'detached HEAD'} · session ${item.sessionId}${item.online ? '' : ` · last seen ${formatGitDate(new Date(item.lastSeen).toISOString())}`}`).join('\n')
-  return <span key={key} className={`native-git-presence-avatar ${session.online ? '' : 'is-offline'}`} title={title} aria-label={label}>
-   {group.location === 'viewing history' ? '◉ ' : group.dirty ? '✎ ' : ''}{session.displayName.slice(0, 2)}{ordered.length > 1 && ` ×${ordered.length}`}
-  </span>
- })}</span>
-}
 
-export default function GitPresenceList({ sessions, loaded, onLocate }: {
- sessions: GitPresence[]; loaded: Set<string>; onLocate(hash: string): void
-}) {
- if (!sessions.length) return null
- const users = new Map<string, GitPresence[]>()
- for (const session of sessions) {
-  const group = users.get(session.userId) || []
-  group.push(session); users.set(session.userId, group)
+const initials = (name: string) => name.trim().split(/\s+/).slice(0, 2).map(word => word[0]).join('').toUpperCase()
+const color = (id: string) => ['#376c93', '#8762a1', '#327c6b', '#956526'][[...id].reduce((n, c) => n + c.charCodeAt(0), 0) % 4]
+export function UserAvatar({userId, displayName}: {userId: string; displayName: string}) {
+ return <span className="native-git-person-avatar" style={{backgroundColor: color(userId)}} aria-hidden="true">{initials(displayName)}</span>
+}
+function Avatar({ session }: { session: GitPresence }) {
+ return <span className={`native-git-person-avatar ${session.online ? 'is-online' : ''}`} style={{ backgroundColor: color(session.userId) }} aria-hidden="true">{initials(session.displayName)}</span>
+}
+export function PresenceMarkers({ sessions, hash }: { sessions: GitPresence[]; hash: string }) {
+ const users = new Map<string, GitPresence>()
+ for (const s of [...sessions].sort((a,b) => b.lastSeen-a.lastSeen)) {
+  if (s.online && (s.head === hash || s.viewedCommit === hash) && !users.has(s.userId)) users.set(s.userId,s)
  }
- const groups = [...users.entries()].map(([userId, entries]) => {
-  const ordered = [...entries].sort((a, b) => b.lastSeen - a.lastSeen || a.sessionId.localeCompare(b.sessionId))
-  return { userId, name: ordered[0].displayName, online: ordered.filter(s => s.online), offline: ordered.filter(s => !s.online) }
- }).sort((a, b) => Number(b.online.length > 0) - Number(a.online.length > 0) || a.name.localeCompare(b.name) || a.userId.localeCompare(b.userId))
- const row = (session: GitPresence) => <div key={session.sessionId} className="native-git-presence-person" data-session-id={session.sessionId}>
-   <span title={`Session ${session.sessionId}`}>Session {session.sessionId.slice(0, 8)}</span>
-   <span>{session.online ? 'Online' : `Last seen ${formatGitDate(new Date(session.lastSeen).toISOString())}`}</span>
-   <button type="button" disabled={!session.head} onClick={() => session.head && onLocate(session.head)}
-    title={session.head && !loaded.has(session.head) ? 'Locate commit outside the current filter or loaded page' : 'Locate editing position'}>
-    {session.readOnly ? (session.online ? 'Viewing' : 'Last viewing') : (session.online ? 'Editing' : 'Last editing')} {session.branch || 'detached HEAD'}{session.dirty ? ' · Working Changes' : ''}{!session.head ? ' · no commits' : ''}
-   </button>
-   {session.viewedCommit && <button type="button" onClick={() => onLocate(session.viewedCommit!)}>{session.online ? 'Viewing history' : 'Last viewed'} {session.viewedCommit.slice(0, 8)}</button>}
-  </div>
- return <details className="native-git-presence-list" open><summary>Collaborator positions ({users.size} users, {sessions.filter(s => s.online).length} online sessions)</summary>
-  <div className="native-git-presence-groups">
-   {groups.map(group => <details className="native-git-presence-user" key={group.userId} data-user-id={group.userId} open={group.online.length > 0}>
-    <summary><span>{group.name}</span> · {group.online.length} online{group.offline.length > 0 && ` · ${group.offline.length} offline`}</summary>
-    {group.online.map(row)}
-    {group.offline.length > 0 && <details className="native-git-presence-offline"><summary>Offline sessions ({group.offline.length})</summary>{group.offline.map(row)}</details>}
-   </details>)}
-  </div>
+ if (!users.size) return null
+ return <span className="native-git-presence-markers">{[...users.values()].slice(0,3).map(s => <span key={s.userId} title={`${s.displayName} · ${s.viewedCommit === hash && s.head !== hash ? 'Viewing history' : s.readOnly ? 'Viewing' : 'Editing'} · ${s.branch || 'Detached HEAD'}`} aria-label={`${s.displayName} online`}><Avatar session={s} /></span>)}{users.size>3 && <span className="native-git-person-overflow">+{users.size-3}</span>}</span>
+}
+export default function GitPresenceList({ sessions, loaded, onLocate }: { sessions: GitPresence[]; loaded: Set<string>; onLocate(hash: string): void }) {
+ const users = new Map<string, GitPresence[]>()
+ for (const s of [...sessions].sort((a,b) => Number(b.online)-Number(a.online) || b.lastSeen-a.lastSeen)) {
+  const entries=users.get(s.userId)||[]
+  if (!entries.some(e=>e.branch===s.branch && e.online===s.online)) entries.push(s)
+  users.set(s.userId,entries)
+ }
+ if (!users.size) return null
+ const online=[...users.values()].filter(entries=>entries[0].online)
+ return <details className="native-git-presence-list">
+  <summary><MaterialIcon type="group" /><span>{online.length ? `${online.length} online` : 'Collaborators'}</span><span className="native-git-avatar-stack">{online.slice(0,4).map(entries=><Avatar key={entries[0].userId} session={entries[0]} />)}</span><MaterialIcon type="expand_more" /></summary>
+  <div className="native-git-presence-groups">{[...users.entries()].map(([id, entries])=>{
+   const current=entries.filter(s=>s.online);const shown=current.length?current:[entries[0]]
+   return <div className="native-git-presence-user" key={id}>
+    <div className="native-git-person-heading"><Avatar session={shown[0]} /><strong title={shown[0].displayName}>{shown[0].displayName}</strong><span>{current.length?'Online':'Offline'}</span></div>
+    {shown.map(s=><button key={s.sessionId} type="button" className="native-git-person-location" disabled={!s.head} onClick={()=>s.head&&onLocate(s.head)} title={`${s.readOnly?'Viewing':'Editing'} ${s.branch || 'Detached HEAD'}${s.dirty?' · Uncommitted changes':''}${s.online?'':` · Last seen ${formatGitDate(new Date(s.lastSeen).toISOString())}`}${s.head&&!loaded.has(s.head)?' · Locate in history':''}`}><MaterialIcon type="account_tree" /><span>{s.branch||'Detached HEAD'}</span>{s.dirty&&<span className="native-git-dirty-dot" title="Uncommitted changes" />}<MaterialIcon type="my_location" /></button>)}
+   </div>
+  })}</div>
  </details>
 }

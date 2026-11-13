@@ -4,6 +4,7 @@ import GitGraphIcon from './git-graph-icon'
 import { createPortal } from 'react-dom'
 import { useEffect, useRef, useState } from 'react'
 import { GraphSettingsDialog, defaultGraphSettings, type GraphSettings } from './graph-settings'
+import ShellDrafts from './shell-drafts'
 import GitTerminal from './git-terminal'
 import RemoteSettings from './remote-settings'
 import GraphHistory from './graph-history'
@@ -18,8 +19,9 @@ type Details = CommitDetails & {
   authorDate: string; date: string; message: string
   files: (CommitFile & { insertions?: number | null; deletions?: number | null })[]
 }
-export default function EditorGraph({ api, commits, branches, currentRef, busy, hidden, webRemotes, onFile, onOpenFile, onCheckout, onClose, onRefresh }: {
+export default function EditorGraph({ api, commits, branches, currentRef, busy, hidden, webRemotes, draftsEnabled, onFile, onOpenFile, onCheckout, onClose, onRefresh }: {
   api: GitApi; commits: GitCommit[]; branches: GitBranch[]; currentRef: string; busy: boolean; hidden: boolean; webRemotes: GitWebRemote[]
+  draftsEnabled?: boolean
   onCheckout?: (branch: GitBranch) => void
   onFile: (commit: GitCommit, file: CommitFile) => void; onOpenFile?: (path: string) => void; onClose: () => void; onRefresh: () => unknown
 }) {
@@ -89,7 +91,7 @@ export default function EditorGraph({ api, commits, branches, currentRef, busy, 
     <header className="native-git-editor-diff-tab"><GitGraphIcon /><strong>{settings.name ? `${settings.name} · Git Graph` : 'Git Graph'}</strong><button type="button" className="native-git-icon-button" title="Return to editor" aria-label="Close Git Graph" onClick={onClose}>×</button></header>
     <div className="native-git-full-history"><GraphHistory key={refresh} inlineToolbar extraTools={tools} graphOptions={graphOptions} initialSelection={{ mode: settings.initialMode, refs: settings.initialRefs }} detailed onCheckout={onCheckout} selectedDetails={selectedDetails} selectedHash={selected} api={api} commits={commits} branches={branches.filter(branch => (settings.showRemotes || !branch.remote) && (settings.showTags || !branch.tag) && !settings.hiddenRemotes.some(name => branch.ref.startsWith(`refs/remotes/${name}/`)))} currentRef={currentRef} busy={busy} webRemotes={webRemotes} onSelect={commit => select(commit.hash)} onRefresh={onRefresh} /></div>
     {error && !selected && <p role="alert">{error}</p>}
-    {terminalOpen && <GitTerminal api={api} onChanged={onRefresh} onClose={() => setTerminalOpen(false)} />}
+    {terminalOpen && (draftsEnabled ? <ShellDrafts api={api} embedded autoStart canApply onClose={() => { setTerminalOpen(false); onRefresh() }} /> : <section className="native-git-terminal-dock" aria-label="Graph terminal"><GitTerminal api={api} onClose={() => setTerminalOpen(false)} onChanged={onRefresh} /></section>)}
     {settingsOpen && <GraphSettingsDialog api={api} value={settings} branches={branches} onSave={setSettings} onClose={() => setSettingsOpen(false)} onCredentials={() => { setSettingsOpen(false); setCredentialsOpen(true) }} />}
     {credentialsOpen && <RemoteSettings api={api} onClose={() => setCredentialsOpen(false)} />}
 

@@ -1,3 +1,4 @@
+import MaterialIcon from '@/shared/components/material-icon'
 import CollaborationTasks from './collaboration-tasks'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { EditorManagerContext } from '@/features/ide-react/context/editor-manager-context'
@@ -56,9 +57,9 @@ export function useGitCommand(projectId:string, api?:GitApi) {
  }
  const panel=(entries.length||pending)?<section aria-label="Git command results" style={{padding:12,borderBottom:'1px solid #ddd',maxHeight:360,overflow:'auto'}}>
   <strong>Git commands</strong>
-  <button type="button" disabled={busy} onClick={()=>setEntries([])}>Clear output</button>
-  {entries.map((entry,index)=><details key={index} open={index===entries.length-1}><summary>{entry.input}</summary><pre style={{whiteSpace:'pre-wrap',fontSize:12}}>{entry.output}</pre>{entry.review&&<button type="button" disabled={busy} onClick={()=>setReview(entry.review)}>Review merge task</button>}</details>)}
-  {pending&&<div role="alert"><strong>Confirm {pending.input}</strong><pre style={{whiteSpace:'pre-wrap',fontSize:12}}>{JSON.stringify({operation:pending.body,affectedState:pending.preview},null,2)}</pre><button type="button" disabled={busy} onClick={()=>void confirm()}>Run Git operation</button><button type="button" disabled={busy} onClick={()=>{add(pending.input,'Cancelled; no operation executed.');setPending(undefined)}}>Cancel</button></div>}
+  <button className="btn btn-secondary" type="button" disabled={busy} onClick={()=>setEntries([])}>Clear output</button>
+  {entries.map((entry,index)=><details key={index} open={index===entries.length-1}><summary>{entry.input}</summary><pre style={{whiteSpace:'pre-wrap',fontSize:12}}>{entry.output}</pre>{entry.review&&<button className="btn btn-secondary" type="button" disabled={busy} onClick={()=>setReview(entry.review)}><MaterialIcon type="merge" />Review merge task</button>}</details>)}
+  {pending&&<div role="alert"><strong>Confirm {pending.input}</strong><pre style={{whiteSpace:'pre-wrap',fontSize:12}}>{JSON.stringify({operation:pending.body,affectedState:pending.preview},null,2)}</pre><button className="btn btn-secondary" type="button" disabled={busy} onClick={()=>void confirm()}>Run Git operation</button><button className="btn btn-secondary" type="button" disabled={busy} onClick={()=>{add(pending.input,'Cancelled; no operation executed.');setPending(undefined)}}><MaterialIcon type="close" />Cancel</button></div>}
  </section>:null
  return {start,panel:<>{panel}{review&&<CollaborationTasks key={projectId} api={backend} canApply={review.canApply} selectedId={review.id} onClose={()=>setReview(undefined)}/>}</>,busy}
 }

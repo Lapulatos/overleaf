@@ -6,19 +6,20 @@ import { taskId } from './CollaborationTaskStore.mjs'
 import { writeRecoverySnapshot, readRecoverySnapshot } from './RecoverySnapshots.mjs'
 import { snapshotIdentity } from './MergeDraftService.mjs'
 
+export const manualTerminalMode = mode => mode === 'auto-review' ? 'workspace-write' : mode
 const refuse = message => Object.assign(new Error(message), { status: 409 })
 const epochMatches = (before, after) => JSON.stringify(before) === JSON.stringify(after)
 
 export function publicShellDraft(task) {
-  const { id, kind, logicalProjectId, workspaceId, workspaceEpoch, createdBy, state, revision, createdAt, updatedAt, failure, failurePhase } = task
-  return { id, kind, logicalProjectId, workspaceId, workspaceEpoch, createdBy, state, revision, createdAt, updatedAt, failure, failurePhase }
+  const { id, kind, logicalProjectId, workspaceId, workspaceEpoch, createdBy, state, revision, createdAt, updatedAt, name, sessionStatus, permissionMode, sourcePosition, failure, failurePhase } = task
+  return { id, kind, logicalProjectId, workspaceId, workspaceEpoch, createdBy, state, revision, createdAt, updatedAt, name, sessionStatus, permissionMode, sourcePosition, failure, failurePhase }
 }
 
 // Terminal receives ONLY workingDirectory. Baseline bytes and control records
 // are siblings outside that volume-subpath mount. No live worktree is touched.
 export class ShellDraftService {
-  constructor({ root, store, project, withLock, authorize, readEpoch, logicalProjectId, workspaceId, actorId, terminal, readPermissionMode, clock = Date.now, minFreeBytes = 300 * 1024 * 1024 }) {
-    Object.assign(this, { root: Path.resolve(root), store, project, withLock, authorize, readEpoch, logicalProjectId, workspaceId, actorId, terminal, readPermissionMode, clock, minFreeBytes })
+  constructor({ root, store, project, withLock, authorize, readEpoch, logicalProjectId, workspaceId, actorId, terminal, readPermissionMode, readPosition, clock = Date.now, minFreeBytes = 300 * 1024 * 1024 }) {
+    Object.assign(this, { root: Path.resolve(root), store, project, withLock, authorize, readEpoch, logicalProjectId, workspaceId, actorId, terminal, readPermissionMode, readPosition, clock, minFreeBytes })
   }
   paths(id) {
     const directory = Path.join(this.root, taskId(id))
@@ -29,6 +30,7 @@ export class ShellDraftService {
     if (task.kind !== 'shell-draft' || task.logicalProjectId !== this.logicalProjectId || task.workspaceId !== this.workspaceId || task.createdBy !== this.actorId) {
       throw Object.assign(new Error('Shell draft does not belong to this user and workspace'), { status: 403 })
     }
+    if (task.deletedAt) throw Object.assign(new Error('Terminal session was deleted'), { status: 404 })
     return task
   }
   async save(task, fields) {
@@ -49,6 +51,7 @@ export class ShellDraftService {
       } catch (error) { if (error.code !== 'ENOENT') throw error }
       const epoch = await this.readEpoch()
       if (!Number.isSafeInteger(epoch) || epoch < 1) throw refuse('A fenced workspace is required for a shell draft')
+      const sourcePosition = this.readPosition ? await this.readPosition() : null
       const snapshot = await this.project.read()
       if (!epochMatches(epoch, await this.readEpoch())) throw refuse('Workspace changed while preparing shell draft')
       await this.authorize()
@@ -57,7 +60,7 @@ export class ShellDraftService {
       const space = await statfs(this.root)
       if (space.bavail * space.bsize < bytes * 2 + this.minFreeBytes) throw Object.assign(new Error('Insufficient storage for retained shell draft'), { status: 507 })
       let task = { id, kind: 'shell-draft', logicalProjectId: this.logicalProjectId, workspaceId: this.workspaceId,
-        workspaceEpoch: epoch, createdBy: this.actorId, state: 'preparing', revision: 1,
+        workspaceEpoch: epoch, sourcePosition, createdBy: this.actorId, state: 'preparing', revision: 1,
         createdAt: this.clock(), updatedAt: this.clock(), baseline: snapshotIdentity(snapshot) }
       await this.store.write(task)
       try {
@@ -80,20 +83,19 @@ export class ShellDraftService {
       await this.authorize()
       let task = await this.owned(id)
       if (task.revision !== revision || task.state !== 'ready') throw refuse('Refresh the draft; it is not ready to start a shell')
-      if (this.readPermissionMode && await this.readPermissionMode() !== mode) throw refuse('Shell permissions changed; refresh before starting')
+      if (this.readPermissionMode && manualTerminalMode(await this.readPermissionMode()) !== manualTerminalMode(mode)) throw refuse('Shell permissions changed; refresh before starting')
       if (!['read-only', 'workspace-write', 'auto-review', 'full-access'].includes(mode)) throw refuse('Invalid shell permission mode')
       if (!this.terminal?.start) throw Object.assign(new Error('Draft terminal runner is not configured'), { status: 503 })
-      if (!epochMatches(task.workspaceEpoch, await this.readEpoch())) throw refuse('Workspace changed; retain this draft and create a new one')
       await readRecoverySnapshot(this.paths(id).baselineDirectory, task.baselineManifest)
       await this.authorize()
       const attemptId = randomUUID()
+      mode = manualTerminalMode(mode)
       task = await this.save(task, { state: 'starting', sessionAttemptId: attemptId, permissionMode: mode })
       try {
         const session = await this.terminal.start({ attemptId, draftId: task.id, logicalProjectId: this.logicalProjectId,
           workspaceId: this.workspaceId, actorId: this.actorId, directory: this.paths(id).workingDirectory, mode })
         if (session?.attemptId !== attemptId || typeof session.sessionId !== 'string' || !session.sessionId) throw refuse('Runner did not confirm the persisted shell attempt')
         await this.authorize()
-        if (!epochMatches(task.workspaceEpoch, await this.readEpoch())) throw refuse('Workspace changed during shell startup')
         return await this.save(task, { state: 'running', sessionId: session.sessionId })
       } catch (error) {
         await this.save(task, { state: 'recovery-required', failurePhase: 'start', failure: 'Shell startup outcome is uncertain. Stop this attempt before reviewing; do not start another shell.' })
@@ -108,8 +110,9 @@ export class ShellDraftService {
       if (task.state !== 'running' || !task.sessionId) throw refuse('This draft has no running shell; refresh or stop it for review')
       if (!['poll', 'input', 'run', 'resize'].includes(action)) throw refuse('Invalid shell session action')
       if (action !== 'poll') {
-        if (!epochMatches(task.workspaceEpoch, await this.readEpoch())) throw refuse('Workspace changed; stop and review this draft before continuing')
-        if (!this.readPermissionMode || await this.readPermissionMode() !== task.permissionMode) throw refuse('Shell permissions changed; stop this draft before continuing')
+        // The private shell keeps its creation snapshot even when the source
+        // workspace advances. Applying edits still validates the saved baseline.
+        if (!this.readPermissionMode || manualTerminalMode(await this.readPermissionMode()) !== task.permissionMode) throw refuse('Shell permissions changed; stop this draft before continuing')
         if (action === 'input' && task.permissionMode === 'auto-review') throw refuse('Raw input is disabled in reviewed mode')
         if (action === 'run' && task.permissionMode !== 'auto-review') throw refuse('Reviewed session required')
       }
@@ -135,6 +138,7 @@ export class ShellDraftService {
       const stoppable = ['ready', 'running', 'starting', 'stopping'].includes(task.state) ||
         (task.state === 'recovery-required' && ['start', 'stop'].includes(task.failurePhase))
       if (!stoppable) throw refuse('This draft requires recovery inspection before review')
+      task = await this.captureOutput(task)
       task = await this.save(task, { state: 'stopping' })
       try {
         if (task.sessionAttemptId) {
@@ -181,20 +185,81 @@ export class ShellDraftService {
       return { task, changes: fileChanges(baseline, files) }
     })
   }
+  async captureOutput(task) {
+    if (!task.sessionId || !this.terminal?.session) return task
+    try {
+      const result = await this.terminal.session({ action: 'poll', id: task.sessionId, logicalProjectId: this.logicalProjectId, actorId: this.actorId, cursor: 0 })
+      return await this.save(task, { terminalOutput: (result.output || '').slice(-1024 * 1024), outputTruncated: !!result.truncated || (result.output || '').length > 1024 * 1024 })
+    } catch { return task }
+  }
+  async history(id) {
+    return this.withLock(async () => {
+      await this.authorize()
+      const task = await this.owned(id)
+      await this.authorize()
+      return { output: task.terminalOutput ?? null, truncated: !!task.outputTruncated }
+    })
+  }
+  async remove(id, revision) {
+    return this.withLock(async () => {
+      await this.authorize()
+      let task = await this.owned(id)
+      if (task.revision !== revision) throw refuse('The session changed; refresh before deleting')
+      if (['applying', 'sealing', 'stopping', 'starting'].includes(task.state)) throw refuse('Wait for the current session operation to finish')
+      task = await this.captureOutput(task)
+      if (task.sessionAttemptId && ['running', 'recovery-required'].includes(task.state)) {
+        if (!this.terminal?.stop) throw refuse('Cannot confirm that the terminal stopped')
+        try {
+          const stopped = await this.terminal.stop({ attemptId: task.sessionAttemptId, draftId: task.id, logicalProjectId: this.logicalProjectId, workspaceId: this.workspaceId, actorId: this.actorId })
+          if (stopped?.attemptId !== task.sessionAttemptId || stopped.quiescent !== true) throw refuse('Cannot confirm that the terminal stopped')
+        } catch (error) {
+          // The runner explicitly reports that the session no longer exists.
+          // Transport errors and uncertain stop outcomes must still block removal.
+          if (!/terminal session expired/i.test(error.message)) throw error
+        }
+      }
+      await this.authorize()
+      await this.save(task, { deletedAt: this.clock(), state: 'deleted' })
+      return { removed: true }
+    })
+  }
+  async rename(id, revision, name) {
+    if (typeof name !== 'string' || !name.trim() || name.trim().length > 80 || /[\x00-\x1f\x7f]/.test(name)) throw Object.assign(new Error('Use a name of 1–80 characters'), { status: 400 })
+    return this.withLock(async () => {
+      await this.authorize()
+      const task = await this.owned(id)
+      if (task.revision !== revision) throw refuse('The session changed; refresh before renaming')
+      return this.save(task, { name: name.trim() })
+    })
+  }
+  async sessionHealth(task) {
+    if (task.state !== 'running' || !task.sessionId || !this.terminal?.session) return task
+    try {
+      const result = await this.terminal.session({ action: 'poll', id: task.sessionId, logicalProjectId: this.logicalProjectId, actorId: this.actorId, cursor: 0 })
+      return { ...task, sessionStatus: result.exited ? 'exited' : 'connected' }
+    } catch (error) {
+      if (/session expired|shell exited/i.test(error.message)) return { ...task, sessionStatus: 'expired' }
+      return { ...task, sessionStatus: 'unavailable' }
+    }
+  }
   async get(id) {
     return this.withLock(async () => {
       await this.authorize()
       const task = await this.owned(id)
       await this.authorize()
-      return task
+      const result = await this.sessionHealth(task)
+      await this.authorize()
+      return result
     })
   }
-  async list() {
+  async list({ allWorkspaces = false } = {}) {
     return this.withLock(async () => {
       await this.authorize()
       const tasks = await this.store.list()
       await this.authorize()
-      return tasks.filter(t => t.kind === 'shell-draft' && t.logicalProjectId === this.logicalProjectId && t.workspaceId === this.workspaceId && t.createdBy === this.actorId).map(publicShellDraft)
+      const result = await Promise.all(tasks.filter(t => !t.deletedAt && t.kind === 'shell-draft' && t.logicalProjectId === this.logicalProjectId && (allWorkspaces || t.workspaceId === this.workspaceId) && t.createdBy === this.actorId).map(async task => publicShellDraft(await this.sessionHealth(task))))
+      await this.authorize()
+      return result
     })
   }
   async baseline(id) {

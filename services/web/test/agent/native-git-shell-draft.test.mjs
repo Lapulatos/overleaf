@@ -140,7 +140,7 @@ test('insufficient review capacity retains stopped draft and never reports revie
  assert.equal((await readFile(Path.join(f.service.paths(f.id).workingDirectory,'main.tex'))).toString(),'Original text')
 })
 
-test('session controls bind private runner id and refuse foreign scope, stale epoch, policy change and stopped task',async t=>{
+test('session controls bind private runner id and refuse foreign scope, policy changes and stopped tasks while retaining snapshots',async t=>{
  const f=await fixture(t),sent=[]
  f.service.terminal={start:async body=>({attemptId:body.attemptId,sessionId:'private-session'}),session:async body=>{assert.equal(f.locked,true);sent.push(body);return {output:'ok'}}}
  let mode='workspace-write';f.service.readPermissionMode=async()=>mode
@@ -153,24 +153,24 @@ test('session controls bind private runner id and refuse foreign scope, stale ep
  }
  await assert.rejects(f.service.session(f.id,'run',{text:'pwd'}),/Reviewed session/)
  f.epoch++
- await assert.rejects(f.service.session(f.id,'input',{input:'pwd\r'}),/Workspace changed/)
+ await f.service.session(f.id,'input',{input:'pwd\r'})
  await f.service.session(f.id,'poll')
  f.epoch--;mode='read-only'
  await assert.rejects(f.service.session(f.id,'resize',{cols:80,rows:24}),/permissions changed/)
  await f.service.session(f.id,'poll')
  await f.store.write({...running,state:'stopping'})
  await assert.rejects(f.service.session(f.id,'poll'),/no running shell/)
- assert.equal(sent.length,3)
+ assert.equal(sent.length,4)
 })
-test('reviewed shell accepts commands only through review and rechecks authorization after runner response',async t=>{
+test('human shell remains interactive in Agent review mode and rechecks authorization after runner response',async t=>{
  const f=await fixture(t),sent=[]
  f.service.readPermissionMode=async()=>'auto-review'
  f.service.terminal={start:async body=>({attemptId:body.attemptId,sessionId:'review-session'}),session:async body=>{sent.push(body);return {approvalRequired:true}}}
  const ready=await f.service.prepare(f.id)
  await f.service.start(f.id,ready.revision,'auto-review')
- await assert.rejects(f.service.session(f.id,'input',{input:'rm file\r'}),/Raw input/)
- const result=await f.service.session(f.id,'run',{text:'pwd',approval:'approval'})
- assert.equal(result.approvalRequired,true);assert.equal(sent[0].approval,'approval')
+ await f.service.session(f.id,'input',{input:'pwd\r'})
+ assert.equal(sent[0].input,'pwd\r')
+ await assert.rejects(f.service.session(f.id,'run',{text:'pwd'}),/Reviewed session required/)
  f.service.terminal.session=async()=>{f.allowed=false;return {output:'private'}}
  await assert.rejects(f.service.session(f.id,'poll'),{status:403})
 })
@@ -179,4 +179,92 @@ test('startup refuses permission mode changed while waiting for draft lock',asyn
  f.service.readPermissionMode=async()=>'read-only'
  await assert.rejects(f.service.start(f.id,ready.revision,'full-access'),/permissions changed/)
  assert.equal((await f.store.read(f.id)).state,'ready')
+})
+
+test('session names persist without changing shell state and reject stale or foreign renames', async t => {
+ const f=await fixture(t), task=await f.service.prepare(f.id)
+ const renamed=await f.service.rename(task.id,task.revision,'  Build tools  ')
+ assert.equal(renamed.name,'Build tools');assert.equal(renamed.state,task.state)
+ assert.equal(publicShellDraft(await new ShellDraftService(f.options).get(task.id)).name,'Build tools')
+ await assert.rejects(f.service.rename(task.id,task.revision,'Outdated'),{status:409})
+ await assert.rejects(f.service.rename(task.id,renamed.revision,' '),{status:400})
+ await assert.rejects(new ShellDraftService({...f.options,actorId:'another-user'}).rename(task.id,renamed.revision,'Foreign'),{status:403})
+})
+
+test('list and get report expired or exited sessions without changing retained draft state', async t => {
+ const f=await fixture(t), task=await f.service.prepare(f.id)
+ await f.store.write({...task,state:'running',sessionId:'gone'})
+ f.service.terminal={session:async()=>{throw Error('Terminal session expired. Reopen the terminal.')}}
+ assert.equal((await f.service.get(f.id)).sessionStatus,'expired')
+ assert.equal((await f.service.list())[0].sessionStatus,'expired')
+ assert.equal((await f.store.read(f.id)).state,'running')
+ f.service.terminal.session=async()=>({exited:true})
+ assert.equal((await f.service.get(f.id)).sessionStatus,'exited')
+ f.service.terminal.session=async()=>{throw Error('Runner unavailable')}
+ assert.equal((await f.service.get(f.id)).sessionStatus,'unavailable')
+ f.service.terminal.session=async()=>({exited:false})
+ assert.equal((await f.service.get(f.id)).sessionStatus,'connected')
+})
+
+test('manual terminals normalize automatic approval without allowing a permission downgrade',async t=>{
+ const f=await fixture(t);let mode='auto-review';let started
+ f.service.readPermissionMode=async()=>mode
+ f.service.terminal={start:async body=>{started=body;return {sessionId:'session',attemptId:body.attemptId}},session:async()=>({output:'ok'})}
+ const ready=await f.service.prepare(f.id),task=await f.service.start(f.id,ready.revision,mode)
+ assert.equal(started.mode,'workspace-write');assert.equal(task.permissionMode,'workspace-write')
+ await f.service.session(f.id,'input',{input:'pwd\r'})
+ mode='workspace-write';await f.service.session(f.id,'input',{input:'pwd\r'})
+ mode='read-only';await assert.rejects(f.service.session(f.id,'input',{input:'pwd\r'}),/permissions changed/)
+})
+test('delete is owner/revision scoped, confirms stop, hides session and retains files',async t=>{
+ const f=await fixture(t);let stopped=false
+ f.service.terminal={start:async body=>({sessionId:'session',attemptId:body.attemptId}),session:async()=>({output:'$ pwd\r\n/work\r\n'}),stop:async body=>{stopped=true;return {attemptId:body.attemptId,quiescent:true}}}
+ const ready=await f.service.prepare(f.id),task=await f.service.start(f.id,ready.revision,'workspace-write')
+ await assert.rejects(new ShellDraftService({...f.options,actorId:'other'}).remove(f.id,task.revision),{status:403})
+ await assert.rejects(f.service.remove(f.id,task.revision-1),{status:409})
+ await f.service.remove(f.id,task.revision)
+ assert.equal(stopped,true);assert.deepEqual(await f.service.list(),[])
+ await assert.rejects(f.service.get(f.id),{status:404})
+ assert.equal((await readFile(Path.join(f.service.paths(f.id).workingDirectory,'main.tex'))).toString(),'Original text')
+ assert.match((await f.store.read(f.id)).terminalOutput,/pwd/)
+})
+test('stopping retains output and history reads do not change session revision',async t=>{
+ const f=await fixture(t)
+ f.service.terminal={start:async body=>({sessionId:'session',attemptId:body.attemptId}),session:async()=>({output:'$ echo hello\r\nhello\r\n'}),stop:async body=>({attemptId:body.attemptId,quiescent:true})}
+ const ready=await f.service.prepare(f.id),task=await f.service.start(f.id,ready.revision,'workspace-write')
+ const sealed=await f.service.seal(f.id,task.revision)
+ assert.match((await f.service.history(f.id)).output,/hello/)
+ assert.equal((await f.service.get(f.id)).revision,sealed.revision)
+})
+
+test('session source position is frozen alongside its snapshot',async t=>{
+ const f=await fixture(t);let branch='topic'
+ f.service.readPosition=async()=>({branch,head:'a'.repeat(40),dirty:true})
+ const task=await f.service.prepare(f.id);branch='other'
+ assert.equal(publicShellDraft(await f.service.get(f.id)).sourcePosition.branch,'topic')
+ assert.equal(task.sourcePosition.head,'a'.repeat(40))
+})
+
+test('uncertain runner stop blocks deletion and preserves a visible session',async t=>{
+ const f=await fixture(t)
+ f.service.terminal={start:async body=>({attemptId:body.attemptId,sessionId:'session'}),session:async()=>({output:''}),stop:async()=>{throw new Error('runner unavailable')}}
+ const ready=await f.service.prepare(f.id),task=await f.service.start(f.id,ready.revision,'workspace-write')
+ await assert.rejects(f.service.remove(f.id,task.revision),/runner unavailable/)
+ assert.equal((await f.service.list()).length,1)
+})
+
+test('project-wide listing includes other branch sessions but never another owner or project',async t=>{
+ const f=await fixture(t);await f.service.prepare(f.id)
+ const other=new ShellDraftService({...f.options,workspaceId:'branch-b'});await other.prepare(randomUUID())
+ const foreign=new ShellDraftService({...f.options,actorId:'foreign'});await foreign.prepare(randomUUID())
+ assert.equal((await f.service.list()).length,1)
+ const all=await f.service.list({allWorkspaces:true});assert.equal(all.length,2)
+ assert.deepEqual(new Set(all.map(t=>t.workspaceId)),new Set(['workspace','branch-b']))
+})
+test('starting after source changes retains original files and commit metadata',async t=>{
+ const f=await fixture(t);f.service.readPosition=async()=>({branch:'a',head:'a'.repeat(40),dirty:false})
+ const ready=await f.service.prepare(f.id)
+ f.epoch++;f.snapshot.files.set('main.tex',Buffer.from('Changed branch files'))
+ f.service.terminal={start:async body=>{assert.equal((await readFile(Path.join(body.directory,'main.tex'))).toString(),'Original text');return {attemptId:body.attemptId,sessionId:'fixed'}}}
+ const running=await f.service.start(f.id,ready.revision,'workspace-write');assert.equal(running.sourcePosition.branch,'a')
 })

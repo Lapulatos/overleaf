@@ -1,11 +1,12 @@
+import MaterialIcon from '@/shared/components/material-icon'
 import { formatGitDate } from './format-date'
 import { useMemo, useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import { branchChoices, filterBranches } from './branch-choices'
 import type { GitBranch } from './types'
 
-export default function MergeBranchPicker({ branches, target, busy, error, onMerge, onClose }: {
-  branches: GitBranch[]; target: string; busy: boolean; error: string
+export default function MergeBranchPicker({ branches, target, busy, error, preview = false, onMerge, onClose }: {
+  preview?: boolean; branches: GitBranch[]; target: string; busy: boolean; error: string
   onMerge: (ref: string) => void; onClose: () => void
 }) {
   const [query, setQuery] = useState('')
@@ -13,7 +14,7 @@ export default function MergeBranchPicker({ branches, target, busy, error, onMer
   const choices = useMemo(() => branchChoices(branches, target).filter(branch => !branch.current), [branches, target])
   const visible = filterBranches(choices, query)
   const source = choices.find(branch => branch.ref === selected)
-  return <Modal show onHide={() => { if (!busy) onClose() }} aria-label="Merge branch">
+  return <Modal className="native-git-dialog" show onHide={() => { if (!busy) onClose() }} aria-label="Merge branch">
     <Modal.Header closeButton><Modal.Title>Merge into {target}</Modal.Title></Modal.Header>
     <Modal.Body>
       {error && <p role="alert" className="native-git-error">{error}</p>}
@@ -34,8 +35,8 @@ export default function MergeBranchPicker({ branches, target, busy, error, onMer
       </div>
     </Modal.Body>
     <Modal.Footer>
-      <button type="button" className="btn btn-default" disabled={busy} onClick={onClose}>Cancel</button>
-      <button type="button" className="btn btn-primary" disabled={busy || !source} onClick={() => { if (source) onMerge(source.ref) }}>Merge into {target}</button>
+      <button type="button" className="btn btn-default" disabled={busy} onClick={onClose}><MaterialIcon type="close" />Cancel</button>
+      <button type="button" className="btn btn-primary" disabled={busy || !source} onClick={() => { if (source) onMerge(source.ref) }}><MaterialIcon type="merge" />{preview ? 'Preview changes' : `Merge into ${target}`}</button>
     </Modal.Footer>
   </Modal>
 }

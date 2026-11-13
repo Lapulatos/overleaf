@@ -1,3 +1,4 @@
+import MaterialIcon from '@/shared/components/material-icon'
 import { useState } from "react";
 import { Modal } from "react-bootstrap";
 import type { GitCommand } from "./api";
@@ -25,7 +26,7 @@ export default function CloneRepository({
     setOperationId(crypto.randomUUID());
   };
   return (
-    <Modal
+    <Modal className="native-git-dialog"
       show
       onHide={() => {
         if (!busy) onClose();
@@ -126,7 +127,7 @@ export default function CloneRepository({
             className="btn btn-default"
             disabled={busy}
             onClick={onClose}
-          >
+          ><MaterialIcon type="close" />
             {result ? "Close" : "Cancel"}
           </button>
           {!result && (

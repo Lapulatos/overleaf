@@ -1,3 +1,4 @@
+import MaterialIcon from '@/shared/components/material-icon'
 import { useState } from 'react'
 import { Modal } from 'react-bootstrap'
 
@@ -7,7 +8,7 @@ export default function IgnoredFiles({ paths, busy, error, onStage, onRefresh, o
 }) {
   const [query, setQuery] = useState('')
   const visible = paths.filter(path => path.toLowerCase().includes(query.toLowerCase()))
-  return <Modal show onHide={() => { if (!busy) onClose() }} aria-label="Ignored files">
+  return <Modal className="native-git-dialog" show onHide={() => { if (!busy) onClose() }} aria-label="Ignored files">
     <Modal.Header closeButton><Modal.Title>Ignored files</Modal.Title></Modal.Header>
     <Modal.Body>
       {error && <p role="alert" className="native-git-error">{error}</p>}
@@ -22,8 +23,8 @@ export default function IgnoredFiles({ paths, busy, error, onStage, onRefresh, o
       </div>
     </Modal.Body>
     <Modal.Footer>
-      <button type="button" className="btn btn-default" disabled={busy} onClick={onRefresh}>Refresh</button>
-      <button type="button" className="btn btn-primary" disabled={busy} onClick={onClose}>Close</button>
+      <button type="button" className="btn btn-default" disabled={busy} onClick={onRefresh}><MaterialIcon type="refresh" />Refresh</button>
+      <button type="button" className="btn btn-primary" disabled={busy} onClick={onClose}><MaterialIcon type="close" />Close</button>
     </Modal.Footer>
   </Modal>
 }

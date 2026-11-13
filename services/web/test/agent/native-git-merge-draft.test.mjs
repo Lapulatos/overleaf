@@ -441,3 +441,15 @@ test('insufficient transfer storage leaves document bytes, branch HEAD and task 
   }
   assert.equal((await f.apply()).state, 'resolved')
 })
+
+test('review includes clean merge changes and file diff without claiming a lease or touching the paper', async t => {
+  const f=await fixture(t,false), service=f.service('A')
+  const task=await service.prepare({operationId:randomUUID(),ref:'source'})
+  const review=await service.review(task.id)
+  assert.deepEqual(review.files,[{path:'main.tex',conflicted:false}])
+  const file=await service.review(task.id,'main.tex')
+  assert.match(file.patch,/-base/);assert.match(file.patch,/\+incoming/)
+  assert.equal((await service.get(task.id)).lease,undefined)
+  assert.equal(f.files.get('main.tex').toString(),'base\n')
+  await assert.rejects(service.review(task.id,'../outside'),/not part of this merge/)
+})

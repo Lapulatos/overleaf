@@ -47,7 +47,7 @@ test('HTTP command rejects traversal project IDs, unknown commands and supplied 
 
 test('authenticated request is bound to the session user and authorized project, with no-store responses', async () => {
   const f = fixture()
-  f.req.body = { command: 'commit', message: 'Update title' }
+  f.req.body = { command: 'commit', message: 'Update title', fingerprint: 'a'.repeat(64) }
   await f.handlers.command(f.req, f.res)
   assert.deepEqual(f.calls, [['authorize', user, project], ['execute', project, user, f.req.body]])
   assert.equal(f.res.headers['Cache-Control'], 'no-store')
@@ -183,4 +183,16 @@ test('read-only members may inspect history but never stage, initialize, or conf
   await f.handlers.status(f.req,f.res);assert.equal(f.res.statusCode,200)
   const g=fixture({canWrite:async()=>false,canRead:async()=>true})
   await g.handlers.initialize(g.req,g.res);assert.equal(g.res.statusCode,403)
+})
+
+test('terminal diagnostics never return internal file paths to the browser',async()=>{
+ for(const message of ["ENOENT: no such file or directory, open '/Users/private/runtime/attempt.json'",'Failed reading /var/lib/overleaf/private/session']) {
+  const f=fixture({runtime:{execute:async()=>{throw Object.assign(Error(message),{status:409})}}})
+  f.req.body={command:'shellDraftDelete',id:'00000000-0000-4000-8000-000000000001',revision:1}
+  await f.handlers.command(f.req,f.res)
+  assert.equal(f.res.statusCode,409)
+  assert.ok(!JSON.stringify(f.res.body).includes('/Users/'))
+  assert.ok(!JSON.stringify(f.res.body).includes('/var/'))
+  assert.ok(!JSON.stringify(f.res.body).includes('ENOENT'))
+ }
 })

@@ -57,6 +57,20 @@ export class MergeDraftService {
       return task
     })
   }
+  async review(id, path) {
+    return this.workspace.withLock(async () => {
+      await this.authorize()
+      const task = await this.scoped(id)
+      if (!editableStates.has(task.state)) throw refuse('This merge is no longer available for review')
+      const draft = await this.repository.openWorktree(task.directory)
+      const names = (await draft.git.raw(['diff', '--no-ext-diff', '--no-textconv', '--name-only', '-z', task.localOid, '--'])).split('\0').filter(Boolean)
+      const files = [...new Set([...names, ...task.remainingPaths])].map(path => ({path, conflicted:task.remainingPaths.includes(path)}))
+      if (path !== undefined && !files.some(file => file.path === path)) throw refuse('File is not part of this merge')
+      const patch = path === undefined ? undefined : await draft.diff({from:task.localOid, paths:[path]})
+      await this.authorize()
+      return {id, revision:task.revision, files, ...(patch !== undefined ? {path, patch:patch.slice(0,200000), truncated:patch.length>200000} : {})}
+    })
+  }
   async cancel(id, { revision, sessionId, generation }) {
     return this.workspace.withLock(async () => {
       const task = await this.scoped(id)

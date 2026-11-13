@@ -1,3 +1,5 @@
+import MaterialIcon from '@/shared/components/material-icon'
+import ToolAction from './tool-action'
 import { useEffect, useRef, useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import { errorMessage, type GitApi } from './api'
@@ -40,22 +42,24 @@ export default function SessionRecovery({ api }: { api: GitApi }) {
     finally { running.current = false; setBusy(false) }
   }
   return <>
-    <button type="button" className="btn btn-link" onClick={() => setOpen(true)}>Recover collaboration sessions…</button>
-    <Modal show={open} onHide={() => { if (!busy) setOpen(false) }} aria-label="Recover collaboration sessions">
-      <Modal.Header closeButton><Modal.Title>Recover collaboration sessions</Modal.Title></Modal.Header>
+    <ToolAction icon="settings_backup_restore" type="button" onClick={() => setOpen(true)}>Reconnect editors</ToolAction>
+    <Modal className="native-git-dialog" show={open} onHide={() => { if (!busy) setOpen(false) }} aria-label="Recover collaboration sessions">
+      <Modal.Header closeButton><Modal.Title><MaterialIcon type="settings_backup_restore" />Restore editing connection</Modal.Title></Modal.Header>
       <Modal.Body>
-        <p>Use this after a server interruption prevents collaboration or Git operations. Only the project owner can recover sessions.</p>
-        <p>Recovery saves edits already received by the server and starts a new workspace version. All collaborators must reload. Copy any unsent local text before reloading.</p>
+        <p className="native-git-dialog-caption">Use this when collaborators cannot reconnect after a server interruption.</p>
+        <div className="native-git-impact"><MaterialIcon type="cloud_done" /><div><strong>Saved edits are kept</strong><p>Changes already received by the server remain safe.</p></div></div>
+        <div className="native-git-impact"><MaterialIcon type="group" /><div><strong>Everyone reconnects</strong><p>Collaborators will need to reload their editor.</p></div></div>
+        <div className="native-git-impact"><MaterialIcon type="content_copy" /><div><strong>Copy unsent text first</strong><p>Keep a copy of any edits still waiting to upload.</p></div></div>
         {loading && <p role="status">Checking recovery tasks…</p>}
         {error && <p role="alert" className="native-git-error">{error}</p>}
         {task && <p role="status">{task.state === 'resolved' ? 'Recovery completed. Reload the editor to reconnect.' : `Interrupted recovery: ${task.phase}`}</p>}
         {ready && task?.state !== 'resolved' && <label><input type="checkbox" checked={confirmed} disabled={busy} onChange={event => setConfirmed(event.target.checked)} /> I understand that collaborators will need to reload.</label>}
       </Modal.Body>
       <Modal.Footer>
-        <button type="button" className="btn btn-default" disabled={busy} onClick={() => setOpen(false)}>Close</button>
+        <button type="button" className="btn btn-default" disabled={busy} onClick={() => setOpen(false)}><MaterialIcon type="close" />Close</button>
         {task?.state === 'resolved'
-          ? <button type="button" className="btn btn-primary" onClick={() => window.location.reload()}>Reload editor</button>
-          : <button type="button" className="btn btn-primary" disabled={!ready || !confirmed || busy} onClick={() => void recover()}>{busy ? 'Recovering…' : task ? 'Resume session recovery' : 'Recover sessions'}</button>}
+          ? <button type="button" className="btn btn-primary" onClick={() => window.location.reload()}><MaterialIcon type="refresh" />Reload editor</button>
+          : <button type="button" className="btn btn-primary" disabled={!ready || !confirmed || busy} onClick={() => void recover()}><MaterialIcon type="restore" />{busy ? 'Recovering…' : task ? 'Resume reconnection' : 'Restore connection'}</button>}
       </Modal.Footer>
     </Modal>
   </>

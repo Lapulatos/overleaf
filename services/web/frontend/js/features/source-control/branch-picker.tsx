@@ -1,3 +1,7 @@
+import MaterialIcon from '@/shared/components/material-icon'
+import AutoSyncIndicator from './auto-sync-indicator'
+import TerminalIndicators from './terminal-indicators'
+import AutoCommitIndicator from './auto-commit-indicator'
 import { formatGitDate } from './format-date'
 import { useEffect, useId, useMemo, useRef, useState, type RefObject } from 'react'
 import { Overlay, Popover } from 'react-bootstrap'
@@ -16,7 +20,10 @@ type Props = {
   onClose: () => void
   onCheckout: (branch: BranchChoice) => void
   onCreate: (chooseBase: boolean) => void
-  onDetached: () => void
+  onDetached?: () => void
+  onRename?: () => void
+  onDelete?: () => void
+  onWorkspaces?: () => void
 }
 
 export function BranchIcon({ className = '' }: { className?: string }) {
@@ -27,16 +34,19 @@ export function BranchIcon({ className = '' }: { className?: string }) {
 }
 
 export default function BranchPicker({ target, show, branches, tags = [], current, busy = false, error,
-  onClose, onCheckout, onCreate, onDetached }: Props) {
+  onClose, onCheckout, onCreate, onDetached, onRename, onDelete, onWorkspaces }: Props) {
   const [query, setQuery] = useState('')
   const [active, setActive] = useState(0)
   const input = useRef<HTMLInputElement>(null)
   const listId = useId()
   const choices = useMemo(() => filterBranches([...branchChoices(branches, current), ...tags.map(tag => ({ ...tag, current: false }))], query), [branches, tags, current, query])
   const actions = [
-    { label: 'Create new branch…', icon: '+', run: () => onCreate(false) },
-    { label: 'Create new branch from…', icon: '+', run: () => onCreate(true) },
-    { label: 'Checkout detached…', icon: '↗', run: onDetached },
+    { label: 'Create new branch…', icon: 'add', run: () => onCreate(false) },
+    { label: 'Create new branch from…', icon: 'add', run: () => onCreate(true) },
+    ...(onRename ? [{ label: 'Rename branch…', icon: 'edit', run: onRename }] : []),
+    ...(onDelete ? [{ label: 'Delete merged branch…', icon: 'delete', run: onDelete }] : []),
+    ...(onWorkspaces ? [{ label: 'Archive / restore workspaces…', icon: 'inventory_2', run: onWorkspaces }] : []),
+    ...(onDetached ? [{ label: 'Checkout detached…', icon: 'call_split', run: onDetached }] : []),
   ]
   useEffect(() => { if (show) { setQuery(''); setActive(0) } }, [show])
   const activate = (index: number) => {
@@ -68,13 +78,13 @@ export default function BranchPicker({ target, show, branches, tags = [], curren
         {actions.map((action, index) => <button key={action.label} id={`${listId}-${index}`} type="button" role="option"
           tabIndex={-1} aria-selected={active === index} disabled={busy} className="native-git-picker-row native-git-picker-action"
           onMouseEnter={() => setActive(index)} onClick={() => activate(index)}>
-          <span className="native-git-action-glyph" aria-hidden="true">{action.icon}</span>{action.label}
+          <MaterialIcon type={action.icon}/>{action.label}
         </button>)}
         <div className="native-git-picker-divider" role="presentation" />
         {choices.map((branch, offset) => <button key={branch.ref} id={`${listId}-${offset + actions.length}`} type="button" role="option"
           tabIndex={-1} aria-selected={active === offset + actions.length} disabled={busy} className="native-git-picker-row"
           onMouseEnter={() => setActive(offset + actions.length)} onClick={() => onCheckout(branch)}>
-          <span className="native-git-branch-heading"><BranchIcon /><strong>{branch.name}</strong>{branch.tag && <span>Tag · detached</span>}
+          <span className="native-git-branch-heading"><BranchIcon /><strong>{branch.name}</strong><AutoCommitIndicator policy={branch.autoCommit}/><AutoSyncIndicator policy={branch.autoSync}/><TerminalIndicators sessions={branch.terminals}/>{branch.tag && <span>Tag · detached</span>}
             <time dateTime={branch.date} title={formatGitDate(branch.date)}>{formatGitDate(branch.date)}</time>
             {branch.current && <span className="native-git-current">Current</span>}
           </span>

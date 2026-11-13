@@ -30,7 +30,7 @@ export default function BlameView({ path, output, busy, error, onCommit, onClose
   onCommit: (hash: string) => void; onClose: () => void
 }) {
   const rows = parseBlame(output)
-  return <Modal show size="xl" onHide={onClose} aria-label="Line authors">
+  return <Modal className="native-git-dialog" show size="xl" onHide={onClose} aria-label="Line authors">
     <Modal.Header closeButton><Modal.Title>{path} · Line authors</Modal.Title></Modal.Header>
     <Modal.Body className="native-git-blame">
       <p>Committed file version. Select a commit to view its changes.</p>
@@ -40,7 +40,7 @@ export default function BlameView({ path, output, busy, error, onCommit, onClose
         <tbody>{rows.map(row => <tr key={row.line}>
           <td>{row.line}</td>
           <td><span>{row.author}</span><time dateTime={row.date} title={formatGitDate(row.date)}>{row.date ? formatGitDate(row.date) : ''}</time></td>
-          <td><button type="button" disabled={busy} title={row.subject} onClick={() => onCommit(row.hash)}>{row.hash.slice(0, 8)}</button><span className="native-git-blame-subject">{row.subject}</span></td>
+          <td><button className="btn btn-secondary" type="button" disabled={busy} title={row.subject} onClick={() => onCommit(row.hash)}>{row.hash.slice(0, 8)}</button><span className="native-git-blame-subject">{row.subject}</span></td>
           <td><code>{row.text || ' '}</code></td>
         </tr>)}</tbody>
       </table>}

@@ -1,3 +1,4 @@
+import { searchScore } from './search-score'
 import GitPresenceList from './git-presence-list'
 import { useGitPresence } from './git-presence-state'
 import { useEffect, useRef, useState, type ReactNode, type ComponentProps } from 'react'
@@ -56,8 +57,8 @@ export default function GraphHistory({ api, commits, branches, extraTools, graph
   const [error, setError] = useState('')
   const generation = useRef(0)
   // Refresh only when native history/refs actually change, not on each status object.
-  const version = JSON.stringify(commits.map(commit => [commit.hash, commit.refs]))
-  const refsVersion = JSON.stringify(branches.map(branch => [branch.ref, branch.commit]))
+  const version = JSON.stringify(commits.map(commit => [commit.hash, commit.refs, commit.terminals]))
+  const refsVersion = JSON.stringify(branches.map(branch => [branch.ref, branch.commit, branch.terminals]))
   useEffect(() => {
     const request = ++generation.current
     setError('')
@@ -115,20 +116,7 @@ export default function GraphHistory({ api, commits, branches, extraTools, graph
   const toolbarButton = (label: string, icon: string, action?: () => unknown) => <button type="button" className="native-git-icon-button" title={label} aria-label={label} disabled={graphProps.busy || !action} onClick={() => action?.()}><MaterialIcon type={icon} /></button>
   const toolbar = (
 <div className="native-git-graph-toolbar" role="toolbar" aria-label="Graph actions">
-      {inlineToolbar ? <div className="native-git-branch-combobox" onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget as Node)) setPicker(false) }}>
-        <label htmlFor="native-git-branch-search">Branches:</label>
-        <div className="native-git-branch-input">
-          <input id="native-git-branch-search" className="form-control" role="combobox" aria-label="Filter graph branches" aria-expanded={picker} aria-controls="native-git-branch-options" aria-autocomplete="list" autoComplete="off"
-            value={picker ? filter : mode === 'all' ? 'Show All' : mode === 'auto' ? currentRef.replace('refs/heads/', '') : branches.find(branch => branch.ref === (refs[0] || ref))?.name || refs[0] || ref}
-            onFocus={() => { setFilter(''); setPicker(true) }} onChange={event => { setFilter(event.target.value); setPicker(true) }}
-            onKeyDown={event => { if (event.key === 'Escape') { setPicker(false); event.currentTarget.blur() } if (event.key === 'ArrowDown') { event.preventDefault(); root.current?.querySelector<HTMLButtonElement>('#native-git-branch-options button')?.focus() } }} />
-          {picker && <div id="native-git-branch-options" className="native-git-branch-options" role="listbox" aria-label="Matching branches">
-            {[{ ref: '', name: 'Show All' }, ...branches.filter(branch => !branch.tag)].filter(branch => branch.name.toLowerCase().includes(filter.toLowerCase())).map(branch => <button type="button" role="option" aria-selected={branch.ref ? refs.includes(branch.ref) : mode === 'all'} key={branch.ref} onClick={() => { setMode(branch.ref ? 'selected' : 'all'); setRefs(branch.ref ? [branch.ref] : []); setRef(''); setPicker(false) }}
-              onKeyDown={event => { if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); const next = event.key === 'ArrowDown' ? event.currentTarget.nextElementSibling : event.currentTarget.previousElementSibling; (next as HTMLElement | null)?.focus() } if (event.key === 'Escape') { setPicker(false); root.current?.querySelector<HTMLInputElement>('#native-git-branch-search')?.blur() } }}>{branch.name}</button>)}
-            {!branches.some(branch => !branch.tag && branch.name.toLowerCase().includes(filter.toLowerCase())) && !'show all'.includes(filter.toLowerCase()) && <p>No matching branches</p>}
-          </div>}
-        </div>
-      </div> : <button type="button" className="native-git-reference-button" aria-label="Select history references" title="Select history references" onClick={() => { setDraft(refs.length ? refs : ref ? [ref] : []); setDraftMode(mode); setFilter(''); setPicker(true) }}><MaterialIcon type="account_tree" /><span>{mode === 'all' ? 'All' : mode === 'auto' ? 'Auto' : refs.length === 1 ? branches.find(b => b.ref === refs[0])?.name || refs[0] : `${refs.length} refs`}</span></button>}
+      {!inlineToolbar && <button type="button" className="native-git-reference-button" aria-label="Select history references" title="Select history references" onClick={() => { setDraft(refs.length ? refs : ref ? [ref] : []); setDraftMode(mode); setFilter(''); setPicker(true) }}><MaterialIcon type="account_tree" /><span>{mode === 'all' ? 'All' : mode === 'auto' ? 'Current' : refs.length === 1 ? branches.find(b => b.ref === refs[0])?.name || refs[0] : `${refs.length} branches`}</span></button>}
       {extraTools || <>{toolbarButton('Go to Current History Item', 'my_location', goCurrent)}
       {toolbarButton('Fetch From All Remotes', 'cloud_download', onFetchAll)}
       {toolbarButton('Pull', 'south', onPull)}
@@ -147,7 +135,7 @@ export default function GraphHistory({ api, commits, branches, extraTools, graph
   )
   return <div ref={root}>
     {toolbarHost ? createPortal(toolbar, toolbarHost) : toolbar}
-    <Modal show={picker && !inlineToolbar} onHide={() => setPicker(false)} aria-label="History references">
+    <Modal className="native-git-dialog" show={picker && !inlineToolbar} onHide={() => setPicker(false)} aria-label="History references">
       <Modal.Header closeButton><Modal.Title>Select history references</Modal.Title></Modal.Header>
       <Modal.Body><input className="form-control" aria-label="Filter history references" placeholder="Type to filter branches and tags" value={filter} onChange={e => setFilter(e.target.value)} />
         <label className="native-git-ref-choice"><input type="checkbox" checked={draftMode === 'all'} onChange={() => { setDraftMode('all'); setDraft([]) }} />All — all references</label>
@@ -155,11 +143,23 @@ export default function GraphHistory({ api, commits, branches, extraTools, graph
         <div className="native-git-ref-choices">{branches.filter(branch => `${branch.name} ${branch.commit}`.toLowerCase().includes(filter.toLowerCase())).map(branch => <label key={branch.ref} className="native-git-ref-choice"><input type="checkbox" checked={draftMode === 'selected' && draft.includes(branch.ref)} onChange={e => { setDraftMode('selected'); setDraft(previous => e.target.checked ? [...previous, branch.ref] : previous.filter(ref => ref !== branch.ref)) }} /><span>{branch.name}</span><code>{branch.commit.slice(0, 8)}</code></label>)}</div>
       </Modal.Body><Modal.Footer><button className="btn btn-primary" disabled={draftMode === 'selected' && !draft.length} onClick={() => { setMode(draftMode); setRef(draftMode === 'auto' ? currentRef : ''); setRefs(draftMode === 'selected' ? draft : []); setPicker(false) }}>OK</button></Modal.Footer>
     </Modal>
-    <input type="search" className="form-control native-git-history-search" aria-label="Search history" placeholder="Search history" value={query} onChange={event => setQuery(event.target.value)} />
+    <div className="native-git-unified-search"><MaterialIcon type="search" /><input type="search" className="form-control native-git-history-search" aria-label="Search branches and commits" placeholder="Search branches or commits…" value={query} onChange={event => setQuery(event.target.value)} />
+      {(query || ref || refs.length > 0) && <button type="button" className="native-git-icon-button" aria-label="Clear search and show all branches" title="Show all branches" onClick={() => { setQuery(''); setSearch(''); setRefs([]); setRef(''); setMode('all') }}><MaterialIcon type="close" /></button>}
+    </div>
+    {!query && (ref || refs.length > 0) && <p className="native-git-dialog-caption">Showing {branches.find(branch => branch.ref === (refs[0] || ref))?.name || (refs[0] || ref)}</p>}
+    {!!query.trim() && <section className="native-git-search-results" aria-label="Search results">
+      <h5>Branches</h5>
+      {branches.filter(branch => !branch.tag).map(branch => ({ branch, score: searchScore(branch.name, query) })).filter(item => item.score > 0).sort((a, b) => b.score - a.score).slice(0, 20).map(({ branch }) => <button type="button" key={branch.ref} className="native-git-search-result" onClick={() => { setQuery(''); setSearch(''); setRef(branch.ref); setRefs([]); setMode('selected') }}><MaterialIcon type="account_tree" /><span>{branch.name}</span><small>View branch</small></button>)}
+      {!branches.some(branch => !branch.tag && searchScore(branch.name, query)) && <p>No matching branches</p>}
+      <h5>Commits</h5>
+      {loading ? <p role="status">Searching commits…</p> : loaded.map(commit => <button type="button" key={commit.hash} className="native-git-search-result" onClick={() => { setQuery(''); setSearch(''); setRefs([]); setRef(commit.hash); setMode('selected'); graphProps.onSelect?.(commit); setPresenceTarget(commit.hash) }}><MaterialIcon type="commit" /><span>{commit.subject}<small>{commit.author} · {commit.hash.slice(0, 8)}</small></span><MaterialIcon type="arrow_forward" /></button>)}
+      {!loading && !loaded.length && <p>No matching commits</p>}
+    </section>}
+
     {error && <p role="alert" className="native-git-error">{error}</p>}
     {!presence && <p role="status" className="native-git-presence-status">Collaborator positions unavailable — reconnecting…</p>}
     {presence && <GitPresenceList sessions={presence.sessions} loaded={new Set(loaded.map(commit => commit.hash))} onLocate={locatePerson} />}
-    <CommitGraph {...graphProps} presence={presence?.sessions || []} branches={branches} tree={tree} commits={loaded} emptyMessage={loading ? 'Loading history…' : search ? 'No matching commits' : 'No commits yet'} />
+    {!query.trim() && <CommitGraph {...graphProps} presence={presence?.sessions || []} branches={branches} tree={tree} commits={loaded} emptyMessage={loading ? 'Loading history…' : search ? 'No matching commits' : 'No commits yet'} />}
     {more && <button type="button" className="btn btn-default btn-sm" disabled={loading} onClick={loadMore}>{loading ? 'Loading history…' : 'Load earlier commits'}</button>}
     {loading && !more && <p role="status">Loading history…</p>}
   </div>

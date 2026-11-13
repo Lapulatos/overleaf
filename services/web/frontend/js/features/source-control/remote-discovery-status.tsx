@@ -1,3 +1,6 @@
+import { Modal } from 'react-bootstrap'
+import MaterialIcon from '@/shared/components/material-icon'
+import ToolAction from './tool-action'
 import DiscoverySchedule from './discovery-schedule'
 import { useEffect, useState } from 'react'
 import { errorMessage, type GitApi } from './api'
@@ -10,6 +13,7 @@ type DiscoveryTask = {
 }
 
 export default function RemoteDiscoveryStatus({ api, onReview, busy = false }: { api: GitApi; onReview?: (ref: string, oid: string) => void; busy?: boolean }) {
+  const [open, setOpen] = useState(false)
   const [tasks, setTasks] = useState<DiscoveryTask[]>([])
   const [error, setError] = useState('')
   const [loaded, setLoaded] = useState(false)
@@ -50,20 +54,32 @@ export default function RemoteDiscoveryStatus({ api, onReview, busy = false }: {
       document.removeEventListener('visibilitychange', visible)
     }
   }, [api])
-  return <details className="native-git-remote-discovery">
-    <summary>Remote update checks{loaded && !error ? ` (${tasks.length})` : ''}</summary>
+  return <>
+    <ToolAction icon="cloud_download" onClick={() => setOpen(true)}>Remote updates</ToolAction>
     <DiscoverySchedule api={api} />
-    {error ? <p role="alert">{error}</p> : <>
-      <p>Fetched updates do not change the files being edited. Use a reviewed merge to update this branch.</p>
-      {!loaded ? <p role="status">Loading remote update checks…</p> : !tasks.length && <p>No remote update checks recorded.</p>}
-      <ul>{tasks.map(task => <li key={task.id}>
-        <strong>{task.remote}</strong> · {formatGitDate(task.fetchedAt || task.createdAt)} · {task.state === 'fetched' ? 'Fetched; files not applied by this check' : 'Check incomplete; retry may be needed'}
-        {task.state === 'fetched' && !task.changes.length && <p>No remote branch changes.</p>}
-        <ul>{task.changes.map(change => <li key={change.ref}>
-          {change.ref} · {change.change} · <code>{change.before?.slice(0, 8) || '—'} → {change.after?.slice(0, 8) || '—'}</code>
-          {change.after && onReview && <button type="button" className="btn btn-link" disabled={busy} onClick={() => onReview(change.ref, change.after!)}>Review {change.after.slice(0, 8)} for this branch</button>}
-        </li>)}</ul>
-      </li>)}</ul>
-    </>}
-  </details>
+    <Modal show={open} onHide={() => setOpen(false)} className="native-git-dialog" aria-label="Remote updates">
+      <Modal.Header closeButton><Modal.Title><MaterialIcon type="cloud_download" />Remote updates</Modal.Title></Modal.Header>
+      <Modal.Body>
+        <p className="native-git-dialog-caption">Review incoming changes before merging them into this branch.</p>
+        {error && <p role="alert">{error}</p>}
+        {!loaded && <p role="status">Loading updates…</p>}
+        {loaded && !error && !tasks.length && <div className="native-git-empty"><MaterialIcon type="cloud_done" /><p>No remote checks yet</p></div>}
+        {tasks.map(task => <details className="native-git-update-card" key={task.id}>
+          <summary>
+            <MaterialIcon type={task.state !== 'fetched' ? 'error_outline' : task.changes.length ? 'cloud_download' : 'check_circle'} />
+            <span className="native-git-update-heading"><strong>{task.remote}</strong><time>{formatGitDate(task.fetchedAt || task.createdAt)}</time></span>
+            <span className="native-git-state">{task.state !== 'fetched' ? 'Incomplete' : task.changes.length ? `${task.changes.length} branches` : 'No changes'}</span>
+            <MaterialIcon type="expand_more" />
+          </summary>
+          {task.changes.map(change => <div className="native-git-update-branch" key={change.ref}>
+            <MaterialIcon type="account_tree" />
+            <div className="native-git-update-heading"><strong title={change.ref}>{change.ref.replace(`refs/remotes/${task.remote}/`, '')}</strong><small>{change.change} · <code title={`${change.before || '—'} → ${change.after || '—'}`}>{change.before?.slice(0, 8) || '—'} → {change.after?.slice(0, 8) || '—'}</code></small></div>
+            {change.after && onReview && <button type="button" className="btn btn-secondary" disabled={busy} onClick={() => { setOpen(false); onReview(change.ref, change.after!) }}><MaterialIcon type="visibility" />Review</button>}
+          </div>)}
+          {!task.changes.length && <p className="native-git-dialog-caption">{task.state === 'fetched' ? 'Remote branches are unchanged.' : 'This check did not finish.'}</p>}
+        </details>)}
+      </Modal.Body>
+      <Modal.Footer><button type="button" className="btn btn-secondary" onClick={() => setOpen(false)}><MaterialIcon type="close" />Close</button></Modal.Footer>
+    </Modal>
+  </>
 }

@@ -1,3 +1,7 @@
+import AutoSyncIndicator from './auto-sync-indicator'
+import TerminalIndicators from './terminal-indicators'
+import AutoCommitIndicator from './auto-commit-indicator'
+import ToolAction from './tool-action'
 import ReadOnlyHistory from './read-only-history'
 import ProjectBackups from './project-backups'
 import HistoryRecovery from './history-recovery'
@@ -52,7 +56,7 @@ type Diff = { title: string; text: string; loading?: boolean; error?: string; pr
 const staged = (file: GitFile) => ![' ', '?', '!'].includes(file.index)
 const unstaged = (file: GitFile) => ![' ', '!'].includes(file.workingTree)
 
-export function SourceControlView({ api, onOpenFile, active = true, projectName = 'Repository' }: { projectName?: string; api: GitApi; onOpenFile?: (path: string) => Promise<void>; active?: boolean }) {
+export function SourceControlView({ api, onOpenFile, active = true, projectName = 'Repository', recoveryTools }: { recoveryTools?: ReactNode; projectName?: string; api: GitApi; onOpenFile?: (path: string) => Promise<void>; active?: boolean }) {
   const [snapshot, setSnapshot] = useState<GitSnapshot>()
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
@@ -89,6 +93,7 @@ export function SourceControlView({ api, onOpenFile, active = true, projectName 
   const [ignoredFiles, setIgnoredFiles] = useState<string[]>()
   const [resetOpen, setResetOpen] = useState(false)
   const [mergeTarget, setMergeTarget] = useState<string>()
+  const [workspacesOpen, setWorkspacesOpen] = useState(false)
   const [mergeTasksOpen, setMergeTasksOpen] = useState(false)
   const [shellDraftsOpen, setShellDraftsOpen] = useState(false)
   const [mergeTaskId, setMergeTaskId] = useState<string>()
@@ -481,13 +486,6 @@ export function SourceControlView({ api, onOpenFile, active = true, projectName 
 <Dropdown.Item onClick={()=>deleteRemoteRef('branch')}>Delete Remote Branch…</Dropdown.Item>
 <Dropdown.Item disabled={!status?.branch} onClick={mergeBranch}>Merge into current branch…</Dropdown.Item>
 <Dropdown.Item onClick={() => refAction('Rebase onto', 'rebase')}>Rebase onto…</Dropdown.Item>
-<Dropdown.Item onClick={() => createBranch(false)}>Create branch…</Dropdown.Item>
-<Dropdown.Item onClick={() => createBranch(true)}>Create branch from…</Dropdown.Item>
-<Dropdown.Item onClick={() => setAction({ title: 'Rename branch', fields: [
-                { key: 'from', label: 'Branch', value: status?.branch || '' }, { key: 'to', label: 'New name' }],
-                execute: values => command({ command: 'renameBranch', ...values }) })}>Rename branch…</Dropdown.Item>
-<Dropdown.Item onClick={() => setAction({ title: 'Delete merged branch', fields: [{ key: 'name', label: 'Branch name' }],
-                execute: values => command({ command: 'deleteBranch', name: values.name }) })}>Delete branch…</Dropdown.Item>
 <Dropdown.Item disabled={!!status?.operation || !snapshot?.graph?.length} onClick={() => { setError(''); setResetOpen(true) }}>Reset current branch…</Dropdown.Item>
 <Dropdown.Item disabled={!!status?.detached} onClick={() => remoteAction('push', true)}>Publish branch…</Dropdown.Item>
 
@@ -574,22 +572,22 @@ export function SourceControlView({ api, onOpenFile, active = true, projectName 
   const commits = snapshot.graph || []
   return <div className="native-git-panel" aria-busy={busy}>
     {(error || refreshError) && <div className="native-git-error" role="alert">{error || refreshError}{' '}
-      <button type="button" className="btn btn-default btn-sm" disabled={busy} onClick={() => run(() => api.status())}>Refresh repository status</button>
+      <button type="button" className="btn btn-default btn-sm" disabled={busy} onClick={() => run(() => api.status())}><MaterialIcon type="refresh" />Refresh repository status</button>
     </div>}
     {snapshot.mutationTaskId ? <div className="native-git-error" role="status">{snapshot.mutationKind === 'auto-commit'
       ? <>An automatic commit needs recovery before Git changes can continue. The project owner can review it in Automatic commits.</>
       : snapshot.mutationKind === 'shell'
       ? <>A Shell application needs recovery before Git changes can continue. {snapshot.canRecoverMutation
-        ? <button type="button" disabled={busy} onClick={() => setShellDraftsOpen(true)}>Review interrupted Shell application</button>
+        ? <button className="btn btn-secondary" type="button" disabled={busy} onClick={() => setShellDraftsOpen(true)}><MaterialIcon type="terminal" />Review interrupted Shell application</button>
         : <span>The draft owner must review the interrupted application.</span>}</>
-      : <>A merge needs recovery before Git changes can continue. <button type="button" disabled={busy} onClick={() => { setMergeTaskId(snapshot.mutationTaskId); setMergeTasksOpen(true) }}>Review interrupted merge</button></>}</div>
-      : snapshot.switching && <div className="native-git-error" role="status">Updating project files… <button type="button" disabled={busy} onClick={() => command({ command: 'resumeTransfer' })}>Retry</button></div>}
-    <div ref={sectionGroup} className="native-git-section-group"><PanelGroup ref={panelGroup} direction="vertical" autoSaveId="native-git-sections-v3">
-      <Section expand={() => expandSection(0)} collapse={() => collapseSection(0)} title="Repositories" defaultSize={20} collapsedSize={collapsedSize}>
+      : <>A merge needs recovery before Git changes can continue. <button className="btn btn-secondary" type="button" disabled={busy} onClick={() => { setMergeTaskId(snapshot.mutationTaskId); setMergeTasksOpen(true) }}><MaterialIcon type="merge" />Review interrupted merge</button></>}</div>
+      : snapshot.switching && <div className="native-git-error" role="status">Updating project files… <button className="btn btn-secondary" type="button" disabled={busy} onClick={() => command({ command: 'resumeTransfer' })}>Retry</button></div>}
+    <div ref={sectionGroup} className="native-git-section-group"><PanelGroup ref={panelGroup} direction="vertical" autoSaveId="native-git-sections-v4">
+      <Section expand={() => expandSection(0)} collapse={() => collapseSection(0)} title="Repositories" defaultSize={12} collapsedSize={collapsedSize}>
         <div className="native-git-repository-row">
           <MaterialIcon type="inventory_2" className="native-git-repository-icon" /><span className="native-git-repository-name" title={projectName}>{projectName}</span>
           <button ref={branchButton} type="button" className="native-git-branch-button" disabled={busy}
-            title={status?.branch || 'Detached HEAD'} onClick={() => setPicker(value => !value)}><BranchIcon />{status?.branch || 'Detached HEAD'}<span aria-hidden="true">▾</span></button>
+            title={status?.branch || 'Detached HEAD'} onClick={() => setPicker(value => !value)}><BranchIcon />{status?.branch || 'Detached HEAD'}<AutoCommitIndicator policy={snapshot.branches?.find(branch=>!branch.remote && branch.name===status?.branch)?.autoCommit}/><AutoSyncIndicator policy={snapshot.branches?.find(branch=>!branch.remote && branch.name===status?.branch)?.autoSync}/><TerminalIndicators sessions={snapshot.branches?.find(branch=>!branch.remote && branch.name===status?.branch)?.terminals}/><span aria-hidden="true">▾</span></button>
           {iconAction('Publish Branch', 'cloud_upload', () => remoteAction('push', true), !!status?.detached || !status?.branch)}
           <Dropdown onToggle={open => { setRepositoryMenuOpen(open); setSubmenu(undefined) }}>
             <Dropdown.Toggle className="native-git-icon-button" variant="link" title="More Actions" aria-label="Repository actions" disabled={busy}>⋯</Dropdown.Toggle>
@@ -597,15 +595,28 @@ export function SourceControlView({ api, onOpenFile, active = true, projectName 
               {repositoryMenuOpen && repositoryActions()}
             </Dropdown.Menu>, document.body)}
           </Dropdown>
-        </div>
-        {snapshot.collaboration?.drafts && <button type="button" className="btn btn-link" disabled={busy} onClick={() => { setMergeTaskId(undefined); setMergeTasksOpen(true) }}>Shared merge tasks…</button>}
-        <ProjectBackups api={api} />
-        {snapshot.collaboration?.apply && <><BranchWorkspaces api={api} /><SessionRecovery api={api} /><AutoCommitSettings api={api} /><AutoSyncSettings api={api} branch={status?.branch || 'main'} /></>}
-        {snapshot.collaboration?.drafts && <button type="button" className="btn btn-link" disabled={busy} onClick={() => setShellDraftsOpen(true)}>Shell drafts…</button>}
+          <Dropdown autoClose="outside" className="native-git-tools">
+            <Dropdown.Toggle variant="link" className="native-git-icon-button" aria-label="Project tools" title="Project tools"><MaterialIcon type="tune" /></Dropdown.Toggle>
+            {createPortal(<Dropdown.Menu renderOnMount className="native-git-tools-menu" align="end">
+              <Dropdown.Header>Collaboration</Dropdown.Header>
+              {snapshot.collaboration?.drafts && <ToolAction icon="merge" disabled={busy} onClick={() => { setMergeTaskId(undefined); setMergeTasksOpen(true) }}>Merge branches…</ToolAction>}
+              <Dropdown.Divider />
+              <Dropdown.Header>Sync & automation</Dropdown.Header>
+              {snapshot.collaboration?.apply && <><AutoCommitSettings api={api} /><AutoSyncSettings api={api} branch={status?.branch || 'main'} /></>}
+              <Dropdown.Divider />
+              <Dropdown.Header>Backup & recovery</Dropdown.Header>
+              <ProjectBackups api={api} />
+              {recoveryTools}
+              {snapshot.collaboration?.apply && <SessionRecovery api={api} />}
+              {snapshot.collaboration?.drafts && <ToolAction icon="terminal" disabled={busy} onClick={() => setShellDraftsOpen(true)}>Review assistant changes</ToolAction>}
+              <Dropdown.Divider />
         {snapshot.collaboration?.drafts && <RemoteDiscoveryStatus api={api} busy={busy} onReview={async (ref, expectedSourceOid) => {
           const result = await command({ command: 'mergeDraftPrepare', ref, expectedSourceOid, operationId: crypto.randomUUID() })
           if (result) { setMergeTaskId((result.result as { id: string }).id); setMergeTasksOpen(true) }
         }} />}
+            </Dropdown.Menu>, document.body)}
+          </Dropdown>
+        </div>
         <div className="native-git-repository-status">{status?.ahead ? `${status.ahead} outgoing commits` : 'Local repository'}{status?.behind ? ` · ${status.behind} incoming commits` : ''}</div>
       </Section>
       <PanelResizeHandle className="native-git-resize" aria-label="Resize repositories and changes" />
@@ -649,7 +660,7 @@ export function SourceControlView({ api, onOpenFile, active = true, projectName 
       </Section>
       <PanelResizeHandle className="native-git-resize" aria-label="Resize changes and graph" />
       <Section expand={() => expandSection(2)} collapse={() => collapseSection(2)} title="Graph" defaultSize={35} collapsedSize={collapsedSize}>
-        <GraphHistory currentRef={status?.branch ? `refs/heads/${status.branch}` : 'HEAD'}
+        <GraphHistory onCheckout={branch => void checkout({ ...branch, current: branch.name === status?.branch })} currentRef={status?.branch ? `refs/heads/${status.branch}` : 'HEAD'}
           onRefresh={() => run(() => api.status())} onPull={() => remoteAction('pull')} onPublish={() => remoteAction('push', true)}
           onFetchAll={() => run(async () => {
             const remotes = (await api.command({ command: 'remotes' })).result as { name: string }[]
@@ -660,12 +671,16 @@ export function SourceControlView({ api, onOpenFile, active = true, projectName 
     <Panel defaultSize={0} minSize={0} className="native-git-section-spacer" />
     </PanelGroup></div>
     <BranchPicker target={branchButton} show={picker} branches={snapshot.branches || []} tags={snapshot.tags || []} current={status?.branch || null}
-      busy={busy} onClose={() => setPicker(false)} onCheckout={checkout} onCreate={createBranch} onDetached={() => refAction('Checkout detached', 'checkoutDetached')} />
+      busy={busy} onClose={() => setPicker(false)} onCheckout={checkout} onCreate={createBranch} onDetached={!snapshot.collaboration?.apply ? () => refAction('Checkout detached', 'checkoutDetached') : undefined}
+      onWorkspaces={snapshot.collaboration?.apply ? () => { setPicker(false); setWorkspacesOpen(true) } : undefined}
+      onRename={!snapshot.collaboration?.apply ? () => { setPicker(false); setAction({title:'Rename branch',fields:[{key:'from',label:'Branch',value:status?.branch || ''},{key:'to',label:'New name'}],execute:values=>command({command:'renameBranch',...values})}) } : undefined}
+      onDelete={!snapshot.collaboration?.apply ? () => { setPicker(false); setAction({title:'Delete merged branch',fields:[{key:'name',label:'Branch name'}],execute:values=>command({command:'deleteBranch',name:values.name})}) } : undefined} />
+    {workspacesOpen && <BranchWorkspaces api={api} onClose={() => setWorkspacesOpen(false)}/>}
     {cloneOpen && <CloneRepository command={command} busy={busy} error={error} onClose={()=>setCloneOpen(false)} />}
     {action && <ActionDialog action={action} busy={busy} error={error} onClose={() => setAction(undefined)} />}
     {settings && <RemoteSettings api={api} onClose={() => { setSettings(false); void run(() => api.status()) }} />}
     {stashes && <StashManager intent={stashIntent} entries={stashes} command={command} reload={reloadStashes} busy={busy} error={error} onClose={() => setStashes(undefined)} onPreview={(title, text) => { setStashes(undefined); setDiff({ title, text }) }} />}
-    <Modal show={!!fileHistory} onHide={() => setFileHistory(undefined)} size="lg" aria-label="File history">
+    <Modal className="native-git-dialog" show={!!fileHistory} onHide={() => setFileHistory(undefined)} size="lg" aria-label="File history">
       <Modal.Header closeButton><Modal.Title>{fileHistory?.path}</Modal.Title></Modal.Header>
       <Modal.Body>
         {error && <p role="alert" className="native-git-error">{error}</p>}
@@ -680,18 +695,18 @@ export function SourceControlView({ api, onOpenFile, active = true, projectName 
         </div>)}
       </Modal.Body>
     </Modal>
-    {gitOutput !== undefined && <Modal show onHide={() => setGitOutput(undefined)} size="lg" aria-label="Git output"><Modal.Header closeButton><Modal.Title>Git output</Modal.Title></Modal.Header><Modal.Body><pre>{gitOutput}</pre></Modal.Body></Modal>}
-    {discardAll && <Modal show onHide={() => { if (!busy) setDiscardAll(undefined) }} aria-label="Discard all changes">
+    {gitOutput !== undefined && <Modal className="native-git-dialog" show onHide={() => setGitOutput(undefined)} size="lg" aria-label="Git output"><Modal.Header closeButton><Modal.Title>Git output</Modal.Title></Modal.Header><Modal.Body><pre>{gitOutput}</pre></Modal.Body></Modal>}
+    {discardAll && <Modal className="native-git-dialog" show onHide={() => { if (!busy) setDiscardAll(undefined) }} aria-label="Discard all changes">
       <Modal.Header closeButton><Modal.Title>Discard {discardAll.paths.length} files’ unstaged changes?</Modal.Title></Modal.Header>
       <Modal.Body><p>Tracked files will be restored to their staged version. Untracked files will be deleted. Staged changes stay intact.</p>
         <ul>{discardAll.paths.map(path => <li key={path}>{path}{discardAll.untracked.includes(path) ? ' (delete untracked file)' : ''}</li>)}</ul>
         {error && <p role="alert">{error}</p>}
-      </Modal.Body><Modal.Footer><button className="btn btn-default" disabled={busy} onClick={() => setDiscardAll(undefined)}>Cancel</button>
-        <button className="btn btn-default" disabled={busy} onClick={previewDiscardAll}>Refresh preview</button>
+      </Modal.Body><Modal.Footer><button className="btn btn-default" disabled={busy} onClick={() => setDiscardAll(undefined)}><MaterialIcon type="close" />Cancel</button>
+        <button className="btn btn-default" disabled={busy} onClick={previewDiscardAll}><MaterialIcon type="refresh" />Refresh preview</button>
         <button className="btn btn-danger" disabled={busy} onClick={async () => { const result = await command({ command: 'discardAll', paths: discardAll.paths, fingerprint: discardAll.fingerprint }); if (result) setDiscardAll(undefined) }}>Discard all changes</button>
       </Modal.Footer>
     </Modal>}
-    {discard && <Modal show onHide={() => { if (!busy) setDiscard(undefined) }} size="lg" aria-label="Discard unstaged changes">
+    {discard && <Modal className="native-git-dialog" show onHide={() => { if (!busy) setDiscard(undefined) }} size="lg" aria-label="Discard unstaged changes">
       <Modal.Header closeButton><Modal.Title>Discard changes · {discard.path}</Modal.Title></Modal.Header>
       <Modal.Body className="native-git-diff">
         <p>{discard.untracked ? 'Delete this untracked file from the project. Its contents will be lost.' : 'Restore this file to its staged version. The unstaged changes shown below will be lost. Staged changes stay intact.'}</p>
@@ -699,8 +714,8 @@ export function SourceControlView({ api, onOpenFile, active = true, projectName 
         <pre>{discard.text || 'No unstaged text differences.'}</pre>
       </Modal.Body>
       <Modal.Footer>
-        <button type="button" className="btn btn-default" disabled={busy} onClick={() => previewDiscard(discard.path)}>Refresh preview</button>
-        <button type="button" className="btn btn-default" disabled={busy} onClick={() => setDiscard(undefined)}>Cancel</button>
+        <button type="button" className="btn btn-default" disabled={busy} onClick={() => previewDiscard(discard.path)}><MaterialIcon type="refresh" />Refresh preview</button>
+        <button type="button" className="btn btn-default" disabled={busy} onClick={() => setDiscard(undefined)}><MaterialIcon type="close" />Cancel</button>
         <button type="button" className="btn btn-danger" disabled={busy} onClick={async () => {
           const result = await command({ command: 'discard', paths: [discard.path], fingerprint: discard.fingerprint })
           if (result) setDiscard(undefined)
@@ -726,8 +741,8 @@ export function SourceControlView({ api, onOpenFile, active = true, projectName 
         }
       }} />}
     {shellDraftsOpen && <ShellDrafts key={api.projectId} api={api} canApply={snapshot.collaboration?.apply === true} onClose={() => setShellDraftsOpen(false)} />}
-    {mergeTasksOpen && <CollaborationTasks api={api} canApply={snapshot.collaboration?.apply === true} selectedId={mergeTaskId} onClose={() => setMergeTasksOpen(false)} />}
-    {mergeTarget && <MergeBranchPicker branches={snapshot.branches || []} target={mergeTarget} busy={busy} error={error}
+    {mergeTasksOpen && <CollaborationTasks api={api} canApply={snapshot.collaboration?.apply === true} selectedId={mergeTaskId} onNewMerge={() => { setMergeTasksOpen(false); mergeBranch() }} onClose={() => setMergeTasksOpen(false)} />}
+    {mergeTarget && <MergeBranchPicker preview={snapshot.collaboration?.drafts} branches={snapshot.branches || []} target={mergeTarget} busy={busy} error={error}
       onClose={() => setMergeTarget(undefined)}
       onMerge={async ref => {
         const result = await command(snapshot.collaboration?.drafts
@@ -748,13 +763,13 @@ export function SourceControlView({ api, onOpenFile, active = true, projectName 
         const result = await command({ command: 'commitDiff', ref: hash })
         if (typeof result?.result === 'string') { setBlame(undefined); setDiff({ title: hash.slice(0, 8), text: result.result }) }
       }} />}
-    {active && graphOpen && <EditorGraph onCheckout={branch => void checkout({ ...branch, current: branch.name === status?.branch })} hidden={!!diff} api={api} commits={commits} branches={[...(snapshot.branches || []), ...(snapshot.tags || [])]} currentRef={status?.branch ? `refs/heads/${status.branch}` : 'HEAD'} busy={busy} webRemotes={snapshot.webRemotes || []} onClose={() => setGraphOpen(false)} onFile={openCommitFile} onOpenFile={onOpenFile ? path => { setGraphOpen(false); void openProjectFile(path) } : undefined} onRefresh={() => run(() => api.status())} />}
+    {active && graphOpen && <EditorGraph draftsEnabled={snapshot.collaboration?.apply} onCheckout={branch => void checkout({ ...branch, current: branch.name === status?.branch })} hidden={!!diff} api={api} commits={commits} branches={[...(snapshot.branches || []), ...(snapshot.tags || [])]} currentRef={status?.branch ? `refs/heads/${status.branch}` : 'HEAD'} busy={busy} webRemotes={snapshot.webRemotes || []} onClose={() => setGraphOpen(false)} onFile={openCommitFile} onOpenFile={onOpenFile ? path => { setGraphOpen(false); void openProjectFile(path) } : undefined} onRefresh={() => run(() => api.status())} />}
     {diff && <EditorDiff title={diff.title} versions={diff.versions} onClose={closeDiff}>
       {changeQueue && changeQueue.paths.includes(diff.title) && <div className="native-git-change-navigation"><label>Changed file <select aria-label="Changed file" value={diff.title} onChange={event => openFileDiff(event.target.value, changeQueue.staged)}>{changeQueue.paths.map(path => <option key={path}>{path}</option>)}</select></label><span>{changeQueue.paths.indexOf(diff.title) + 1} / {changeQueue.paths.length}</span></div>}
       {error && <p role="alert" className="native-git-error">{error}</p>}
       {diff.file && <div className="native-git-diff-toolbar">
         <span>{diff.file.staged ? 'Staged changes' : 'Working tree changes'}</span>
-        <button type="button" className="btn btn-default btn-sm" disabled={busy} onClick={() => diff.file && openFileDiff(diff.file.path, diff.file.staged)}>Refresh diff</button>
+        <button type="button" className="btn btn-default btn-sm" disabled={busy} onClick={() => diff.file && openFileDiff(diff.file.path, diff.file.staged)}><MaterialIcon type="refresh" />Refresh diff</button>
       </div>}
       {diff.loading ? <p role="status" className="native-git-empty">Loading diff…</p> : diff.error ? <p role="alert" className="native-git-error">{diff.error}</p> : diff.preview ? <FilePreview key={diff.title} title={diff.title} versions={diff.preview} /> : <PatchComparison patch={diff.text} versions={diff.versions} busy={busy} staged={diff.file?.staged} onHunk={diff.file?.hunks.length ? applyHunk : undefined} />}
     </EditorDiff>}
@@ -772,21 +787,21 @@ function Section({ title, collapse, expand, actions, defaultSize, collapsedSize,
         collapsed ? expand() : collapse()
       }}><button type="button" className="native-git-section-heading" data-section={title} aria-expanded={!collapsed}
         onClick={() => collapsed ? expand() : collapse()}><svg className={`native-git-chevron ${collapsed ? '' : 'is-open'}`} width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" focusable="false" aria-hidden="true"><path d="M6 4l4 4-4 4" /></svg>{title}</button>{actions}{title === 'Graph' && <div id="native-git-graph-toolbar-host" />}</div>
-      {!collapsed && <div className="native-git-section-body">{children}</div>}
+      <div className="native-git-section-body" style={collapsed ? { display: 'none' } : undefined}>{children}</div>
     </section>
   </Panel>
 }
 
 function ActionDialog({ action, busy, error, onClose }: { action: Action; busy: boolean; error: string; onClose: () => void }) {
   const [values, setValues] = useState<Record<string, string>>(() => Object.fromEntries(action.fields.map(field => [field.key, field.value || ''])))
-  return <Modal show onHide={() => { if (!busy) onClose() }} aria-label={action.title}>
+  return <Modal className="native-git-dialog" show onHide={() => { if (!busy) onClose() }} aria-label={action.title}>
     <Modal.Header closeButton><Modal.Title>{action.title}</Modal.Title></Modal.Header>
     <form onSubmit={async event => { event.preventDefault(); if (await action.execute(values)) onClose() }}>
       <Modal.Body>{action.summary && <p>{action.summary}</p>}{error && <p role="alert" className="native-git-error">{error}</p>}{action.fields.map((field, index) => <label className="native-git-field" key={field.key}>{field.label}
         {field.multiline ? <textarea className="form-control" rows={5} autoFocus={index === 0} value={values[field.key]} required disabled={busy}
           onChange={event => setValues(previous => ({ ...previous, [field.key]: event.target.value }))} /> : <input className="form-control" autoFocus={index === 0} value={values[field.key]} required disabled={busy}
           onChange={event => setValues(previous => ({ ...previous, [field.key]: event.target.value }))} />}</label>)}</Modal.Body>
-      <Modal.Footer><button type="button" className="btn btn-default" disabled={busy} onClick={onClose}>Cancel</button>
+      <Modal.Footer><button type="button" className="btn btn-default" disabled={busy} onClick={onClose}><MaterialIcon type="close" />Cancel</button>
         <button type="submit" className="btn btn-primary" disabled={busy}>{action.submitLabel || 'Continue'}</button></Modal.Footer>
     </form>
   </Modal>
@@ -808,10 +823,10 @@ export default function SourceControlPanel() {
     const busy = (busy: boolean) => window.dispatchEvent(new CustomEvent('native-git-local-write-state', { detail: { busy } }))
     return { ...backend,
       initialize: () => withSavedEditor(openDocs, busy, () => backend.initialize()),
-      command: (command: GitCommand) => ['webhookStatus', 'configureWebhook', 'autoCommitSchedule', 'configureAutoCommitSchedule', 'autoCommitRecoveryPreview', 'autoCommitRecover', 'remoteDiscoveryList', 'discoverySchedule', 'configureDiscoverySchedule', 'discoverRemote', 'accessPolicy', 'setAccessPolicy', 'terminalApprove', 'terminalPoll', 'terminalInput', 'terminalRun', 'terminalResize', 'terminalClose', 'commitDetails', 'graphSettings', 'commitFiles', 'commitFileDiff', 'commitDiff', 'commitFilePreview', 'graph'].includes(command.command)
+      command: (command: GitCommand) => ['shellDraftGet', 'shellDraftList', 'shellDraftPoll', 'shellDraftInput', 'shellDraftRun', 'shellDraftResize', 'shellDraftStart', 'shellDraftSeal', 'shellDraftReview', 'shellDraftFile', 'webhookStatus', 'configureWebhook', 'autoCommitSchedule', 'configureAutoCommitSchedule', 'autoCommitRecoveryPreview', 'autoCommitRecover', 'remoteDiscoveryList', 'discoverySchedule', 'configureDiscoverySchedule', 'discoverRemote', 'accessPolicy', 'setAccessPolicy', 'terminalApprove', 'terminalPoll', 'terminalInput', 'terminalRun', 'terminalResize', 'terminalClose', 'commitDetails', 'graphSettings', 'commitFiles', 'commitFileDiff', 'commitDiff', 'commitFilePreview', 'graph'].includes(command.command)
         ? backend.command(command)
         : withSavedEditor(openDocs, busy, () => backend.command(command)),
     }
   }, [projectId, openDocs])
-  return <div className="native-git-root"><RailPanelHeader title="Source Control" /><HistoryRecovery key={projectId} projectId={projectId} /><SourceControlView key={projectId} projectName={projectName || 'Repository'} active={selectedTab === 'native-git'} api={api} onOpenFile={openFile} /></div>
+  return <div className="native-git-root"><RailPanelHeader title="Source Control" /><SourceControlView recoveryTools={<HistoryRecovery projectId={projectId} />} key={projectId} projectName={projectName || 'Repository'} active={selectedTab === 'native-git'} api={api} onOpenFile={openFile} /></div>
 }

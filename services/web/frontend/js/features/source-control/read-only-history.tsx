@@ -1,3 +1,4 @@
+import MaterialIcon from '@/shared/components/material-icon'
 import { viewGitCommit } from './git-presence-state'
 import { useEffect, useRef, useState } from 'react'
 import { Modal } from 'react-bootstrap'
@@ -37,8 +38,8 @@ export default function ReadOnlyHistory({ api, snapshot, onRefresh }: { api: Git
   return <div className="native-git-panel">
     <p role="status">Read-only project access. You can inspect commits and file history; repository changes require edit access.</p>
     {snapshot.connected === false ? <p>This project has no initialized Git repository.</p> : <GraphHistory api={api} inlineToolbar commits={snapshot.graph || []} branches={[...(snapshot.branches || []), ...(snapshot.tags || [])]} busy={busy}
-      onSelect={commit => void select(commit)} extraTools={<button type="button" className="btn btn-link" onClick={() => onRefresh()}>Refresh history</button>} />}
-    <Modal show={!!selected} onHide={() => { request.current++; setSelected(undefined); setBusy(false) }} aria-label="Read-only commit details">
+      onSelect={commit => void select(commit)} extraTools={<button type="button" className="btn btn-link" onClick={() => onRefresh()}><MaterialIcon type="refresh" />Refresh history</button>} />}
+    <Modal className="native-git-dialog" show={!!selected} onHide={() => { request.current++; setSelected(undefined); setBusy(false) }} aria-label="Read-only commit details">
       <Modal.Header closeButton><Modal.Title>{file ? file.title : 'Commit details'}</Modal.Title></Modal.Header>
       <Modal.Body>
         {selected && <p>{selected.hash.slice(0, 8)} · {selected.author} · {formatGitDate(selected.date)}</p>}

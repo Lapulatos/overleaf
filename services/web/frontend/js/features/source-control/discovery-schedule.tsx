@@ -1,3 +1,5 @@
+import MaterialIcon from '@/shared/components/material-icon'
+import ToolAction from './tool-action'
 import WebhookSettings from './webhook-settings'
 import { useEffect, useState } from 'react'
 import { Modal } from 'react-bootstrap'
@@ -32,30 +34,34 @@ function Settings({ api, onClose }: { api: GitApi; onClose(): void }) {
     } catch (reason) { setError(errorMessage(reason)) }
     finally { setBusy(false) }
   }
-  return <Modal show onHide={() => { if (!busy) onClose() }} aria-label="Automatic remote checks">
-    <Modal.Header closeButton><Modal.Title>Automatic remote checks</Modal.Title></Modal.Header>
+  return <Modal className="native-git-dialog" show onHide={() => { if (!busy) onClose() }} aria-label="Automatic remote checks">
+    <Modal.Header closeButton><Modal.Title><MaterialIcon type="cloud_sync" />Automatic remote checks</Modal.Title></Modal.Header>
     <Modal.Body>
-      <p>The project owner can schedule shared remote checks. Checks continue when browsers are closed. Fetched changes require a reviewed merge before they appear in the editor.</p>
+      <p className="native-git-dialog-caption">Check for new remote commits automatically.</p>
+      <p className="native-git-dialog-caption">You review incoming changes before they update the paper.</p>
       {error && <p role="alert">{error}</p>}
       {!policy && !error && <p role="status">Loading settings…</p>}
       {policy && <>
         {!policy.schedulerAvailable && <p role="status">Background checks are unavailable on this server.</p>}
-        {policy.state && <p>Schedule status: {policy.state}</p>}
+        {policy.state && <p>{policy.state === 'disabled' ? 'Off' : policy.state === 'paused' ? 'Paused — needs attention' : 'Automatic checks are on'}</p>}
         <label><input type="checkbox" checked={enabled} disabled={busy || (!policy.schedulerAvailable && !enabled)} onChange={event => setEnabled(event.target.checked)} /> Enable automatic remote checks</label>
-        <label className="native-git-field">Remote name<input className="form-control" value={remote} disabled={busy} onChange={event => setRemote(event.target.value)} /></label>
-        <label className="native-git-field">Check interval (minutes)<input className="form-control" type="number" min={1} max={1440} step={1} value={minutes} disabled={busy} onChange={event => setMinutes(Number(event.target.value))} /></label>
+        <label className="native-git-field">Repository remote<input className="form-control" value={remote} disabled={busy} onChange={event => setRemote(event.target.value)} /></label>
+        <label className="native-git-field">Check for updates<select className="form-control" value={minutes} disabled={busy} onChange={event => setMinutes(Number(event.target.value))}>
+          {[1, 5, 15, 60, 1440].includes(minutes) ? null : <option value={minutes}>Every {minutes} minutes</option>}
+          <option value={1}>Every minute</option><option value={5}>Every 5 minutes</option><option value={15}>Every 15 minutes</option><option value={60}>Hourly</option><option value={1440}>Daily</option>
+        </select></label>
         {policy.state === 'paused' && <p>Review the remote and your access before saving to resume checks.</p>}
       </>}
-      {policy && <WebhookSettings api={api} />}
+      {policy && <details className="native-git-help"><summary>Advanced: GitHub push notifications</summary><WebhookSettings api={api} /></details>}
     </Modal.Body>
     <Modal.Footer>
-      <button className="btn btn-default" disabled={busy} onClick={() => setReload(value => value + 1)}>Reload settings</button>
-      <button className="btn btn-primary" disabled={busy || !policy || (enabled && !policy.schedulerAvailable) || !remote.trim() || !Number.isInteger(minutes) || minutes < 1 || minutes > 1440} onClick={() => void save()}>Save remote checks</button>
+      <button className="btn btn-default" disabled={busy} onClick={() => setReload(value => value + 1)}><MaterialIcon type="refresh" />Reload settings</button>
+      <button className="btn btn-primary" disabled={busy || !policy || (enabled && !policy.schedulerAvailable) || !remote.trim() || !Number.isInteger(minutes) || minutes < 1 || minutes > 1440} onClick={() => void save()}><MaterialIcon type="save" />Save settings</button>
     </Modal.Footer>
   </Modal>
 }
 export default function DiscoverySchedule({ api }: { api: GitApi }) {
   const [open, setOpen] = useState(false)
-  return <><button type="button" className="btn btn-link" onClick={() => setOpen(true)}>Automatic remote checks…</button>
+  return <><ToolAction icon="cloud_sync" type="button" onClick={() => setOpen(true)}>Remote checks & webhooks</ToolAction>
     {open && <Settings api={api} onClose={() => setOpen(false)} />}</>
 }

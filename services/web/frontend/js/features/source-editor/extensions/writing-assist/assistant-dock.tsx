@@ -1,7 +1,13 @@
+import { useIdeReactContext } from '@/features/ide-react/context/ide-react-context'
+import ShellDrafts from '@/features/source-control/shell-drafts'
+import { gitApi, type GitCommand } from '@/features/source-control/api'
+import { withSavedEditor } from '@/features/source-control/editor-operation'
+import MaterialIcon from '@/shared/components/material-icon'
+import '@/features/source-control/source-control.css'
 import { useFileTreeData } from '@/shared/context/file-tree-data-context'
 import { findEntityByPath, pathInFolder } from '@/features/file-tree/util/path'
 import { EditorView } from '@codemirror/view'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useEditorViewContext } from '@/features/ide-react/context/editor-view-context'
 import { useEditorManagerContext } from '@/features/ide-react/context/editor-manager-context'
 import { useEditorPropertiesContext } from '@/features/ide-react/context/editor-properties-context'
@@ -15,11 +21,23 @@ export function AssistantDock() {
   const { projectId } = useProjectContext();
   const compile = useDetachCompileContext();
   const permissions = usePermissionsContext();
+  const { hasProjectWriteAccess } = useIdeReactContext();
   const { view } = useEditorViewContext();
   const manager = useEditorManagerContext();
   const {fileTreeData}=useFileTreeData();
   const { setShowVisual } = useEditorPropertiesContext();
   const current = useRef({ view, manager, setShowVisual });
+  const [activeTab, setActiveTab] = useState<'assistant' | 'terminal'>('assistant');
+  const [terminalMounted, setTerminalMounted] = useState(false);
+  const [assistantToolbar, setAssistantToolbar] = useState<HTMLDivElement | null>(null);
+  const [terminalToolbar, setTerminalToolbar] = useState<HTMLDivElement | null>(null);
+  const terminalApi = useMemo(() => {
+    const backend = gitApi(projectId);
+    return { ...backend, command: (command: GitCommand) => ['shellDraftPrepare', 'shellDraftApply', 'shellDraftRecover'].includes(command.command)
+      ? withSavedEditor(manager.openDocs, busy => window.dispatchEvent(new CustomEvent('native-git-local-write-state', { detail: { busy } })), () => backend.command(command))
+      : backend.command(command) };
+  }, [projectId, manager.openDocs]);
+  useEffect(() => { setActiveTab('assistant'); setTerminalMounted(false); }, [projectId]);
   const epoch = useRef(0);
   const [reviewError, setReviewError] = useState('');
   useEffect(() => { current.current = { view, manager, setShowVisual }; }, [view, manager, setShowVisual]);
@@ -102,14 +120,24 @@ export function AssistantDock() {
     };
     openReview();
   }, []);
-  if (!permissions.write) return null;
+  if (!(hasProjectWriteAccess ?? permissions.write)) return null;
   return (
     <section className="paper-assistant-dock" aria-label="Paper Assistant">
+      <header className="paper-workspace-tabs-header">
+        <div role="tablist" aria-label="Assistant and terminal">
+          <button type="button" role="tab" aria-selected={activeTab === 'assistant'} onClick={() => setActiveTab('assistant')}>Paper Assistant</button>
+          <button type="button" role="tab" aria-selected={activeTab === 'terminal'} onClick={() => { setTerminalMounted(true); setActiveTab('terminal'); }}><MaterialIcon type="terminal" />Terminal</button>
+        </div>
+        <div className="paper-workspace-tab-actions" ref={setAssistantToolbar} hidden={activeTab !== 'assistant'} />
+        <div className="paper-workspace-tab-actions" ref={setTerminalToolbar} hidden={activeTab !== 'terminal'} />
+      </header>
+      <div className="paper-workspace-tab-content" role="tabpanel" aria-label="Paper Assistant" hidden={activeTab !== 'assistant'}>
       {reviewError && <p role="alert">{reviewError}</p>}
       <ConversationView
         key={projectId}
         projectId={projectId}
         dock
+        toolbarTarget={assistantToolbar}
         getSourceSelection={() => {
           const { view, manager } = current.current;
           if (!view || view.state.selection.main.empty) return undefined;
@@ -125,6 +153,8 @@ export function AssistantDock() {
           compiling: compile.compiling,
         }}
       />
+      </div>
+      {terminalMounted && <div className="paper-workspace-tab-content paper-terminal-tab" role="tabpanel" aria-label="Terminal" hidden={activeTab !== 'terminal'}><ShellDrafts key={projectId} api={terminalApi} embedded autoStart canApply active={activeTab === 'terminal'} toolbarTarget={terminalToolbar} onClose={() => { setActiveTab('assistant'); setTerminalMounted(false); }} /></div>}
     </section>
   );
 }

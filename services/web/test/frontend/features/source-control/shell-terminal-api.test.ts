@@ -48,3 +48,13 @@ describe('draft terminal output positions',()=>{
   finish({result:{cursor:100}});await next
  })
 })
+
+describe('draft permission isolation',()=>{
+ it('uses the retained session permission, not the changing Assistant policy',async()=>{
+  const command=sinon.stub().resolves({result:{state:'running',permissionMode:'workspace-write'}})
+  const api=shellTerminalApi({projectId:'project',command} as unknown as GitApi,'draft')
+  expect(api.projectId).to.equal('project/terminal/draft')
+  expect((await api.command({command:'accessPolicy'})).result).to.deep.equal({mode:'workspace-write',directories:[]})
+  expect(command.lastCall.args[0]).to.deep.equal({command:'shellDraftGet',id:'draft'})
+ })
+})

@@ -1,4 +1,5 @@
-import { Trans, useTranslation } from 'react-i18next'
+import MaterialIcon from '@/shared/components/material-icon'
+import { useTranslation } from 'react-i18next'
 import { memo, useState } from 'react'
 import { useLocation } from '@/shared/hooks/use-location'
 import OLButton from '@/shared/components/ol/ol-button'
@@ -42,19 +43,12 @@ function OutOfSyncModal({ editorContent, recoveryNotice, show, onHide }: OutOfSy
         <OLModalTitle>{t('out_of_sync')}</OLModalTitle>
       </OLModalHeader>
       <OLModalBody className="modal-body-share">
-        <Trans
-          i18nKey="out_of_sync_detail"
-          components={[
-            // eslint-disable-next-line react/jsx-key
-            <br />,
-            // eslint-disable-next-line jsx-a11y/anchor-has-content,react/jsx-key
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              href="/learn/Kb/Editor_out_of_sync_problems"
-            />,
-          ]}
-        />
+        <p>The editor needs to reconnect before you continue writing.</p>
+        <ol>
+          <li>Download or view your local text below before reloading.</li>
+          <li>Reload the editor to get the current server version.</li>
+          <li>Compare your saved text with the reopened file and restore any missing edits. Saved recovery copies are available under Local recovery copies.</li>
+        </ol>
       </OLModalBody>
       <OLModalBody>
         {recoveryNotice && <p role="status">{recoveryNotice}</p>}
@@ -62,7 +56,7 @@ function OutOfSyncModal({ editorContent, recoveryNotice, show, onHide }: OutOfSy
           variant="secondary"
           onClick={() => setEditorContentShown(shown => !shown)}
         >
-          {editorContentShown
+          <MaterialIcon type="description" />{editorContentShown
             ? t('hide_local_file_contents')
             : t('show_local_file_contents')}
         </OLButton>
@@ -70,7 +64,7 @@ function OutOfSyncModal({ editorContent, recoveryNotice, show, onHide }: OutOfSy
           const url = URL.createObjectURL(new Blob([editorContent], { type: 'text/plain;charset=utf-8' }))
           const link = document.createElement('a'); link.href = url; link.download = 'local-recovery.txt'; link.click()
           setTimeout(() => URL.revokeObjectURL(url), 1000)
-        }}>Download local text</OLButton>
+        }}><MaterialIcon type="download" />Download local text</OLButton>
         {editorContentShown ? (
           <div className="text-preview">
             <textarea
@@ -84,7 +78,7 @@ function OutOfSyncModal({ editorContent, recoveryNotice, show, onHide }: OutOfSy
       </OLModalBody>
       <OLModalFooter>
         <OLButton variant="secondary" onClick={done}>
-          {t('reload_editor')}
+          <MaterialIcon type="refresh" />{t('reload_editor')}
         </OLButton>
       </OLModalFooter>
     </OLModal>
