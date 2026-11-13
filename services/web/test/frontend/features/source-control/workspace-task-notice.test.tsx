@@ -17,8 +17,8 @@ describe('workspace-wide Git task notices', () => {
  it('shows a conflict without mounting Source Control and opens its shared task dialog', async () => {
   const f = fixture(); render(<WorkspaceTaskNotice api={f.api} canApply={false} />)
   await act(async () => { f.requests[0].resolve({ result: [task] }) })
-  expect(screen.getByRole('status').textContent).to.contain('1 shared Git task needs attention')
-  fireEvent.click(screen.getByRole('button', { name: 'Merge conflict: origin/main → paper' }))
+  expect(screen.getByRole('status').textContent).to.contain('Merge needs your review')
+  fireEvent.click(screen.getByRole('button', { name: 'Review' }))
   await act(async () => { f.requests[1].resolve({ result: [task] }) })
   expect(screen.getByRole('dialog', { name: 'Shared merge tasks' })).to.exist
  })

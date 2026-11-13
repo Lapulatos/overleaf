@@ -22,14 +22,15 @@ describe('shared remote discovery status', () => {
     { ref: 'refs/remotes/origin/main', before: 'b'.repeat(40), after: oid, change: 'advanced' },
     { ref: 'refs/remotes/origin/deleted', before: oid, after: null, change: 'deleted' },
   ] }] }) })
-  fireEvent.click(screen.getByText('Remote update checks (1)'))
-  fireEvent.click(screen.getByRole('button', { name: 'Review aaaaaaaa for this branch' }))
+  fireEvent.click(screen.getByRole('button',{name:'Remote updates'}));fireEvent.click(screen.getByText('origin'))
+  fireEvent.click(screen.getByRole('button', { name: 'Review' }))
   expect(calls).to.deep.equal([['refs/remotes/origin/main', oid]])
-  expect(screen.getAllByRole('button', { name: /Review .* for this branch/ })).to.have.length(1)
+  expect(screen.getAllByRole('button', { name: 'Review' })).to.have.length(1)
  })
  it('reports malformed status instead of crashing the Source Control panel', async () => {
   const f = fixture(); render(<RemoteDiscoveryStatus api={f.api} />)
   await act(async () => { f.requests[0].resolve({ result: [{ id: 'wrong-kind' }] }) })
+  fireEvent.click(screen.getByRole('button',{name:'Remote updates'}))
   expect(screen.getByRole('alert').textContent).to.contain('Invalid remote update status response')
  })
  it('subscribes during initial load and ignores an older response arriving last', async () => {
@@ -38,6 +39,7 @@ describe('shared remote discovery status', () => {
   expect(f.requests).to.have.length(2)
   await act(async () => { f.requests[1].resolve({ result: [task('newer')] }) })
   await act(async () => { f.requests[0].resolve({ result: [task('older')] }) })
+  fireEvent.click(screen.getByRole('button',{name:'Remote updates'}))
   expect(screen.getByText('newer')).to.exist
   expect(screen.queryByText('older')).to.equal(null)
  })
@@ -47,6 +49,7 @@ describe('shared remote discovery status', () => {
   act(() => { window.dispatchEvent(new Event('online')) })
   await act(async () => { f.requests[1].reject(Error('Project membership was revoked')) })
   expect(screen.queryByText('origin')).to.equal(null)
+  fireEvent.click(screen.getByRole('button',{name:'Remote updates'}))
   expect(screen.getByRole('alert').textContent).to.contain('revoked')
   act(() => { window.dispatchEvent(new Event('focus')) })
   await act(async () => { f.requests[2].resolve({ result: [task('restored')] }) })

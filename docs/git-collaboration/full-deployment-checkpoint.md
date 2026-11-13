@@ -7,8 +7,8 @@
 - [x] 检查剩余应用改动与两个运行实例。
 - [x] 提交 Plugin/Skill、Paper Assistant 全部已部署源码、相关测试及部署脚本/设置。
 - [x] 核对部署源码差异，保存可复现的版本差异，明确未部署改动。
-- [ ] 针对新增范围验证；保留既有全量回归失败，不宣称已修复。
-- [ ] Commit、push，并核对远端 SHA。
+- [x] 针对新增范围验证；保留既有全量回归失败，不宣称已修复。
+- [x] 完整应用提交 d3e6b70 已 push；后续修复另行提交并核对远端。
 
 ## 内容与边界
 
@@ -23,3 +23,34 @@
 Plugin 后端测试 17/17 通过；Plugin/Composer 前端 12 通过、1 失败，失败为助手消息缺失文本时解析异常，正在后续修复。原完整前端 59 项记录继续保留，后续修复提交单独记录。
 
 完整应用提交不触碰运行实例。主源码包含先前未部署的权限文案简化，部署补丁保留当前运行版本；不能把两者混称为已部署。后续用户要求修复实际异常，继续进行测试核查与修复。
+
+## 自动测试修复进行中
+
+完整应用补齐提交 d3e6b70 已推送。用户进一步要求核查并修复真实异常；该工作继续在后续提交中进行。
+
+已复现：旧测试 mock 缺少新增合并预览结果，导致 files.length 崩溃；消息缺少文本时解析器 replace 崩溃；提交预览也缺少字段校验。已增加拒绝异常响应的保护，不允许绕过预览继续写入。新增异常响应回归。
+
+已更新测试入口：统一搜索、分支选择器、Session 历史/管理侧栏、合并预览后自动申请租约、带 fingerprint 的提交。保留租约代次、revision、操作 ID、恢复确认等断言。
+
+中间结果：原 180 passed / 59 failed -> 224 passed / 13 failed；失败数量受重复异步错误消除和新增用例影响，不能仅按数量解释为修了多少产品缺陷。继续复核剩余失败和部署。
+
+## 修复最终验证
+
+- 工作区完整 Source Control + Plugin/Composer/Assistant 消息前端回归：266 通过，0 失败。
+- 实际 Git index 独立导出快照、同一测试集合：265 通过，0 失败。少一项来自此前取消且未暂存的 auto-sync remote 测试；最终交付依据此独立快照。
+- 没有 skip/删除旧测试；更新改版后的入口和合法接口 fixture，保留提交 fingerprint、租约 revision/generation、operationId、恢复确认与禁止重复写入断言。新增无效任务列表、无效合并预览、无效提交预览和缺失消息文本测试。
+- JSDOM 仍打印 canvas/getClientRects 未实现的环境诊断，未造成测试失败；真实浏览器检查单独记录，不用测试退出码替代。
+- 生产构建成功，2 条已有 warnings。修复及最新权限文案已部署 18081/18082，每个端口新资源与 manifest 哈希核对通过。
+- 18081 真实 Chrome：现有合并任务显示 1 个文件，View changes 显示 516 字符差异，无 alert；权限弹窗显示 4 个短选项。没有 Apply、合并、权限保存或论文编辑。
+- 两端口真实登录上下文 status API 均 200。18082 活动 Terminal 页面未刷新；本次只重启 Web/Web API，没有重启宿主机 Terminal runner。没有在真实用户项目执行测试提交/Pull。
+- 状态检查首次错误使用 /native-git/status 得到404，改用源码实际端点 /native-git 后200；这属于检查脚本路径错误，不是新增产品异常。
+- 部署历史差异补丁在 d3e6b70 的独立副本 git apply --check 通过。后续修复后的实时前端已不同于该历史快照，快照不覆盖当前修复。
+
+本轮既解决完整代码归档，也完成原失败集合的复核。三处产品修改是异常响应/缺失文本防护；不声称线上曾实际出现了59个独立异常。
+
+本地证据摘要（原始运行日志未上传）：
+- `git-regression-staged-final.log` SHA256 `184260e82424ee352ea801c1bbe73a2b685045a12e0fdfe76d4d51e901fdf462`
+- `git-regression-repair-final.log` SHA256 `bb6d652f659a03c40ab45f24ba7e42f205b45a5edfcf63c1884ed1dbd193dae8`
+- `full-deployment-repair-build.log` SHA256 `9d1e1cec5367c065bc5c50589e053567632475771ba2e67a0f0d83e1c45d7752`
+- `full-deployment-repair-18081.log` SHA256 `56165c31ab535fa830f0173c7b23c5bd72e87efef52a6051cde42bfcadd725e4`
+- `full-deployment-repair-18082.log` SHA256 `4119b82e29196ce6b318c33ee5b62de9c74fadd6f7ae393f26a820daeb2b2a61`

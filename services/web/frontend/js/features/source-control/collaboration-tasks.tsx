@@ -39,6 +39,7 @@ export default function CollaborationTasks({ api, canApply, selectedId, onNewMer
         const result = await api.command({ command: 'mergeDraftList' })
         if (!live) return
         const list = result.result as Task[]
+        if (!Array.isArray(list) || list.some(item => !item || typeof item.id !== 'string' || typeof item.sourceRef !== 'string' || typeof item.targetBranch !== 'string' || !Array.isArray(item.remainingPaths))) throw new Error('Could not load merge tasks. Refresh and try again.')
         setTasks(list)
         setTask(previous => {
           const found = list.find(item => item.id === (previous?.id || selectedId)) || list.find(item => !['resolved','cancelled','superseded'].includes(item.state)) || list[0]
@@ -55,7 +56,7 @@ export default function CollaborationTasks({ api, canApply, selectedId, onNewMer
     setReview(undefined); setFilePreview(undefined)
     if (!task || !['conflicted','resolving','ready-to-apply'].includes(task.state)) return
     setPreviewLoading(true)
-    void api.command({command:'mergeDraftReview',id:task.id}).then(result => {if(live)setReview(result.result as MergeReview)}).catch(error=>{if(live)setError(errorMessage(error))}).finally(()=>{if(live)setPreviewLoading(false)})
+    void api.command({command:'mergeDraftReview',id:task.id}).then(result => {if (!live) return; const value = result.result as MergeReview; if (!value || value.id !== task.id || !Array.isArray(value.files) || value.files.some(file => !file || typeof file.path !== 'string')) throw new Error('Could not load merge changes. Refresh and try again.'); setReview(value)}).catch(error=>{if(live)setError(errorMessage(error))}).finally(()=>{if(live)setPreviewLoading(false)})
     return () => {live=false}
   }, [api, task?.id, task?.revision, task?.state])
   const act = async (action: () => Promise<void>) => {

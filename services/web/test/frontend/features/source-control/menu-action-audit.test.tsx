@@ -8,13 +8,13 @@ describe('Git menu action audit',()=>{
  for(const root of ['Repository actions','More changes actions'])for(const scope of ['auto','staged','all'])for(const variant of ['normal','amend','signoff']){
   const label=(scope==='auto'?'Commit':scope==='staged'?'Commit Staged':'Commit All')+(variant==='amend'?' (Amend)':variant==='signoff'?' (Signed Off)':'')
   it(`${root}: ${label} sends correct native commit flags`,async()=>{
-   const command=sinon.stub().callsFake(async body=>body.command==='amendDetails'?{result:{head:'a'.repeat(40),branch:'main',message:'Previous'}}:snapshot)
+   const command=sinon.stub().callsFake(async body=>body.command==='commitPreview'?{result:{fingerprint:'f'.repeat(64),paths:['staged.tex']}}:body.command==='amendDetails'?{result:{head:'a'.repeat(40),branch:'main',message:'Previous'}}:snapshot)
    render(<SourceControlView api={{status:sinon.stub().resolves(snapshot),initialize:sinon.stub(),command}}/>)
    fireEvent.click(await screen.findByRole('button',{name:root,exact:true}));fireEvent.click(screen.getByRole('button',{name:'Commit submenu'}));fireEvent.click(within(screen.getByRole('menu',{name:'Commit actions'})).getByText(label,{exact:true}))
    const dialog=await screen.findByRole('dialog')
    fireEvent.change(within(dialog).getByRole('textbox',{name:'Commit message'}),{target:{value:'Audit message'}})
    fireEvent.click(within(dialog).getByRole('button',{name:variant==='amend'?'Amend commit':'Commit',exact:true}))
-   await waitFor(()=>expect(command).to.have.been.calledWith({command:'commit',message:'Audit message',all:scope==='all',amend:variant==='amend',signoff:variant==='signoff',...(variant==='amend'?{expectedHead:'a'.repeat(40),expectedBranch:'main'}:{})}))
+   await waitFor(()=>expect(command).to.have.been.calledWith({command:'commit',fingerprint:'f'.repeat(64),message:'Audit message',all:scope==='all',amend:variant==='amend',signoff:variant==='signoff',...(variant==='amend'?{expectedHead:'a'.repeat(40),expectedBranch:'main'}:{})}))
   })
  }
  const cases=[
@@ -25,7 +25,7 @@ describe('Git menu action audit',()=>{
   {group:'Pull, Push',label:'Fetch (Prune)…',command:'fetch',fields:{},expected:{remote:'origin',prune:true}},
   {group:'Branch',label:'Publish branch…',command:'push',fields:{},expected:{remote:'origin',branch:'main',publish:true}},
   {group:'Branch',label:'Rename branch…',command:'renameBranch',fields:{'New name':'renamed'},expected:{from:'main',to:'renamed'}},
-  {group:'Branch',label:'Delete branch…',command:'deleteBranch',fields:{'Branch name':'old'},expected:{name:'old'}},
+  {group:'Branch',label:'Delete merged branch…',command:'deleteBranch',fields:{'Branch name':'old'},expected:{name:'old'}},
   {group:'Branch',label:'Rebase onto…',command:'rebase',fields:{'Branch, tag or commit':'base'},expected:{ref:'base'}},
   {group:'Commit',label:'Cherry-pick…',command:'cherryPick',fields:{'Branch, tag or commit':'base'},expected:{ref:'base'}},
   {group:'Commit',label:'Revert commit…',command:'revert',fields:{'Branch, tag or commit':'base'},expected:{ref:'base'}},
@@ -41,10 +41,10 @@ describe('Git menu action audit',()=>{
  for(const item of cases)it(`${item.group}: ${item.label} dispatches the selected operation`,async()=>{
   const command=sinon.stub().resolves(snapshot)
   render(<SourceControlView api={{status:sinon.stub().resolves(snapshot),initialize:sinon.stub(),command}}/>)
-  fireEvent.click(await screen.findByRole('button',{name:'Repository actions'}));fireEvent.click(screen.getByRole('button',{name:item.group+' submenu'}));fireEvent.click(within(screen.getByRole('menu',{name:item.group+' actions'})).getByText(item.label,{exact:true}))
+  if (['renameBranch','deleteBranch'].includes(item.command)) {fireEvent.click(await screen.findByRole('button',{name:/^main/}));fireEvent.click(screen.getByText(item.label,{exact:true}))} else {fireEvent.click(await screen.findByRole('button',{name:'Repository actions'}));fireEvent.click(screen.getByRole('button',{name:item.group+' submenu'}));fireEvent.click(within(screen.getByRole('menu',{name:item.group+' actions'})).getByText(item.label,{exact:true}))}
   const dialog=await screen.findByRole('dialog')
   for(const [label,value] of Object.entries(item.fields))fireEvent.change(within(dialog).getByRole('textbox',{name:label}),{target:{value}})
   fireEvent.submit(dialog.querySelector('form')!)
-  await waitFor(()=>expect(command).to.have.been.calledWith({command:item.command,...item.expected}))
+  await waitFor(()=>{const request=command.args.find(([b])=>b.command===item.command)?.[0];expect(request).to.deep.include({command:item.command,...item.expected});if(item.command==='pull')expect(request.operationId).to.match(/^[a-f0-9-]{36}$/)})
  })
 })

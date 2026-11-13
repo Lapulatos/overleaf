@@ -19,14 +19,14 @@ describe('Native Source Control panel', () => {
     const task = { id: 'pull-task', revision: 1, state: 'conflicted', sourceRef: 'refs/remotes/origin/B', targetBranch: 'B', remainingPaths: ['main.tex'], leaseGeneration: 0 }
     const command = sinon.stub().callsFake(async body => body.command === 'pull'
       ? { ...snapshot, result: task, reviewRequired: true }
-      : { result: body.command === 'mergeDraftGet' ? task : body.command === 'mergeDraftList' ? [task] : [] })
+      : { result: body.command === 'mergeDraftReview' ? {id:task.id,revision:task.revision,files:[{path:'main.tex',conflicted:true}]} : body.command === 'mergeDraftGet' ? task : body.command === 'mergeDraftList' ? [task] : [] })
     render(<SourceControlView api={{ status: sinon.stub().resolves(snapshot), initialize: sinon.stub(), command }} />)
     fireEvent.click(await screen.findByRole('button', { name: 'Repository actions' }))
     fireEvent.click(screen.getByText('Pull…'))
     const dialog = await screen.findByRole('dialog', { name: 'Pull', exact: true })
     fireEvent.click(within(dialog).getByRole('button', { name: 'Fetch and review' }))
     const review = await screen.findByRole('dialog', { name: 'Shared merge tasks' })
-    await waitFor(() => expect((within(review).getByRole('combobox', { name: 'Task' }) as HTMLSelectElement).value).to.equal(task.id))
+    await within(review).findByText('main.tex')
     const request = command.getCalls().find(c => c.args[0].command === 'pull')!.args[0]
     expect(request).to.include({ remote: 'origin', branch: 'B' })
     expect(request.operationId).to.match(/^[a-f0-9-]{36}$/)
@@ -70,16 +70,16 @@ describe('Native Source Control panel', () => {
     expect(command.firstCall.args[0]).not.to.have.property('destination')
   })
   it('commits all with sign-off through the shared menu after explicit confirmation', async () => {
-    const command = sinon.stub().resolves(state())
+    const command = sinon.stub().callsFake(async b=>b.command==='commitPreview'?{result:{fingerprint:'f'.repeat(64),paths:['frontmatter.tex']}}:state())
     render(<SourceControlView api={{status:sinon.stub().resolves(state()),initialize:sinon.stub(),command}} />)
     fireEvent.click(await screen.findByRole('button',{name:'Repository actions'}))
     fireEvent.click(screen.getByRole('button',{name:'Commit submenu'}))
     fireEvent.click(screen.getByText('Commit All (Signed Off)'))
     const dialog=await screen.findByRole('dialog',{name:'Commit all changes (Signed Off)'})
-    expect(command.callCount).to.equal(0)
+    expect(command.callCount).to.equal(1)
     fireEvent.change(within(dialog).getByRole('textbox',{name:'Commit message'}),{target:{value:'Complete evaluation'}})
     fireEvent.click(within(dialog).getByRole('button',{name:'Commit',exact:true}))
-    await waitFor(()=>expect(command).to.have.been.calledWith({command:'commit',message:'Complete evaluation',all:true,amend:false,signoff:true}))
+    await waitFor(()=>expect(command).to.have.been.calledWith({command:'commit',fingerprint:'f'.repeat(64),message:'Complete evaluation',all:true,amend:false,signoff:true}))
   })
   it('previews remote deletion and sends the captured hash only after confirmation', async () => {
     const hash='a'.repeat(40),command=sinon.stub().callsFake(async c=>c.command==='remoteRef'?{result:{hash,ref:'refs/heads/obsolete'}}:state())
@@ -121,8 +121,8 @@ describe('Native Source Control panel', () => {
     fireEvent.mouseEnter(screen.getByRole('button',{name:'Branch submenu',exact:true}))
     const menu = await screen.findByRole('menu',{name:'Branch actions'})
     expect(menu.parentElement).to.equal(document.body)
-    fireEvent.click(screen.getByText('Create branch…'))
-    await screen.findByRole('dialog',{name:'Create new branch'})
+    fireEvent.click(screen.getByText('Publish branch…'))
+    await screen.findByRole('dialog',{name:'Publish branch'})
     expect(screen.queryByRole('menu',{name:'Branch actions'})).to.equal(null)
   })
   it('closes Git Graph when leaving Source Control and keeps it closed on return', async () => {
@@ -165,7 +165,7 @@ describe('Native Source Control panel', () => {
     render(<SourceControlView api={{ status: sinon.stub().resolves(state()), initialize: sinon.stub(), command }} />)
     fireEvent.click(await screen.findByRole('button', { name: /Original manuscript/ }))
     fireEvent.click(await screen.findByRole('button', { name: 'a.tex at old' }))
-    expect(screen.getByRole('status').textContent).to.equal('Loading diff…')
+    expect(screen.getByText('Loading diff…')).to.exist
     fireEvent.click(screen.getByRole('button', { name: 'b.tex at old' }))
     expect(document.querySelector('.native-git-editor-diff-tab')?.textContent).to.contain('b.tex')
     const patch = (text: string) => '--- a/file.tex\n+++ b/file.tex\n@@ -1 +1 @@\n-old\n+' + text + '\n'
@@ -277,18 +277,18 @@ describe('Native Source Control panel', () => {
     const details = { head: 'a'.repeat(40), branch: 'B', message: 'Original title\n\nOriginal body' }
     const command = sinon.stub()
     command.onFirstCall().resolves({ ...state(), result: details })
-    command.onSecondCall().resolves(state())
+    command.onSecondCall().resolves({result:{fingerprint:'f'.repeat(64),paths:['frontmatter.tex']}});command.onThirdCall().resolves(state())
     render(<SourceControlView api={{ status: sinon.stub().resolves(state()), initialize: sinon.stub(), command }} />)
     fireEvent.click(await screen.findByRole('button', { name: 'Repository actions' }))
     fireEvent.click(screen.getByRole('button', { name: 'Commit submenu', exact: true }))
     fireEvent.click(screen.getByText('Amend latest commit…'))
-    const input = await screen.findByRole('textbox', { name: 'Replacement commit message' })
+    const dialog=await screen.findByRole('dialog');const input=within(dialog).getByRole('textbox',{name:'Commit message'})
     expect((input as HTMLTextAreaElement).value).to.equal(details.message)
-    expect(command.callCount).to.equal(1)
+    expect(command.callCount).to.equal(2)
     fireEvent.change(input, { target: { value: 'Updated title\n\nPreserved body' } })
     fireEvent.click(screen.getByRole('button', { name: 'Amend commit' }))
-    await waitFor(() => expect(command.callCount).to.equal(2))
-    expect(command.secondCall.args[0]).to.deep.equal({ command: 'commit', amend: true,
+    await waitFor(() => expect(command.callCount).to.equal(3))
+    expect(command.thirdCall.args[0]).to.deep.equal({ command: 'commit', fingerprint:'f'.repeat(64), all:false, signoff:false, amend: true,
       message: 'Updated title\n\nPreserved body', expectedHead: details.head, expectedBranch: 'B' })
   })
   it('connects an HTTPS repository while retaining current project files and renders the returned native state', async () => {
@@ -428,14 +428,14 @@ describe('Native Source Control panel', () => {
     const initial = state(); initial.status!.files[0].index = 'M'
     const after = state(); after.status!.files = []; after.graph = [commit('new', ['old'], 'Saved commit')]
     const status = sinon.stub().onFirstCall().resolves(initial).resolves(after)
-    const command = sinon.stub().rejects({ response: undefined })
+    const command = sinon.stub().callsFake(async b=>{if(b.command==='commitPreview')return {result:{fingerprint:'f'.repeat(64),paths:['frontmatter.tex']}};throw {response:undefined}})
     render(<SourceControlView api={{ status, initialize: sinon.stub(), command }} />)
     fireEvent.change(await screen.findByRole('textbox', { name: 'Commit message' }), { target: { value: 'Saved commit' } })
     fireEvent.click(screen.getByRole('button', { name: 'Commit' }))
-    await screen.findByText('Saved commit')
+    const dialog=await screen.findByRole('dialog');fireEvent.click(within(dialog).getByRole('button',{name:'Commit',exact:true}));await waitFor(()=>expect(command.args.some(([b])=>b.command==='commit')).to.equal(true))
     fireEvent.click(screen.getByRole('button', { name: 'Refresh repository status' }))
     await waitFor(() => expect(screen.queryByRole('button', { name: 'Refresh repository status' })).to.equal(null))
-    expect(command).to.have.been.calledOnce
+    expect(command.args.filter(([b])=>b.command==='commit')).to.have.length(1)
   })
 
   it('opens line authors from file history and navigates to the native commit diff', async () => {
@@ -524,8 +524,7 @@ filename frontmatter.tex
   it('renames a branch through the native command without creating a replacement branch', async () => {
     const command = sinon.stub().resolves(state())
     render(<SourceControlView api={{ status: sinon.stub().resolves(state()), initialize: sinon.stub(), command }} />)
-    fireEvent.click(await screen.findByRole('button', { name: 'Repository actions' }))
-    fireEvent.click(screen.getByRole('button', { name: 'Branch submenu', exact: true }))
+    fireEvent.click(await screen.findByRole('button', { name: 'B', exact:true }))
     fireEvent.click(screen.getByText('Rename branch…'))
     fireEvent.change(screen.getByLabelText('New name'), { target: { value: 'revised-title' } })
     fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
@@ -547,6 +546,7 @@ filename frontmatter.tex
   it('stages a selected file, commits it and immediately renders the returned graph and remaining files', async () => {
     const current = state()
     const command = sinon.stub().callsFake(async body => {
+      if (body.command === 'commitPreview') return {result:{fingerprint:'f'.repeat(64),paths:['frontmatter.tex']}}
       if (body.command === 'stage') current.status!.files[0] = { path: 'frontmatter.tex', index: 'M', workingTree: ' ' }
       if (body.command === 'commit') {
         current.status!.files = current.status!.files.filter(file => file.path !== 'frontmatter.tex')
@@ -559,13 +559,13 @@ filename frontmatter.tex
     await screen.findByRole('button', { name: 'Unstage frontmatter.tex' })
     fireEvent.change(screen.getByRole('textbox', { name: 'Commit message' }), { target: { value: 'Update title on B' } })
     fireEvent.click(screen.getByRole('button', { name: 'Commit' }))
-    await screen.findByText('Update title on B')
-    expect(command.secondCall.args[0]).to.deep.equal({ command: 'commit', message: 'Update title on B' })
+    const dialog=await screen.findByRole('dialog');fireEvent.click(within(dialog).getByRole('button',{name:'Commit',exact:true}));await screen.findByText('Update title on B')
+    expect(command.thirdCall.args[0]).to.deep.equal({ command: 'commit', fingerprint:'f'.repeat(64), all:false, amend:false, signoff:false, message: 'Update title on B' })
     expect(screen.queryByRole('button', { name: 'Unstage frontmatter.tex' })).to.equal(null)
     expect(screen.getByRole('button', { name: 'Stage methods.tex' })).to.exist
     expect((screen.getByRole('textbox', { name: 'Commit message' }) as HTMLInputElement).value).to.equal('')
     expect(screen.queryByText(/review incoming|synchronization|saved commits/i)).to.equal(null)
-    expect(screen.getAllByRole('separator')).to.have.length(2)
+    expect(document.querySelectorAll('[data-panel-resize-handle-id]')).to.have.length.greaterThan(1)
   })
 
   it('keeps the commit message after failure and refreshes native conflict state', async () => {
@@ -640,4 +640,18 @@ describe('Native commit graph layout', () => {
     expect(command.getCalls().every(call => call.args[0].command === 'fileHunks')).to.equal(true)
   })
 
+})
+
+describe('commit preview response validation',()=>{
+ afterEach(cleanup)
+ it('shows an actionable error and never submits a malformed commit preview',async()=>{
+  const command=sinon.stub().resolves({result:{paths:[]}})
+  render(<SourceControlView api={{status:sinon.stub().resolves(state()),initialize:sinon.stub(),command}}/>)
+  fireEvent.click(await screen.findByRole('button',{name:'Repository actions'}))
+  fireEvent.click(screen.getByRole('button',{name:'Commit submenu'}))
+  fireEvent.click(screen.getByText('Commit All'))
+  expect((await screen.findByRole('alert')).textContent).to.include('Could not load the commit preview')
+  expect(command.args.some(([b])=>b.command==='commit')).to.equal(false)
+  expect(screen.queryByRole('dialog')).to.equal(null)
+ })
 })

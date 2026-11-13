@@ -4,6 +4,7 @@ type ReplyContext={key:string;disabled:boolean;submit:(instruction:string)=>Prom
 export const IssueReplyContext=createContext<ReplyContext|null>(null)
 const issueId=/^TCR-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}-I[1-9][0-9]{0,2}$/
 export function issueClarifications(text:string){
+ if (typeof text !== 'string') return {text:'',requests:[] as IssueQuestion[]}
  const requests:IssueQuestion[]=[];const seen=new Set<string>()
  function consume(raw:string){
   let data;try{data=JSON.parse(raw)}catch{return false}

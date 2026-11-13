@@ -411,6 +411,7 @@ export function SourceControlView({ api, onOpenFile, active = true, projectName 
     if (amend && !details) return
     const preview = (await command({command:'commitPreview', all, amend, signoff}))?.result as {fingerprint:string;paths:string[]} | undefined
     if (!preview) return
+    if (typeof preview.fingerprint !== 'string' || !/^[a-f0-9]{64}$/.test(preview.fingerprint) || !Array.isArray(preview.paths) || preview.paths.some(path => typeof path !== 'string')) { setError('Could not load the commit preview. Refresh repository status and try again.'); return }
     setAction({title:`${amend ? 'Amend' : 'Commit'} ${all ? 'all changes' : 'staged changes'}${signoff ? ' (Signed Off)' : ''}`,submitLabel:amend?'Amend commit':'Commit',
       summary:`Files: ${preview.paths.join(', ') || '(no file changes)'}. ${all?'Includes tracked changes and untracked files.':'Includes only staged changes.'}${signoff?' Adds a Signed-off-by trailer using your configured Git identity.':''}${amend?' Replaces the latest commit; published history may be affected.':''}`,
       fields:[{key:'message',label:'Commit message',value:message || details?.message || '',multiline:true}],

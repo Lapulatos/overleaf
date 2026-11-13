@@ -20,14 +20,14 @@ describe('Paper Assistant Git command execution',()=>{
  })
  it('offers shared merge review from slash pull without applying files',async()=>{
   const task={id:'review-task',state:'conflicted',revision:1,remainingPaths:['main.tex'],targetBranch:'main',sourceRef:'refs/remotes/origin/main',leaseGeneration:0}
-  const command=sinon.stub().callsFake(async body=>body.command==='pull'?{result:task,reviewRequired:true,collaboration:{drafts:true,apply:true}}:{result:body.command==='accessPolicy'?{mode:'full-access'}:body.command==='mergeDraftList'?[task]:[]})
+  const command=sinon.stub().callsFake(async body=>body.command==='pull'?{result:task,reviewRequired:true,collaboration:{drafts:true,apply:true}}:{result:body.command==='accessPolicy'?{mode:'full-access'}:body.command==='mergeDraftReview'?{id:task.id,revision:task.revision,files:[{path:'main.tex',conflicted:true}]}:body.command==='mergeDraftList'?[task]:[]})
   const api={command,status:sinon.stub().resolves({status:{branch:'main'}}),initialize:sinon.stub()}
   render(<EditorManagerContext.Provider value={{openDocs:{awaitBufferedOps:async()=>{},hasUnsavedChanges:()=>false}} as any}><Fixture api={api} text="/git pull"/></EditorManagerContext.Provider>)
   fireEvent.click(screen.getByText('Submit'))
   await screen.findByText(/Files have not been updated/)
   fireEvent.click(screen.getByRole('button',{name:'Review merge task'}))
   const dialog=await screen.findByRole('dialog',{name:'Shared merge tasks'})
-  await waitFor(()=>expect((within(dialog).getByRole('combobox',{name:'Task'}) as HTMLSelectElement).value).to.equal(task.id))
+  await within(dialog).findByText('main.tex')
   expect(command.getCalls().some(c=>c.args[0].command==='mergeDraftApply')).to.equal(false)
  })
  it('does not offer a late pull result in a different workspace',async()=>{
