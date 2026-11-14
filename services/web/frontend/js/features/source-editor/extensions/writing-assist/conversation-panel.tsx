@@ -1,3 +1,4 @@
+import { MentionText, PROJECT_ENTITIES_MIME, readProjectDrop, mentionText, restoreMentionDraft } from './composer-mentions';
 import { createPortal } from 'react-dom'
 import { replaceRecoveredTask } from './recovered-task'
 import { useGitCommand } from '@/features/source-control/git-command-panel'
@@ -111,6 +112,16 @@ export function ConversationView({
   const imageInput=useRef<HTMLInputElement>(null);
   const imageSequence=useRef(0);
   const textarea=useRef<HTMLTextAreaElement>(null);
+  const mentionMirror=useRef<HTMLDivElement>(null);
+  function insertAtCaret(text:string) {
+    const start=textarea.current?.selectionStart ?? caret;
+    const end=textarea.current?.selectionEnd ?? start;
+    if(start && /[\w@]/.test(instruction[start-1]) && /^[@/]/.test(text))text=' '+text;
+    const next=instruction.slice(0,start)+text+instruction.slice(end);
+    if(next.length>32000){setError('The message is too long. Shorten it before adding references.');return}
+    setInstruction(next);setCaret(start+text.length);
+    requestAnimationFrame(()=>{textarea.current?.focus();textarea.current?.setSelectionRange(start+text.length,start+text.length)})
+  }
   const [attachment, setAttachment] = useState<ImageAttachment | null>(null);
   const [imageLoading, setImageLoading] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -273,7 +284,7 @@ export function ConversationView({
     try{
       const value=await postJSON<Result>(`${base}/${id}/tasks/${taskId}/${action==='retry'?'retry':'branch'}`,{body:{requestId,...(action==='retry'?{}:{edge:action})}});
       setId(value.conversation.id);setResult(value);setList(values=>[value.conversation,...values.filter(c=>c.id!==value.conversation.id)]);
-      setInstruction(value.draft?.instruction||'');setScope(value.draft?.scope||[]);setSkills(value.draft?.skills||[]);setAttachment(null);setGoalActive(false);setGoalInfo(null);setError(value.notice||'');
+      setInstruction(restoreMentionDraft(value.draft?.instruction||'',value.draft?.scope||[]));setScope(value.draft?.scope||[]);setSkills(value.draft?.skills||[]);setAttachment(null);setGoalActive(false);setGoalInfo(null);setError(value.notice||'');
       branchRequests.current.delete(key);jumpToLatest();textarea.current?.focus();
     }catch(e){setError(message(e))}finally{branchLock.current=false;setBusy(false)}
   }
@@ -421,7 +432,7 @@ export function ConversationView({
                 key={turn.taskId}
                 className="paper-history-turn"
               >
-                <UserMessage instruction={turn.instruction} sourceSelection={turn.sourceSelection} />
+                <UserMessage instruction={turn.instruction} sourceSelection={turn.sourceSelection} scope={turn.scope} />
                 {!!turn.scope?.length&&<p className="paper-context-scope">Edit scope: {turn.scope.map(s=>s.path).join(', ')}</p>}
                 {!!turn.plugins?.length&&<p className="paper-context-scope">Skills: {turn.plugins.map(s=>s.command).join(', ')}</p>}
                 <div className="paper-assistant-bubble"><div className="paper-reply-header"><MessageAvatar assistant /><span className="paper-task-status">Status: {turn.status}</span></div>
@@ -489,8 +500,17 @@ export function ConversationView({
       </div>
       {!following&&expanded&&<button type="button" className="paper-jump-latest" onClick={jumpToLatest}>↓ Jump to latest</button>}
       <div
-        onDragOver={e=>{if(e.dataTransfer.types.includes('Files'))e.preventDefault()}}
-        onDrop={e=>{if(e.dataTransfer.files.length){e.preventDefault();attachImage(e.dataTransfer.files[0])}}}
+        onDragOver={e=>{if(e.dataTransfer.types.includes('Files')||e.dataTransfer.types.includes(PROJECT_ENTITIES_MIME))e.preventDefault()}}
+        onDrop={e=>{
+          if(e.dataTransfer.types.includes(PROJECT_ENTITIES_MIME)){
+            e.preventDefault();e.stopPropagation();if(busy||running)return;
+            const items=readProjectDrop(e.dataTransfer.getData(PROJECT_ENTITIES_MIME),projectId);
+            if(!items.length){setError('Drag up to 30 files or folders from this project.');return}
+            const unique=[...scope,...items].filter((item,index,all)=>all.findIndex(other=>other.path===item.path&&other.kind===item.kind)===index);
+            if(unique.length>30){setError('You can reference up to 30 different files or folders.');return}
+            setScope(unique);insertAtCaret(items.map(mentionText).join(' ')+' ');
+          } else if(e.dataTransfer.files.length){e.preventDefault();attachImage(e.dataTransfer.files[0])}
+        }}
         className="paper-composer"
         role="group"
         aria-label="Message composer"
@@ -505,6 +525,8 @@ export function ConversationView({
         {goalMode&&<div className="paper-goal-mode"><span>Goal</span><label htmlFor="paper-goal-review-mode">Review mode</label><select id="paper-goal-review-mode" value={reviewMode} onChange={e=>setReviewMode(e.target.value as 'human'|'ai')}><option value="human">Manual approval</option><option value="ai">Automatic · AI review</option></select><label htmlFor="paper-goal-time-limit">Time limit</label><input id="paper-goal-time-limit" type="number" min="1" max="1440" placeholder="No limit" value={goalMinutes} onChange={e=>setGoalMinutes(e.target.value)}/><span>min</span></div>}
         {attachment&&<div className="paper-image-chip"><img src={`data:${attachment.mime};base64,${attachment.data}`} alt={`Attached image: ${attachment.name}`}/><span>{attachment.name}</span><button className="btn btn-secondary" type="button" aria-label="Remove image" disabled={busy||running} onClick={()=>{imageSequence.current++;setAttachment(null);setImageLoading(false)}}>×</button></div>}
         <input ref={imageInput} type="file" accept="image/png,image/jpeg" hidden aria-label="Upload image file" onChange={e=>{attachImage(e.target.files?.[0]);e.target.value=''}}/>
+        <div className="paper-reference-editor">
+        <div ref={mentionMirror} className="paper-reference-mirror form-control" aria-hidden="true"><MentionText value={instruction} scope={scope}/>{"\n"}</div>
         <textarea
           ref={textarea}
           id="paper-assistant-instruction"
@@ -514,15 +536,17 @@ export function ConversationView({
           value={instruction}
           disabled={busy || Boolean(id && !result)}
           onChange={(event) => {setInstruction(event.target.value);setCaret(event.target.selectionStart)}}
+          onScroll={event=>{if(mentionMirror.current){mentionMirror.current.scrollTop=event.currentTarget.scrollTop;mentionMirror.current.scrollLeft=event.currentTarget.scrollLeft}}}
           onSelect={event=>setCaret(event.currentTarget.selectionStart)}
           onKeyDown={event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.nativeEvent.isComposing&&!document.querySelector('.paper-context-picker [role="option"]')){event.preventDefault();submit()}}}
           onPaste={event=>{const file=Array.from(event.clipboardData.files).find(f=>f.type.startsWith('image/'));if(file){event.preventDefault();attachImage(file)}}}
           placeholder="Ask anything · @ files · / Skills · /goal your objective"
         />
+        </div>
         <div className="paper-composer-toolbar">
           <div className="paper-composer-actions">
-            <button type="button" className="paper-composer-icon" title="Mention files or folders" aria-label="Mention files or folders" disabled={busy||running} onClick={()=>{const value=instruction+(instruction&&!instruction.endsWith(' ')?' ':'')+'@';setInstruction(value);setCaret(value.length);textarea.current?.focus()}}>@</button>
-            <button type="button" className="paper-composer-icon" title="Skills and commands" aria-label="Skills and commands" disabled={busy||running} onClick={()=>{const value=instruction+(instruction&&!instruction.endsWith(' ')?' ':'')+'/';setInstruction(value);setCaret(value.length);textarea.current?.focus()}}>/</button>
+            <button type="button" className="paper-composer-icon" title="Mention files or folders" aria-label="Mention files or folders" disabled={busy||running} onClick={()=>insertAtCaret('@')}>@</button>
+            <button type="button" className="paper-composer-icon" title="Skills and commands" aria-label="Skills and commands" disabled={busy||running} onClick={()=>insertAtCaret('/')}>/</button>
 
             <button
               type="button"

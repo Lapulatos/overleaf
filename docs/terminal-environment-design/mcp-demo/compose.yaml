@@ -1,0 +1,17 @@
+services:
+  mcp-demo:
+    build: .
+    image: overleaf-mcp-readonly-demo:1
+    container_name: overleaf-mcp-demo
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 128m
+    cpus: 0.5
+    pids_limit: 64
+    networks: [overleaf]
+networks:
+  overleaf:
+    external: true
+    name: overleaf-agent-acceptance_default

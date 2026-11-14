@@ -1,3 +1,8 @@
+import TerminalApprovals from './terminal-approvals'
+import RuntimeNodeTerminals from '@/features/settings/components/runtime-node-terminals'
+import { useDockedNodeTerminals, type DockedNodeTerminal } from '@/features/settings/components/runtime-terminal-dock'
+import { useRailContext } from '@/features/ide-react/context/rail-context'
+import '@/features/settings/components/runtime-nodes.css'
 import { useIdeReactContext } from '@/features/ide-react/context/ide-react-context'
 import ShellDrafts from '@/features/source-control/shell-drafts'
 import { gitApi, type GitCommand } from '@/features/source-control/api'
@@ -18,6 +23,11 @@ import { useProjectContext } from "@/shared/context/project-context";
 import { useDetachCompileContext } from "@/shared/context/detach-compile-context";
 import { usePermissionsContext } from "@/features/ide-react/context/permissions-context";
 export function AssistantDock() {
+  const dockedNodes=useDockedNodeTerminals();
+  const [nodeSource,setNodeSource]=useState('');
+  const {setIsOpen}=useRailContext();
+  useEffect(()=>{const open=(event:Event)=>{const node=(event as CustomEvent<DockedNodeTerminal>).detail;setNodeSource(node.nodeId);setTerminalMounted(true);setActiveTab('terminal');setIsOpen(false)};window.addEventListener('runtime-terminal-dock',open);return()=>window.removeEventListener('runtime-terminal-dock',open)},[setIsOpen]);
+  const dockedNode=dockedNodes.find(node=>node.nodeId===nodeSource);
   const { projectId } = useProjectContext();
   const compile = useDetachCompileContext();
   const permissions = usePermissionsContext();
@@ -132,6 +142,7 @@ export function AssistantDock() {
         <div className="paper-workspace-tab-actions" ref={setTerminalToolbar} hidden={activeTab !== 'terminal'} />
       </header>
       <div className="paper-workspace-tab-content" role="tabpanel" aria-label="Paper Assistant" hidden={activeTab !== 'assistant'}>
+      <TerminalApprovals projectId={projectId}/>
       {reviewError && <p role="alert">{reviewError}</p>}
       <ConversationView
         key={projectId}
@@ -154,7 +165,7 @@ export function AssistantDock() {
         }}
       />
       </div>
-      {terminalMounted && <div className="paper-workspace-tab-content paper-terminal-tab" role="tabpanel" aria-label="Terminal" hidden={activeTab !== 'terminal'}><ShellDrafts key={projectId} api={terminalApi} embedded autoStart canApply active={activeTab === 'terminal'} toolbarTarget={terminalToolbar} onClose={() => { setActiveTab('assistant'); setTerminalMounted(false); }} /></div>}
+      {terminalMounted && <div className="paper-workspace-tab-content paper-terminal-tab" role="tabpanel" aria-label="Terminal" hidden={activeTab !== 'terminal'}>{dockedNodes.length>0&&<label className="runtime-terminal-source"><MaterialIcon type="dns"/><select aria-label="Terminal environment" value={dockedNode?.nodeId||''} onChange={event=>setNodeSource(event.target.value)}><option value="">Paper terminal</option>{dockedNodes.map(node=><option key={node.nodeId} value={node.nodeId}>{node.nodeName} · SSH</option>)}</select></label>}{dockedNode?<div key={dockedNode.nodeId} className="runtime-nodes runtime-docked-terminal"><RuntimeNodeTerminals nodeId={dockedNode.nodeId} nodeName={dockedNode.nodeName} initialSessionId={dockedNode.sessionId} docked toolbarTarget={terminalToolbar}/></div>:<ShellDrafts key={projectId} api={terminalApi} embedded autoStart canApply active={activeTab === 'terminal'} toolbarTarget={terminalToolbar} onClose={() => { setActiveTab('assistant'); setTerminalMounted(false); }} />}</div>}
     </section>
   );
 }

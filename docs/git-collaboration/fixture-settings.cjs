@@ -14,3 +14,6 @@ if (require('fs').existsSync('/etc/overleaf/shell-fixture.json')) {
   settings.nativeGit.shellDrafts = true
 }
 module.exports = settings
+
+// Terminal Agent shared daemon configuration
+if (require("node:fs").existsSync("/etc/overleaf/terminal-agent.json")) Object.assign(module.exports.writingAssist ||= {}, require("/etc/overleaf/terminal-agent.json"))

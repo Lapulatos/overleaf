@@ -1,3 +1,12 @@
+import RuntimeSettingsController from '../RuntimeNodes/RuntimeSettingsController.mjs'
+import SshNodeController from '../RuntimeNodes/SshNodeController.mjs'
+import {sessionApprovalController} from '../TerminalSessions/SessionToolRouter.mjs'
+import SessionController from '../TerminalSessions/SessionController.mjs'
+import RuntimeTerminalController from '../RuntimeNodes/RuntimeTerminalController.mjs'
+import RuntimeTaskController from '../RuntimeNodes/RuntimeTaskController.mjs'
+import RuntimeNodeController from '../RuntimeNodes/RuntimeNodeController.mjs'
+import McpDemoController from '../Mcp/McpDemoController.mjs'
+import McpController from '../Mcp/McpController.mjs'
 import VenueWorkspaceController from '../SubmissionDeadlines/VenueWorkspaceController.mjs'
 import VenueRefreshController from '../SubmissionDeadlines/VenueRefreshController.mjs'
 import TrackReviewController from '../SubmissionDeadlines/TrackReviewController.mjs'
@@ -24,7 +33,10 @@ import WritingAssistConversationController from "./WritingAssistConversationCont
 /** @param {any} webRouter */
 function apply(webRouter) {
   startGoalWorker();
+  webRouter.get('/writing-assist/project/:projectId/terminal-sessions',AuthenticationController.requireLogin(),SessionController);
   const requireLogin = AuthenticationController.requireLogin();
+  webRouter.get('/writing-assist/project/:projectId/terminal-approvals',requireLogin,sessionApprovalController);
+  webRouter.post('/writing-assist/project/:projectId/terminal-approvals/:operationId',requireLogin,sessionApprovalController);
   webRouter.get('/writing-assist/project/:projectId/venue-workspace',requireLogin,VenueWorkspaceController);
   webRouter.post('/writing-assist/project/:projectId/venue-workspace',requireLogin,VenueWorkspaceController);
   webRouter.get('/writing-assist/project/:projectId/context', requireLogin, WritingAssistConversationController.context);
@@ -45,6 +57,28 @@ function apply(webRouter) {
     if(!['ccf-2026','xidian-2025'].includes(req.params.name))return res.sendStatus(404)
     res.type('application/pdf').sendFile(fileURLToPath(new URL(`../SubmissionDeadlines/data/${req.params.name}.pdf`,import.meta.url)))
   });
+  webRouter.post('/writing-assist/runtime-nodes/ssh/:sshAction',requireLogin,SshNodeController);
+  webRouter.post('/writing-assist/runtime-nodes/:nodeId/ssh-runner',requireLogin,SshNodeController);
+  webRouter.get('/writing-assist/runtime-nodes/:nodeId/settings',requireLogin,RuntimeSettingsController);
+  webRouter.post('/writing-assist/runtime-nodes/:nodeId/settings',requireLogin,RuntimeSettingsController);
+  webRouter.get('/writing-assist/runtime-nodes', requireLogin, RuntimeNodeController);
+  webRouter.get('/writing-assist/runtime-nodes/:nodeId/terminals', requireLogin, RuntimeTerminalController);
+  webRouter.post('/writing-assist/runtime-nodes/:nodeId/terminals', requireLogin, RuntimeTerminalController);
+  webRouter.post('/writing-assist/runtime-nodes/:nodeId/terminals/:sessionId/:action', requireLogin, RuntimeTerminalController);
+  webRouter.get('/writing-assist/runtime-nodes/:nodeId/tasks', requireLogin, RuntimeTaskController);
+  webRouter.post('/writing-assist/runtime-nodes/:nodeId/tasks', requireLogin, RuntimeTaskController);
+  webRouter.get('/writing-assist/runtime-nodes/:nodeId/tasks/:taskId', requireLogin, RuntimeTaskController);
+  webRouter.post('/writing-assist/runtime-nodes/:nodeId/tasks/:taskId/cancel', requireLogin, RuntimeTaskController);
+  webRouter.post('/writing-assist/runtime-nodes', requireLogin, RuntimeNodeController);
+  webRouter.delete('/writing-assist/runtime-nodes/:nodeId', requireLogin, RuntimeNodeController);
+  webRouter.post('/writing-assist/runtime-nodes/:nodeId/remove', requireLogin, RuntimeNodeController);
+  const mcp = '/writing-assist/mcp-services';
+  webRouter.post(`${mcp}/demo`, requireLogin, McpDemoController);
+  webRouter.post(`${mcp}/:serviceId/:action`, requireLogin, McpDemoController);
+  webRouter.get(mcp, requireLogin, McpController);
+  webRouter.post(mcp, requireLogin, McpController);
+  webRouter.put(`${mcp}/:serviceId`, requireLogin, McpController);
+  webRouter.delete(`${mcp}/:serviceId`, requireLogin, McpController);
   const plugins = '/writing-assist/plugins';
   webRouter.get('/writing-assist/submission-deadlines/acceptance', requireLogin, DeadlineController.acceptance);
   webRouter.get('/writing-assist/submission-deadlines/location', requireLogin, DeadlineController.location);

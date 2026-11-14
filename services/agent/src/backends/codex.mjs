@@ -45,6 +45,7 @@ const codexAdapter = {
       const result = await runDocumentHarness({
         documents: opts.context.documents, assets: opts.context.assets, instruction, images: opts.context.images,
         prepareEnvironmentRepair: opts.prepareEnvironmentRepair,
+        terminalTools: opts.context?.terminalTools,
         compilerImage: opts.compilerImage, model: opts.model, effort: opts.effort,
         signal: opts.signal, timeout: opts.timeout, maxToolCalls: opts.maxSteps,
         onProgress: opts.onProgress, onActivity: opts.onActivity,

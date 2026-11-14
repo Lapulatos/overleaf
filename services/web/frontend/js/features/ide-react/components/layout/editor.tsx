@@ -5,7 +5,7 @@ import { useEditorOpenDocContext } from "@/features/ide-react/context/editor-ope
 import { useFileTreeOpenContext } from "@/features/ide-react/context/file-tree-open-context";
 import classNames from "classnames";
 import SourceEditor from "@/features/source-editor/components/source-editor";
-import { Panel, PanelGroup } from "react-resizable-panels";
+import { Panel, PanelGroup, type ImperativePanelHandle } from "react-resizable-panels";
 import { VerticalResizeHandle } from "@/features/ide-react/components/resize/vertical-resize-handle";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { FullSizeLoadingSpinner } from "@/shared/components/loading-spinner";
@@ -17,6 +17,8 @@ import { usePermissionsContext } from "@/features/ide-react/context/permissions-
 import { AssistantDock } from "@/features/source-editor/extensions/writing-assist/assistant-dock";
 
 export const Editor = () => {
+  const assistantPanel=useRef<ImperativePanelHandle>(null);
+  useEffect(()=>{const expand=()=>assistantPanel.current?.resize(65);window.addEventListener('runtime-terminal-dock',expand);return()=>window.removeEventListener('runtime-terminal-dock',expand)},[]);
   const permissions = usePermissionsContext();
   const { hasProjectWriteAccess } = useIdeReactContext();
   const editorContainer = useRef<HTMLDivElement>(null);
@@ -109,6 +111,7 @@ export const Editor = () => {
             />
             <Panel
               id="paper-editor-assistant"
+              ref={assistantPanel}
               order={2}
               defaultSize={30}
               minSize={assistantMinSize}

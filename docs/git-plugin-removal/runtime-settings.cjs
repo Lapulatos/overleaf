@@ -13,3 +13,6 @@ if (require('fs').existsSync('/etc/overleaf/terminal-runtime.json')) {
   settings.nativeGit.shellDrafts = true
 }
 module.exports = settings
+
+// Runtime node management follows the existing deployment owner.
+module.exports.runtimeNodes = { ownerUserId: "6ae57d2fa2564a345a7efb9f" };

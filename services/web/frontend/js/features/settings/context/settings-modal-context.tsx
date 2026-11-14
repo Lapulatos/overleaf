@@ -1,3 +1,4 @@
+import RuntimeNodes from '../components/runtime-nodes'
 import VenueLocationSettings from '../components/venue-location-settings'
 import SourceNetworkSettings from '../components/source-network-settings'
 import { createContext, FC, useContext, useMemo, useState } from 'react'
@@ -173,6 +174,12 @@ export const SettingsModalProvider: FC<React.PropsWithChildren> = ({
         title: 'AI Maintenance',
         icon: 'settings',
         sections: [{ key: 'general', settings: [{ key: 'environment-maintenance', component: <EnvironmentMaintenance /> }] }],
+      },
+      {
+        key: 'runtime-environments',
+        title: 'Runtime environments',
+        icon: 'space_dashboard',
+        sections: [{ key: 'general', settings: [{ key: 'runtime-nodes', component: <RuntimeNodes /> }] }],
       },
       {
         key: 'source-network',

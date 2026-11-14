@@ -17,6 +17,9 @@ import FileTreeModalCreateFile from './modals/file-tree-modal-create-file'
 import FileTreeInner from './file-tree-inner'
 import { useDragLayer } from 'react-dnd'
 import classnames from 'classnames'
+import { useFileTreeSelectable } from '../contexts/file-tree-selectable'
+import { findInTree } from '../util/find-in-tree'
+import { PROJECT_ENTITIES_MIME } from '@/features/source-editor/extensions/writing-assist/composer-mentions'
 import { pathInFolder } from '@/features/file-tree/util/path'
 import { FileTreeFindResult } from '@/features/ide-react/types/file-tree'
 
@@ -43,12 +46,65 @@ const FileTreeRoot = React.memo<{
   const { fileTreeData } = useFileTreeData()
   const isReady = Boolean(projectId && fileTreeData)
 
+
+  useEffect(() => {
+    if (isReady) onInit()
+  }, [isReady, onInit])
+  if (!isReady) return null
+
+  return (
+    <div
+      className="file-tree"
+      data-testid="file-tree"
+      ref={setFileTreeContainer}
+    >
+      {fileTreeContainer && (
+        <FileTreeContext
+          refProviders={refProviders}
+          setRefProviderEnabled={setRefProviderEnabled}
+          setStartedFreeTrial={setStartedFreeTrial}
+          onSelect={onSelect}
+          fileTreeContainer={fileTreeContainer}
+        >
+          {isConnected ? null : <div className="disconnected-overlay" />}
+          <ProjectReferenceDragData fileTreeContainer={fileTreeContainer} />
+          <FileTreeToolbar />
+          <FileTreeContextMenu />
+          <FileTreeInner>
+            <FileTreeRootFolder onDelete={onDelete} />
+          </FileTreeInner>
+          <FileTreeModalDelete />
+          <FileTreeModalCreateFile />
+          <FileTreeModalCreateFolder />
+          <FileTreeModalError />
+        </FileTreeContext>
+      )}
+    </div>
+  )
+})
+
+function ProjectReferenceDragData({fileTreeContainer}:{fileTreeContainer:HTMLDivElement}) {
+  const { projectId } = useProjectContext()
+  const { fileTreeData } = useFileTreeData()
+  const { selectedEntityIds, isRootFolderSelected } = useFileTreeSelectable()
   useEffect(() => {
     if (fileTreeContainer) {
       const listener = (event: DragEvent) => {
         if (event.dataTransfer) {
           // store the dragged entity in dataTransfer
-          const { dataset } = event.target as HTMLDivElement
+          const target = (event.target as HTMLElement).closest<HTMLElement>('[data-file-id]')
+          if (!target) return
+          const { dataset } = target
+          if (dataset.fileId) {
+            const ids = !isRootFolderSelected && selectedEntityIds.has(dataset.fileId)
+              ? [...selectedEntityIds] : [dataset.fileId]
+            const items = ids.flatMap(id => {
+              const path = pathInFolder(fileTreeData, id)
+              const entity = findInTree(fileTreeData, id)
+              return path && entity ? [{path, kind: entity.type === 'folder' ? 'folder' : 'file'}] : []
+            })
+            event.dataTransfer.setData(PROJECT_ENTITIES_MIME, JSON.stringify({projectId, items}))
+          }
           if (
             dataset.fileId &&
             dataset.fileType &&
@@ -76,42 +132,10 @@ const FileTreeRoot = React.memo<{
         fileTreeContainer.removeEventListener('dragstart', listener)
       }
     }
-  }, [fileTreeContainer, fileTreeData])
+  }, [fileTreeContainer, fileTreeData, projectId, selectedEntityIds, isRootFolderSelected])
 
-  useEffect(() => {
-    if (isReady) onInit()
-  }, [isReady, onInit])
-  if (!isReady) return null
-
-  return (
-    <div
-      className="file-tree"
-      data-testid="file-tree"
-      ref={setFileTreeContainer}
-    >
-      {fileTreeContainer && (
-        <FileTreeContext
-          refProviders={refProviders}
-          setRefProviderEnabled={setRefProviderEnabled}
-          setStartedFreeTrial={setStartedFreeTrial}
-          onSelect={onSelect}
-          fileTreeContainer={fileTreeContainer}
-        >
-          {isConnected ? null : <div className="disconnected-overlay" />}
-          <FileTreeToolbar />
-          <FileTreeContextMenu />
-          <FileTreeInner>
-            <FileTreeRootFolder onDelete={onDelete} />
-          </FileTreeInner>
-          <FileTreeModalDelete />
-          <FileTreeModalCreateFile />
-          <FileTreeModalCreateFolder />
-          <FileTreeModalError />
-        </FileTreeContext>
-      )}
-    </div>
-  )
-})
+  return null
+}
 
 function FileTreeRootFolder({
   onDelete,

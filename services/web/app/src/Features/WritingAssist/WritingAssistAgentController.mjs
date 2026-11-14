@@ -1,3 +1,4 @@
+import {prepareSessionTools} from '../TerminalSessions/SessionTools.mjs'
 import { applicationOutcomeFields } from './WritingAssistApplicationOutcome.mjs'
 import Path from 'node:path'
 import { readAccessPolicy } from '../NativeGit/AccessPolicy.mjs'
@@ -300,6 +301,7 @@ export const readWorkspaceIdentity = async projectId => workspaceIdentity(projec
 const agentWriteLocks = LockManager.withTimeout(6 * 60)
 
 export const agentService = createAgentService({
+  prepareSessionTools,
   readWorkspaceIdentity,
   withApplicationLock: (id, action) => withProjectOperationLock(agentWriteLocks, 'nativeGitProject', id, action),
   withWriteTransaction: createAgentWriteTransaction({

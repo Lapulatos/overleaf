@@ -1,0 +1,1 @@
+{"name":"overleaf-runtime-terminal","private":true,"type":"module","version":"0.1.0","scripts":{"start":"node server.mjs"},"dependencies":{"ssh2":"1.17.0"},"engines":{"node":">=22"}}

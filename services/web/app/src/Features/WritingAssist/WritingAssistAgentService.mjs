@@ -148,6 +148,7 @@ export function createAgentService({
   allowDeletion = () => false,
   resolveSkill,
   resolveRequest,
+  prepareSessionTools,
   completeRequest,
   listContext,
 }) {
@@ -289,6 +290,8 @@ export function createAgentService({
         const useHarness =
           snapshotAssets &&
           (await daemon('/agent/health', 'GET')).capabilities?.documentHarness
+        const terminalTools=prepareSessionTools?await prepareSessionTools(userId,projectId,id,instruction):null
+        if(terminalTools&&!useHarness)throw new AgentError(422,'Terminal tools require the Codex document runtime')
         const assets = useHarness && (!options.reportOnly || options.includeProjectAssets) ? await snapshotAssets(projectId) : []
         if (skill.assets.length && !useHarness) throw new AgentError(422, 'Skill execution requires the project tool runtime')
         let snapshotInstruction = ''
@@ -318,6 +321,7 @@ export function createAgentService({
           ...(options.model ? { model: options.model } : {}),
           ...(options.effort ? { effort: options.effort } : {}),
           context: {
+            ...(terminalTools?{terminalTools}:{}),
             maintenanceUserId: userId,
             projectId,
             userId,

@@ -602,3 +602,25 @@
 .paper-command-help .paper-command-example { display:flex; align-items:flex-start; gap:6px; text-align:left; width:100%; border-radius:4px; font-size:12px; overflow-wrap:anywhere; }
 .paper-command-example:hover { background:var(--bg-secondary,#f1f4f7); }
 .paper-command-help .material-symbols { font-size:16px; }
+
+/* Keep references in the native textarea, with a matching noninteractive highlight layer. */
+.paper-reference-editor { position: relative; flex: 1 1 auto; min-height: 48px; display: flex; }
+.paper-assistant-view .paper-composer .paper-reference-editor textarea.form-control,
+.paper-assistant-view .paper-composer .paper-reference-mirror {
+  font: inherit; line-height: inherit; letter-spacing: inherit;
+  white-space: pre-wrap; overflow-wrap: break-word; word-break: normal;
+  padding: 9px 10px; border: 0; margin: 0; box-sizing: border-box;
+}
+.paper-reference-editor textarea { position: relative; z-index: 1; width: 100%; }
+.paper-assistant-view .paper-composer .paper-reference-mirror {
+  position: absolute; inset: 0; height: 100%; width: 100%; overflow: hidden;
+  pointer-events: none; color: transparent; background: transparent; border-radius: 12px;
+}
+.paper-inline-reference { background: rgba(36, 132, 77, .1); text-decoration: underline; text-decoration-color: #368653; text-underline-offset: 2px; border-radius: 2px; }
+.paper-user-message .paper-inline-reference { color: var(--link-color, #287644); }
+.paper-user-message > p { white-space: pre-wrap; }
+.paper-context-results { flex: 0 0 auto; min-width: 0; }
+.paper-context-count { font-size: 11px; color: var(--content-secondary-themed, #59615c); padding: 3px 8px 5px; }
+.paper-composer .paper-context-more { margin: 0 8px 6px; padding: 4px 9px; font-size: 12px; }
+
+.paper-terminal-approvals{flex:none;max-height:260px;overflow:auto}.paper-terminal-approvals article{padding:10px;margin:6px 0;border:1px solid var(--border-divider-themed);border-radius:6px;font-size:12px}.paper-terminal-approvals strong{display:flex;align-items:center;gap:6px}.paper-terminal-approvals small{display:block;overflow-wrap:anywhere}.paper-terminal-approvals pre{white-space:pre-wrap;max-height:140px;overflow:auto;padding:8px;background:var(--bg-secondary-themed)}.paper-terminal-approvals article>div{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}.paper-terminal-approvals .material-symbols{font-size:16px}

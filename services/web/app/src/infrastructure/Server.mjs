@@ -1,3 +1,5 @@
+import {applySessionToolRoutes} from '../Features/TerminalSessions/SessionToolRouter.mjs'
+import { applyRuntimeNodeRoutes } from '../Features/RuntimeNodes/RuntimeNodeRouter.mjs'
 import { applyGitHubWebhookRoute } from '../Features/NativeGit/GitHubWebhookRouter.mjs'
 import express from 'express'
 import Settings from '@overleaf/settings'
@@ -151,6 +153,8 @@ app.use(metrics.http.monitor(logger))
 
 await Modules.applyMiddleware(app, 'appMiddleware')
 applyGitHubWebhookRoute(app)
+applyRuntimeNodeRoutes(app)
+applySessionToolRoutes(app)
 app.use(bodyParser.urlencoded({ extended: true, limit: '2mb' }))
 app.use(bodyParser.json({ limit: Settings.max_json_request_size }))
 app.use(methodOverride())

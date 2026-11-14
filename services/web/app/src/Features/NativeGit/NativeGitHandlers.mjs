@@ -1,3 +1,4 @@
+import {assertManualTerminalInput} from '../../models/TerminalAgentAccess.mjs'
 import logger from '@overleaf/logger'
 import { terminalUserError } from './TerminalUserError.mjs'
 import { isHistoryReadCommand } from './HistoryReadCommands.mjs'
@@ -49,6 +50,7 @@ export function createNativeGitHandlers({ enabled, userId, canWrite, canRead = c
     initialize: (req, res) => handle(req, res, (project, user) => runtime.initialize(project, user, initializeSchema.parse(req.body).branch)),
     command: (req, res) => handle(req, res, async (project, user) => {
       const command = commandSchema.parse(req.body)
+      if(command.command==='shellDraftInput'||command.command==='shellDraftRun')await assertManualTerminalInput(`terminal/paper/${command.id}`)
       try { return await runtime.execute(project, user, command) }
       finally { await notify(project, command) }
     }, false, isHistoryReadCommand(req.body?.command)),

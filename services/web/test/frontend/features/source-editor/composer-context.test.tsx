@@ -9,35 +9,59 @@ describe('Composer context and goal controls',function(){
  beforeEach(function(){
   fetchMock.get('/writing-assist/plugins',{plugins:[{id:'s',command:'audit',name:'Audit',description:'Check a paper',enabled:true,usage:{input:'Give a file and review goal.',examples:['Review [file] for missing evidence.'],source:'From the installed Skill guide'}}]})
   fetchMock.get('/writing-assist/project/project/speech',{available:false})
-  fetchMock.get('/writing-assist/project/project/context',[{kind:'folder',path:'tex'},{kind:'file',path:'tex/main.tex'}])
+  fetchMock.get('/writing-assist/project/project/context',[{kind:'folder',path:'tex'},{kind:'file',path:'tex/main.tex'}],{name:'project-context'})
   fetchMock.get(base,[conversation]);fetchMock.get(base+'/thread',{conversation,task:null});fetchMock.get(base+'/thread/goal',{goal:null,task:null},{name:'goal-status'})
  })
  afterEach(function(){cleanup();fetchMock.removeRoutes().clearHistory()})
- it('keeps file scope attachments but inserts Skill commands inline and submits their context',async function(){
+ it('finds nested files beyond the old 50-entry cutoff and exposes all remaining folders',async()=>{
+  const entries=[...Array.from({length:60},(_,i)=>({kind:'folder',path:`assets/folder-${i}`})),{kind:'file',path:'paper/tex/05-results.tex'}]
+  fetchMock.modifyRoute('project-context',{response:entries})
+  render(<ConversationView projectId="project"/>);await waitFor(()=>expect((screen.getByLabelText('Instructions') as HTMLTextAreaElement).disabled).to.equal(false))
+  fireEvent.click(screen.getByRole('button',{name:'Mention files or folders'}))
+  await screen.findByRole('option',{name:'paper/tex/05-results.tex'})
+  expect(screen.getAllByRole('option').filter(e=>e.closest('.paper-context-picker'))).to.have.length(50)
+  fireEvent.click(screen.getByRole('button',{name:'Show more (11 remaining)'}))
+  expect(screen.getAllByRole('option').filter(e=>e.closest('.paper-context-picker'))).to.have.length(61)
+  expect(screen.queryByRole('button',{name:/Show more/})).to.equal(null)
+  fireEvent.click(screen.getByRole('option',{name:'paper/tex/05-results.tex'}))
+  expect((screen.getByLabelText('Instructions') as HTMLTextAreaElement).value).to.equal('@paper/tex/05-results.tex ')
+ })
+ it('searches nested files by basename, fuzzy abbreviation and folder path',async()=>{
+  fetchMock.modifyRoute('project-context',{response:[{kind:'folder',path:'paper/tex'},{kind:'file',path:'paper/tex/05-results.tex'},{kind:'file',path:'paper/figures/result-chart.pdf'}]})
+  render(<ConversationView projectId="project"/>);await waitFor(()=>expect((screen.getByLabelText('Instructions') as HTMLTextAreaElement).disabled).to.equal(false))
+  const input=screen.getByLabelText('Instructions') as HTMLTextAreaElement
+  for(const value of ['@05-results','@05rslts','@05-resutls.tex','@paper/tex/']){
+   fireEvent.change(input,{target:{value,selectionStart:value.length}});fireEvent.select(input,{target:{selectionStart:value.length}})
+   await screen.findByRole('option',{name:'paper/tex/05-results.tex'})
+  }
+  fireEvent.click(screen.getByRole('option',{name:'paper/tex/05-results.tex'}))
+  expect(input.value).to.equal('@paper/tex/05-results.tex ')
+ })
+ it('keeps file and Skill references inline and submits their context',async function(){
   fetchMock.post(base+'/thread/messages',{conversation,task:null})
   render(<ConversationView projectId="project"/>);await waitFor(()=>{expect((screen.getByLabelText('Conversation',{exact:true}) as HTMLSelectElement).value).to.equal('thread');expect((screen.getByLabelText('Instructions') as HTMLTextAreaElement).disabled).to.equal(false)})
   fireEvent.click(screen.getByRole('button',{name:'Mention files or folders'}))
   fireEvent.click(await screen.findByRole('option',{name:'tex/'}))
-  expect(screen.getByRole('button',{name:'Remove scope tex'})).to.exist
+  expect(screen.queryByRole('button',{name:'Remove scope tex'})).to.equal(null)
   fireEvent.click(screen.getByRole('button',{name:'Skills and commands'}));fireEvent.click(await screen.findByRole('option',{name:'audit'}))
   expect(screen.queryByRole('button',{name:'Remove Skill audit'})).to.equal(null)
-  expect((screen.getByLabelText('Instructions') as HTMLTextAreaElement).value).to.equal('/audit ')
-  fireEvent.change(screen.getByLabelText('Instructions'),{target:{value:'/audit Check this folder'}});fireEvent.click(screen.getByRole('button',{name:'Send message'}))
+  expect((screen.getByLabelText('Instructions') as HTMLTextAreaElement).value).to.equal('@tex/ /audit ')
+  fireEvent.change(screen.getByLabelText('Instructions'),{target:{value:'@tex/ /audit Check this folder'}});fireEvent.click(screen.getByRole('button',{name:'Send message'}))
   await waitFor(()=>expect(fetchMock.callHistory.calls(base+'/thread/messages')).to.have.length(1))
-  const body=JSON.parse(fetchMock.callHistory.calls(base+'/thread/messages')[0].options.body as string);expect(body.scope).to.deep.equal([{kind:'folder',path:'tex'}]);expect(body.skills).to.deep.equal(['audit']);expect(body.instruction).to.equal('/audit Check this folder')
+  const body=JSON.parse(fetchMock.callHistory.calls(base+'/thread/messages')[0].options.body as string);expect(body.scope).to.deep.equal([{kind:'folder',path:'tex'}]);expect(body.skills).to.deep.equal(['audit']);expect(body.instruction).to.equal('@tex/ /audit Check this folder')
  })
  it('drops selected Skill context when its inline command is deleted',async function(){
   fetchMock.post(base+'/thread/messages',{conversation,task:null})
   render(<ConversationView projectId="project"/>);await waitFor(()=>{expect((screen.getByLabelText('Conversation',{exact:true}) as HTMLSelectElement).value).to.equal('thread');expect((screen.getByLabelText('Instructions') as HTMLTextAreaElement).disabled).to.equal(false)})
   fireEvent.click(screen.getByRole('button',{name:'Mention files or folders'}))
   fireEvent.click(await screen.findByRole('option',{name:'tex/'}))
-  expect(screen.getByRole('button',{name:'Remove scope tex'})).to.exist
+  expect(screen.queryByRole('button',{name:'Remove scope tex'})).to.equal(null)
   fireEvent.click(screen.getByRole('button',{name:'Skills and commands'}));fireEvent.click(await screen.findByRole('option',{name:'audit'}))
   expect(screen.queryByRole('button',{name:'Remove Skill audit'})).to.equal(null)
-  expect((screen.getByLabelText('Instructions') as HTMLTextAreaElement).value).to.equal('/audit ')
+  expect((screen.getByLabelText('Instructions') as HTMLTextAreaElement).value).to.equal('@tex/ /audit ')
   fireEvent.change(screen.getByLabelText('Instructions'),{target:{value:'Check this folder'}});fireEvent.click(screen.getByRole('button',{name:'Send message'}))
   await waitFor(()=>expect(fetchMock.callHistory.calls(base+'/thread/messages')).to.have.length(1))
-  const body=JSON.parse(fetchMock.callHistory.calls(base+'/thread/messages')[0].options.body as string);expect(body.scope).to.deep.equal([{kind:'folder',path:'tex'}]);expect(body.skills).to.deep.equal([]);expect(body.instruction).to.equal('Check this folder')
+  const body=JSON.parse(fetchMock.callHistory.calls(base+'/thread/messages')[0].options.body as string);expect(body.scope).to.deep.equal([]);expect(body.skills).to.deep.equal([]);expect(body.instruction).to.equal('Check this folder')
  })
  it('shows Skill usage after selection and fills examples without sending',async function(){
   render(<ConversationView projectId="project"/>);await waitFor(()=>expect((screen.getByLabelText('Instructions') as HTMLTextAreaElement).disabled).to.equal(false))
@@ -95,4 +119,46 @@ describe('Composer context and goal controls',function(){
   expect(fetchMock.callHistory.calls(base+'/thread/messages')).to.have.length(0)
  })
 
+})
+
+describe('Inline reference editing',function(){
+ beforeEach(function(){
+  fetchMock.get('/writing-assist/plugins',{plugins:[]})
+  fetchMock.get('/writing-assist/project/project/speech',{available:false})
+  fetchMock.get('/writing-assist/project/project/context',[{kind:'folder',path:'tex'},{kind:'file',path:'tex/main.tex'}],{name:'project-context'})
+  fetchMock.get(base,[conversation]);fetchMock.get(base+'/thread',{conversation,task:null});fetchMock.get(base+'/thread/goal',{goal:null,task:null})
+  fetchMock.post(base+'/thread/messages',{conversation,task:null})
+ })
+ afterEach(function(){cleanup();fetchMock.removeRoutes().clearHistory()})
+ async function ready(){render(<ConversationView projectId="project"/>);const input=screen.getByLabelText('Instructions') as HTMLTextAreaElement;await waitFor(()=>expect(input.disabled).to.equal(false));return input}
+ it('preserves text on both sides and allows repeated references with one scope entry',async()=>{
+  const input=await ready();fireEvent.change(input,{target:{value:'Compare @ with the result',selectionStart:9}});fireEvent.select(input,{target:{selectionStart:9}})
+  fireEvent.click(await screen.findByRole('option',{name:'tex/main.tex'}))
+  expect(input.value).to.equal('Compare @tex/main.tex  with the result')
+  fireEvent.change(input,{target:{value:input.value+' and @',selectionStart:43}});input.setSelectionRange(input.value.length,input.value.length);fireEvent.select(input)
+  fireEvent.click(await screen.findByRole('option',{name:'tex/main.tex'}))
+  expect(input.value).to.equal('Compare @tex/main.tex  with the result and @tex/main.tex ')
+  fireEvent.click(screen.getByRole('button',{name:'Send message'}));await waitFor(()=>expect(fetchMock.callHistory.calls(base+'/thread/messages')).to.have.length(1))
+  const body=JSON.parse(fetchMock.callHistory.calls(base+'/thread/messages')[0].options.body as string)
+  expect(body.scope).to.deep.equal([{kind:'file',path:'tex/main.tex'}]);expect(body.instruction).to.include('with the result and @tex/main.tex')
+ })
+ it('inserts dropped files and folders at the selection and submits their original order',async()=>{
+  const input=await ready();fireEvent.change(input,{target:{value:'Read here then compare.'}});input.setSelectionRange(5,9);fireEvent.select(input)
+  const items=[{kind:'file',path:'tex/main.tex'},{kind:'folder',path:'figures with spaces'}]
+  fireEvent.drop(screen.getByRole('group',{name:'Message composer'}),{dataTransfer:{types:['application/x-overleaf-project-entities'],files:[],getData:()=>JSON.stringify({projectId:'project',items})}})
+  expect(input.value).to.equal('Read @tex/main.tex @"figures with spaces/"  then compare.')
+  expect(screen.queryByLabelText('Attached context')).to.equal(null)
+  fireEvent.click(screen.getByRole('button',{name:'Send message'}));await waitFor(()=>expect(fetchMock.callHistory.calls(base+'/thread/messages')).to.have.length(1))
+  const body=JSON.parse(fetchMock.callHistory.calls(base+'/thread/messages')[0].options.body as string);expect(body.scope).to.deep.equal(items)
+ })
+ it('completes a mention inside a Chinese sentence',async()=>{
+  const input=await ready();fireEvent.change(input,{target:{value:'请修改@，然后检查',selectionStart:4}});fireEvent.select(input,{target:{selectionStart:4}})
+  fireEvent.click(await screen.findByRole('option',{name:'tex/main.tex'}))
+  expect(input.value).to.equal('请修改@tex/main.tex ，然后检查')
+ })
+ it('rejects references dragged from another project without losing the draft',async()=>{
+  const input=await ready();fireEvent.change(input,{target:{value:'Keep this draft'}})
+  fireEvent.drop(screen.getByRole('group',{name:'Message composer'}),{dataTransfer:{types:['application/x-overleaf-project-entities'],files:[],getData:()=>JSON.stringify({projectId:'other',items:[{kind:'file',path:'main.tex'}]})}})
+  expect(input.value).to.equal('Keep this draft');expect(screen.getByText('Drag up to 30 files or folders from this project.')).to.exist
+ })
 })

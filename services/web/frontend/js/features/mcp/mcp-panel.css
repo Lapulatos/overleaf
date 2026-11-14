@@ -1,0 +1,43 @@
+.mcp-icon { width:20px; height:20px; flex:none; }
+.mcp-panel { display:flex; flex-direction:column; height:100%; min-height:0; color:var(--content-primary-themed); background:var(--bg-primary-themed); }
+.mcp-panel-body { padding:16px; overflow:auto; font-size:12px; }
+.mcp-panel-caption { margin:0 0 16px; color:var(--content-secondary-themed); line-height:1.5; }
+.mcp-empty { padding:24px 12px; text-align:center; border:1px solid var(--border-divider-themed); border-radius:8px; }
+.mcp-empty > .mcp-icon { color:var(--content-secondary-themed); }
+.mcp-empty h3 { margin:12px 0 6px; font-size:13px; font-weight:600; }
+.mcp-empty p { margin:0 0 14px; font-size:12px; line-height:1.5; color:var(--content-secondary-themed); }
+.mcp-empty a { font-size:12px; color:var(--content-positive-themed); text-underline-offset:3px; }
+.mcp-empty a:focus-visible { outline:2px solid var(--content-positive-themed); outline-offset:3px; }
+.mcp-panel-body input,.mcp-panel-body select,.mcp-panel-body textarea { width:100%; min-width:0; border:1px solid var(--border-divider-themed); border-radius:5px; padding:8px; background:var(--bg-primary-themed); color:inherit; font:inherit; }
+.mcp-panel-body button { display:inline-flex; align-items:center; gap:5px; border:1px solid var(--border-divider-themed); border-radius:5px; padding:6px 9px; background:var(--bg-primary-themed); color:inherit; font:inherit; }
+.mcp-panel-body button:disabled { opacity:.5; cursor:default; }
+.mcp-panel-body button .material-symbols { font-size:16px; }
+.mcp-panel-body button.mcp-primary { background:var(--content-positive-themed,#087f3c); border-color:var(--content-positive-themed,#087f3c); color:var(--bg-primary-themed,#fff); }
+.mcp-panel-body button.mcp-danger { color:var(--content-danger-themed,#b12d38); }
+.mcp-panel-body :is(button,input,select,textarea):focus-visible { outline:2px solid var(--content-positive-themed); outline-offset:2px; }
+.mcp-search { display:flex; align-items:center; gap:8px; margin-bottom:14px; }
+.mcp-search .material-symbols { font-size:18px; }
+.mcp-form,.mcp-card { border:1px solid var(--border-divider-themed); border-radius:8px; padding:12px; margin-bottom:12px; }
+.mcp-form h3,.mcp-card h3 { font-size:13px; margin:0; font-weight:600; overflow-wrap:anywhere; }
+.mcp-form fieldset { min-width:0; border:0; margin:0; padding:0; }
+.mcp-form label { display:block; margin:12px 0; font-size:12px; }
+.mcp-form label :is(input,select,textarea) { display:block; margin-top:5px; }
+.mcp-form textarea { resize:vertical; }
+.mcp-actions { display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin-top:12px; }
+.mcp-card-heading { display:flex; align-items:start; gap:8px; }
+.mcp-card-heading h3 { flex:1; min-width:0; }
+.mcp-status { font-size:11px; white-space:nowrap; color:var(--content-secondary-themed); background:var(--bg-secondary-themed); padding:2px 5px; border-radius:4px; }
+.mcp-card p { color:var(--content-secondary-themed); font-size:12px; line-height:1.5; margin:8px 0; overflow-wrap:anywhere; }
+.mcp-card-meta { display:flex; gap:8px; align-items:center; margin-top:8px; font-size:11px; }
+.mcp-card-meta code { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--content-secondary-themed); font-size:11px; }
+.mcp-delete { border-top:1px solid var(--border-divider-themed); margin-top:12px; padding-top:4px; }
+.mcp-error { font-size:12px; color:var(--content-danger-themed,#b12d38); margin-bottom:12px; overflow-wrap:anywhere; }
+.mcp-error button { margin-left:8px; }
+.mcp-demo-add { margin-bottom:12px; }
+.mcp-tools { margin-top:12px; border-top:1px solid var(--border-divider-themed); padding-top:10px; }
+.mcp-tools summary { cursor:pointer; font-size:12px; }
+.mcp-tool { padding:10px 0; border-bottom:1px solid var(--border-divider-themed); }
+.mcp-tool strong { font-size:12px; overflow-wrap:anywhere; }
+.mcp-tool button { margin:8px 0; }
+.mcp-tool-result { white-space:pre-wrap; overflow-wrap:anywhere; font-size:11px; padding:8px; margin-top:8px; background:var(--bg-secondary-themed); color:var(--content-primary-themed); }
+.mcp-card p.mcp-verified { font-size:11px; }

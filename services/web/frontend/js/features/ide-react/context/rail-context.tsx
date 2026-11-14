@@ -27,6 +27,8 @@ export type RailTabKey =
   | 'writing-assist-dismissed'
   | 'writing-assist-agent'
   | 'plugins'
+  | 'mcp'
+  | 'runtime-environments'
   | 'native-git'
 
 export type RailModalKey = 'keyboard-shortcuts' | 'contact-us' | 'dictionary'
@@ -92,7 +94,7 @@ export const RailProvider: FC<React.PropsWithChildren> = ({ children }) => {
     if (panelHandle) {
       if (isOpen) {
         panelHandle.expand()
-        const reviewSize = (selectedTab === 'writing-assist-agent' || selectedTab === 'plugins') ? 28 : 0
+        const reviewSize = (selectedTab === 'writing-assist-agent' || selectedTab === 'plugins' || selectedTab === 'mcp' || selectedTab === 'runtime-environments') ? 28 : 0
         if (panelHandle.getSize() < reviewSize) panelHandle.resize(reviewSize)
       } else {
         panelHandle.collapse()

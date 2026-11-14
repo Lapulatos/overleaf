@@ -1,3 +1,5 @@
+import RuntimePanel, { RuntimeRailIcon } from '@/features/runtime-nodes/runtime-panel'
+import McpPanel, { McpRailIcon } from '@/features/mcp/mcp-panel'
 import PluginLibrary, { PluginRailIcon } from '@/features/plugins/plugin-library'
 import SourceControlPanel from '@/features/source-control/source-control-panel'
 import { BranchIcon } from '@/features/source-control/branch-picker'
@@ -143,6 +145,8 @@ export const RailLayout = () => {
       { key: 'native-git', icon: SourceControlRailIcon, title: 'Source Control', component: <SourceControlPanel />,
         hide: !getMeta('ol-nativeGitEnabled') || isRestrictedTokenMember },
       { key: 'plugins', icon: PluginRailIcon, title: 'Plugins', component: <PluginLibrary /> },
+      { key: 'mcp', icon: McpRailIcon, title: 'MCP', component: <McpPanel />, hide: isRestrictedTokenMember },
+      { key: 'runtime-environments', icon: RuntimeRailIcon, title: 'Runtime environments', component: <RuntimePanel />, hide: isRestrictedTokenMember },
       ...moduleRailEntries,
     ],
     [
